@@ -9,15 +9,6 @@ import net.thevpc.halfa.api.model.HDocumentItem;
 import net.thevpc.halfa.api.model.HSize;
 import net.thevpc.halfa.api.model.HStyle;
 import net.thevpc.tson.TsonElement;
-import static net.thevpc.tson.TsonElementType.ARRAY;
-import static net.thevpc.tson.TsonElementType.BOOLEAN;
-import static net.thevpc.tson.TsonElementType.DOUBLE;
-import static net.thevpc.tson.TsonElementType.INT;
-import static net.thevpc.tson.TsonElementType.LONG;
-import static net.thevpc.tson.TsonElementType.NAME;
-import static net.thevpc.tson.TsonElementType.OBJECT;
-import static net.thevpc.tson.TsonElementType.PAIR;
-import static net.thevpc.tson.TsonElementType.STRING;
 import net.thevpc.tson.TsonPair;
 
 /**
@@ -154,7 +145,7 @@ public class HParseHelper {
     public static boolean fillElementHDocumentItemStyle(HDocumentItem to, String style, TsonElement a) {
         HStyle s = toStyle(style, a);
         if (s != null) {
-            to.addStyle(s);
+            to.set(s);
             return true;
         }
         return false;

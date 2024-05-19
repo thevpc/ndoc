@@ -6,7 +6,7 @@ package net.thevpc.halfa.engine.renderer.pdf;
 
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererFactory;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererFactoryContext;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererFactoryContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
@@ -17,7 +17,7 @@ import net.thevpc.nuts.util.NMsg;
 public class PdfDocumentStreamRendererFactory implements HDocumentStreamRendererFactory {
 
     @Override
-    public NCallableSupport<HDocumentStreamRenderer> create(HDocumentStreamRendererFactoryContext context) {
+    public NCallableSupport<HDocumentStreamRenderer> createDocumentStreamRenderer(HDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "pdf":
                 return NCallableSupport.of(10, () -> new PdfDocumentRenderer(context.engine(), context.session()));

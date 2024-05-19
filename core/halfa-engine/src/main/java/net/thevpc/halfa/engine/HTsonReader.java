@@ -10,13 +10,14 @@ import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.tson.TsonElement;
+
 import static net.thevpc.tson.TsonElementType.ARRAY;
 import static net.thevpc.tson.TsonElementType.FUNCTION;
 import static net.thevpc.tson.TsonElementType.OBJECT;
+
 import net.thevpc.tson.TsonFunction;
 
 /**
- *
  * @author vpc
  */
 public class HTsonReader {
@@ -32,21 +33,21 @@ public class HTsonReader {
     public HDocument convertToHDocument(TsonElement c) {
         switch (c.getType()) {
             case OBJECT: {
-                HDocument doc = engine.newDocument();
+                HDocument doc = engine.factory().document();
                 for (TsonElement e : c.toObject().getAll()) {
                     doc.addDocumentPart(engine.newDocumentPart(e).get());
                 }
                 return doc;
             }
             case ARRAY: {
-                HDocument doc = engine.newDocument();
+                HDocument doc = engine.factory().document();
                 for (TsonElement e : c.toArray().getAll()) {
                     doc.addDocumentPart(engine.newDocumentPart(e).get());
                 }
                 return doc;
             }
             case FUNCTION: {
-                HDocument doc = engine.newDocument();
+                HDocument doc = engine.factory().document();
                 TsonFunction ff = c.toFunction();
                 for (TsonElement e : ff.getAll()) {
                     doc.addDocumentPart(engine.newDocumentPart(e).get());
@@ -56,5 +57,5 @@ public class HTsonReader {
         }
         throw new NIllegalArgumentException(session, NMsg.ofC("unable to resolve as Document : %s", c));
     }
- 
+
 }

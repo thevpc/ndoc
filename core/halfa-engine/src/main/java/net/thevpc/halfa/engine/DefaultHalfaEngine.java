@@ -5,15 +5,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+
+import net.thevpc.halfa.HalfaDocumentFactory;
 import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HDocumentPart;
-import net.thevpc.halfa.api.model.HPage;
-import net.thevpc.halfa.api.model.HPagePart;
-import net.thevpc.halfa.api.model.HText;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererFactory;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererFactoryContext;
+import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -30,13 +26,13 @@ import net.thevpc.halfa.spi.nodes.HPagePartParserFactory;
 import net.thevpc.nuts.util.NOptional;
 
 /**
- *
  * @author vpc
  */
 public class DefaultHalfaEngine implements HalfaEngine {
 
     private NSession session;
     private List<HDocumentStreamRendererFactory> documentStreamRendererFactories;
+    private List<HDocumentRendererFactory> documentRendererFactories;
     private List<HDocumentPartParserFactory> documentPartParserFactories;
     private List<HPagePartParserFactory> pagePartParserFactories;
 
@@ -46,14 +42,11 @@ public class DefaultHalfaEngine implements HalfaEngine {
     }
 
     @Override
-    public HDocument newDocument() {
-        return new DefaultHDocument();
+    public HalfaDocumentFactory factory() {
+        return new DefaultHalfaDocumentFactory();
     }
 
-    @Override
-    public HPage newPage() {
-        return new DefaultHPage();
-    }
+
 
     @Override
     public NOptional<HDocumentPart> newDocumentPart(TsonElement element) {
@@ -75,9 +68,9 @@ public class DefaultHalfaEngine implements HalfaEngine {
 
         };
         return NCallableSupport.resolve(
-                documentPartParserFactories().stream()
-                        .map(x -> x.parseDocumentPart(ctx)),
-                s -> NMsg.ofC("missing %s", "factory"))
+                        documentPartParserFactories().stream()
+                                .map(x -> x.parseDocumentPart(ctx)),
+                        s -> NMsg.ofC("missing %s", "factory"))
                 .toOptional();
     }
 
@@ -101,35 +94,29 @@ public class DefaultHalfaEngine implements HalfaEngine {
 
         };
         return NCallableSupport.resolve(
-                pagePartParserFactories().stream()
-                        .map(x -> x.parsePagePart(ctx)),
-                s -> NMsg.ofC("missing %s", "factory"))
+                        pagePartParserFactories().stream()
+                                .map(x -> x.parsePagePart(ctx)),
+                        s -> NMsg.ofC("missing %s", "factory"))
                 .toOptional();
     }
 
     @Override
     public HDocumentStreamRenderer newStreamRenderer(String type) {
-        HDocumentStreamRendererFactoryContext ctx = new HDocumentStreamRendererFactoryContext() {
-            @Override
-            public String rendererType() {
-                return NStringUtils.trim(type);
-            }
-
-            @Override
-            public HalfaEngine engine() {
-                return DefaultHalfaEngine.this;
-            }
-
-            @Override
-            public NSession session() {
-                return session;
-            }
-
-        };
+        HDocumentRendererFactoryContext ctx = new MyHDocumentRendererFactoryContext(type);
         return NCallableSupport.resolve(
-                documentStreamRendererFactories().stream()
-                        .map(x -> x.<HDocumentStreamRenderer>create(ctx)),
-                s -> NMsg.ofC("missing StreamRenderer %s", type))
+                        documentStreamRendererFactories().stream()
+                                .map(x -> x.<HDocumentStreamRenderer>createDocumentStreamRenderer(ctx)),
+                        s -> NMsg.ofC("missing StreamRenderer %s", type))
+                .call(session);
+    }
+
+    @Override
+    public HDocumentRenderer newRenderer(String type) {
+        HDocumentRendererFactoryContext ctx = new MyHDocumentRendererFactoryContext(type);
+        return NCallableSupport.resolve(
+                        documentRendererFactories().stream()
+                                .map(x -> x.<HDocumentStreamRenderer>createDocumentRenderer(ctx)),
+                        s -> NMsg.ofC("missing StreamRenderer %s", type))
                 .call(session);
     }
 
@@ -143,6 +130,18 @@ public class DefaultHalfaEngine implements HalfaEngine {
             this.documentStreamRendererFactories = loaded;
         }
         return documentStreamRendererFactories;
+    }
+
+    private List<HDocumentRendererFactory> documentRendererFactories() {
+        if (documentRendererFactories == null) {
+            ServiceLoader<HDocumentRendererFactory> renderers = ServiceLoader.load(HDocumentRendererFactory.class);
+            List<HDocumentRendererFactory> loaded = new ArrayList<>();
+            for (HDocumentRendererFactory renderer : renderers) {
+                loaded.add(renderer);
+            }
+            this.documentRendererFactories = loaded;
+        }
+        return documentRendererFactories;
     }
 
     private List<HDocumentPartParserFactory> documentPartParserFactories() {
@@ -171,15 +170,7 @@ public class DefaultHalfaEngine implements HalfaEngine {
         return pagePartParserFactories;
     }
 
-    @Override
-    public HText newText() {
-        return newText("");
-    }
 
-    @Override
-    public HText newText(String hello) {
-        return new DefaultHText(hello);
-    }
 
     @Override
     public HDocument loadDocument(NPath path) {
@@ -202,4 +193,27 @@ public class DefaultHalfaEngine implements HalfaEngine {
         return new HTsonReader(this, session).convertToHDocument(c);
     }
 
+    private class MyHDocumentRendererFactoryContext implements HDocumentRendererFactoryContext {
+        private final String type;
+
+        public MyHDocumentRendererFactoryContext(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String rendererType() {
+            return NStringUtils.trim(type);
+        }
+
+        @Override
+        public HalfaEngine engine() {
+            return DefaultHalfaEngine.this;
+        }
+
+        @Override
+        public NSession session() {
+            return session;
+        }
+
+    }
 }

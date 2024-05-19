@@ -1,7 +1,7 @@
 package test;
 
 
-public class Test {
+public class TestPdf {
     public static void main(String[] args) {
 //        NPeak.cmd(
 //

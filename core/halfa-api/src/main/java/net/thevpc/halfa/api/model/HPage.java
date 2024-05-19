@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface HPage extends HDocumentPart {
 
-    HPage addPart(HPagePart part);
+    HPage add(HPagePart part);
 
     List<HPagePart> getParts();
 }

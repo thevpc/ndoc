@@ -52,7 +52,7 @@ public class DefaultHDocument implements HDocument {
         return this;
     }
 
-    public HDocument addPage(HPage part) {
+    public HDocument add(HPage part) {
         return addDocumentPart(part);
     }
 

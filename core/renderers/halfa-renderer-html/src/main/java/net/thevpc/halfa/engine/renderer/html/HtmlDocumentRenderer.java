@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HDocumentPart;
+import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -30,6 +29,11 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
     }
 
     @Override
+    public void render(HDocument document) {
+        render(document,NPath.of("result.html",session));
+    }
+
+    @Override
     public void render(HDocument document, OutputStream os) {
         PrintStream out = new PrintStream(os);
         out.println("<html>");
@@ -41,13 +45,27 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
         out.println("</html>");
     }
 
-    public void render(HDocumentPart part, OutputStream out) {
+    public PrintStream psOf(OutputStream out) {
+        if(out instanceof PrintStream){
+            return (PrintStream) out;
+        }
+        return new PrintStream(out);
+    }
+
+    public void render(HDocumentItem part, OutputStream out) {
         switch (part.type()) {
             case PAGE_GROUP:
                 break;
-            case PAGE:
+            case PAGE: {
+                PrintStream o=psOf(out);
+                HPage p=(HPage) part;
+                for (HPagePart pp : p.getParts()) {
+                    render(pp,o);
+                }
+                o.flush();
                 break;
-            case PARAGRAPH:
+            }
+            case CONTAINER:
                 break;
             case PHRASE:
                 break;

@@ -21,11 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HDocumentPart;
-import net.thevpc.halfa.api.model.HPage;
-import net.thevpc.halfa.api.model.HPageGroup;
+import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
+import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -52,7 +50,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
         try {
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
-            for (HPage page : resolvePages(document)) {
+            for (HPage page : PagesHelper.resolvePages(document)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
@@ -65,13 +63,11 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     }
 
     @Override
-    public void render(HDocumentPart part, OutputStream out) {
+    public void render(HDocumentItem part, OutputStream out) {
         try {
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
-            List<HPage> pages = new ArrayList<>();
-            fillPages(part, pages);
-            for (HPage page : pages) {
+            for (HPage page : PagesHelper.resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
@@ -83,45 +79,13 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
         }
     }
 
-    public List<HPage> resolvePages(HDocument document) {
-        List<HPage> all = new ArrayList<>();
-        for (HDocumentPart p : document.getDocumentParts()) {
-            fillPages(p, all);
-        }
-        return all;
+    @Override
+    public void render(HDocument document) {
+        render(document,NPath.of("result.pdf",session));
     }
 
-    public void fillPages(HDocumentPart part, List<HPage> all) {
-        switch (part.type()) {
-            case PAGE: {
-                all.add((HPage) part);
-                break;
-            }
-            case PAGE_GROUP: {
-                for (HDocumentPart p : ((HPageGroup) part).getDocumentParts()) {
-                    fillPages(p, all);
-                }
-                break;
-            }
-        }
-    }
 
-    public void render(HDocumentPart part, PrintStream out) {
-        switch (part.type()) {
-            case PAGE_GROUP:
-                break;
-            case PAGE:
-                break;
-            case PARAGRAPH:
-                break;
-            case PHRASE:
-                break;
-            default:
-                throw new IllegalArgumentException("invalid type " + part);
-        }
-    }
-
-    public Supplier<InputStream> renderPage(HDocumentPart part, HDocumentStreamRenderer htmlRenderer) {
+    public Supplier<InputStream> renderPage(HDocumentItem part, HDocumentStreamRenderer htmlRenderer) {
         try {
             ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -201,7 +165,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
                 break;
             case PAGE:
                 break;
-            case PARAGRAPH:
+            case CONTAINER:
                 break;
             case PHRASE:
                 break;

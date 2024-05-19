@@ -5,25 +5,21 @@
 package net.thevpc.halfa.api;
 
 import java.io.InputStream;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HDocumentPart;
-import net.thevpc.halfa.api.model.HPage;
-import net.thevpc.halfa.api.model.HPagePart;
-import net.thevpc.halfa.api.model.HText;
+
+import net.thevpc.halfa.HalfaDocumentFactory;
+import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
 /**
- *
  * @author vpc
  */
 public interface HalfaEngine {
 
-    HDocument newDocument();
-
-    HPage newPage();
+    HalfaDocumentFactory factory();
 
     NOptional<HDocumentPart> newDocumentPart(TsonElement element);
 
@@ -31,11 +27,10 @@ public interface HalfaEngine {
 
     HDocumentStreamRenderer newStreamRenderer(String type);
 
-    public HText newText();
+    HDocumentRenderer newRenderer(String type);
 
-    public HText newText(String hello);
 
-    public HDocument loadDocument(NPath of);
+    HDocument loadDocument(NPath of);
 
-    public HDocument loadDocument(InputStream is);
+    HDocument loadDocument(InputStream is);
 }

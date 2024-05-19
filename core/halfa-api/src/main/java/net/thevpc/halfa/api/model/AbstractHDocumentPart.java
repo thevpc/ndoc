@@ -4,6 +4,8 @@
  */
 package net.thevpc.halfa.api.model;
 
+import net.thevpc.nuts.util.NOptional;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +17,8 @@ public abstract class AbstractHDocumentPart implements HDocumentPart {
 
     private Map<HStyleType, HStyle> styles = new HashMap<>();
 
-    public HStyle getStyle(HStyleType s) {
-        return styles.get(s);
+    public NOptional<HStyle> getStyle(HStyleType s) {
+        return NOptional.ofNamed(styles.get(s),"style "+s);
     }
 
     public HStyle getStyle(HStyleType s,HDocumentPart... context) {
@@ -24,14 +26,14 @@ public abstract class AbstractHDocumentPart implements HDocumentPart {
         return i;
     }
 
-    public HDocumentPart addStyle(HStyle s) {
+    public HDocumentItem set(HStyle s) {
         if (s != null) {
             styles.put(s.getName(), s);
         }
         return this;
     }
 
-    public HDocumentPart removeStyle(HStyleType s) {
+    public HDocumentItem unset(HStyleType s) {
         if (s != null) {
             styles.remove(s);
         }

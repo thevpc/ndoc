@@ -5,6 +5,7 @@
 package net.thevpc.halfa.engine;
 
 import net.thevpc.halfa.api.model.AbstractHDocumentPart;
+import net.thevpc.halfa.api.model.AbstractHPagePart;
 import net.thevpc.halfa.api.model.HDocumentItemType;
 import net.thevpc.halfa.api.model.HText;
 
@@ -12,7 +13,7 @@ import net.thevpc.halfa.api.model.HText;
  *
  * @author vpc
  */
-public class DefaultHText extends AbstractHDocumentPart implements HText {
+public class DefaultHText extends AbstractHPagePart implements HText {
 
     private String message;
 

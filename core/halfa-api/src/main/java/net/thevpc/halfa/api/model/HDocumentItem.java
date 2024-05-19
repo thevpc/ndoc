@@ -1,14 +1,16 @@
 package net.thevpc.halfa.api.model;
 
+import net.thevpc.nuts.util.NOptional;
+
 public interface HDocumentItem {
 
     HDocumentItemType type();
 
-    HStyle getStyle(HStyleType s);
+    NOptional<HStyle> getStyle(HStyleType s);
 
     HStyle getStyle(HStyleType s, HDocumentPart... context);
 
-    HDocumentPart addStyle(HStyle s);
+    HDocumentItem set(HStyle s);
 
-    HDocumentPart removeStyle(HStyleType s);
+    HDocumentItem unset(HStyleType s);
 }

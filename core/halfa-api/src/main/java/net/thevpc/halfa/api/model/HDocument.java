@@ -8,7 +8,7 @@ public interface HDocument {
 
     HDocument addDocumentPart(HDocumentPart part);
 
-    HDocument addPage(HPage part);
+    HDocument add(HPage part);
 
     HDocumentClass getDocumentClass();
 

@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.renderer;
 
-import java.io.OutputStream;
+import net.thevpc.halfa.api.model.HDocument;
 
 public interface HDocumentRenderer {
-    void render(OutputStream oos);
+    void render(HDocument document);
 }

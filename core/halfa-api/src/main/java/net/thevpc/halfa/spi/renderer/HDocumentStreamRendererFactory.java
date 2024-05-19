@@ -7,11 +7,14 @@ package net.thevpc.halfa.spi.renderer;
 import net.thevpc.nuts.NCallableSupport;
 
 /**
- *
  * @author vpc
  */
-public interface HDocumentStreamRendererFactory {
+public interface HDocumentStreamRendererFactory extends HDocumentRendererFactory {
 
-    NCallableSupport<HDocumentStreamRenderer> create(HDocumentStreamRendererFactoryContext context);
+    NCallableSupport<HDocumentStreamRenderer> createDocumentStreamRenderer(HDocumentRendererFactoryContext context);
+
+    default NCallableSupport<HDocumentRenderer> createDocumentRenderer(HDocumentRendererFactoryContext context) {
+        return (NCallableSupport) createDocumentStreamRenderer(context);
+    }
 
 }

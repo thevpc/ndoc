@@ -20,7 +20,7 @@ public class DefaultHPage extends AbstractHDocumentPart implements HPage {
     }
 
     @Override
-    public HPage addPart(HPagePart part) {
+    public HPage add(HPagePart part) {
         if (part != null) {
             this.parts.add(part);
         }

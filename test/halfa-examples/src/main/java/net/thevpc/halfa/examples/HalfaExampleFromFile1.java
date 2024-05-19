@@ -16,7 +16,7 @@ import net.thevpc.nuts.io.NPath;
  *
  * @author vpc
  */
-public class Example1 {
+public class HalfaExampleFromFile1 {
 
     public static void main(String[] args) {
         NSession session = Nuts.openWorkspace();

@@ -16,36 +16,10 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementHeader;
-import static net.thevpc.tson.TsonElementType.ALIAS;
-import static net.thevpc.tson.TsonElementType.BIG_COMPLEX;
-import static net.thevpc.tson.TsonElementType.BIG_DECIMAL;
-import static net.thevpc.tson.TsonElementType.BIG_INT;
-import static net.thevpc.tson.TsonElementType.BOOLEAN;
-import static net.thevpc.tson.TsonElementType.BYTE;
-import static net.thevpc.tson.TsonElementType.CHAR;
-import static net.thevpc.tson.TsonElementType.DATE;
-import static net.thevpc.tson.TsonElementType.DATETIME;
-import static net.thevpc.tson.TsonElementType.DOUBLE;
-import static net.thevpc.tson.TsonElementType.DOUBLE_COMPLEX;
-import static net.thevpc.tson.TsonElementType.FLOAT;
-import static net.thevpc.tson.TsonElementType.FLOAT_COMPLEX;
-import static net.thevpc.tson.TsonElementType.INT;
-import static net.thevpc.tson.TsonElementType.LONG;
-import static net.thevpc.tson.TsonElementType.MATRIX;
-import static net.thevpc.tson.TsonElementType.NAME;
-import static net.thevpc.tson.TsonElementType.NULL;
-import static net.thevpc.tson.TsonElementType.OBJECT;
-import static net.thevpc.tson.TsonElementType.PAIR;
-import static net.thevpc.tson.TsonElementType.REGEX;
-import static net.thevpc.tson.TsonElementType.SHORT;
-import static net.thevpc.tson.TsonElementType.STRING;
-import static net.thevpc.tson.TsonElementType.TIME;
-import static net.thevpc.tson.TsonElementType.UPLET;
 import net.thevpc.tson.TsonObject;
 import net.thevpc.tson.TsonPair;
 
 /**
- *
  * @author vpc
  */
 public class DefaultHDocumentItemParserFactory
@@ -66,9 +40,9 @@ public class DefaultHDocumentItemParserFactory
                     switch (NNameFormat.LOWER_SNAKE_CASE.format(name)) {
                         case "page": {
                             return NCallableSupport.of(10, () -> {
-                                HPage p = engine.newPage();
+                                HPage p = engine.factory().page();
                                 for (TsonElement e : ff.getAll()) {
-                                    p.addPart(engine.newPagePart(e).get());
+                                    p.add(engine.newPagePart(e).get());
                                 }
                                 return p;
                             });
@@ -80,8 +54,8 @@ public class DefaultHDocumentItemParserFactory
         NOptional<HPagePart> t = engine.newPagePart(c);
         if (t.isPresent()) {
             return NCallableSupport.of(5, () -> {
-                HPage p = engine.newPage();
-                p.addPart(t.get(session));
+                HPage p = engine.factory().page();
+                p.add(t.get(session));
                 return p;
             });
         }
@@ -119,7 +93,7 @@ public class DefaultHDocumentItemParserFactory
             case ALIAS:
             case PAIR: {
                 return NCallableSupport.of(10, () -> {
-                    return engine.newText(c.getString());
+                    return engine.factory().text(0, 0, c.getString());
                 });
 
             }
@@ -143,7 +117,7 @@ public class DefaultHDocumentItemParserFactory
         TsonElement c = context.element();
         HalfaEngine engine = context.engine();
         NSession session = context.session();
-        HText t = engine.newText();
+        HText t = engine.factory().text(0, 0, "");
         for (TsonElement e : ff.getAll()) {
             if (!HParseHelper.fillElementHDocumentItem(t, e)) {
                 switch (e.getType()) {
