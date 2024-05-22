@@ -4,22 +4,26 @@
  */
 package net.thevpc.halfa.engine.nodes.text;
 
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HText;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 /**
- *
  * @author vpc
  */
-public class DefaultHText extends AbstractHNode implements HText {
+public class HTextImpl extends AbstractHNode implements HText {
 
     private String message;
 
-    public DefaultHText() {
+    public HTextImpl() {
     }
 
-    public DefaultHText(String message) {
+    public HTextImpl(String message) {
         this.message = message;
     }
 
@@ -44,4 +48,25 @@ public class DefaultHText extends AbstractHNode implements HText {
                 "message='" + message + '\'' +
                 '}';
     }
+
+    @Override
+    public void mergeNode(HItem other) {
+        if (other != null) {
+            super.mergeNode(other);
+            if (other instanceof HText) {
+                HText t = (HText) other;
+                if (t.getMessage() != null) {
+                    this.message = t.getMessage();
+                }
+            }
+        }
+    }
+
+    @Override
+    public TsonElement toTson() {
+        return ToTsonHelper.of(this)
+                .addArg(message == null ? null : Tson.string(message))
+                .build();
+    }
+
 }

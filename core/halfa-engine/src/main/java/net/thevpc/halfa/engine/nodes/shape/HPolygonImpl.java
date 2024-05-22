@@ -1,8 +1,10 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.HPolygon;
+import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -14,6 +16,20 @@ public class HPolygonImpl extends AbstractHNode implements HPolygon {
 
     public HPolygonImpl(Point2D.Double... points) {
         this.points.addAll(Arrays.asList(points));
+    }
+
+
+    @Override
+    public void mergeNode(HItem other) {
+        if (other != null) {
+            super.mergeNode(other);
+            if (other instanceof HPolygon) {
+                HPolygon t = (HPolygon) other;
+                for (Point2D.Double point : t.points()) {
+                    add(point);
+                }
+            }
+        }
     }
 
     @Override
@@ -32,4 +48,12 @@ public class HPolygonImpl extends AbstractHNode implements HPolygon {
     public HNodeType type() {
         return HNodeType.POLYGON;
     }
+
+
+    @Override
+    public TsonElement toTson() {
+        return ToTsonHelper.of(this).addChildren(TsonSer.toTson(points()))
+                .build();
+    }
+
 }

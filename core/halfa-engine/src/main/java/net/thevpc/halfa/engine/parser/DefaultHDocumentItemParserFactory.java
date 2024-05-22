@@ -3,12 +3,16 @@ package net.thevpc.halfa.engine.parser;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.spi.TsonSer;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.*;
 
 /**
@@ -19,7 +23,7 @@ public class DefaultHDocumentItemParserFactory
 
 
     @Override
-    public NCallableSupport<HNode> parseNode(HNodeFactoryParseContext context) {
+    public NCallableSupport<HItem> parseNode(HNodeFactoryParseContext context) {
         TsonElement c = context.element();
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
@@ -47,28 +51,56 @@ public class DefaultHDocumentItemParserFactory
             case TIME:
             case MATRIX:
             case UPLET:
-            case ALIAS:
-            case PAIR: {
+            case ALIAS: {
                 return NCallableSupport.of(10, () -> {
                     return f.text(0, 0, c.getString());
                 });
-
             }
-            case OBJECT: {
-                TsonObject ff = c.toObject();
-                TsonElementHeader h = ff.getHeader();
-                if (h != null) {
-                    String name = HParseHelper.uid(h.name());
-                    switch (name) {
+            case PAIR: {
+                TsonPair p = c.toPair();
+                TsonElement k = p.getKey();
+                TsonElement v = p.getValue();
+                TsonElementParseHelper kh = new TsonElementParseHelper(k);
+                NOptional<String> nn = kh.asStringOrName();
+                if (nn.isPresent()) {
+                    String nnn = NStringUtils.trim(nn.get());
+                    if (nnn.length() > 1 && nnn.startsWith("$")) {
+                        return NCallableSupport.of(10, () -> {
+                            return f.assign().setLeft(nnn.substring(1)).setRight(
+                                    TsonSer.fromTson(v)
+                            );
+                        });
+                    }
+                }
+                break;
+            }
+            case OBJECT:
+            case FUNCTION:
+            case ARRAY: {
+                TsonElementExt ee = new TsonElementExt(c);
+                if (NBlankable.isBlank(ee.name())) {
+                    if (context.expectedTypes().contains(HNodeType.PAGE)) {
+                        return NCallableSupport.of(10, () -> {
+                            return HItemListParser.readHItemList(c, f, context).get();
+                        });
+                    }
+                } else {
+                    switch (ee.name()) {
+                        case "import":
                         case "include": {
-                            return NCallableSupport.of(10, () -> IncludeParser.parseInclude(ff, f, context).get());
+                            return NCallableSupport.of(10, () -> HImportFileParser.parseImport(c, f, context).get());
                         }
                         case "text": {
-                            return NCallableSupport.of(10, () -> HTextParser.parseText(ff, f, context));
+                            return NCallableSupport.of(10, () -> HTextParser.parseText(c, f, context).get());
+                        }
+                        case "eq":
+                        case "equation":
+                        {
+                            return NCallableSupport.of(10, () -> HTextParser.parseEquation(c, f, context).get());
                         }
                         case "page": {
                             return NCallableSupport.of(10, () -> {
-                                return HPageParser.parsePage(ff, f, context).get();
+                                return HPageParser.parsePage(c, f, context).get();
                             });
                         }
                         case "stack":
@@ -79,20 +111,18 @@ public class DefaultHDocumentItemParserFactory
                         case "grid-v":
                         case "hgrid":
                         case "h-grid":
-                        case "grid-h":
-                        {
+                        case "grid-h": {
                             return NCallableSupport.of(10, () -> {
-                                return HStackParser.parseContainer(name,ff, f, context).get();
+                                return HContainerParser.parseContainer(ee.name(), c, f, context).get();
                             });
                         }
                         case "ul":
                         case "unordered-list":
                         case "ol":
                         case "ordered-list":
-                        case "numbered-list":
-                        {
+                        case "numbered-list": {
                             return NCallableSupport.of(10, () -> {
-                                return HStackParser.parseContainer(name,ff, f, context).get();
+                                return HContainerParser.parseContainer(ee.name(), c, f, context).get();
                             });
                         }
                         case "rectangle":
@@ -109,28 +139,16 @@ public class DefaultHDocumentItemParserFactory
                         case "glue-v":
                         case "polygon":
                         case "polyline":
-                        case "line":
-                        {
+                        case "line": {
                             return NCallableSupport.of(10, () -> {
-                                return ShapesParser.parseShape(name,ff, f, context).get();
+                                return ShapesParser.parseShape(ee.name(), c, f, context).get();
                             });
                         }
                     }
-                } else {
-                    //this is a container!
-                    if (context.expectedTypes().contains(HNodeType.PAGE)) {
-                        return NCallableSupport.of(10, () -> {
-                            return HPageGroupParser.readPageGroup(ff, f, context).get();
-                        });
-                    }else{
-
-                    }
                 }
-
             }
         }
-        throw new NIllegalArgumentException(session, NMsg.ofC("unable to resolve as Document: %s", c));
+        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", context.source(),c));
     }
-
 
 }

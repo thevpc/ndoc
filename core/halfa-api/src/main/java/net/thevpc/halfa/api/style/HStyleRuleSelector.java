@@ -1,6 +1,7 @@
 package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.tson.TsonElement;
 
 import java.util.function.Predicate;
 
@@ -8,4 +9,5 @@ import java.util.function.Predicate;
  * TODO should add comparisons supporte!!
  */
 public interface HStyleRuleSelector extends Predicate<HNode> , Comparable<HStyleRuleSelector>{
+    TsonElement toTson();
 }

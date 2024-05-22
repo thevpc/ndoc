@@ -17,9 +17,13 @@ public interface HDocumentFactory {
 
     HPageGroup pageGroup();
 
+    HNode create(HNodeType type);
+
     HText text(double x, double y, String hello);
 
     HText text(String hello);
+
+    HText text();
 
     HFiller glue();
 
@@ -35,7 +39,11 @@ public interface HDocumentFactory {
 
     HArc arc(double from, double to);
 
+    HArc arc();
+
+    HCtrlAssign assign();
     HFlowContainer flow(HNode... children);
+
     HFlowContainer flow(double x, double y, HNode... children);
 
     HStackContainer stack(double x, double y, HNode... children);
@@ -63,6 +71,7 @@ public interface HDocumentFactory {
     HRectangle rectangle();
 
     HRectangle square();
+
     HRectangle square(double width);
 
     HRectangle square(double x, double y, double width);
@@ -78,17 +87,22 @@ public interface HDocumentFactory {
     HEllipse circle(double x, double y, double width);
 
     HPolygon polygon(double x, double y, double width, double height, Point2D.Double... points);
+
     HPolygon polygon(Point2D.Double... points);
 
     HPolyline polyline(double x, double y, double width, double height, Point2D.Double... points);
+
     HPolyline polyline(Point2D.Double... points);
 
     HLine line(double x, double y, double maxx, double maxy);
 
     HLine line();
 
+    HImage image();
 
     HImage image(double x, double y, Image image);
 
     HLatexEquation equation(double x, double y, String latex);
+
+    HLatexEquation equation();
 }

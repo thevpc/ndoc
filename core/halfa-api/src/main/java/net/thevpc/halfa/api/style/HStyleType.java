@@ -33,5 +33,6 @@ public enum HStyleType {
     ROWS,
     ROWS_WEIGHT,
     COLUMNS_WEIGHT,
+    STYLE_CLASS, DISABLED, TEMPLATE, TEMPLATE_NAME, NAME,
 
 }

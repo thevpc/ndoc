@@ -22,7 +22,10 @@ public class HDocumentRootRules {
                     HStyles.position(HAlign.LEFT)
             ),
             DefaultHStyleRule.ofType(HNodeType.ELLIPSE,
-                    HStyles.origin(HAlign.LEFT),
+                    HStyles.position(HAlign.CENTER),
+                    HStyles.origin(HAlign.CENTER)
+            ),
+            DefaultHStyleRule.ofType(HNodeType.ARC,
                     HStyles.position(HAlign.CENTER),
                     HStyles.origin(HAlign.CENTER)
             ),

@@ -8,6 +8,10 @@ import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.api.node.HFiller;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import java.util.Objects;
 
@@ -46,5 +50,18 @@ public class HFillerImpl extends AbstractHNode implements HFiller {
     @Override
     public int hashCode() {
         return Objects.hashCode(constraints);
+    }
+
+
+
+    @Override
+    public TsonElement toTson() {
+        return ToTsonHelper.of(
+                        this
+                ).addChildren(
+//                        startAngle==null?null: Tson.pair("start", TsonSer.toTson(startAngle)),
+//                        endAngle==null?null:Tson.pair("end",TsonSer.toTson(endAngle))
+                )
+                .build();
     }
 }

@@ -19,11 +19,6 @@ public class HGridContainerImpl extends AbstractHContainer implements HGridConta
 
     public HGridContainerImpl(List<HNode> children) {
         super(children);
-        this.set(HStyles.position(0, 0))
-                .set(HStyles.rowsWeight())
-                .set(HStyles.columnsWeight())
-                .set(HStyles.origin(HAlign.NONE))
-        ;
     }
 
     public HNodeType type() {

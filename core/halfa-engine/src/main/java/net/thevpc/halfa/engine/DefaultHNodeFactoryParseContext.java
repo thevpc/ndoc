@@ -5,6 +5,8 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.tson.TsonElement;
 
 import java.util.*;
@@ -15,17 +17,23 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
     private final NSession session;
     private final List<HNode> parents = new ArrayList<>();
     private final Set<HNodeType> expectedTypes = new HashSet<>();
+    private final Object source;
 
     public DefaultHNodeFactoryParseContext(TsonElement element, HEngine engine, NSession session
             , List<HNode> parents
-            , Set<HNodeType> expectedTypes
-
+            , Set<HNodeType> expectedTypes,
+                                           Object source
     ) {
         this.element = element;
         this.engine = engine;
         this.session = session;
+        this.source = source;
         this.parents.addAll(parents);
         this.expectedTypes.addAll(expectedTypes);
+    }
+
+    public Object source() {
+        return source;
     }
 
     @Override
@@ -53,4 +61,39 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         return element;
     }
 
+    @Override
+    public NPath resolvePath(String path) {
+        if (NBlankable.isBlank(path)) {
+            return null;
+        }
+        Object src = source;
+        if (src == null) {
+            if (parents != null) {
+                for (int i = parents.size() - 1; i >= 0; i--) {
+                    if (parents.get(i) != null) {
+                        Object ss = parents.get(i).getSource();
+                        if (ss != null) {
+                            src = ss;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        NPath base;
+        if (src instanceof NPath) {
+            NPath sp = (NPath) src;
+            if (sp.isRegularFile()) {
+                sp = sp.getParent();
+            }
+            if (sp != null) {
+                base = sp.resolve(path);
+            } else {
+                base = NPath.of(path, session);
+            }
+        } else {
+            base = NPath.of(path, session);
+        }
+        return base;
+    }
 }

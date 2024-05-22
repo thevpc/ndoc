@@ -4,13 +4,18 @@
  */
 package net.thevpc.halfa.api.style;
 
+import net.thevpc.halfa.api.node.HItem;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+
 import java.util.Objects;
 
 /**
  *
  * @author vpc
  */
-public class HStyle {
+public class HStyle implements HItem {
 
     private HStyleType name;
     private Object value;
@@ -60,5 +65,10 @@ public class HStyle {
                 "name=" + name +
                 ", value=" + value +
                 '}';
+    }
+
+    @Override
+    public TsonElement toTson() {
+        return Tson.pair(TsonSer.toTson(name),TsonSer.toTson(value));
     }
 }

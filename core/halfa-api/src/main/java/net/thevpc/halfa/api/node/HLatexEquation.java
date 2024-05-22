@@ -9,4 +9,6 @@ package net.thevpc.halfa.api.node;
  */
 public interface HLatexEquation extends HNode {
     String latex();
+
+    HLatexEquation setLatex(String latex) ;
 }

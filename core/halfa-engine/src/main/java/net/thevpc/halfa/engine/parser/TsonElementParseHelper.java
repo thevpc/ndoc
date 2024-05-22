@@ -1,10 +1,12 @@
 package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.nuts.util.NLiteral;
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonArray;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObject;
+import net.thevpc.tson.TsonUplet;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -17,6 +19,7 @@ public class TsonElementParseHelper {
     public TsonElementParseHelper(TsonElement element) {
         this.element = element;
     }
+
     public NOptional<Color> parseColor() {
         switch (element.type()) {
             case BYTE:
@@ -33,12 +36,60 @@ public class TsonElementParseHelper {
                 if (s.startsWith("#")) {
                     return NOptional.of(new Color(Integer.parseInt(s.substring(1), 16)));
                 }
-                switch (s) {
+                switch (NNameFormat.LOWER_KEBAB_CASE.format(s.toLowerCase())) {
                     case "red": {
                         return NOptional.of(Color.RED);
                     }
+                    case "blue": {
+                        return NOptional.of(Color.BLUE);
+                    }
+                    case "black": {
+                        return NOptional.of(Color.BLACK);
+                    }
+                    case "white": {
+                        return NOptional.of(Color.WHITE);
+                    }
+                    case "yellow": {
+                        return NOptional.of(Color.YELLOW);
+                    }
+                    case "cyan": {
+                        return NOptional.of(Color.CYAN);
+                    }
+                    case "orange": {
+                        return NOptional.of(Color.ORANGE);
+                    }
+                    case "pink": {
+                        return NOptional.of(Color.PINK);
+                    }
+                    case "dark-gray": {
+                        return NOptional.of(Color.DARK_GRAY);
+                    }
+                    case "light-gray": {
+                        return NOptional.of(Color.LIGHT_GRAY);
+                    }
+                    case "gray": {
+                        return NOptional.of(Color.GRAY);
+                    }
+                    case "green": {
+                        return NOptional.of(Color.GREEN);
+                    }
+                    case "magenta": {
+                        return NOptional.of(Color.MAGENTA);
+                    }
                 }
-                return NOptional.of(new Color(Integer.parseInt(s, 16)));
+                try {
+                    int z = Integer.parseInt(s, 16);
+                    return NOptional.of(new Color(z));
+                } catch (Exception e) {
+
+                }
+                try {
+                    int z = Integer.parseInt(s);
+                    return NOptional.of(new Color(z));
+                } catch (Exception e) {
+
+                }
+                break;
             }
         }
         return NOptional.ofNamedEmpty("color from " + element);
@@ -59,6 +110,20 @@ public class TsonElementParseHelper {
             }
             case OBJECT: {
                 TsonObject arr = element.toObject();
+                if (arr.size() == 2) {
+                    List<TsonElement> all = arr.all();
+                    TsonElement a = all.get(0);
+                    TsonElement b = all.get(1);
+                    if (a.type().isNumber()) {
+                        double ad = a.toDouble().getValue();
+                        double bd = b.toDouble().getValue();
+                        return NOptional.of(new Point2D.Double(ad, bd));
+                    }
+                }
+                break;
+            }
+            case UPLET: {
+                TsonUplet arr = element.toUplet();
                 if (arr.size() == 2) {
                     List<TsonElement> all = arr.all();
                     TsonElement a = all.get(0);

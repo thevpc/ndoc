@@ -4,6 +4,8 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
+import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HStyles;
 import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.api.node.container.HContainer;
@@ -13,6 +15,10 @@ import net.thevpc.halfa.api.style.HStyle;
 import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.halfa.api.style.HStyleType;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,13 +37,48 @@ public abstract class AbstractHContainer extends AbstractHNode implements HConta
 
     public AbstractHContainer(List<HNode> children) {
         this.children = new ArrayList<>();
-        if(children!=null){
+        if (children != null) {
             for (HNode child : children) {
                 add(child);
             }
         }
         this.set(HStyles.origin(HAlign.TOP_LEFT))
                 .set(HStyles.size(100, 100));
+    }
+
+
+    @Override
+    public void mergeNode(HItem other) {
+        if (other != null) {
+            super.mergeNode(other);
+            if (other instanceof HNode) {
+                if (other instanceof HContainer) {
+                    HContainer hc = (HContainer) other;
+                    addRules(hc.rules());
+                    for (HNode child : hc.children()) {
+                        add(child);
+                    }
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public boolean append(HItem a) {
+        if (a != null) {
+            boolean b = super.append(a);
+            if (a instanceof HStyleRule) {
+                addRule((HStyleRule) a);
+                return true;
+            }
+            if (a instanceof HNode) {
+                add((HNode) a);
+                return true;
+            }
+            return b;
+        }
+        return false;
     }
 
     @Override
@@ -135,5 +176,11 @@ public abstract class AbstractHContainer extends AbstractHNode implements HConta
         return type() + "{" +
                 "children=" + children +
                 '}';
+    }
+
+
+    @Override
+    public TsonElement toTson() {
+        return ToTsonHelper.of(this).build();
     }
 }

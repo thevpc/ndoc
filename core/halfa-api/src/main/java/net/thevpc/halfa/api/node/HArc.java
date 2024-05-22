@@ -9,8 +9,8 @@ package net.thevpc.halfa.api.node;
  */
 public interface HArc extends HNode {
 
-    double startAngle();
+    Double startAngle();
 
-    double endAngle();
+    Double endAngle();
 
 }

@@ -4,13 +4,17 @@
  */
 package net.thevpc.halfa.engine.document;
 
+import java.util.Map;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.document.HDocumentClass;
 import net.thevpc.halfa.api.node.HPageGroup;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
 
 /**
  * @author vpc
@@ -62,4 +66,29 @@ public class DefaultHDocument implements HDocument {
         return NOptional.ofNamed(properties.getProperty(name), name);
     }
 
+    @Override
+    public void mergeDocument(HDocument other) {
+        if(other!=null){
+            if(documentClass==null){
+                documentClass = other.getDocumentClass();
+            }else{
+                //ignore!
+            }
+            for (Map.Entry<Object, Object> e : other.getProperties().entrySet()) {
+                if(!properties.containsKey(e.getKey())) {
+                    properties.setProperty((String)e.getKey(), (String) e.getValue());
+                }else{
+                    //ignore
+                }
+            }
+            this.root().mergeNode(other.root());
+        }
+    }
+
+
+    @Override
+    public TsonElement toTson() {
+        TsonElement tson = root().toTson();
+        return tson;
+    }
 }

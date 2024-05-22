@@ -4,12 +4,13 @@
  */
 package net.thevpc.halfa.api.style;
 
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 
 /**
  *
  * @author vpc
  */
-public interface HStyleRule {
+public interface HStyleRule extends HItem {
     HStyleRuleResult styles(HNode node);
 }

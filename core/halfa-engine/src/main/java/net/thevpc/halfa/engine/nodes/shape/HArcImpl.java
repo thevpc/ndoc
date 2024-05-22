@@ -1,33 +1,62 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
-import net.thevpc.halfa.api.style.HStyles;
-import net.thevpc.halfa.api.model.*;
-import net.thevpc.halfa.api.node.HArc;
-import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 public class HArcImpl extends AbstractHNode implements HArc {
-    private double startArc;
-    private double endArc;
+    private Double startAngle;
+    private Double endAngle;
 
-    public HArcImpl(double startArc, double endArc) {
-        this.startArc = startArc;
-        this.endArc = endArc;
-        set(HStyles.position(HAlign.CENTER));
+    public HArcImpl(Double startAngle, Double endAngle) {
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
     }
 
     @Override
-    public double startAngle() {
-        return startArc;
+    public void mergeNode(HItem other) {
+        if (other != null) {
+            super.mergeNode(other);
+            if (other instanceof HArc) {
+                HArc t = (HArc) other;
+                if (t.startAngle() != null) {
+                    this.startAngle = t.startAngle();
+                }
+                if (t.endAngle() != null) {
+                    this.endAngle = t.endAngle();
+                }
+            }
+        }
     }
 
     @Override
-    public double endAngle() {
-        return endArc;
+    public Double startAngle() {
+        return startAngle;
+    }
+
+    @Override
+    public Double endAngle() {
+        return endAngle;
     }
 
     @Override
     public HNodeType type() {
         return HNodeType.ARC;
     }
+
+
+    @Override
+    public TsonElement toTson() {
+        return ToTsonHelper.of(
+                        this
+                ).addChildren(
+                        startAngle==null?null: Tson.pair("start", TsonSer.toTson(startAngle)),
+                        endAngle==null?null:Tson.pair("end",TsonSer.toTson(endAngle))
+                )
+                .build();
+    }
+
 }

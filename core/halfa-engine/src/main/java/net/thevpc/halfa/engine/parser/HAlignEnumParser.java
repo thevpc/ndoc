@@ -28,6 +28,8 @@ public class HAlignEnumParser {
                     return NOptional.of(HAlign.RIGHT);
                 case "center":
                     return NOptional.of(HAlign.CENTER);
+                case "top":
+                    return NOptional.of(HAlign.TOP);
             }
         }
         return NOptional.ofNamedEmpty("HAlign " + e);

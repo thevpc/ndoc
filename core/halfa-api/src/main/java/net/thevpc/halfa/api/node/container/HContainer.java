@@ -4,6 +4,7 @@
  */
 package net.thevpc.halfa.api.node.container;
 
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HStyle;
 import net.thevpc.halfa.api.style.HStyleType;
 import net.thevpc.halfa.api.node.HNode;

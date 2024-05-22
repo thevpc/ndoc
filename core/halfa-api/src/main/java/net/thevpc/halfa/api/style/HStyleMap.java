@@ -1,6 +1,11 @@
 package net.thevpc.halfa.api.style;
 
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
+import net.thevpc.tson.TsonObjectBuilder;
 
 import java.util.*;
 
@@ -71,5 +76,11 @@ public class HStyleMap {
 
     public Set<HStyle> styles() {
         return new HashSet<>(map.values());
+    }
+
+    public TsonElement toTson() {
+        return Tson.obj(
+                map.values().stream().map(x->x.toTson()).toArray(TsonElementBase[]::new)
+        ).build();
     }
 }

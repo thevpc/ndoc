@@ -9,10 +9,12 @@ import java.util.Set;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
+import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
@@ -26,24 +28,26 @@ public interface HEngine {
     HDocumentFactory documentFactory();
 
 
-    NOptional<HNode> newDocumentRoot(TsonElement element);
+    NOptional<HItem> newDocumentRoot(TsonElement element);
 
-    NOptional<HNode> newNode(TsonElement element, HNode currentNode, Set<HNodeType> expected, HNodeFactoryParseContext ctx);
+    NOptional<HItem> newNode(TsonElement element, HNode currentNode, Set<HNodeType> expected, HNodeFactoryParseContext ctx, Object source);
 
-    NOptional<HNode> newPageChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx);
+    NOptional<HItem> newPageChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx);
 
-    NOptional<HNode> newDocumentChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx);
+    NOptional<HItem> newDocumentChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx);
 
     HDocumentStreamRenderer newStreamRenderer(String type);
 
     HDocumentStreamRenderer newPdfRenderer();
 
-    HDocumentRenderer newScreenRenderer();
+    HDocumentScreenRenderer newScreenRenderer();
 
     HDocumentRenderer newRenderer(String type);
 
 
     NOptional<HDocument> loadDocument(NPath of);
+
+    NOptional<HItem> loadNode(HNode into,Set<HNodeType> expected, NPath of);
 
     NOptional<HDocument> loadDocument(InputStream is);
 }

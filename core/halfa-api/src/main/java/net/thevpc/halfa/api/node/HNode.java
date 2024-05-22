@@ -8,10 +8,17 @@ import net.thevpc.nuts.util.NOptional;
 import java.util.List;
 import java.util.Set;
 
-public interface HNode {
-    Object getSource() ;
+public interface HNode extends HItem{
+    String getParentTemplate() ;
 
-    HNode setSource(Object source) ;
+    HItem setParentTemplate(String parentTemplate);
+
+    boolean append(HItem a);
+
+    Object getSource();
+
+    HNode setSource(Object source);
+
     boolean isTemplate();
 
     HNode setTemplate(boolean template);
@@ -47,9 +54,12 @@ public interface HNode {
 
     boolean hasClass(String className);
 
-    Set<String> classes();
+    Set<String> styleClasses();
 
     HNode unset(HStyleType s);
 
     void setParent(HNode parent);
+
+    void mergeNode(HItem other);
+
 }

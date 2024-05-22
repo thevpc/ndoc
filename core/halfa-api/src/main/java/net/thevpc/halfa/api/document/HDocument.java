@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HPageGroup;
 import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
 
 public interface HDocument {
 
@@ -24,4 +25,7 @@ public interface HDocument {
     void setDocumentClass(HDocumentClass documentClass);
 
     HDocument setProperty(String name, String value);
+
+    void mergeDocument(HDocument other);
+    TsonElement toTson();
 }

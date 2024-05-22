@@ -4,6 +4,9 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -173,6 +176,36 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             sb.append("classes(").append(classes).append(")");
         }
         return sb.toString();
+    }
+
+    @Override
+    public TsonElement toTson() {
+        if (important) {
+            return Tson.string("$");
+        }
+        List<TsonElement> c = new ArrayList<>();
+        if (!names.isEmpty()) {
+            for (String name : names) {
+                c.add(Tson.string(name));
+            }
+        }
+        if (!types.isEmpty()) {
+            for (HNodeType name : types) {
+                c.add(Tson.name(NNameFormat.LOWER_KEBAB_CASE.format(name.name())));
+            }
+        }
+        if (!classes.isEmpty()) {
+            for (String name : names) {
+                c.add(Tson.name("."+name));
+            }
+        }
+        if(c.isEmpty()){
+            return Tson.string("*");
+        }
+        if(c.size()==1){
+            return c.get(0);
+        }
+        return Tson.uplet(c.toArray(new TsonElementBase[0])).build();
     }
 
     @Override

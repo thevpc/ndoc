@@ -160,4 +160,21 @@ public class HStyles {
     public static HStyle rowspan(int r) {
         return new HStyle(HStyleType.ROWSPAN, r);
     }
+
+    public static HStyle styleClasses(String... array) {
+        return new HStyle(HStyleType.STYLE_CLASS, array);
+    }
+
+    public static HStyle template(boolean b) {
+        return new HStyle(HStyleType.TEMPLATE, b);
+    }
+    public static HStyle disabled(boolean b) {
+        return new HStyle(HStyleType.DISABLED, b);
+    }
+    public static HStyle templateName(String templateName) {
+        return new HStyle(HStyleType.TEMPLATE_NAME, templateName);
+    }
+    public static HStyle name(String name) {
+        return new HStyle(HStyleType.NAME, name);
+    }
 }

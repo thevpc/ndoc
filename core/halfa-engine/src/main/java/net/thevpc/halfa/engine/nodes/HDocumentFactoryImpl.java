@@ -14,11 +14,12 @@ import net.thevpc.halfa.engine.document.HPageGroupImpl;
 import net.thevpc.halfa.engine.document.HPageImpl;
 import net.thevpc.halfa.engine.nodes.container.*;
 import net.thevpc.halfa.engine.nodes.filler.HFillerImpl;
-import net.thevpc.halfa.engine.nodes.image.DefaultHImage;
+import net.thevpc.halfa.engine.nodes.image.HImageImpl;
 import net.thevpc.halfa.engine.nodes.shape.*;
-import net.thevpc.halfa.engine.nodes.text.DefaultHText;
+import net.thevpc.halfa.engine.nodes.text.HTextImpl;
 import net.thevpc.halfa.engine.nodes.text.HLatexEquationImpl;
 import net.thevpc.halfa.engine.styles.HDocumentRootRules;
+import net.thevpc.nuts.util.NAssert;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -31,6 +32,50 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
         DefaultHDocument d = new DefaultHDocument();
         d.root().addRules(HDocumentRootRules.DEFAULT);
         return d;
+    }
+
+    @Override
+    public HNode create(HNodeType type) {
+        NAssert.requireNonNull(type,"type");
+        switch (type) {
+            case ORDERED_LIST:
+                return orderedList();
+            case UNORDERED_LIST:
+                return unorderedList();
+            case FLOW:
+                return flow();
+            case FILLER:
+                return glue();
+            case IMAGE:
+                return image();
+            case LINE:
+                return line();
+            case GRID:
+                return grid();
+            case POLYGON:
+                return polygon();
+            case POLYLINE:
+                return polyline();
+            case PAGE:
+                return page();
+            case PAGE_GROUP:
+                return pageGroup();
+            case TEXT:
+                return text();
+            case STACK:
+                return stack();
+            case RECTANGLE:
+                return rectangle();
+            case EQUATION:
+                return equation();
+            case ELLIPSE:
+                return ellipse();
+            case ARC:
+                return arc();
+            case CUSTOM:
+                return text();
+        }
+        throw new IllegalArgumentException("not supported "+type);
     }
 
     @Override
@@ -112,11 +157,24 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
+    public HArc arc() {
+        return new HArcImpl(
+                null, null
+        );
+    }
+
+    @Override
     public HFlowContainer flow(double x, double y, HNode... children) {
         return (HFlowContainer) flow(children)
                 .set(HStyles.position(x, y))
                 ;
     }
+
+    @Override
+    public HCtrlAssign assign() {
+        return new HCtrlAssignImpl();
+    }
+
     @Override
     public HFlowContainer flow(HNode... children) {
         return (HFlowContainer) new HFlowContainerImpl(new ArrayList<>(Arrays.asList(children)))
@@ -166,6 +224,7 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
                 .set(HStyles.rows(rows))
                 ;
     }
+
     @Override
     public HGridContainer grid(HNode... children) {
         return new HGridContainerImpl(new ArrayList<>(Arrays.asList(children)))
@@ -191,8 +250,13 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
+    public HText text() {
+        return new HTextImpl(null);
+    }
+
+    @Override
     public HText text(String hello) {
-        return new DefaultHText(hello);
+        return new HTextImpl(hello);
     }
 
     @Override
@@ -306,8 +370,14 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
+    public HImage image() {
+        return (HImage) new HImageImpl()
+                ;
+    }
+
+    @Override
     public HImage image(double x, double y, Image image) {
-        return (HImage) new DefaultHImage(image)
+        return (HImage) new HImageImpl(image)
                 .set(HStyles.position(x, y))
                 ;
     }
@@ -316,6 +386,12 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     public HLatexEquation equation(double x, double y, String latex) {
         return (HLatexEquation) new HLatexEquationImpl(latex)
                 .set(HStyles.position(x, y))
+                ;
+    }
+
+    @Override
+    public HLatexEquation equation() {
+        return (HLatexEquation) new HLatexEquationImpl(null)
                 ;
     }
 }

@@ -1,5 +1,7 @@
 package net.thevpc.halfa.engine.nodes;
 
+import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;
@@ -12,12 +14,26 @@ import java.util.*;
 
 public abstract class AbstractHNode implements HNode {
     private Object source;
-    private String name;
-    private boolean template;
-    private boolean disabled;
     protected HNode parent;
-    protected Set<String> classNames = new HashSet<>();
     private HStyleMap styles = new HStyleMap();
+
+    public String getParentTemplate() {
+        NOptional<HStyle> style = getStyle(HStyleType.TEMPLATE_NAME);
+        if (style.isEmpty()) {
+            return null;
+        }
+        Object v = style.get().getValue();
+        if (v == null) {
+            return null;
+        }
+        return (String) v;
+    }
+
+
+    public AbstractHNode setParentTemplate(String parentTemplate) {
+        set(HStyles.templateName(parentTemplate));
+        return this;
+    }
 
     public Object getSource() {
         return source;
@@ -35,33 +51,57 @@ public abstract class AbstractHNode implements HNode {
 
     @Override
     public boolean isTemplate() {
-        return template;
+        NOptional<HStyle> style = getStyle(HStyleType.TEMPLATE);
+        if (style.isEmpty()) {
+            return false;
+        }
+        Object v = style.get().getValue();
+        if (v == null) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public HNode setTemplate(boolean template) {
-        this.template = template;
+        set(HStyles.template(true));
         return this;
     }
 
     @Override
     public boolean isDisabled() {
-        return disabled;
+        NOptional<HStyle> style = getStyle(HStyleType.DISABLED);
+        if (style.isEmpty()) {
+            return false;
+        }
+        Object v = style.get().getValue();
+        if (v == null) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public HNode setDisabled(boolean disabled) {
-        this.disabled = disabled;
+        set(HStyles.template(disabled));
         return this;
     }
 
     public String name() {
-        return name;
+        NOptional<HStyle> style = getStyle(HStyleType.NAME);
+        if (style.isEmpty()) {
+            return null;
+        }
+        Object v = style.get().getValue();
+        if (v == null) {
+            return null;
+        }
+        return (String) v;
     }
 
     @Override
     public HNode setName(String name) {
-        this.name = name;
+        set(HStyles.name(name));
         return this;
     }
 
@@ -140,11 +180,38 @@ public abstract class AbstractHNode implements HNode {
     }
 
 
+    private Set<String> _oldClassNames() {
+        NOptional<HStyle> y = styles.get(HStyleType.STYLE_CLASS);
+        Set<String> classNames = new HashSet<>();
+        if (y.isPresent()) {
+            Object o = y.get().getValue();
+            if (o != null) {
+                if (o instanceof String) {
+                    String e = validateClassName((String) o);
+                    if (e != null) {
+                        classNames.add(e);
+                    }
+                } else if (o instanceof String[]) {
+                    for (String s : (String[]) o) {
+                        String e = validateClassName(s);
+                        if (e != null) {
+                            classNames.add(e);
+                        }
+                    }
+                }
+            }
+            return classNames;
+        }
+        return new HashSet<>();
+    }
+
     @Override
     public HNode addClass(String className) {
         className = validateClassName(className);
         if (className != null) {
-            classNames.add(className);
+            Set<String> s = _oldClassNames();
+            s.add(className);
+            set(HStyles.styleClasses(s.toArray(new String[0])));
         }
         return this;
     }
@@ -152,9 +219,14 @@ public abstract class AbstractHNode implements HNode {
     @Override
     public HNode addClasses(String... classNames) {
         if (classNames != null) {
+            Set<String> s = _oldClassNames();
             for (String c : classNames) {
-                addClass(c);
+                c = validateClassName(c);
+                if (c != null) {
+                    s.add(c);
+                }
             }
+            set(HStyles.styleClasses(s.toArray(new String[0])));
         }
         return this;
     }
@@ -171,7 +243,9 @@ public abstract class AbstractHNode implements HNode {
     public HNode removeClass(String className) {
         className = validateClassName(className);
         if (className != null) {
-            classNames.remove(className);
+            Set<String> s = _oldClassNames();
+            s.remove(className);
+            set(HStyles.styleClasses(s.toArray(new String[0])));
         }
         return this;
     }
@@ -180,18 +254,55 @@ public abstract class AbstractHNode implements HNode {
     public boolean hasClass(String className) {
         className = validateClassName(className);
         if (className != null) {
-            return classNames.contains(className);
+            return _oldClassNames().contains(className);
         }
         return false;
     }
 
     @Override
-    public Set<String> classes() {
-        return new HashSet<>(classNames);
+    public Set<String> styleClasses() {
+        return _oldClassNames();
     }
 
     @Override
     public void setParent(HNode parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public void mergeNode(HItem other) {
+        if (other != null) {
+            if (other instanceof HItemList) {
+                for (HItem item : ((HItemList) other).getItems()) {
+                    mergeNode(item);
+                }
+            } else if (other instanceof HStyle) {
+                set((HStyle) other);
+            } else if (other instanceof HNode) {
+                HNode hn = (HNode) other;
+                if (this.source == null) {
+                    this.source = hn.getSource();
+                }
+                this.styles.set(hn.styles());
+            }
+        }
+    }
+
+    @Override
+    public boolean append(HItem a) {
+        if (a != null) {
+            if (a instanceof HItemList) {
+                boolean b = false;
+                for (HItem item : ((HItemList) a).getItems()) {
+                    b |= append(item);
+                }
+                return b;
+            }
+            if (a instanceof HStyle) {
+                set((HStyle) a);
+                return true;
+            }
+        }
+        return false;
     }
 }

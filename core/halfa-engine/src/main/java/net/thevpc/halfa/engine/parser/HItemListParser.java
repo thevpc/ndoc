@@ -1,20 +1,20 @@
 package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.api.node.HPageGroup;
 import net.thevpc.halfa.api.style.HStyle;
-import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
-public class HPageGroupParser {
-    public static NOptional<HPageGroup> readPageGroup(TsonElement ff, HDocumentFactory f, HNodeFactoryParseContext context) {
-        HPageGroup p = f.pageGroup();
+public class HItemListParser {
+    public static NOptional<HItemList> readHItemList(TsonElement ff, HDocumentFactory f, HNodeFactoryParseContext context) {
+        HItemList pg = new HItemList();
 
         switch (ff.type()) {
             case FUNCTION:
@@ -25,33 +25,28 @@ public class HPageGroupParser {
                 for (TsonElement e : ee.args()) {
                     NOptional<HItem> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {
-                        p.append(u.get());
+                        pg.add(u.get());
                     }else{
                         return NOptional.ofNamedError("invalid " + e+" for page-group");
                     }
                 }
                 for (TsonElement e : ee.children()) {
-                    NOptional<HStyleRule> r = HStyleRuleParser.parseStyleRule(e, f, context);
-                    if (r.isPresent()) {
-                        p.append(r.get());
-                    } else if (r.isError()) {
-                        return NOptional.ofError(
-                                s -> NMsg.ofC("Error parsing rule : %s", r.getMessage().apply(s))
-                        );
-                    } else {
-                        NOptional<HItem> u = context.engine().newDocumentChild(e, p, context);
-                        if (u.isPresent()) {
-                            p.append(u.get());
-                        } else {
+                    NOptional<HItem> u = context.engine().newDocumentChild(e, null, context);
+                    if(u.isPresent()){
+                        pg.add(u.get());
+                    }else{
+                        u = context.engine().newPageChild(e, null, context);
+                        if(u.isPresent()){
+                            pg.add(u.get());
+                        }else{
                             return NOptional.ofError(
-                                    s -> NMsg.ofC("Error parsing page : %s", u.getMessage().apply(s))
+                                    s -> NMsg.ofC("Error parsing page group : %s", e)
                             );
                         }
                     }
-
                 }
             }
         }
-        return NOptional.of(p);
+        return NOptional.of(pg);
     }
 }

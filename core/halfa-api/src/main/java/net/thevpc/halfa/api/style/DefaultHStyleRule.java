@@ -2,6 +2,8 @@ package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 
@@ -39,6 +41,20 @@ public class DefaultHStyleRule implements HStyleRule {
         );
         this.selector = selector;
         this.styles.set(styles);
+    }
+
+    @Override
+    public TsonElement toTson() {
+        if(selector==null){
+            return Tson.pair(
+                    Tson.string("*"),
+                    styles.toTson()
+            );
+        }
+        return Tson.pair(
+                selector.toTson(),
+                styles.toTson()
+        );
     }
 
     @Override

@@ -18,5 +18,6 @@ public enum HNodeType {
     EQUATION,
     ELLIPSE,
     FILLER,
-    CUSTOM
+    CUSTOM,
+    CTRL_ASSIGN,
 }
