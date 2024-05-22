@@ -1,0 +1,18 @@
+@(halfa,"1.0")
+{
+    import("sty/*.hd"),
+    import("lib/*.hd"),
+    @cover page{
+        $title:"Thank you!",
+        $author:"Thank you!",
+        $date:"2024-01-03",
+        $image:"2024-01-03",
+    },
+
+    import("src/ch01/*.tson"),
+    import("src/ch02/*.tson"),
+
+    @conclusion page{
+        $msg:"Thank you!",
+    },
+}

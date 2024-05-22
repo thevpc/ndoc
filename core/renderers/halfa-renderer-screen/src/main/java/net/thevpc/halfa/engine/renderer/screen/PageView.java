@@ -99,6 +99,11 @@ public class PageView extends JComponent {
 //    }
 
     public Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx) {
+        switch (p.type()){
+            case CTRL_ASSIGN:{
+                return null;
+            }
+        }
         AbstractHPartRenderer r = renderers.get(p.type());
         if (r == null) {
             throw new IllegalArgumentException("missing renderer for " + p.type());
