@@ -7,8 +7,10 @@ package net.thevpc.halfa.engine.renderer.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -21,9 +23,9 @@ import net.thevpc.nuts.io.NPath;
 public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
 
     private NSession session;
-    private HalfaEngine halfaEngine;
+    private HEngine halfaEngine;
 
-    public HtmlDocumentRenderer(HalfaEngine halfaEngine,NSession session) {
+    public HtmlDocumentRenderer(HEngine halfaEngine, NSession session) {
         this.halfaEngine = halfaEngine;
         this.session = session;
     }
@@ -38,9 +40,7 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
         PrintStream out = new PrintStream(os);
         out.println("<html>");
         out.println("<body>");
-        for (HDocumentPart dp : document.getDocumentParts()) {
-            render(dp, out);
-        }
+        render(document.root(), out);
         out.println("</body>");
         out.println("</html>");
     }
@@ -52,23 +52,19 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
         return new PrintStream(out);
     }
 
-    public void render(HDocumentItem part, OutputStream out) {
+    public void render(HNode part, OutputStream out) {
         switch (part.type()) {
             case PAGE_GROUP:
                 break;
             case PAGE: {
                 PrintStream o=psOf(out);
                 HPage p=(HPage) part;
-                for (HPagePart pp : p.getParts()) {
+                for (HNode pp : p.children()) {
                     render(pp,o);
                 }
                 o.flush();
                 break;
             }
-            case CONTAINER:
-                break;
-            case PHRASE:
-                break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);
         }

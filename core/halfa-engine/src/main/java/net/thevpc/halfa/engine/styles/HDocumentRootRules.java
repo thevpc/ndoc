@@ -1,0 +1,38 @@
+package net.thevpc.halfa.engine.styles;
+
+import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.style.HStyles;
+import net.thevpc.halfa.api.style.DefaultHStyleRule;
+import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.style.HStyleRule;
+
+import java.awt.*;
+
+public class HDocumentRootRules {
+    public static final HStyleRule[] DEFAULT = {
+            DefaultHStyleRule.ofClass("ul-bullet",
+                    HStyles.origin(HAlign.CENTER),
+                    HStyles.position(HAlign.CENTER),
+                    HStyles.backgroundColor(Color.BLUE),
+                    HStyles.lineColor(Color.BLUE.darker())
+
+            ),
+            DefaultHStyleRule.ofClass("ul-item",
+                    HStyles.origin(HAlign.LEFT),
+                    HStyles.position(HAlign.LEFT)
+            ),
+            DefaultHStyleRule.ofType(HNodeType.ELLIPSE,
+                    HStyles.origin(HAlign.LEFT),
+                    HStyles.position(HAlign.CENTER),
+                    HStyles.origin(HAlign.CENTER)
+            ),
+            DefaultHStyleRule.ofAny(
+                    HStyles.fontFamily("Verdana"),
+                    HStyles.fontSize(40),
+                    HStyles.size(100, 100),
+                    HStyles.origin(HAlign.TOP_LEFT),
+                    HStyles.position(HAlign.TOP_LEFT),
+                    HStyles.gridColor(Color.lightGray)
+            ),
+    };
+}

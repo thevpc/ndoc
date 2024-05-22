@@ -4,9 +4,9 @@
  */
 package net.thevpc.halfa.examples;
 
-import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.engine.DefaultHalfaEngine;
+import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
@@ -20,10 +20,10 @@ public class HalfaExampleFromFile1 {
 
     public static void main(String[] args) {
         NSession session = Nuts.openWorkspace();
-        HalfaEngine e = new DefaultHalfaEngine(session);
+        HEngine e = new HEngineImpl(session);
         NPath file = NPath.of("src/halfa/root.tson", session).toAbsolute().normalize();
         System.out.println(file);
-        HDocument doc = e.loadDocument(file);
+        HDocument doc = e.loadDocument(file).get();
         HDocumentStreamRenderer renderer = e.newStreamRenderer("pdf");
         renderer.render(doc, NPath.ofUserHome(session).resolve("example.pdf"));
     }

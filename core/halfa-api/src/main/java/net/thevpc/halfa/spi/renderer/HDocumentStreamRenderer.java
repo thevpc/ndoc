@@ -2,9 +2,8 @@ package net.thevpc.halfa.spi.renderer;
 
 import java.io.OutputStream;
 
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HDocumentItem;
-import net.thevpc.halfa.api.model.HDocumentPart;
+import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.nuts.io.NPath;
 
 /**
@@ -16,5 +15,5 @@ public interface HDocumentStreamRenderer extends HDocumentRenderer {
 
     void render(HDocument document, NPath path);
 
-    void render(HDocumentItem part, OutputStream out);
+    void render(HNode part, OutputStream out);
 }

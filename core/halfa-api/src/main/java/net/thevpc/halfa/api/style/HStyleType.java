@@ -1,0 +1,37 @@
+package net.thevpc.halfa.api.style;
+
+/**
+ *
+ * @author vpc
+ */
+public enum HStyleType {
+
+    WIDTH,
+    HEIGHT,
+    POSITION,
+    SIZE,
+    ORIGIN,
+    FONT_FAMILY,
+    FONT_SIZE,
+    FONT_BOLD,
+    FONT_ITALIC,
+    FONT_UNDERLINED,
+    FOREGROUND_COLOR,
+    BACKGROUND_COLOR,
+    LINE_COLOR,
+    GRID_COLOR,
+    DRAW_GRID,
+    FILL_BACKGROUND,
+    DRAW_CONTOUR,
+    PRESERVE_SHAPE_RATIO,
+    ROUND_CORNER,
+    COLSPAN,
+    ROWSPAN,
+    THEED,
+    RAISED,
+    COLUMNS,
+    ROWS,
+    ROWS_WEIGHT,
+    COLUMNS_WEIGHT,
+
+}

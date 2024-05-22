@@ -1,6 +1,6 @@
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.HalfaEngine;
+import net.thevpc.halfa.api.HEngine;
 import net.thevpc.nuts.NSession;
 
 public interface HDocumentRendererFactoryContext {
@@ -9,6 +9,6 @@ public interface HDocumentRendererFactoryContext {
 
     NSession session();
 
-    HalfaEngine engine();
+    HEngine engine();
 
 }

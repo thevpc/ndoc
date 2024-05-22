@@ -4,21 +4,16 @@
  */
 package net.thevpc.halfa.engine.renderer.html;
 
-import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererFactory;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererFactoryContext;
+import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
 /**
- *
  * @author vpc
  */
-public class HtmlDocumentStreamRendererFactory implements HDocumentStreamRendererFactory {
-
+public class HtmlDocumentStreamRendererFactory implements HDocumentRendererFactory {
     @Override
-    public NCallableSupport<HDocumentStreamRenderer> createDocumentStreamRenderer(HDocumentRendererFactoryContext context) {
+    public NCallableSupport<HDocumentRenderer> createDocumentRenderer(HDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "html":
                 return NCallableSupport.of(10, () -> new HtmlDocumentRenderer(context.engine(), context.session()));

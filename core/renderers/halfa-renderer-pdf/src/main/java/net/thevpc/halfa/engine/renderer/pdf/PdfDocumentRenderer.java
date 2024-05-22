@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
-import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -38,9 +40,9 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 public class PdfDocumentRenderer implements HDocumentStreamRenderer {
 
     private final NSession session;
-    private HalfaEngine halfaEngine;
+    private HEngine halfaEngine;
 
-    public PdfDocumentRenderer(HalfaEngine halfaEngine, NSession session) {
+    public PdfDocumentRenderer(HEngine halfaEngine, NSession session) {
         this.session = session;
         this.halfaEngine = halfaEngine;
     }
@@ -63,7 +65,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     }
 
     @Override
-    public void render(HDocumentItem part, OutputStream out) {
+    public void render(HNode part, OutputStream out) {
         try {
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
@@ -85,7 +87,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     }
 
 
-    public Supplier<InputStream> renderPage(HDocumentItem part, HDocumentStreamRenderer htmlRenderer) {
+    public Supplier<InputStream> renderPage(HNode part, HDocumentStreamRenderer htmlRenderer) {
         try {
             ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -159,15 +161,11 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
         document.close();
     }
 
-    public void renderPagePart(HDocumentPart part, PrintStream out) {
+    public void renderPagePart(HNode part, PrintStream out) {
         switch (part.type()) {
             case PAGE_GROUP:
                 break;
             case PAGE:
-                break;
-            case CONTAINER:
-                break;
-            case PHRASE:
                 break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);

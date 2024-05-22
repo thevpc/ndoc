@@ -1,8 +1,8 @@
 package net.thevpc.halfa.engine.renderer.screen;
 
-import net.thevpc.halfa.api.HalfaEngine;
-import net.thevpc.halfa.api.model.HDocument;
-import net.thevpc.halfa.api.model.HPage;
+import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NSession;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class DocumentView {
     private HDocument document;
-    private HalfaEngine halfaEngine;
+    private HEngine halfaEngine;
     private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
     private NSession session;
@@ -23,7 +23,7 @@ public class DocumentView {
     private JPanel contentPane;
     private PageView currentShowingPage;
 
-    public DocumentView(HDocument document, HalfaEngine halfaEngine, NSession session) {
+    public DocumentView(HDocument document, HEngine halfaEngine, NSession session) {
         this.document = document;
         this.halfaEngine = halfaEngine;
         this.session = session;
@@ -37,7 +37,7 @@ public class DocumentView {
         }
         if (pageViews.isEmpty()) {
             pageViews.add(new PageView(
-                    halfaEngine.factory().page(),
+                    halfaEngine.documentFactory().page(),
                     UUID.randomUUID().toString(), 0, this
             ));
         }
@@ -47,7 +47,7 @@ public class DocumentView {
         for (PageView pageView : pageViews) {
             contentPane.add(pageView.component(), pageView.id());
         }
-        frame.setSize(new Dimension(800, 600));
+        frame.setSize(PageView.REF_SIZE);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
@@ -73,7 +73,7 @@ public class DocumentView {
         pageViews.get(index).showPage();
     }
 
-    public HalfaEngine getHalfaEngine() {
+    public HEngine engine() {
         return halfaEngine;
     }
 }
