@@ -65,9 +65,7 @@ public class HStyleMap {
 
     @Override
     public String toString() {
-        return "HStyleMap{" +
-                map.values() +
-                '}';
+        return "Styles" + map.values().toString();
     }
 
     public int size() {
@@ -80,7 +78,7 @@ public class HStyleMap {
 
     public TsonElement toTson() {
         return Tson.obj(
-                map.values().stream().map(x->x.toTson()).toArray(TsonElementBase[]::new)
+                map.values().stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
         ).build();
     }
 }

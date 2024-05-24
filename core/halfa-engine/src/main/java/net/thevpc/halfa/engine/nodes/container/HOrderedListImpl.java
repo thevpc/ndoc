@@ -18,10 +18,6 @@ public class HOrderedListImpl extends AbstractHContainer implements HOrderedList
 
     public HOrderedListImpl(List<HNode> children) {
         super(children);
-        this.set(HStyles.position(0, 0))
-                .set(HStyles.rowsWeight())
-                .set(HStyles.columnsWeight())
-        ;
     }
 
     public HNodeType type() {

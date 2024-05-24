@@ -3,16 +3,18 @@
     import("sty/*.hd"),
     import("lib/*.hd"),
     @cover page{
+        text("Cours Micro-Ondes"),
         $title:"Thank you!",
         $author:"Thank you!",
         $date:"2024-01-03",
         $image:"2024-01-03",
     },
 
-    import("src/ch01/*.tson"),
-    import("src/ch02/*.tson"),
+    import("src/ch01/*.hd"),
+    import("src/ch02/*.hd"),
 
     @conclusion page{
-        $msg:"Thank you!",
+        text("Merci"),
+        $msg:"@conclusion Thank you!",
     },
 }

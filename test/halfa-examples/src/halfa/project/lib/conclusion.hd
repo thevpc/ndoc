@@ -1,7 +1,7 @@
 @(halfa,"1.0")
 {
-    page{
-        text("My Title", at:top, class:title),
+    page(template,name:"conclusion"){
+        text("My Title AAAA2", at:center, class:title,fill:true, bg:red, fg:yellow),
         grid(columns:4, rows:4, column-weight:[1,2], row-weight:[1,2],
             size:(50,100)
         ){
@@ -12,17 +12,8 @@
         },
         eq("""
             x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
-            """){
+            """,
             at:center
-        },
+            ),
     },
-    page{
-        text("My Title"),
-        equation("""
-            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
-            """){
-            at:center
-        },
-    },
-    import("*.tson"),
 }

@@ -1,6 +1,5 @@
 package net.thevpc.halfa.api.model;
 
-import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
 public class XLen {
@@ -38,7 +37,7 @@ public class XLen {
         this.root = root;
     }
 
-    public double value(Rectangle2D.Double parentBounds, Rectangle2D.Double screenBounds) {
+    public double value(Bounds2 parentBounds, Bounds2 screenBounds) {
         if (this.root) {
             if (value >= 100) {
                 return screenBounds.getWidth();

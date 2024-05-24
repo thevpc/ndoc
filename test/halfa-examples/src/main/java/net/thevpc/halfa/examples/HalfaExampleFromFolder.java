@@ -21,10 +21,10 @@ public class HalfaExampleFromFolder {
     public static void main(String[] args) {
         NSession session = Nuts.openWorkspace();
         HEngine e = new HEngineImpl(session);
-        NPath file = NPath.of("src/halfa/project", session).toAbsolute().normalize();
+        NPath file = NPath.of("/home/vpc/education/education/modules/hyperfrequences/", session).toAbsolute().normalize();
+        //NPath file = NPath.of("src/halfa/project", session).toAbsolute().normalize();
         System.out.println(file);
-        HDocument doc = e.loadDocument(file).get();
-        System.out.println(doc.toTson());
-        e.newScreenRenderer().render(doc);
+        System.out.println(e.loadDocument(file).get().toTson());
+        e.newScreenRenderer().renderSupplier(()->e.loadDocument(file).get());
     }
 }

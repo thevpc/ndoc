@@ -1,25 +1,25 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
+import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.halfa.spi.HUtils;
 import net.thevpc.tson.TsonElement;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class HPolylineImpl extends AbstractHNode implements HPolyline {
-    private List<Point2D.Double> points;
+    private List<Double2> points;
 
-    public HPolylineImpl(Point2D.Double... points) {
+    public HPolylineImpl(Double2... points) {
         this.points = new ArrayList<>(Arrays.asList(points));
     }
 
     @Override
-    public HPolyline add(Point2D.Double d) {
+    public HPolyline add(Double2 d) {
         if (d != null) {
             points.add(d);
         }
@@ -31,15 +31,15 @@ public class HPolylineImpl extends AbstractHNode implements HPolyline {
             super.mergeNode(other);
             if (other instanceof HPolyline) {
                 HPolyline t = (HPolyline) other;
-                for (Point2D.Double point : t.points()) {
+                for (Double2 point : t.points()) {
                     add(point);
                 }
             }
         }
     }
 
-    public Point2D.Double[] points() {
-        return points.toArray(new Point2D.Double[0]);
+    public Double2[] points() {
+        return points.toArray(new Double2[0]);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class HPolylineImpl extends AbstractHNode implements HPolyline {
 
     @Override
     public TsonElement toTson() {
-        return ToTsonHelper.of(this).addChildren(TsonSer.toTson(points()))
+        return ToTsonHelper.of(this).addChildren(HUtils.toTson(points()))
                 .build();
     }
 }

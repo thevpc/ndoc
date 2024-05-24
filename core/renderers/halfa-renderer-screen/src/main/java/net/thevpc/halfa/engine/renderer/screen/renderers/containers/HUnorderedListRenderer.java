@@ -1,9 +1,8 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.containers;
 
 import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.style.HStyle;
 import net.thevpc.halfa.api.style.HStyles;
-import net.thevpc.halfa.api.model.*;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.container.HUnorderedList;
 import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
@@ -18,18 +17,23 @@ public class HUnorderedListRenderer extends ConvertedHPartRenderer {
         HDocumentFactory f = ctx.documentFactory();
         List<HNode> all = new ArrayList<>();
         for (HNode child : ul.children()) {
-            all.add(f.circle(50)
-                            .addClasses("ul-bullet")
-            );
-            all.add(child
-                    .addClasses("ul-item")
-                    );
-//            all.add(f.rectangle().set(HStyles.foregroundColor(Color.BLUE)).set(HStyles.anchor(HAnchor.LEFT)));
+            switch (child.type()){
+                case UNORDERED_LIST:
+                case ORDERED_LIST:{
+                    all.add(f.ofVoid().addClasses("ul-bullet"));
+                    break;
+                }
+                default:{
+                    all.add(f.ofCircle(30).addClasses("ul-bullet"));
+                    break;
+                }
+            }
+            all.add(child.addClasses("ul-item"));
         }
-        HContainer t = f.grid(2, ul.children().size(),
+        return f.ofGrid(2, ul.children().size(),
                         all.toArray(new HNode[0])
                 ).set(HStyles.columnsWeight(1, 20))
-                .set(HStyles.origin(HAlign.TOP));
-        return t;
+                .set(ul.styles().toArray(new HStyle[0]))
+                ;
     }
 }

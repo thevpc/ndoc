@@ -1,5 +1,7 @@
 package net.thevpc.halfa.engine.parser;
 
+import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.model.Int2;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
@@ -9,7 +11,6 @@ import net.thevpc.tson.TsonObject;
 import net.thevpc.tson.TsonUplet;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +96,52 @@ public class TsonElementParseHelper {
         return NOptional.ofNamedEmpty("color from " + element);
     }
 
-    public NOptional<Point2D.Double> asPoint2D() {
+    public NOptional<Int2> asInt2() {
+        switch (element.type()) {
+            case ARRAY: {
+                TsonArray arr = element.toArray();
+                if (arr.size() == 2) {
+                    TsonElement a = arr.get(0);
+                    TsonElement b = arr.get(1);
+                    int ad = a.toInt().getValue();
+                    int bd = b.toInt().getValue();
+                    return NOptional.of(new Int2(ad, bd));
+                }
+                break;
+            }
+            case OBJECT: {
+                TsonObject arr = element.toObject();
+                if (arr.size() == 2) {
+                    List<TsonElement> all = arr.all();
+                    TsonElement a = all.get(0);
+                    TsonElement b = all.get(1);
+                    if (a.type().isNumber()) {
+                        int ad = a.toInt().getValue();
+                        int bd = b.toInt().getValue();
+                        return NOptional.of(new Int2(ad, bd));
+                    }
+                }
+                break;
+            }
+            case UPLET: {
+                TsonUplet arr = element.toUplet();
+                if (arr.size() == 2) {
+                    List<TsonElement> all = arr.all();
+                    TsonElement a = all.get(0);
+                    TsonElement b = all.get(1);
+                    if (a.type().isNumber()) {
+                        int ad = a.toInt().getValue();
+                        int bd = b.toInt().getValue();
+                        return NOptional.of(new Int2(ad, bd));
+                    }
+                }
+                break;
+            }
+        }
+        return NOptional.ofNamedEmpty("int from " + element);
+    }
+
+    public NOptional<Double2> asDouble2() {
         switch (element.type()) {
             case ARRAY: {
                 TsonArray arr = element.toArray();
@@ -104,7 +150,7 @@ public class TsonElementParseHelper {
                     TsonElement b = arr.get(1);
                     double ad = a.toDouble().getValue();
                     double bd = b.toDouble().getValue();
-                    return NOptional.of(new Point2D.Double(ad, bd));
+                    return NOptional.of(new Double2(ad, bd));
                 }
                 break;
             }
@@ -117,7 +163,7 @@ public class TsonElementParseHelper {
                     if (a.type().isNumber()) {
                         double ad = a.toDouble().getValue();
                         double bd = b.toDouble().getValue();
-                        return NOptional.of(new Point2D.Double(ad, bd));
+                        return NOptional.of(new Double2(ad, bd));
                     }
                 }
                 break;
@@ -131,7 +177,7 @@ public class TsonElementParseHelper {
                     if (a.type().isNumber()) {
                         double ad = a.toDouble().getValue();
                         double bd = b.toDouble().getValue();
-                        return NOptional.of(new Point2D.Double(ad, bd));
+                        return NOptional.of(new Double2(ad, bd));
                     }
                 }
                 break;

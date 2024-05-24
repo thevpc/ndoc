@@ -1,5 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.containers;
 
+import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.style.HStyles;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.container.HContainer;
@@ -10,18 +11,17 @@ import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HGridContainerRenderer extends AbstractHPartRenderer {
 
 
-    public Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx) {
-        Rectangle2D.Double expectedBounds = bounds(p, ctx);
+    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
+        Bounds2 expectedBounds = selfBounds(p, ctx);
         HContainer t = (HContainer) p;
         Graphics2D g = ctx.getGraphics();
-        Rectangle2D.Double a = expectedBounds;
+        Bounds2 a = expectedBounds;
 
         paintBackground(t, ctx, g, a);
         List<HNode> children = t.children();
@@ -83,11 +83,11 @@ public class HGridContainerRenderer extends AbstractHPartRenderer {
 
 
         FlagMMap flagmap = new FlagMMap(rows, cols);
-        Rectangle2D.Double b = ctx.getBounds();
+        Bounds2 b = ctx.getBounds();
         double childrenWidth = expectedBounds.getWidth();
         double childrenHeight = expectedBounds.getHeight();
-        double xOffset = b.getX();
-        double yOffset = b.getY();
+        double xOffset = expectedBounds.getX();
+        double yOffset = expectedBounds.getY();
 
         WeightInfo wi = loadWeightInfo(cols, rows, t, ctx);
         for (HPagePartExtInfo ee : effPositions) {
@@ -103,7 +103,7 @@ public class HGridContainerRenderer extends AbstractHPartRenderer {
                 HPartRendererContext ctx3 = new HPartRendererContextDelegate(
                         t,
                         ctx,
-                        new Rectangle2D.Double(
+                        new Bounds2(
                                 ee.jx,
                                 ee.jy,
                                 ee.ww,
@@ -187,14 +187,14 @@ public class HGridContainerRenderer extends AbstractHPartRenderer {
                 HPartRendererContext ctx3 = new HPartRendererContextDelegate(
                         t,
                         ctx,
-                        new Rectangle2D.Double(
+                        new Bounds2(
                                 ee.jx,
                                 ee.jy,
                                 ee.ww,
                                 ee.hh
                         )
                 );
-                Rectangle2D.Double r1 = ctx3.paintPagePart(ee.part);
+                Bounds2 r1 = ctx3.paintPagePart(ee.part);
                 a = expand(r1, a);
             }
         }

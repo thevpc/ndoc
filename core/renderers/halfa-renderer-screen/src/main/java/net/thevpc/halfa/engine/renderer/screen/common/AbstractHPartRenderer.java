@@ -8,17 +8,16 @@ import net.thevpc.halfa.api.style.HStyleType;
 import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.PageView;
 import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
+import net.thevpc.halfa.spi.HUtils;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 public abstract class AbstractHPartRenderer {
 
     public HSizeRequirements computeSizeRequirements(HNode p, HPartRendererContext ctx) {
-        Rectangle2D.Double b = bounds(p, ctx);
+        Bounds2 b = bounds(p, ctx);
         HSizeRequirements r = new HSizeRequirements();
         double ww = b.getWidth();
         double hh = b.getHeight();
@@ -31,7 +30,7 @@ public abstract class AbstractHPartRenderer {
         return r;
     }
 
-    public abstract Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx);
+    public abstract Bounds2 paintPagePart(HNode p, HPartRendererContext ctx);
 
 
     protected SizeD mapDim(SizeD d, SizeD base) {
@@ -42,15 +41,15 @@ public abstract class AbstractHPartRenderer {
     }
 
     protected double resolveFontSize(HNode t, Graphics2D g, HPartRendererContext ctx) {
-        Rectangle2D.Double size = ctx.getBounds();
+        Bounds2 size = ctx.getBounds();
         double fontSize = (double) ctx.getStyle(t, HStyleType.FONT_SIZE).orElse(HStyles.fontSize(40.0)).getValue();
-        fontSize = fontSize / Math.max(PageView.REF_SIZE.width, PageView.REF_SIZE.height) * Math.max(size.width, size.height);
+        fontSize = fontSize / Math.max(PageView.REF_SIZE.width, PageView.REF_SIZE.height) * Math.max(size.getWidth(), size.getHeight());
         return fontSize;
 
     }
 
     protected void applyFont(HNode t, Graphics2D g, HPartRendererContext ctx) {
-        Rectangle2D.Double size = ctx.getBounds();
+        Bounds2 size = ctx.getBounds();
         double fontSize = resolveFontSize(t, g, ctx);
         boolean fontItalic = (boolean) ctx.getStyle(t, HStyleType.FONT_ITALIC).orElse(HStyles.fontItalic(false)).getValue();
         boolean fontBold = (boolean) ctx.getStyle(t, HStyleType.FONT_BOLD).orElse(HStyles.fontItalic(false)).getValue();
@@ -59,12 +58,12 @@ public abstract class AbstractHPartRenderer {
     }
 
     protected SizeD mapDim(double w, double h, HPartRendererContext ctx) {
-        Rectangle2D.Double size = ctx.getBounds();
-        return new SizeD(w / 100 * size.width, w / 100 * size.height);
+        Bounds2 size = ctx.getBounds();
+        return new SizeD(w / 100 * size.getWidth(), w / 100 * size.getHeight());
     }
 
-    protected Point2D.Double roundCornerArcs(HNode t, HPartRendererContext ctx) {
-        return (Point2D.Double) ctx.getStyle(t, HStyleType.ROUND_CORNER).orElse(HStyles.roundCorner(null)).getValue();
+    protected Double2 roundCornerArcs(HNode t, HPartRendererContext ctx) {
+        return (Double2) ctx.getStyle(t, HStyleType.ROUND_CORNER).orElse(HStyles.roundCorner(null)).getValue();
     }
 
     protected int colspan(HNode t, HPartRendererContext ctx) {
@@ -102,14 +101,14 @@ public abstract class AbstractHPartRenderer {
         return (Boolean) ctx.getStyle(t, HStyleType.RAISED).orElse(HStyles.raised(null)).getValue();
     }
 
-    protected Point2D.Double size(HNode t, HPartRendererContext ctx) {
-        Point2D.Double size = (Point2D.Double) ctx.getStyle(t, HStyleType.SIZE).orElse(HStyles.position(40, 40)).getValue();
+    protected Double2 size(HNode t, HPartRendererContext ctx) {
+        Double2 size = (Double2) ctx.getStyle(t, HStyleType.SIZE).orElse(HStyles.position(40, 40)).getValue();
         if (size == null) {
-            size = new Point2D.Double(40, 40);
+            size = new Double2(40, 40);
         }
         boolean shapeRatio = preserveShapeRatio(t, ctx);
-        double ww = ctx.getBounds().width;
-        double hh = ctx.getBounds().height;
+        double ww = ctx.getBounds().getWidth();
+        double hh = ctx.getBounds().getHeight();
         //ratio depends on the smallest
         if (shapeRatio) {
             if (ww < hh) {
@@ -118,52 +117,52 @@ public abstract class AbstractHPartRenderer {
             if (hh < ww) {
                 ww = hh;
             }
-            return new Point2D.Double(
+            return new Double2(
                     size.getX() / 100 * ww,
                     size.getY() / 100 * hh
             );
         }
-        return new Point2D.Double(
+        return new Double2(
                 size.getX() / 100 * ww,
                 size.getY() / 100 * hh
         );
     }
 
-    protected Rectangle2D.Double bounds(HNode t, HPartRendererContext ctx) {
-        Point2D.Double size = (Point2D.Double) ctx.getStyle(t, HStyleType.SIZE).orElse(HStyles.position(40, 40)).getValue();
+    protected Bounds2 bounds(HNode t, HPartRendererContext ctx) {
+        Double2 size = (Double2) ctx.getStyle(t, HStyleType.SIZE).orElse(HStyles.position(40, 40)).getValue();
         if (size == null) {
-            size = new Point2D.Double(40, 40);
+            size = new Double2(40, 40);
         }
-        return new Rectangle2D.Double(
+        return new Bounds2(
                 ctx.getBounds().getX(),
                 ctx.getBounds().getY(),
-                size.getX() / 100 * ctx.getBounds().width,
-                size.getY() / 100 * ctx.getBounds().height
+                size.getX() / 100 * ctx.getBounds().getWidth(),
+                size.getY() / 100 * ctx.getBounds().getHeight()
         );
     }
 
-    protected Rectangle2D.Double selfBounds(HNode t, HPartRendererContext ctx) {
+    protected Bounds2 selfBounds(HNode t, HPartRendererContext ctx) {
         return selfBounds(t, null, ctx);
     }
 
-    protected NOptional<Point2D.Double> readStyleAsPoint2D(HNode t, HStyleType s, HPartRendererContext ctx) {
+    protected NOptional<Double2> readStyleAsDouble2(HNode t, HStyleType s, HPartRendererContext ctx) {
         HStyle sv = ctx.getStyle(t, s).orNull();
         if(sv!=null){
             Object svv = sv.getValue();
-            if(svv instanceof Point2D.Double){
-                return NOptional.of((Point2D.Double) svv);
+            if(svv instanceof Double2){
+                return NOptional.of((Double2) svv);
             }
             if(svv instanceof HAlign){
                 switch ((HAlign)svv){
-                    case TOP:return NOptional.of(new Point2D.Double(50,0));
-                    case BOTTOM:return NOptional.of(new Point2D.Double(50,100));
-                    case LEFT:return NOptional.of(new Point2D.Double(0,50));
-                    case RIGHT:return NOptional.of(new Point2D.Double(100,50));
-                    case TOP_LEFT:return NOptional.of(new Point2D.Double(0,0));
-                    case CENTER:return NOptional.of(new Point2D.Double(50,50));
-                    case TOP_RIGHT:return NOptional.of(new Point2D.Double(100,0));
-                    case BOTTOM_RIGHT:return NOptional.of(new Point2D.Double(100,100));
-                    case BOTTOM_LEFT:return NOptional.of(new Point2D.Double(0,100));
+                    case TOP:return NOptional.of(new Double2(50,0));
+                    case BOTTOM:return NOptional.of(new Double2(50,100));
+                    case LEFT:return NOptional.of(new Double2(0,50));
+                    case RIGHT:return NOptional.of(new Double2(100,50));
+                    case TOP_LEFT:return NOptional.of(new Double2(0,0));
+                    case CENTER:return NOptional.of(new Double2(50,50));
+                    case TOP_RIGHT:return NOptional.of(new Double2(100,0));
+                    case BOTTOM_RIGHT:return NOptional.of(new Double2(100,100));
+                    case BOTTOM_LEFT:return NOptional.of(new Double2(0,100));
                     case NONE:{
                         break;
                     }
@@ -173,13 +172,13 @@ public abstract class AbstractHPartRenderer {
         return NOptional.ofNamedEmpty(s.name());
     }
 
-    protected Rectangle2D.Double selfBounds(HNode t, Point2D.Double selfSize, HPartRendererContext ctx) {
+    protected Bounds2 selfBounds(HNode t, Double2 selfSize, HPartRendererContext ctx) {
         if (selfSize == null) {
             selfSize = size(t, ctx);
         }
-        Rectangle2D.Double parentBounds = ctx.getBounds();
-        Point2D.Double pos = readStyleAsPoint2D(t, HStyleType.POSITION,ctx).orElse(new Point2D.Double(50,50));
-        Point2D.Double origin = readStyleAsPoint2D(t, HStyleType.ORIGIN,ctx).orElse(new Point2D.Double(50,50));
+        Bounds2 parentBounds = ctx.getBounds();
+        Double2 pos = readStyleAsDouble2(t, HStyleType.POSITION,ctx).orElse(new Double2(50,50));
+        Double2 origin = readStyleAsDouble2(t, HStyleType.ORIGIN,ctx).orElse(new Double2(50,50));
         double pw = parentBounds.getWidth();
         double ph = parentBounds.getHeight();
         double sw = selfSize.getX();
@@ -187,7 +186,7 @@ public abstract class AbstractHPartRenderer {
         double x = pos.getX() / 100 * pw - origin.getX() / 100 * sw + parentBounds.getX();
         double y = pos.getY() / 100 * ph - origin.getY() / 100 * sh + parentBounds.getY();
 
-        return new Rectangle2D.Double(x, y, selfSize.getX(), selfSize.getY());
+        return new Bounds2(x, y, selfSize.getX(), selfSize.getY());
     }
 
 
@@ -234,14 +233,14 @@ public abstract class AbstractHPartRenderer {
         if(b==null){
             return false;
         }
-        return true;
+        return b;
     }
     public boolean requireDrawGrid(HNode t, Graphics2D g, HPartRendererContext ctx) {
         Boolean b = (Boolean) ctx.getStyle(t, HStyleType.DRAW_GRID).orElse(HStyles.drawGrid(false)).getValue();
         if(b==null){
             return false;
         }
-        return true;
+        return b;
     }
     public boolean requireFillBackground(HNode t, Graphics2D g, HPartRendererContext ctx) {
         Boolean b = (Boolean) ctx.getStyle(t, HStyleType.FILL_BACKGROUND).orElse(HStyles.drawGrid(false)).getValue();
@@ -251,7 +250,7 @@ public abstract class AbstractHPartRenderer {
         return true;
     }
 
-    public boolean applyLineColor(HNode t, Graphics2D g, HPartRendererContext ctx) {
+    public boolean applyLineColor(HNode t, Graphics2D g, HPartRendererContext ctx,boolean force) {
         Paint lineColor = (Paint) ctx.getStyle(t, HStyleType.LINE_COLOR).orElse(HStyles.lineColor(null)).getValue();
         if (lineColor != null) {
             if (lineColor instanceof Color) {
@@ -261,33 +260,42 @@ public abstract class AbstractHPartRenderer {
             }
             return true;
         }
+        if(force){
+            //would resolve default color instead ?
+            g.setPaint(Color.BLACK);
+            return true;
+        }
         return false;
     }
 
-    protected void paintBorderLine(HNode t, HPartRendererContext ctx, Graphics2D g, Rectangle2D.Double a) {
+    protected void paintBorderLine(HNode t, HPartRendererContext ctx, Graphics2D g, Bounds2 a) {
         if (requireDrawContour(t, g, ctx)) {
-            if (applyLineColor(t, g, ctx)) {
-                g.drawRect((int) a.getMinX(), (int) a.getMinY(),
-                        (int) a.getWidth(), (int) a.getHeight());
+            if (applyLineColor(t, g, ctx,true)) {
+                g.drawRect(
+                        HUtils.intOf(a.getMinX()), HUtils.intOf(a.getMinY()),
+                        HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                );
             }
         }
     }
 
-    protected void paintBackground(HNode t, HPartRendererContext ctx, Graphics2D g, Rectangle2D.Double a) {
+    protected void paintBackground(HNode t, HPartRendererContext ctx, Graphics2D g, Bounds2 a) {
         if (requireFillBackground(t, g, ctx)) {
             if (applyBackgroundColor(t, g, ctx)) {
-                g.fillRect((int) a.getMinX(), (int) a.getMinY(),
-                        (int) a.getWidth(), (int) a.getHeight());
+                g.fillRect(
+                        HUtils.intOf(a.getMinX()), HUtils.intOf(a.getMinY()),
+                        HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                );
             }
         }
     }
 
-    protected Rectangle2D.Double expand(Rectangle2D.Double a, Rectangle2D.Double b) {
+    protected Bounds2 expand(Bounds2 a, Bounds2 b) {
         double minX = 0;
         double minY = 0;
         double maxX = 0;
         double maxY = 0;
-        Rectangle2D.Double r1 = a;
+        Bounds2 r1 = a;
         if (r1.getMinX() < minX) {
             minX = r1.getMinX();
         }
@@ -313,7 +321,7 @@ public abstract class AbstractHPartRenderer {
         if (r1.getMaxY() < minY) {
             maxY = r1.getMaxY();
         }
-        return new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+        return new Bounds2(minX, minY, maxX - minX, maxY - minY);
     }
 
 }

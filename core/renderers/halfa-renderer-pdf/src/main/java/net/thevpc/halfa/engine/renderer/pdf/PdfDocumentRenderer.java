@@ -10,6 +10,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
+
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
@@ -34,7 +36,6 @@ import net.thevpc.nuts.util.NMsg;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 /**
- *
  * @author vpc
  */
 public class PdfDocumentRenderer implements HDocumentStreamRenderer {
@@ -45,6 +46,11 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     public PdfDocumentRenderer(HEngine halfaEngine, NSession session) {
         this.session = session;
         this.halfaEngine = halfaEngine;
+    }
+
+    @Override
+    public void renderSupplier(Supplier<HDocument> document) {
+        render(document.get());
     }
 
     @Override
@@ -83,7 +89,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
 
     @Override
     public void render(HDocument document) {
-        render(document,NPath.of("result.pdf",session));
+        render(document, NPath.of("result.pdf", session));
     }
 
 

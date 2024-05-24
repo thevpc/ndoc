@@ -185,7 +185,7 @@ public class HEngineImpl implements HEngine {
                 if (main != null) {
                     all.add(0, main);
                 }
-                HDocument doc = documentFactory().document();
+                HDocument doc = documentFactory().ofDocument();
                 for (NPath nPath : all) {
                     NOptional<HItem> d = loadNode(doc.root(), new HashSet<>(Arrays.asList(HNodeType.values())), nPath);
                     if (!d.isPresent()) {
@@ -209,7 +209,10 @@ public class HEngineImpl implements HEngine {
                     updateSource(hItem, source);
                 }
             } else if (item instanceof HNode) {
-                ((HNode) item).setSource(source);
+                HNode i = (HNode) item;
+                if(i.getSource()==null) {
+                    i.setSource(source);
+                }
             }
         }
     }
@@ -284,7 +287,7 @@ public class HEngineImpl implements HEngine {
             return NOptional.ofNamedEmpty("document");
         }
         TsonElement c = doc.getContent();
-        HDocument docd = documentFactory().document();
+        HDocument docd = documentFactory().ofDocument();
         docd.root().setSource(source);
         NOptional<HItem> r = newDocumentRoot(c);
         if (r.isPresent()) {

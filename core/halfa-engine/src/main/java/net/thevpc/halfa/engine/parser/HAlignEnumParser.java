@@ -8,7 +8,7 @@ import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
 public class HAlignEnumParser {
-    public static NOptional<HAlign> parseHAlign(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    public static NOptional<HAlign> parseHAlign(TsonElement e) {
         NOptional<String> k = new TsonElementParseHelper(e).asStringOrName();
         if (k.isPresent()) {
             switch (HParseHelper.uid(k.get())) {

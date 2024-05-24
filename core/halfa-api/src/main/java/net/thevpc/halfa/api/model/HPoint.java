@@ -1,8 +1,5 @@
 package net.thevpc.halfa.api.model;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Objects;
 
 public class HPoint {
     private double x;
@@ -23,8 +20,8 @@ public class HPoint {
         this.root = root;
     }
 
-    public Point2D.Double value(Rectangle2D.Double parentBounds, Rectangle2D.Double screenBounds) {
-        return new Point2D.Double(
+    public Double2 value(Bounds2 parentBounds, Bounds2 screenBounds) {
+        return new Double2(
                 (root ? XLen.ofRoot(x) : XLen.ofParent(x)).value(parentBounds, screenBounds),
                 (root ? YLen.ofRoot(y) : YLen.ofParent(y)).value(parentBounds, screenBounds)
         );

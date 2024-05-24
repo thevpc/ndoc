@@ -1,11 +1,9 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
 import net.thevpc.halfa.api.node.HCtrlAssign;
-import net.thevpc.halfa.api.node.HEllipse;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
-import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.halfa.spi.HUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
@@ -48,7 +46,7 @@ public class HCtrlAssignImpl extends AbstractHNode implements HCtrlAssign {
 
     @Override
     public TsonElement toTson() {
-        return Tson.pair("$" + left, TsonSer.toTson(right));
+        return Tson.pair("$" + left, HUtils.toTson(right));
     }
 
 

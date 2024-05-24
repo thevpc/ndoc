@@ -25,7 +25,7 @@ public class DefaultHStyleRule implements HStyleRule {
     }
 
     public static DefaultHStyleRule ofClass(String name, HStyle... styles) {
-        return of(name == null ? null : DefaultHNodeSelector.ofClass(name), styles);
+        return of(name == null ? null : DefaultHNodeSelector.ofClasses(name), styles);
     }
 
     public static DefaultHStyleRule of(HStyleRuleSelector filter, HStyle... styles) {

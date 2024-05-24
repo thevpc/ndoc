@@ -13,14 +13,26 @@ public class HDocumentRootRules {
             DefaultHStyleRule.ofClass("ul-bullet",
                     HStyles.origin(HAlign.CENTER),
                     HStyles.position(HAlign.CENTER),
-                    HStyles.backgroundColor(Color.BLUE),
-                    HStyles.lineColor(Color.BLUE.darker())
+                    HStyles.backgroundColor(new Color(0x0b3123)),
+                    HStyles.lineColor(new Color(0x0b3123).darker())
 
             ),
             DefaultHStyleRule.ofClass("ul-item",
                     HStyles.origin(HAlign.LEFT),
                     HStyles.position(HAlign.LEFT)
             ),
+            DefaultHStyleRule.ofClass("ol-bullet",
+                    HStyles.origin(HAlign.CENTER),
+                    HStyles.position(HAlign.CENTER),
+                    HStyles.backgroundColor(new Color(0x0b3123)),
+                    HStyles.lineColor(new Color(0x0b3123).darker())
+
+            ),
+            DefaultHStyleRule.ofClass("ol-item",
+                    HStyles.origin(HAlign.LEFT),
+                    HStyles.position(HAlign.LEFT)
+            ),
+
             DefaultHStyleRule.ofType(HNodeType.ELLIPSE,
                     HStyles.position(HAlign.CENTER),
                     HStyles.origin(HAlign.CENTER)

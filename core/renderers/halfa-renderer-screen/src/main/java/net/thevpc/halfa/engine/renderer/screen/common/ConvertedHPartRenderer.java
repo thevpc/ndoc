@@ -1,10 +1,9 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
+import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
-
-import java.awt.geom.Rectangle2D;
 
 public abstract class ConvertedHPartRenderer extends AbstractHPartRenderer {
     public abstract HNode convert(HNode p, HPartRendererContext ctx) ;
@@ -21,7 +20,7 @@ public abstract class ConvertedHPartRenderer extends AbstractHPartRenderer {
         return ctx.computeSizeRequirements(convertAndInherit(p, ctx));
     }
 
-    public Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx) {
+    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
         return ctx.paintPagePart(convertAndInherit(p, ctx));
     }
 

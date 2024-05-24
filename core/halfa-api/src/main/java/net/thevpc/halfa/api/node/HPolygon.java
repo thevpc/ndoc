@@ -4,14 +4,15 @@
  */
 package net.thevpc.halfa.api.node;
 
-import java.awt.geom.Point2D;
+import net.thevpc.halfa.api.model.Double2;
+
 
 /**
  * @author vpc
  */
 public interface HPolygon extends HNode {
 
-    HPolygon add(Point2D.Double d);
-    Point2D.Double[] points();
+    HPolygon add(Double2 d);
+    Double2[] points();
 
 }

@@ -20,10 +20,6 @@ public class HUnorderedListImpl extends AbstractHContainer implements HUnordered
 
     public HUnorderedListImpl(List<HNode> children) {
         super(children);
-        this.set(HStyles.position(0, 0))
-                .set(HStyles.rowsWeight())
-                .set(HStyles.columnsWeight())
-        ;
     }
 
     @Override

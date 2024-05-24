@@ -4,15 +4,15 @@
  */
 package net.thevpc.halfa.api.node;
 
-import java.awt.geom.Point2D;
+import net.thevpc.halfa.api.model.Double2;
 
 /**
  * @author vpc
  */
 public interface HLine extends HNode {
-    Point2D.Double from();
-    Point2D.Double to();
-    HLine setFrom(Point2D.Double from);
+    Double2 from();
+    Double2 to();
+    HLine setFrom(Double2 from);
 
-    HLine setTo(Point2D.Double to);
+    HLine setTo(Double2 to);
 }

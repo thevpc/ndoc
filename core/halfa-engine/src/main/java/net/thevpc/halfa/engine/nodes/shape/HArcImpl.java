@@ -3,7 +3,7 @@ package net.thevpc.halfa.engine.nodes.shape;
 import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.TsonSer;
+import net.thevpc.halfa.spi.HUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
@@ -53,8 +53,8 @@ public class HArcImpl extends AbstractHNode implements HArc {
         return ToTsonHelper.of(
                         this
                 ).addChildren(
-                        startAngle==null?null: Tson.pair("start", TsonSer.toTson(startAngle)),
-                        endAngle==null?null:Tson.pair("end",TsonSer.toTson(endAngle))
+                        startAngle==null?null: Tson.pair("start", HUtils.toTson(startAngle)),
+                        endAngle==null?null:Tson.pair("end", HUtils.toTson(endAngle))
                 )
                 .build();
     }

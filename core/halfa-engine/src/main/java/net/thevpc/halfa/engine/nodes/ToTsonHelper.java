@@ -40,7 +40,7 @@ public class ToTsonHelper {
             HStyleRule[] rules = ((HContainer) node).rules();
             if (rules.length > 0) {
                 ch.add(
-                        Tson.pair("rules",
+                        Tson.pair("styles",
                                 Tson.obj(
                                         Arrays.stream(rules).map(x -> x.toTson()).toArray(TsonElement[]::new)
                                 )

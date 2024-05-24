@@ -9,7 +9,6 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HText;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.TsonSer;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 

@@ -2,6 +2,7 @@ package net.thevpc.halfa.engine.renderer.screen.common;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HStyle;
 import net.thevpc.halfa.api.style.HStyleType;
@@ -10,21 +11,20 @@ import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequire
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public class HPartRendererContextDelegate implements HPartRendererContext {
     private HPartRendererContext base;
-    private Rectangle2D.Double size;
+    private Bounds2 size;
     private HNode basePart;
 
-    public HPartRendererContextDelegate(HNode basePart, HPartRendererContext base, Rectangle2D.Double size) {
+    public HPartRendererContextDelegate(HNode basePart, HPartRendererContext base, Bounds2 size) {
         this.basePart = basePart;
         this.base = base;
         this.size = size;
     }
 
     @Override
-    public Rectangle2D.Double getGlobalBounds() {
+    public Bounds2 getGlobalBounds() {
         return base.getGlobalBounds();
     }
 
@@ -32,12 +32,12 @@ public class HPartRendererContextDelegate implements HPartRendererContext {
         return base.getGraphics();
     }
 
-    public Rectangle2D.Double getBounds() {
+    public Bounds2 getBounds() {
         return size;
     }
 
     @Override
-    public Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx) {
+    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
         return base.paintPagePart(p, ctx);
     }
 

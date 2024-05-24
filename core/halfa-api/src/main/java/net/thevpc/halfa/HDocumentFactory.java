@@ -1,6 +1,7 @@
 package net.thevpc.halfa;
 
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.api.node.container.HFlowContainer;
 import net.thevpc.halfa.api.node.container.HGridContainer;
@@ -8,101 +9,112 @@ import net.thevpc.halfa.api.node.container.HStackContainer;
 import net.thevpc.halfa.api.node.container.HUnorderedList;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 
 public interface HDocumentFactory {
-    HDocument document();
+    HDocument ofDocument();
 
-    HPage page();
+    HPage ofPage();
 
-    HPageGroup pageGroup();
+    HPageGroup ofPageGroup();
 
     HNode create(HNodeType type);
 
-    HText text(double x, double y, String hello);
+    HText ofText(double x, double y, String hello);
 
-    HText text(String hello);
+    HText ofText(String hello);
 
-    HText text();
+    HText ofText();
 
-    HFiller glue();
+    HVoid ofVoid();
 
-    HFiller vglue();
+    HFiller ofGlue();
 
-    HFiller hglue();
+    HFiller ofGlueV();
 
-    HFiller vstrut(double w);
+    HFiller ofGlueH();
 
-    HFiller hstrut(double w);
+    HFiller ofStrutV(double w);
 
-    HFiller strut(double w, double h);
+    HFiller ofStrutH(double w);
 
-    HArc arc(double from, double to);
+    HFiller ofStrut(double w, double h);
 
-    HArc arc();
+    HArc ofArc(double from, double to);
 
-    HCtrlAssign assign();
-    HFlowContainer flow(HNode... children);
+    HArc ofArc();
 
-    HFlowContainer flow(double x, double y, HNode... children);
+    HCtrlAssign ofAssign();
+    HFlowContainer ofFlow(HNode... children);
 
-    HStackContainer stack(double x, double y, HNode... children);
+    HFlowContainer ofFlow(double x, double y, HNode... children);
 
-    HUnorderedList unorderedList(double x, double y, HNode... children);
+    HStackContainer ofStack(double x, double y, HNode... children);
 
-    HOrderedList orderedList(double x, double y, HNode... children);
+    HUnorderedList ofUnorderedList(double x, double y, HNode... children);
 
-    HUnorderedList unorderedList(HNode... children);
+    HOrderedList ofOrderedList(double x, double y, HNode... children);
 
-    HOrderedList orderedList(HNode... children);
+    HUnorderedList ofUnorderedList(HNode... children);
 
-    HStackContainer stack(HNode... children);
+    HOrderedList ofOrderedList(HNode... children);
 
-    HGridContainer grid(HNode... children);
+    HStackContainer ofStack(HNode... children);
 
-    HGridContainer grid(int cols, int rows, HNode... children);
+    HGridContainer ofGrid(HNode... children);
 
-    HGridContainer vgrid(HNode... children);
+    HGridContainer ofGrid(int cols, int rows, HNode... children);
 
-    HGridContainer hgrid(HNode... children);
+    HGridContainer ofGridV(HNode... children);
 
-    HRectangle rectangle(double x, double y, double width, double height);
+    HGridContainer ofGridH(HNode... children);
 
-    HRectangle rectangle();
+    HRectangle ofRectangle(double x, double y, double width, double height);
 
-    HRectangle square();
+    HRectangle ofRectangle();
 
-    HRectangle square(double width);
+    HRectangle ofSquare();
 
-    HRectangle square(double x, double y, double width);
+    HRectangle ofSquare(double width);
 
-    HEllipse ellipse(double x, double y, double width, double height);
+    HRectangle ofSquare(double x, double y, double width);
 
-    HEllipse ellipse();
+    HEllipse ofEllipse(double x, double y, double width, double height);
 
-    HEllipse circle();
+    HEllipse ofEllipse();
 
-    HEllipse circle(double width);
+    HEllipse ofCircle();
 
-    HEllipse circle(double x, double y, double width);
+    HPolygon ofTriangle();
 
-    HPolygon polygon(double x, double y, double width, double height, Point2D.Double... points);
+    HPolygon ofHexagon();
 
-    HPolygon polygon(Point2D.Double... points);
+    HPolygon ofOctagon();
 
-    HPolyline polyline(double x, double y, double width, double height, Point2D.Double... points);
+    HPolygon ofPentagon();
 
-    HPolyline polyline(Point2D.Double... points);
+    HPolygon ofPolygon(int edges);
 
-    HLine line(double x, double y, double maxx, double maxy);
+    HEllipse ofCircle(double width);
 
-    HLine line();
+    HEllipse ofCircle(double x, double y, double width);
 
-    HImage image();
+    HPolygon ofPolygon(double x, double y, double width, double height, Double2... points);
 
-    HImage image(double x, double y, Image image);
+    HPolygon ofPolygon(Double2... points);
 
-    HLatexEquation equation(double x, double y, String latex);
+    HPolyline ofPolyline(double x, double y, double width, double height, Double2... points);
 
-    HLatexEquation equation();
+    HPolyline ofPolyline(Double2... points);
+
+    HLine ofLine(double x, double y, double maxx, double maxy);
+
+    HLine ofLine();
+
+    HImage ofImage();
+
+    HImage ofImage(double x, double y, Image image);
+
+    HLatexEquation ofEquation(double x, double y, String latex);
+
+    HLatexEquation ofEquation();
 }

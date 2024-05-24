@@ -1,5 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.text;
 
+import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HText;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
@@ -7,7 +9,6 @@ import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 public class HTextRenderer extends AbstractHPartRenderer {
@@ -34,7 +35,7 @@ public class HTextRenderer extends AbstractHPartRenderer {
         return r;
     }
 
-    public Rectangle2D.Double paintPagePart(HNode p, HPartRendererContext ctx) {
+    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
         HText t = (HText) p;
         String message = t.getMessage();
         if (message == null) {
@@ -42,18 +43,35 @@ public class HTextRenderer extends AbstractHPartRenderer {
         }
         Graphics2D g = ctx.getGraphics();
         applyFont(t, g, ctx);
-        Point2D.Double offset = new Point2D.Double(ctx.getBounds().getX(), ctx.getBounds().getY());
-        Rectangle2D textBounds = g.getFontMetrics().getStringBounds(message, g);
-        Rectangle2D.Double selfBounds = selfBounds(t, new Point2D.Double(textBounds.getWidth(),textBounds.getHeight()), ctx);
+        String[] allLines = message.trim().split("[\n]");
+        double[] lineYOffset = new double[allLines.length];
+        Rectangle2D[] textBounds = new Rectangle2D[allLines.length];
+        double fullHeight = 0;
+        double fullWidth = 0;
+        for (int i = 0; i < textBounds.length; i++) {
+            allLines[i]=allLines[i].trim();
+            textBounds[i] = g.getFontMetrics().getStringBounds(allLines[i], g);
+            fullHeight += textBounds[i].getHeight();
+            fullWidth = Math.max(textBounds[i].getWidth(), fullWidth);
+            if (i == 0) {
+                lineYOffset[i] = -textBounds[i].getMinY();
+            } else {
+                lineYOffset[i] = lineYOffset[i - 1] + textBounds[i - 1].getHeight() ;//+ textBounds[i].getMinY();
+            }
+        }
+
+        Bounds2 selfBounds = selfBounds(t, new Double2(fullWidth, fullHeight), ctx);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
 
-//        Rectangle2D.Double b2 = new Rectangle2D.Double(offset.getX() + x, offset.getY() + y, b.getWidth(), b.getHeight());
-//        Rectangle2D.Double b1 = new Rectangle2D.Double(offset.getX() + b.getMinX(), offset.getY() + b.getMinY(), b.getWidth(), b.getHeight());
+//        Bounds2 b2 = new Bounds2(offset.getX() + x, offset.getY() + y, b.getWidth(), b.getHeight());
+//        Bounds2 b1 = new Bounds2(offset.getX() + b.getMinX(), offset.getY() + b.getMinY(), b.getWidth(), b.getHeight());
         paintBackground(t, ctx, g, selfBounds);
 
         applyForeground(t, g, ctx);
-        g.drawString(message, (int) x, (int) (y - textBounds.getMinY()));
+        for (int i = 0; i < textBounds.length; i++) {
+            g.drawString(allLines[i], (int) x, (int) (y + lineYOffset[i]));
+        }
         paintBorderLine(t, ctx, g, selfBounds);
         return selfBounds;
     }

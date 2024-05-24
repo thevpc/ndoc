@@ -24,6 +24,7 @@ public class HalfaExampleFromFile1 {
         NPath file = NPath.of("src/halfa/root.tson", session).toAbsolute().normalize();
         System.out.println(file);
         HDocument doc = e.loadDocument(file).get();
+        System.out.println(doc.toTson());
         HDocumentStreamRenderer renderer = e.newStreamRenderer("pdf");
         renderer.render(doc, NPath.ofUserHome(session).resolve("example.pdf"));
     }

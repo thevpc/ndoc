@@ -4,7 +4,6 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
-import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HStyles;
 import net.thevpc.halfa.api.model.*;
@@ -16,8 +15,6 @@ import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.halfa.api.style.HStyleType;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.TsonSer;
-import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
 import java.util.*;
@@ -42,8 +39,6 @@ public abstract class AbstractHContainer extends AbstractHNode implements HConta
                 add(child);
             }
         }
-        this.set(HStyles.origin(HAlign.TOP_LEFT))
-                .set(HStyles.size(100, 100));
     }
 
 

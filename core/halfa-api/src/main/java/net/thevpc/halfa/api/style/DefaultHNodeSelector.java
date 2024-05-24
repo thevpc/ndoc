@@ -2,6 +2,7 @@ package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
@@ -24,16 +25,27 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return ANY;
     }
 
-    public static DefaultHNodeSelector ofClass(String cls) {
+    public static DefaultHNodeSelector of(String[] names,HNodeType[] types,String[] classes) {
+        if(
+                (names==null || names.length==0)
+                && (types==null || types.length==0)
+                && (classes==null || classes.length==0)
+        ){
+            return ofAny();
+        }
+        return new DefaultHNodeSelector(names, types, classes, false);
+    }
+
+    public static DefaultHNodeSelector ofClasses(String ... cls) {
         return ANY.andClass(cls);
     }
 
-    public static DefaultHNodeSelector ofName(String name) {
-        return ANY.andName(name);
+    public static DefaultHNodeSelector ofName(String ... names) {
+        return ANY.andName(names);
     }
 
-    public static DefaultHNodeSelector ofType(HNodeType type) {
-        return ANY.andType(type);
+    public static DefaultHNodeSelector ofType(HNodeType ...types) {
+        return ANY.andType(types);
     }
 
     public DefaultHNodeSelector(String[] names, HNodeType[] types, String[] classes, boolean important) {
@@ -42,7 +54,9 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             for (String i : names) {
                 String n = NStringUtils.trimToNull(i);
                 if (n != null) {
-                    this.names.add(n);
+                    if(!n.equals("*")) {
+                        this.names.add(n);
+                    }
                 }
             }
         }
@@ -50,7 +64,9 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             for (String i : classes) {
                 String n = NStringUtils.trimToNull(i);
                 if (n != null) {
-                    this.classes.add(NNameFormat.LOWER_SNAKE_CASE.format(n));
+                    if(!n.equals("*")) {
+                        this.classes.add(NNameFormat.LOWER_SNAKE_CASE.format(n));
+                    }
                 }
             }
         }
@@ -123,6 +139,15 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return c;
     }
 
+    private Set<String> computeClasses(HNode n){
+        Set<String> all=new HashSet<>();
+        while(n!=null){
+            all.addAll(n.styleClasses());
+            n=n.parent();
+        }
+        return all;
+    }
+
     @Override
     public boolean test(HNode n) {
         if (important) {
@@ -137,8 +162,9 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             }
         }
         if (!classes.isEmpty()) {
+            Set<String> cc = computeClasses(n);
             for (String c : classes) {
-                if (!n.hasClass(c)) {
+                if (!cc.contains(c)) {
                     return false;
                 }
             }

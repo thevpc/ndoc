@@ -1,5 +1,6 @@
 package net.thevpc.halfa.engine;
 
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
@@ -30,6 +31,11 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         this.source = source;
         this.parents.addAll(parents);
         this.expectedTypes.addAll(expectedTypes);
+    }
+
+    @Override
+    public HDocumentFactory documentFactory() {
+        return engine().documentFactory();
     }
 
     public Object source() {

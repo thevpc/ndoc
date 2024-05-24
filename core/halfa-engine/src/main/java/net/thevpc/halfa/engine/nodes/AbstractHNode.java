@@ -18,7 +18,7 @@ public abstract class AbstractHNode implements HNode {
     private HStyleMap styles = new HStyleMap();
 
     public String getParentTemplate() {
-        NOptional<HStyle> style = getStyle(HStyleType.TEMPLATE_NAME);
+        NOptional<HStyle> style = getStyle(HStyleType.EXTENDS);
         if (style.isEmpty()) {
             return null;
         }
@@ -31,7 +31,7 @@ public abstract class AbstractHNode implements HNode {
 
 
     public AbstractHNode setParentTemplate(String parentTemplate) {
-        set(HStyles.templateName(parentTemplate));
+        set(HStyles.inherits(parentTemplate));
         return this;
     }
 

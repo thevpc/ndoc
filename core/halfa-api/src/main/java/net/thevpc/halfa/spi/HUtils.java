@@ -1,5 +1,7 @@
 package net.thevpc.halfa.spi;
 
+import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.model.Int2;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -12,7 +14,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TsonSer {
+public class HUtils {
+    public static double doubleOf(Number n){
+        if(n==null){
+            return 0;
+        }
+        return n.doubleValue();
+    }
+
+    public static int intOf(Number n){
+        if(n==null){
+            return 0;
+        }
+        return n.intValue();
+    }
+
     public static TsonElement toTson(
             Object o
     ) {
@@ -35,6 +51,18 @@ public class TsonSer {
             return Tson.uplet(
                     toTson(((Point2D.Double) o).getX()),
                     toTson(((Point2D.Double) o).getY())
+            ).build();
+        }
+        if (o instanceof Double2) {
+            return Tson.uplet(
+                    toTson(((Double2) o).getX()),
+                    toTson(((Double2) o).getY())
+            ).build();
+        }
+        if (o instanceof Int2) {
+            return Tson.uplet(
+                    toTson(((Int2) o).getX()),
+                    toTson(((Int2) o).getY())
             ).build();
         }
         if (o instanceof Enum) {

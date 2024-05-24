@@ -23,9 +23,11 @@ public class HItemListParser {
             {
                 TsonElementExt ee=new TsonElementExt(ff);
                 for (TsonElement e : ee.args()) {
-                    NOptional<HItem> u = HStyleParser.parseStyle(e, f, context);
+                    NOptional<HStyle[]> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {
-                        pg.add(u.get());
+                        for (HStyle s : u.get()) {
+                            pg.add(s);
+                        }
                     }else{
                         return NOptional.ofNamedError("invalid " + e+" for page-group");
                     }

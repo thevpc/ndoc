@@ -24,13 +24,13 @@ public class HalfaExampleTestBullets {
         NSession session = Nuts.openWorkspace();
         HEngine e = new HEngineImpl(session);
         HDocumentFactory f = e.documentFactory();
-        HDocument d = f.document()
-                .add(f.page()
+        HDocument d = f.ofDocument()
+                .add(f.ofPage()
                         .add(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
-                                f.unorderedList()
+                                f.ofUnorderedList()
                                         .set(HStyles.gridColor(Color.GRAY))
-                                        .add(f.text("Example 1").set(HStyles.backgroundColor(Color.CYAN)))
+                                        .add(f.ofText("Example 1").set(HStyles.backgroundColor(Color.CYAN)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.YELLOW)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.RED)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.BLUE)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))

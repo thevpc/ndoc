@@ -1,5 +1,6 @@
 package net.thevpc.halfa.spi.nodes;
 
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
@@ -23,5 +24,7 @@ public interface HNodeFactoryParseContext {
     Set<HNodeType> expectedTypes();
 
     NPath resolvePath(String path);
+
+    HDocumentFactory documentFactory();
 
 }

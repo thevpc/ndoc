@@ -7,6 +7,8 @@ package net.thevpc.halfa.engine.renderer.html;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.function.Supplier;
+
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
@@ -43,6 +45,11 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
         render(document.root(), out);
         out.println("</body>");
         out.println("</html>");
+    }
+
+    @Override
+    public void renderSupplier(Supplier<HDocument> document) {
+        render(document.get());
     }
 
     public PrintStream psOf(OutputStream out) {

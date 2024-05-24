@@ -1,7 +1,6 @@
 package net.thevpc.halfa.api.style;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 
 import net.thevpc.halfa.api.model.*;
 
@@ -90,7 +89,7 @@ public class HStyles {
         return new HStyle(HStyleType.FONT_UNDERLINED, value);
     }
 
-    public static HStyle position(Point2D.Double p) {
+    public static HStyle position(Double2 p) {
         return new HStyle(HStyleType.POSITION, p);
     }
 
@@ -103,30 +102,30 @@ public class HStyles {
     }
 
     public static HStyle origin(double x, double y) {
-        return new HStyle(HStyleType.ORIGIN, new Point2D.Double(x, y));
+        return new HStyle(HStyleType.ORIGIN, new Double2(x, y));
     }
 
     public static HStyle position(double x, double y) {
-        return new HStyle(HStyleType.POSITION, new Point2D.Double(x, y));
+        return new HStyle(HStyleType.POSITION, new Double2(x, y));
     }
     public static HStyle position(HAlign p) {
         return new HStyle(HStyleType.POSITION, p);
     }
 
     public static HStyle size(double x, double y) {
-        return new HStyle(HStyleType.SIZE, new Point2D.Double(x, y));
+        return new HStyle(HStyleType.SIZE, new Double2(x, y));
     }
 
-    public static HStyle size(Point2D.Double size) {
+    public static HStyle size(Double2 size) {
         return new HStyle(HStyleType.SIZE, size);
     }
 
-    public static HStyle roundCorner(Point2D.Double o) {
+    public static HStyle roundCorner(Double2 o) {
         return new HStyle(HStyleType.ROUND_CORNER, o);
     }
 
     public static HStyle roundCorner(double x, double y) {
-        return new HStyle(HStyleType.ROUND_CORNER, new Point2D.Double(x, y));
+        return new HStyle(HStyleType.ROUND_CORNER, new Double2(x, y));
     }
 
     public static HStyle threeD(Boolean b) {
@@ -171,8 +170,8 @@ public class HStyles {
     public static HStyle disabled(boolean b) {
         return new HStyle(HStyleType.DISABLED, b);
     }
-    public static HStyle templateName(String templateName) {
-        return new HStyle(HStyleType.TEMPLATE_NAME, templateName);
+    public static HStyle inherits(String templateName) {
+        return new HStyle(HStyleType.EXTENDS, templateName);
     }
     public static HStyle name(String name) {
         return new HStyle(HStyleType.NAME, name);
