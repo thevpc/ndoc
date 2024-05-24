@@ -6,8 +6,8 @@ import net.thevpc.halfa.api.node.HLatexEquation;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
 import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
+import net.thevpc.halfa.engine.renderer.screen.common.Gx;
 import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
-import net.thevpc.halfa.engine.renderer.screen.svg.SvgRasterizer;
 import net.thevpc.halfa.spi.HUtils;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -15,14 +15,13 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public class HLatexEquationRenderer extends AbstractHPartRenderer {
 
     @Override
     public HSizeRequirements computeSizeRequirements(HNode p, HPartRendererContext ctx) {
         HLatexEquation t = (HLatexEquation) p;
-        String message = t.latex();
+        String message = t.value();
         if (message == null) {
             message = "";
         }
@@ -48,7 +47,7 @@ public class HLatexEquationRenderer extends AbstractHPartRenderer {
 
     public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
         HLatexEquation t = (HLatexEquation) p;
-        String message = t.latex();
+        String message = t.value();
         if (message == null) {
             message = "";
         }
@@ -65,19 +64,29 @@ public class HLatexEquationRenderer extends AbstractHPartRenderer {
             }
             return selfBounds;
         } else {
-            TeXFormula formula = new TeXFormula(msg);
-            float size = (float) (resolveFontSize(p, g, ctx)*1.188);
+            TeXFormula formula;
+            boolean error = false;
+            try {
+                formula = new TeXFormula(msg);
+            } catch (Exception ex) {
+                error = true;
+                formula = new TeXFormula("?error?");
+                ex.printStackTrace();
+            }
+            float size = (float) (resolveFontSize(p, g, ctx) * 1.188);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
-        icon.setInsets(new Insets(0, 0, 0, 0));
+            icon.setInsets(new Insets(0, 0, 0, 0));
 
             Bounds2 selfBounds = selfBounds(t, new Double2(icon.getIconWidth(), icon.getIconHeight()), ctx);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
             paintBackground(p, ctx, g, selfBounds);
-
+            if (error) {
+                Gx.paintBackground(g, selfBounds, Color.RED);
+            }
             applyForeground(t, g, ctx);
             icon.setForeground(g.getColor());
             icon.paintIcon(null, g, (int) x, (int) y /*- icon.getIconHeight()*/);

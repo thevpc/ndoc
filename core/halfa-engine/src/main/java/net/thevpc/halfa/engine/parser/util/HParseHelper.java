@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.util;
 
 import net.thevpc.halfa.api.style.HStyles;
 import net.thevpc.halfa.api.node.HNode;
@@ -10,6 +10,7 @@ import net.thevpc.halfa.api.model.HSize;
 import net.thevpc.halfa.api.style.HStyle;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.TsonAnnotation;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementType;
 import net.thevpc.tson.TsonPair;
@@ -206,4 +207,14 @@ public class HParseHelper {
         return false;
     }
 
+    public static boolean fillAnnotations(TsonElement e, HNode p) {
+        for (TsonAnnotation a : e.getAnnotations()) {
+            if(p.getParentTemplate()==null) {
+                p.setParentTemplate(a.getName());
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
 }

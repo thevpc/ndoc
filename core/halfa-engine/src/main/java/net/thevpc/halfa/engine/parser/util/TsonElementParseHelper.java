@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.util;
 
 import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.model.Int2;

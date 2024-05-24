@@ -10,8 +10,8 @@ package net.thevpc.halfa.api.node;
  */
 public interface HText extends HNode {
 
-    String getMessage();
+    String value();
 
-    void setMessage(String message);
+    HText setValue(String message);
 
 }

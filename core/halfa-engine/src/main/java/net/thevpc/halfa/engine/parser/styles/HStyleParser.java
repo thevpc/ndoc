@@ -1,10 +1,12 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.engine.parser.util.HParseHelper;
+import net.thevpc.halfa.engine.parser.util.TsonElementParseHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -246,7 +248,7 @@ public class HStyleParser {
                 if (n.startsWith(".")) {
                     return NOptional.of(DefaultHNodeSelector.ofClasses(n.substring(1)));
                 }
-                NOptional<HNodeType> u = HNodeTypeEnumParser.parse(n);
+                NOptional<HNodeType> u = HNodeType.parse(n);
                 if (u.isPresent()) {
                     return NOptional.of(DefaultHNodeSelector.ofType(u.get()));
                 }
@@ -291,7 +293,7 @@ public class HStyleParser {
                                         NOptional<String[]> cc = h2.asStringOrNameArray();
                                         if (cc.isPresent()) {
                                             for (String s : cc.get()) {
-                                                NOptional<HNodeType> u = HNodeTypeEnumParser.parse(s);
+                                                NOptional<HNodeType> u = HNodeType.parse(s);
                                                 if (u.isPresent()) {
                                                     types.add(u.get());
                                                 } else {
@@ -317,7 +319,7 @@ public class HStyleParser {
                             } else if (s.startsWith(".")) {
                                 classes.add(s.substring(1));
                             } else {
-                                NOptional<HNodeType> u = HNodeTypeEnumParser.parse(s);
+                                NOptional<HNodeType> u = HNodeType.parse(s);
                                 if (u.isPresent()) {
                                     types.add(u.get());
                                 } else {

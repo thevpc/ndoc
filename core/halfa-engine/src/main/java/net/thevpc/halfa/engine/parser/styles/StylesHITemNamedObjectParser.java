@@ -1,9 +1,10 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.engine.parser.nodes.AbstractHITemNamedObjectParser;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NMsg;
@@ -13,7 +14,7 @@ import net.thevpc.tson.TsonElement;
 import java.util.ArrayList;
 import java.util.List;
 
-class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser {
+public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser {
     public StylesHITemNamedObjectParser() {
         super("styles");
     }

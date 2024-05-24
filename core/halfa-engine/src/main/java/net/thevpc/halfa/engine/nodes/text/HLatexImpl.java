@@ -4,7 +4,9 @@
  */
 package net.thevpc.halfa.engine.nodes.text;
 
-import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.api.node.HItem;
+import net.thevpc.halfa.api.node.HLatex;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.engine.nodes.AbstractHNode;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
 import net.thevpc.tson.Tson;
@@ -13,14 +15,14 @@ import net.thevpc.tson.TsonElement;
 /**
  * @author vpc
  */
-public class HLatexEquationImpl extends AbstractHNode implements HLatexEquation {
+public class HLatexImpl extends AbstractHNode implements HLatex {
 
     private String latex;
 
-    public HLatexEquationImpl() {
+    public HLatexImpl() {
     }
 
-    public HLatexEquationImpl(String latex) {
+    public HLatexImpl(String latex) {
         this.latex = latex;
     }
 
@@ -31,10 +33,10 @@ public class HLatexEquationImpl extends AbstractHNode implements HLatexEquation 
 
     @Override
     public HNodeType type() {
-        return HNodeType.EQUATION;
+        return HNodeType.LATEX;
     }
 
-    public HLatexEquation setValue(String latex) {
+    public HLatex setValue(String latex) {
         this.latex = latex;
         return this;
     }
@@ -43,8 +45,8 @@ public class HLatexEquationImpl extends AbstractHNode implements HLatexEquation 
     public void mergeNode(HItem other) {
         if (other != null) {
             super.mergeNode(other);
-            if (other instanceof HLatexEquation) {
-                HLatexEquation t = (HLatexEquation) other;
+            if (other instanceof HLatex) {
+                HLatex t = (HLatex) other;
                 if (t.value() != null) {
                     this.latex = t.value();
                 }

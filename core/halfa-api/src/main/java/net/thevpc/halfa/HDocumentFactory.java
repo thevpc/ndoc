@@ -117,4 +117,6 @@ public interface HDocumentFactory {
     HLatexEquation ofEquation(double x, double y, String latex);
 
     HLatexEquation ofEquation();
+
+    HLatex ofLatex();
 }

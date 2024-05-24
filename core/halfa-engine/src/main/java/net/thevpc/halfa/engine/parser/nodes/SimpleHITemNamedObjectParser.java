@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.HItem;
@@ -6,13 +6,15 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.style.HStyle;
-import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.engine.parser.styles.HStyleParser;
+import net.thevpc.halfa.engine.parser.util.HParseHelper;
+import net.thevpc.halfa.engine.parser.util.TsonElementExt;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
-abstract class SimpleHITemNamedObjectParser extends AbstractHITemNamedObjectParser {
+public abstract class SimpleHITemNamedObjectParser extends AbstractHITemNamedObjectParser {
     public SimpleHITemNamedObjectParser(String... ids) {
         super(ids);
     }
@@ -35,7 +37,7 @@ abstract class SimpleHITemNamedObjectParser extends AbstractHITemNamedObjectPars
             case OBJECT:
             case ARRAY: {
                 TsonElementExt ee = new TsonElementExt(tsonElement);
-                if (!HNodeParser.fillAnnotations(tsonElement, p)) {
+                if (!HParseHelper.fillAnnotations(tsonElement, p)) {
                     return NOptional.ofNamedError(NMsg.ofC("[%s] page can have only a single parent template", context.source()));
                 }
                 for (TsonElement e : ee.args()) {

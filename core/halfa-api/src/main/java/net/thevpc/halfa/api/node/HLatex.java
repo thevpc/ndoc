@@ -7,8 +7,8 @@ package net.thevpc.halfa.api.node;
 /**
  * @author vpc
  */
-public interface HLatexEquation extends HNode {
+public interface HLatex extends HNode {
     String value();
 
-    HLatexEquation setValue(String latex) ;
+    HLatex setValue(String latex) ;
 }

@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.util;
 
 import net.thevpc.tson.*;
 
@@ -16,7 +16,7 @@ public class TsonElementExt {
         switch (e.type()){
             case FUNCTION:{
                 TsonFunction item = e.toFunction();
-                name=HParseHelper.uid(item.name());;
+                name= HParseHelper.uid(item.name());;
                 args.addAll(item.all());
                 break;
             }

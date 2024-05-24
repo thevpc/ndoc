@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.api.style.HStyleType;
 

@@ -27,13 +27,14 @@ public class HTextImpl extends AbstractHNode implements HText {
     }
 
     @Override
-    public String getMessage() {
+    public String value() {
         return message;
     }
 
     @Override
-    public void setMessage(String message) {
+    public HText setValue(String message) {
         this.message = message;
+        return this;
     }
 
     @Override
@@ -54,8 +55,8 @@ public class HTextImpl extends AbstractHNode implements HText {
             super.mergeNode(other);
             if (other instanceof HText) {
                 HText t = (HText) other;
-                if (t.getMessage() != null) {
-                    this.message = t.getMessage();
+                if (t.value() != null) {
+                    this.message = t.value();
                 }
             }
         }

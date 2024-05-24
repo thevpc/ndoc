@@ -16,7 +16,7 @@ public class HTextRenderer extends AbstractHPartRenderer {
     @Override
     public HSizeRequirements computeSizeRequirements(HNode p, HPartRendererContext ctx) {
         HText t = (HText) p;
-        String message = t.getMessage();
+        String message = t.value();
         if (message == null) {
             message = "";
         }
@@ -37,7 +37,7 @@ public class HTextRenderer extends AbstractHPartRenderer {
 
     public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
         HText t = (HText) p;
-        String message = t.getMessage();
+        String message = t.value();
         if (message == null) {
             message = "";
         }

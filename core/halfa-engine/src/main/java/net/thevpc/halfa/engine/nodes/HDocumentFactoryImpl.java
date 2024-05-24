@@ -17,6 +17,7 @@ import net.thevpc.halfa.engine.nodes.filler.HFillerImpl;
 import net.thevpc.halfa.engine.nodes.filler.HVoidImpl;
 import net.thevpc.halfa.engine.nodes.image.HImageImpl;
 import net.thevpc.halfa.engine.nodes.shape.*;
+import net.thevpc.halfa.engine.nodes.text.HLatexImpl;
 import net.thevpc.halfa.engine.nodes.text.HTextImpl;
 import net.thevpc.halfa.engine.nodes.text.HLatexEquationImpl;
 import net.thevpc.halfa.engine.styles.HDocumentRootRules;
@@ -68,6 +69,8 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
                 return ofRectangle();
             case EQUATION:
                 return ofEquation();
+            case LATEX:
+                return ofLatex();
             case ELLIPSE:
                 return ofEllipse();
             case ARC:
@@ -453,5 +456,10 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     @Override
     public HLatexEquation ofEquation() {
         return new HLatexEquationImpl();
+    }
+
+    @Override
+    public HLatex ofLatex() {
+        return new HLatexImpl();
     }
 }

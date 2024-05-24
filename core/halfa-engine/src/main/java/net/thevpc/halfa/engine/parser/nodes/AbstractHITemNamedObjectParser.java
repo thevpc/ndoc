@@ -1,6 +1,6 @@
-package net.thevpc.halfa.engine.parser;
+package net.thevpc.halfa.engine.parser.nodes;
 
-abstract class AbstractHITemNamedObjectParser implements HITemNamedObjectParser {
+public abstract class AbstractHITemNamedObjectParser implements HITemNamedObjectParser {
     private String[] ids;
 
     public AbstractHITemNamedObjectParser(String... ids) {

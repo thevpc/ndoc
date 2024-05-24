@@ -14,6 +14,7 @@ import net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HVoidRenderer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.images.HImageRenderer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.shapes.*;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.HLatexEquationRenderer;
+import net.thevpc.halfa.engine.renderer.screen.renderers.text.HLatexRenderer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.HTextRenderer;
 
 import javax.swing.*;
@@ -50,6 +51,7 @@ public class PageView extends JComponent {
         renderers.put(HNodeType.UNORDERED_LIST, new HUnorderedListRenderer());
         renderers.put(HNodeType.ORDERED_LIST, new HOrderedListRenderer());
         renderers.put(HNodeType.VOID, new HVoidRenderer());
+        renderers.put(HNodeType.LATEX, new HLatexRenderer());
     }
 
     public JComponent component() {
