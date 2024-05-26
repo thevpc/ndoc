@@ -1,57 +1,30 @@
 package net.thevpc.halfa.engine.renderer.screen;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.HPage;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
+import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextImpl;
-import net.thevpc.halfa.engine.renderer.screen.renderers.containers.*;
-import net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HFillerRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HVoidRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.images.HImageRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.shapes.*;
-import net.thevpc.halfa.engine.renderer.screen.renderers.text.HLatexEquationRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.text.HLatexRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.text.HTextRenderer;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.nuts.NSession;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PageView extends JComponent {
     public static Dimension REF_SIZE = new Dimension(1024, 800);
-    private HPage page;
+    private HNode page;
     private int index;
     private String uuid;
     private DocumentView documentView;
-    private Map<HNodeType, AbstractHPartRenderer> renderers = new HashMap<>();
+    private RenderFactoryManager renderFactoryManager;
 
-    public PageView(HPage page, String uuid, int index, DocumentView documentView) {
+    public PageView(HNode page, String uuid, int index, DocumentView documentView) {
         this.page = page;
         this.index = index;
         this.uuid = uuid;
         this.documentView = documentView;
-        renderers.put(HNodeType.TEXT, new HTextRenderer());
-        renderers.put(HNodeType.RECTANGLE, new HRectangleRenderer());
-        renderers.put(HNodeType.ELLIPSE, new HEllipseRenderer());
-        renderers.put(HNodeType.POLYGON, new HPolygonRenderer());
-        renderers.put(HNodeType.POLYLINE, new HPolylineRenderer());
-        renderers.put(HNodeType.LINE, new HLineRenderer());
-        renderers.put(HNodeType.ARC, new HArcRenderer());
-        renderers.put(HNodeType.EQUATION, new HLatexEquationRenderer());
-        renderers.put(HNodeType.IMAGE, new HImageRenderer());
-        renderers.put(HNodeType.GRID, new HGridContainerRenderer());
-        renderers.put(HNodeType.FLOW, new HFlowContainerRenderer());
-        renderers.put(HNodeType.STACK, new HStackContainerRenderer());
-        renderers.put(HNodeType.FILLER, new HFillerRenderer());
-        renderers.put(HNodeType.UNORDERED_LIST, new HUnorderedListRenderer());
-        renderers.put(HNodeType.ORDERED_LIST, new HOrderedListRenderer());
-        renderers.put(HNodeType.VOID, new HVoidRenderer());
-        renderers.put(HNodeType.LATEX, new HLatexRenderer());
     }
 
     public JComponent component() {
@@ -102,10 +75,10 @@ public class PageView extends JComponent {
         g2d.setPaint(gradient);
         g2d.fill(new Rectangle(0,0,size.width,size.height));
 
-        HPartRendererContext ctx = new MyHPartRendererContextImpl(g2d, size);
+        HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size,this.documentView.session());
         //paintPagePart(computeParts(), ctx);
-        for (HNode child : page.children()) {
-            paintPagePart(child, ctx);
+        for (HNode child : ((HContainer)page).children()) {
+            render(child, ctx);
         }
     }
 
@@ -115,51 +88,29 @@ public class PageView extends JComponent {
 //        return documentView.engine().documentFactory().stack(0, 0, parts.toArray(new HNode[0]));
 //    }
 
-    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-        switch (p.type()) {
-            case CTRL_ASSIGN: {
-                return null;
-            }
-        }
-        AbstractHPartRenderer r = renderers.get(p.type());
-        if (r == null) {
-            throw new IllegalArgumentException("missing renderer for " + p.type());
-        }
-        return r.paintPagePart(p, ctx);
+    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+        HNodeRenderer r = documentView.getRenderFactoryManager().renderer(p.type()).get();
+        return r.render(p, ctx);
     }
 
 
     private class MyHPartRendererContextImpl extends HPartRendererContextImpl {
-        public MyHPartRendererContextImpl(Graphics2D g2d, Dimension size) {
-            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()));
+        public MyHPartRendererContextImpl(Graphics2D g2d, Dimension size, NSession session) {
+            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()),session);
         }
 
         @Override
-        public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-            return PageView.this.paintPagePart(p, ctx);
+        public HSizeRequirements rootRender(HNode p, HNodeRendererContext ctx) {
+            return PageView.this.render(p,ctx);
         }
 
         @Override
         public HEngine engine() {
             return documentView.engine();
         }
-
-        @Override
-        public HDocumentFactory documentFactory() {
-            return engine().documentFactory();
-        }
-
-        @Override
-        public HSizeRequirements computeSizeRequirements(HNode p, HPartRendererContext ctx) {
-            AbstractHPartRenderer r = renderers.get(p.type());
-            if (r == null) {
-                throw new IllegalArgumentException("missing renderer for " + p.type());
-            }
-            return r.computeSizeRequirements(p, ctx);
-        }
     }
 
-    public HPage getPage() {
+    public HNode getPage() {
         return page;
     }
 }

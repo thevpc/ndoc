@@ -8,5 +8,6 @@ import net.thevpc.tson.TsonElement;
 public interface HITemNamedObjectParser {
     String[] ids();
 
+    boolean accept(String id, TsonElement tsonElement, HNodeFactoryParseContext context);
     NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context);
 }

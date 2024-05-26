@@ -1,0 +1,86 @@
+package net.thevpc.halfa.api.style;
+
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
+
+import java.util.*;
+
+public class HProperties {
+    private Map<String, HProp> map = new HashMap<>();
+
+    public void set(String s,Object value) {
+        map.put(s,new HProp(s,value));
+    }
+
+    public void set(HProp... c) {
+        if (c != null) {
+            for (HProp cc : c) {
+                set(cc);
+            }
+        }
+    }
+
+    public void set(Collection<HProp> c) {
+        if (c != null) {
+            for (HProp cc : c) {
+                set(cc);
+            }
+        }
+    }
+
+    public void unset(HProp s) {
+        if (s != null) {
+            map.remove(s.getName());
+        }
+    }
+
+    public void unset(String s) {
+        if (s != null) {
+            map.remove(s);
+        }
+    }
+
+    public void set(HProp s) {
+        if (s != null) {
+            map.put(s.getName(), s);
+        }
+    }
+
+    public NOptional<HProp> get(String s) {
+        return NOptional.ofNamed(map.get(s), "style " + s);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HProperties hStyleMap = (HProperties) o;
+        return Objects.equals(map, hStyleMap.map);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(map);
+    }
+
+    @Override
+    public String toString() {
+        return "Styles" + map.values().toString();
+    }
+
+    public int size() {
+        return map.size();
+    }
+
+    public Set<HProp> styles() {
+        return new HashSet<>(map.values());
+    }
+
+    public TsonElement toTson() {
+        return Tson.obj(
+                map.values().stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
+        ).build();
+    }
+}

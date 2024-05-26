@@ -4,11 +4,12 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
-import net.thevpc.halfa.engine.renderer.screen.components.DocumentLayer;
+import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
+import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -36,11 +37,13 @@ public class DocumentView {
     private PageView currentShowingPage;
     private Map<String, PageView> pagesMapById = new HashMap<>();
     private Map<Integer, PageView> pagesMapByIndex = new HashMap<>();
+    private RenderFactoryManager renderFactoryManager;
 
     public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, NSession session) {
         this.documentSupplier = documentSupplier;
         this.halfaEngine = halfaEngine;
         this.session = session;
+        renderFactoryManager=new RenderFactoryManager(halfaEngine);
 
         frame = new JFrame();
         contentPane = new ContentPanel();
@@ -50,6 +53,14 @@ public class DocumentView {
         frame.setSize(PageView.REF_SIZE);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         prepareContentPane();
+    }
+
+    public NSession session() {
+        return session;
+    }
+
+    public RenderFactoryManager getRenderFactoryManager() {
+        return renderFactoryManager;
     }
 
     public String getPageSourceName() {
@@ -77,7 +88,7 @@ public class DocumentView {
         HNode p = currentShowingPage == null ? null : currentShowingPage.getPage();
         Object s = null;
         while (p != null && s == null) {
-            s = p.getSource();
+            s = p.source();
             p = p.parent();
         }
         return s;
@@ -85,7 +96,7 @@ public class DocumentView {
 
     public class ContentPanel extends JPanel {
         CardLayout cardLayout;
-        List<DocumentLayer> layers = new ArrayList<>();
+        List<HDocumentLayer> layers = new ArrayList<>();
 
         public ContentPanel() {
             this.cardLayout = new CardLayout();
@@ -102,12 +113,13 @@ public class DocumentView {
 
 
             Graphics2D g2d = (Graphics2D) g;
+            HGraphics hg=new HGraphicsImpl(g2d);
             g2d.setRenderingHint(
                     RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
             Dimension size = getSize();
-            for (DocumentLayer filter : layers) {
-                filter.draw(DocumentView.this, size, g2d);
+            for (HDocumentLayer filter : layers) {
+                filter.draw(DocumentView.this, size, hg);
             }
         }
 
@@ -202,14 +214,14 @@ public class DocumentView {
         }
         this.currentShowingPage = null;
         document = documentSupplier.get();
-        List<HPage> pages = PagesHelper.resolvePages(document);
+        List<HNode> pages = PagesHelper.resolvePages(document);
         pageViews.clear();
         contentPane.removeAll();
         pagesMapById.clear();
         pagesMapByIndex.clear();
 
         for (int i = 0; i < pages.size(); i++) {
-            HPage page = pages.get(i);
+            HNode page = pages.get(i);
             pageViews.add(new PageView(
                     page,
                     UUID.randomUUID().toString(), i, this

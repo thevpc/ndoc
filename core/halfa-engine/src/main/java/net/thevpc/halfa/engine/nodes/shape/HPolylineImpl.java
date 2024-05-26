@@ -1,55 +1,81 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.api.style.HPropUtils;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.HUtils;
+import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class HPolylineImpl extends AbstractHNode implements HPolyline {
-    private List<Double2> points;
-
-    public HPolylineImpl(Double2... points) {
-        this.points = new ArrayList<>(Arrays.asList(points));
+public class HPolylineImpl extends AbstractHNodeTypeFactory {
+    public HPolylineImpl() {
+        super(false, HNodeType.POLYLINE);
     }
 
     @Override
-    public HPolyline add(Double2 d) {
-        if (d != null) {
-            points.add(d);
-        }
-        return this;
-    }
-    @Override
-    public void mergeNode(HItem other) {
-        if (other != null) {
-            super.mergeNode(other);
-            if (other instanceof HPolyline) {
-                HPolyline t = (HPolyline) other;
-                for (Double2 point : t.points()) {
-                    add(point);
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()) {
+            case PAIR: {
+                NOptional<ObjEx.SimplePair> sp = new ObjEx(e).asSimplePair();
+                if (sp.isPresent()) {
+                    ObjEx.SimplePair spp = sp.get();
+                    ObjEx v = spp.getValue();
+                    switch (spp.getNameId()) {
+                        case "point": {
+                            NOptional<Double2> p2d = v.asDouble2();
+                            if (p2d.isPresent()) {
+                                HPropUtils.addPoint(p, p2d.get());
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                        case "points": {
+                            p.setProperty(HProp.ofDouble2Array(HPropName.POINTS, v.asDouble2Array().get()));
+                            return false;
+                        }
+                    }
+                }
+                break;
+            }
+            case UPLET: {
+                NOptional<Double2> p2d = new ObjEx(e.toPair().getValue()).asDouble2();
+                if (p2d.isPresent()) {
+                    HPropUtils.addPoint(p, p2d.get());
+                    return true;
+                } else {
+                    return false;
                 }
             }
         }
-    }
-
-    public Double2[] points() {
-        return points.toArray(new Double2[0]);
+        return false;
     }
 
     @Override
-    public HNodeType type() {
-        return HNodeType.POLYLINE;
-    }
-
-    @Override
-    public TsonElement toTson() {
-        return ToTsonHelper.of(this).addChildren(HUtils.toTson(points()))
+    public TsonElement toTson(HNode item) {
+        HNode node = (HNode) item;
+        HProp points = node.getProperty(HPropName.POINTS).orNull();
+        if (points != null) {
+            if (points.getValue() == null) {
+                points = null;
+            } else if (((Double2[]) points.getValue()).length == 0) {
+                points = null;
+            }
+        }
+        return ToTsonHelper.of(
+                        node,engine()
+                ).addChildren(
+                        points == null ? null : Tson.pair("points", HUtils.toTson(points))
+                )
                 .build();
     }
+
 }

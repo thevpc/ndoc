@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.document.HDocumentClass;
-import net.thevpc.halfa.api.node.HPageGroup;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.style.HStyleRule;
-import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.api.node.container.HContainer;
+import net.thevpc.halfa.engine.nodes.DefaultHContainer;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
@@ -23,7 +23,7 @@ public class DefaultHDocument implements HDocument {
 
     private HDocumentClass documentClass;
     private Properties properties = new Properties();
-    private HPageGroup root = new HPageGroupImpl();
+    private DefaultHContainer root = new DefaultHContainer(HNodeType.PAGE_GROUP);
 
     public DefaultHDocument() {
     }
@@ -36,7 +36,7 @@ public class DefaultHDocument implements HDocument {
         this.documentClass = documentClass;
     }
 
-    public HPageGroup root() {
+    public HContainer root() {
         return root;
     }
 
@@ -85,10 +85,4 @@ public class DefaultHDocument implements HDocument {
         }
     }
 
-
-    @Override
-    public TsonElement toTson() {
-        TsonElement tson = root().toTson();
-        return tson;
-    }
 }

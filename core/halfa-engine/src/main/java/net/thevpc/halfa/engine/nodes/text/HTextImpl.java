@@ -4,69 +4,62 @@
  */
 package net.thevpc.halfa.engine.nodes.text;
 
-import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.HText;
-import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonStringLayout;
 
 /**
  * @author vpc
  */
-public class HTextImpl extends AbstractHNode implements HText {
-
-    private String message;
-
+public class HTextImpl extends AbstractHNodeTypeFactory {
     public HTextImpl() {
+        super(false, HNodeType.TEXT);
     }
-
-    public HTextImpl(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String value() {
-        return message;
-    }
-
-    @Override
-    public HText setValue(String message) {
-        this.message = message;
-        return this;
-    }
-
-    @Override
-    public HNodeType type() {
-        return HNodeType.TEXT;
-    }
-
-    @Override
-    public String toString() {
-        return "DefaultHText{" +
-                "message='" + message + '\'' +
-                '}';
-    }
-
-    @Override
-    public void mergeNode(HItem other) {
-        if (other != null) {
-            super.mergeNode(other);
-            if (other instanceof HText) {
-                HText t = (HText) other;
-                if (t.value() != null) {
-                    this.message = t.value();
-                }
+    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
+        switch (tsonElement.type()){
+            case STRING:{
+                return NOptional.of(
+                        context.documentFactory().ofText(tsonElement.toStr().raw())
+                );
             }
         }
+        return super.parseItem(id, tsonElement, context);
+    }
+
+    protected String acceptTypeName(TsonElement e) {
+        switch (e.type()){
+            case STRING:{
+                return id();
+            }
+        }
+        return super.acceptTypeName(e);
     }
 
     @Override
-    public TsonElement toTson() {
-        return ToTsonHelper.of(this)
-                .addArg(message == null ? null : Tson.string(message))
-                .build();
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()) {
+            case STRING: {
+                p.setProperty(HProp.ofString(HPropName.VALUE, e.toStr().raw()));
+                return true;
+            }
+        }
+        return false;
     }
 
+    @Override
+    public TsonElement toTson(HNode item) {
+        return ToTsonHelper
+                .of(item,engine())
+                .inlineStringProp(HPropName.VALUE)
+                .build();
+    }
 }

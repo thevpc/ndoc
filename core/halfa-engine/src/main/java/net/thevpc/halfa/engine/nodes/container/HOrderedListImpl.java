@@ -4,25 +4,15 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
-import net.thevpc.halfa.api.style.HStyles;
-import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.HOrderedList;
-
-import java.util.List;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc
  */
-public class HOrderedListImpl extends AbstractHContainer implements HOrderedList {
-
-    public HOrderedListImpl(List<HNode> children) {
-        super(children);
+public class HOrderedListImpl extends AbstractHNodeTypeFactory {
+    public HOrderedListImpl() {
+        super(true, HNodeType.ORDERED_LIST,"ol");
     }
-
-    public HNodeType type() {
-        return HNodeType.ORDERED_LIST;
-    }
-
 
 }

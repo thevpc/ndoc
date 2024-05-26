@@ -11,8 +11,9 @@ import java.util.function.Supplier;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HPage;
+import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -61,11 +62,11 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
 
     public void render(HNode part, OutputStream out) {
         switch (part.type()) {
-            case PAGE_GROUP:
+            case HNodeType.PAGE_GROUP:
                 break;
-            case PAGE: {
+            case HNodeType.PAGE: {
                 PrintStream o=psOf(out);
-                HPage p=(HPage) part;
+                HContainer p=(HContainer) part;
                 for (HNode pp : p.children()) {
                     render(pp,o);
                 }

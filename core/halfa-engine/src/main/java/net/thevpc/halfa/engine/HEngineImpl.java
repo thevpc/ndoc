@@ -10,15 +10,18 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
+import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonDocument;
 import net.thevpc.tson.TsonElement;
@@ -36,6 +39,10 @@ public class HEngineImpl implements HEngine {
     private List<HDocumentRendererFactory> documentRendererFactories;
     private List<HNodeParserFactory> nodeParserFactories;
 
+    private Map<String, HNodeTypeFactory> nodeTypeFactories;
+    private Map<String, String> nodeTypeAliases;
+    private HDocumentFactory factory;
+
     public HEngineImpl(NSession session) {
         this.session = session;
     }
@@ -46,57 +53,22 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HDocumentFactory documentFactory() {
-        return new HDocumentFactoryImpl();
+        if (factory == null) {
+            factory = new HDocumentFactoryImpl(this);
+        }
+        return factory;
     }
 
 
     @Override
-    public NOptional<HItem> newDocumentRoot(TsonElement element) {
-        return newNode(element, null,
-                new HashSet<>(Arrays.asList(HNodeType.PAGE, HNodeType.PAGE_GROUP)),
-                null, null);
-    }
-
-    @Override
-    public NOptional<HItem> newPageChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx) {
-        Set<HNodeType> expected = new HashSet<>(Arrays.asList(HNodeType.values()));
-        expected.remove(HNodeType.PAGE);
-        expected.remove(HNodeType.PAGE_GROUP);
-        return newNode(element, currentNode, expected, ctx, ctx.source());
-    }
-
-    @Override
-    public NOptional<HItem> newDocumentChild(TsonElement element, HNode currentNode, HNodeFactoryParseContext ctx) {
-        Set<HNodeType> expected = new HashSet<>();
-        expected.add(HNodeType.PAGE);
-        expected.add(HNodeType.PAGE_GROUP);
-        return newNode(element, currentNode, expected, ctx, ctx.source());
-    }
-
-    @Override
-    public NOptional<HItem> newNode(TsonElement element, HNode currentNode, Set<HNodeType> expected, HNodeFactoryParseContext ctx0, Object source) {
-        List<HNode> parents = new ArrayList<>();
-        if (ctx0 != null) {
-            parents.addAll(Arrays.asList(ctx0.parents()));
-        }
-        if (currentNode != null) {
-            parents.add(currentNode);
-        }
-        Set<HNodeType> expected0 = new HashSet<>();
-        if (expected != null) {
-            for (HNodeType e : expected) {
-                if (e != null) {
-                    expected0.add(e);
-                }
-            }
-        }
-        if (expected0.isEmpty()) {
-            expected0.addAll(Arrays.asList(HNodeType.values()));
-        }
-        HNodeFactoryParseContext ctx = new DefaultHNodeFactoryParseContext(element, this, session, parents, expected0,source);
+    public NOptional<HItem> newNode(TsonElement element, HNodeFactoryParseContext ctx) {
+        HNodeFactoryParseContext newContext = new DefaultHNodeFactoryParseContext(element, this, session,
+                ctx == null ? new ArrayList<>() : Arrays.asList(ctx.nodePath())
+                , ctx == null ? null : ctx.source()
+        );
         return NCallableSupport.resolve(
                         nodeParserFactories().stream()
-                                .map(x -> x.parseNode(ctx)),
+                                .map(x -> x.parseNode(newContext)),
                         s -> NMsg.ofC("missing %s", "factory"))
                 .toOptional();
     }
@@ -146,6 +118,70 @@ public class HEngineImpl implements HEngine {
         return documentRendererFactories;
     }
 
+    @Override
+    public List<HNodeTypeFactory> nodeTypeFactories() {
+        return new ArrayList<>(nodeTypeFactories0().values());
+    }
+
+    private Map<String, HNodeTypeFactory> nodeTypeFactories0() {
+        if (nodeTypeFactories == null) {
+            nodeTypeFactories = new HashMap<>();
+            nodeTypeAliases = new HashMap<>();
+            ServiceLoader<HNodeTypeFactory> renderers = ServiceLoader.load(HNodeTypeFactory.class);
+            for (HNodeTypeFactory renderer : renderers) {
+                addNodeTypeFactory(renderer);
+            }
+        }
+        return nodeTypeFactories;
+    }
+
+
+    public NOptional<HNodeTypeFactory> nodeTypeFactory(String id) {
+        id = NStringUtils.trim(id);
+        if (!id.isEmpty()) {
+            id = NNameFormat.LOWER_KEBAB_CASE.format(id);
+            HNodeTypeFactory o = nodeTypeFactories0().get(id);
+            if (o != null) {
+                return NOptional.of(o);
+            }
+            String oid = nodeTypeAliases.get(id);
+            if (oid != null) {
+                return nodeTypeFactory(oid);
+            }
+        }
+        return NOptional.ofNamedEmpty("NodeType " + id);
+    }
+
+    public void addNodeTypeFactory(HNodeTypeFactory renderer) {
+        String id = NStringUtils.trim(renderer.id());
+        if (id.isEmpty()) {
+            throw new IllegalArgumentException("invalid id in " + renderer.getClass().getName());
+        }
+        Set<String> allIds = new HashSet<>();
+        allIds.add(id);
+        if (renderer.aliases() != null) {
+            for (String alias : renderer.aliases()) {
+                String aid = NStringUtils.trim(alias);
+                if (!aid.isEmpty()) {
+                    allIds.add(aid);
+                }
+            }
+        }
+        for (String i : allIds) {
+            NOptional<HNodeTypeFactory> o = nodeTypeFactory(i);
+            if (o.isPresent()) {
+                HNodeTypeFactory oo = o.get();
+                String oid = NNameFormat.LOWER_KEBAB_CASE.format(oo.id());
+                throw new IllegalArgumentException("already registered " + i + "@" + renderer.getClass().getName() + " as " + oid + "@" + oo.getClass().getName());
+            }
+        }
+        nodeTypeFactories.put(id, renderer);
+        for (String i : allIds) {
+            nodeTypeAliases.put(i, id);
+        }
+        renderer.init(this);
+    }
+
     private List<HNodeParserFactory> nodeParserFactories() {
         if (nodeParserFactories == null) {
             ServiceLoader<HNodeParserFactory> renderers = ServiceLoader.load(HNodeParserFactory.class);
@@ -159,6 +195,10 @@ public class HEngineImpl implements HEngine {
         return nodeParserFactories;
     }
 
+
+    public boolean validateNode(HNode node) {
+        return nodeTypeFactory(node.type()).get().validateNode(node);
+    }
 
     @Override
     public NOptional<HDocument> loadDocument(NPath path) {
@@ -187,13 +227,14 @@ public class HEngineImpl implements HEngine {
                 }
                 HDocument doc = documentFactory().ofDocument();
                 for (NPath nPath : all) {
-                    NOptional<HItem> d = loadNode(doc.root(), new HashSet<>(Arrays.asList(HNodeType.values())), nPath);
+                    NOptional<HItem> d = loadNode(doc.root(), nPath);
                     if (!d.isPresent()) {
                         return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
                     }
-                    updateSource(d.get(),nPath);
+                    updateSource(d.get(), nPath);
                     doc.root().append(d.get());
                 }
+                validateNode(doc.root());
                 return NOptional.of(doc);
             } else {
                 return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
@@ -210,7 +251,7 @@ public class HEngineImpl implements HEngine {
                 }
             } else if (item instanceof HNode) {
                 HNode i = (HNode) item;
-                if(i.getSource()==null) {
+                if (i.source() == null) {
                     i.setSource(source);
                 }
             }
@@ -218,10 +259,10 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public NOptional<HItem> loadNode(HNode into, Set<HNodeType> expected, NPath path) {
+    public NOptional<HItem> loadNode(HNode into, NPath path) {
         if (path.exists()) {
             if (path.isRegularFile()) {
-                NOptional<HItem> d = loadNode0(into, expected,path);
+                NOptional<HItem> d = loadNode0(into, path);
                 if (d.isPresent()) {
                     updateSource(d.get(), path);
                 }
@@ -231,7 +272,7 @@ public class HEngineImpl implements HEngine {
                 all.sort((a, b) -> a.getName().compareTo(b.getName()));
                 HItem node = null;
                 for (NPath nPath : all) {
-                    NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, expected, nPath);
+                    NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath);
                     if (!d.isPresent()) {
                         return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
                     }
@@ -289,16 +330,17 @@ public class HEngineImpl implements HEngine {
         TsonElement c = doc.getContent();
         HDocument docd = documentFactory().ofDocument();
         docd.root().setSource(source);
-        NOptional<HItem> r = newDocumentRoot(c);
+        NOptional<HItem> r = newNode(c, null);
         if (r.isPresent()) {
-            docd.root().mergeNode(r.get());
+            docd.root().append(r.get());
+            validateNode(docd.root());
             return NOptional.of(docd);
         }
         return NOptional.ofError(s -> NMsg.ofC("invalid %s", r.getMessage().apply(s)));
     }
 
 
-    public NOptional<HItem> loadNode0(HNode into, Set<HNodeType> expected, NPath path) {
+    private NOptional<HItem> loadNode0(HNode into, NPath path) {
         TsonReader tr = Tson.reader();
         TsonDocument doc;
         try {
@@ -307,7 +349,22 @@ public class HEngineImpl implements HEngine {
             throw new NIOException(session, ex);
         }
         TsonElement c = doc.getContent();
-        return newNode(c, into, expected, null, path);
+        ArrayList<HNode> parents = new ArrayList<>();
+        if (into != null) {
+            parents.add(into);
+        }
+        return newNode(c, new DefaultHNodeFactoryParseContext(
+                null,
+                this,
+                session,
+                parents,
+                path
+        ));
     }
 
+    @Override
+    public TsonElement toTson(HDocument doc) {
+        HContainer r = doc.root();
+        return nodeTypeFactory(r.type()).get().toTson(r);
+    }
 }

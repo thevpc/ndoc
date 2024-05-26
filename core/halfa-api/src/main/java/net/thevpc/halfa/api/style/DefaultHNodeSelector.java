@@ -1,8 +1,6 @@
 package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
@@ -17,7 +15,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     private static DefaultHNodeSelector ANY = new DefaultHNodeSelector(null, null, null, false);
     private static DefaultHNodeSelector IMPORTANT = new DefaultHNodeSelector(null, null, null, true);
     private final Set<String> names = new HashSet<>();
-    private final Set<HNodeType> types = new HashSet<>();
+    private final Set<String> types = new HashSet<>();
     private final Set<String> classes = new HashSet<>();
     private final boolean important;
 
@@ -25,7 +23,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return ANY;
     }
 
-    public static DefaultHNodeSelector of(String[] names,HNodeType[] types,String[] classes) {
+    public static DefaultHNodeSelector of(String[] names,String[] types,String[] classes) {
         if(
                 (names==null || names.length==0)
                 && (types==null || types.length==0)
@@ -44,11 +42,11 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return ANY.andName(names);
     }
 
-    public static DefaultHNodeSelector ofType(HNodeType ...types) {
+    public static DefaultHNodeSelector ofType(String ...types) {
         return ANY.andType(types);
     }
 
-    public DefaultHNodeSelector(String[] names, HNodeType[] types, String[] classes, boolean important) {
+    public DefaultHNodeSelector(String[] names, String[] types, String[] classes, boolean important) {
         this.important = important;
         if (names != null) {
             for (String i : names) {
@@ -71,7 +69,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             }
         }
         if (types != null) {
-            for (HNodeType i : types) {
+            for (String i : types) {
                 if (i != null) {
                     this.types.add(i);
                 }
@@ -96,7 +94,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return and(names, null, null, important);
     }
 
-    public DefaultHNodeSelector andType(HNodeType... types) {
+    public DefaultHNodeSelector andType(String... types) {
         return and(null, types, null, important);
     }
 
@@ -104,7 +102,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return and(null, null, classes, important);
     }
 
-    public DefaultHNodeSelector and(String[] names, HNodeType[] types, String[] classes, boolean important) {
+    public DefaultHNodeSelector and(String[] names, String[] types, String[] classes, boolean important) {
         if (
                 (names == null || names.length == 0 || (names.length == 1 && names[0] == null))
                         && (types == null || types.length == 0 || (types.length == 1 && types[0] == null))
@@ -113,7 +111,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             return this;
         }
         Set<String> names0 = new HashSet<>(this.names);
-        Set<HNodeType> types0 = new HashSet<>(this.types);
+        Set<String> types0 = new HashSet<>(this.types);
         Set<String> classes0 = new HashSet<>(this.classes);
         if (names != null) {
             names0.addAll(Arrays.asList(names));
@@ -129,7 +127,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         }
         DefaultHNodeSelector c = new DefaultHNodeSelector(
                 names0.toArray(new String[0]),
-                types0.toArray(new HNodeType[0]),
+                types0.toArray(new String[0]),
                 classes0.toArray(new String[0]),
                 false
         );
@@ -155,10 +153,11 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         }
         if (!names.isEmpty()) {
             String nn = NStringUtils.trimLeftToNull(n.name());
-            if (nn != null) {
-                if (!names.contains(n.name())) {
-                    return false;
-                }
+            if (nn == null) {
+                return false;
+            }
+            if (!names.contains(n.name())) {
+                return false;
             }
         }
         if (!classes.isEmpty()) {
@@ -216,8 +215,8 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             }
         }
         if (!types.isEmpty()) {
-            for (HNodeType name : types) {
-                c.add(Tson.name(NNameFormat.LOWER_KEBAB_CASE.format(name.name())));
+            for (String name : types) {
+                c.add(Tson.name(NNameFormat.LOWER_KEBAB_CASE.format(name)));
             }
         }
         if (!classes.isEmpty()) {
@@ -272,8 +271,8 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
                     return c;
                 }
             }
-            a = new TreeSet<String>(types.stream().map(x -> x.name()).collect(Collectors.toSet())).toArray(new String[0]);
-            b = new TreeSet<String>(op.types.stream().map(x -> x.name()).collect(Collectors.toSet())).toArray(new String[0]);
+            a = new TreeSet<String>(types.stream().map(x -> x).collect(Collectors.toSet())).toArray(new String[0]);
+            b = new TreeSet<String>(op.types.stream().map(x -> x).collect(Collectors.toSet())).toArray(new String[0]);
             for (int j = 0; j < a.length; j++) {
                 c = a[j].compareTo(b[j]);
                 if (c != 0) {

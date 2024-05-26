@@ -1,0 +1,67 @@
+package net.thevpc.halfa.engine.renderer.screen.common;
+
+import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NBlankable;
+
+public abstract class AbstractHNodeRendererContext implements HNodeRendererContext {
+    public HSizeRequirements render(HNode p) {
+        return rootRender(p, this);
+    }
+
+    @Override
+    public HDocumentFactory documentFactory() {
+        return engine().documentFactory();
+    }
+
+    @Override
+    public NPath resolvePath(NPath path, HNode node) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return resolvePath(path.toString(), node);
+    }
+
+    @Override
+    public HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles) {
+        return new HPartRendererContextDelegate(node, this, null, defaultStyles, isDry());
+    }
+
+    @Override
+    public HNodeRendererContext withBounds(HNode t, Bounds2 bounds2) {
+        return new HPartRendererContextDelegate(t, this, bounds2, null, isDry());
+    }
+
+    @Override
+    public HNodeRendererContext dryMode() {
+        return new HPartRendererContextDelegate(null, this, null, null, true);
+    }
+
+    @Override
+    public NPath resolvePath(String path, HNode node) {
+        if (NBlankable.isBlank(path)) {
+            return null;
+        }
+        Object src = node.computeSource();
+        NPath base;
+        if (src instanceof NPath) {
+            NPath sp = (NPath) src;
+            if (sp.isRegularFile()) {
+                sp = sp.getParent();
+            }
+            if (sp != null) {
+                base = sp.resolve(path);
+            } else {
+                base = NPath.of(path, session());
+            }
+        } else {
+            base = NPath.of(path, session());
+        }
+        return base;
+    }
+}

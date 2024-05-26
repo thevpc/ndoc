@@ -4,23 +4,15 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
-import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HStackContainer;
-
-import java.util.List;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc
  */
-public class HStackContainerImpl extends AbstractHContainer implements HStackContainer {
-
-    public HStackContainerImpl(List<HNode> children) {
-        super(children);
-    }
-
-    public HNodeType type() {
-        return HNodeType.STACK;
+public class HStackContainerImpl extends AbstractHNodeTypeFactory {
+    public HStackContainerImpl() {
+        super(true, HNodeType.STACK);
     }
 
 }

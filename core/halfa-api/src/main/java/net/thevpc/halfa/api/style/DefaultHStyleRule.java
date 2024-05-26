@@ -1,7 +1,6 @@
 package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
@@ -9,31 +8,31 @@ import java.util.*;
 
 public class DefaultHStyleRule implements HStyleRule {
     private final HStyleMagnitude magnetude;
-    private final HStyleMap styles;
+    private final HProperties styles;
     private final HStyleRuleSelector selector;
 
-    public static DefaultHStyleRule ofAny(HStyle... styles) {
+    public static DefaultHStyleRule ofAny(HProp... styles) {
         return new DefaultHStyleRule(null, styles);
     }
 
-    public static DefaultHStyleRule ofType(HNodeType type, HStyle... styles) {
+    public static DefaultHStyleRule ofType(String type, HProp... styles) {
         return of(type == null ? null : DefaultHNodeSelector.ofType(type), styles);
     }
 
-    public static DefaultHStyleRule ofName(String name, HStyle... styles) {
+    public static DefaultHStyleRule ofName(String name, HProp... styles) {
         return of(name == null ? null : DefaultHNodeSelector.ofName(name), styles);
     }
 
-    public static DefaultHStyleRule ofClass(String name, HStyle... styles) {
+    public static DefaultHStyleRule ofClass(String name, HProp... styles) {
         return of(name == null ? null : DefaultHNodeSelector.ofClasses(name), styles);
     }
 
-    public static DefaultHStyleRule of(HStyleRuleSelector filter, HStyle... styles) {
+    public static DefaultHStyleRule of(HStyleRuleSelector filter, HProp... styles) {
         return new DefaultHStyleRule(filter, styles);
     }
 
-    public DefaultHStyleRule(HStyleRuleSelector selector, HStyle... styles) {
-        this.styles = new HStyleMap();
+    public DefaultHStyleRule(HStyleRuleSelector selector, HProp... styles) {
+        this.styles = new HProperties();
         this.magnetude = new HStyleMagnitude(
                 0,
                 1,
@@ -43,7 +42,6 @@ public class DefaultHStyleRule implements HStyleRule {
         this.styles.set(styles);
     }
 
-    @Override
     public TsonElement toTson() {
         if(selector==null){
             return Tson.pair(
@@ -72,7 +70,7 @@ public class DefaultHStyleRule implements HStyleRule {
                 }
 
                 @Override
-                public Set<HStyle> value() {
+                public Set<HProp> value() {
                     return styles.styles();
                 }
             };
@@ -89,7 +87,7 @@ public class DefaultHStyleRule implements HStyleRule {
             }
 
             @Override
-            public Set<HStyle> value() {
+            public Set<HProp> value() {
                 throw new IllegalArgumentException("not supported");
             }
         };

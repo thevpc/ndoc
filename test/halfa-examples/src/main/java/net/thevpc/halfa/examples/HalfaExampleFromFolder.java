@@ -24,7 +24,7 @@ public class HalfaExampleFromFolder {
         NPath file = NPath.of("/home/vpc/education/education/modules/hyperfrequences/", session).toAbsolute().normalize();
         //NPath file = NPath.of("src/halfa/project", session).toAbsolute().normalize();
         System.out.println(file);
-        System.out.println(e.loadDocument(file).get().toTson());
+        System.out.println(e.toTson(e.loadDocument(file).get()));
         e.newScreenRenderer().renderSupplier(()->e.loadDocument(file).get());
     }
 }

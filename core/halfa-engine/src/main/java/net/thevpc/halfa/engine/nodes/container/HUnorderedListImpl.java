@@ -4,44 +4,16 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
-import net.thevpc.halfa.api.style.HStyles;
-import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HUnorderedList;
-import net.thevpc.halfa.api.style.HStyle;
-import net.thevpc.halfa.api.style.HStyleType;
-
-import java.util.List;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc
  */
-public class HUnorderedListImpl extends AbstractHContainer implements HUnorderedList {
-
-    public HUnorderedListImpl(List<HNode> children) {
-        super(children);
+public class HUnorderedListImpl extends AbstractHNodeTypeFactory {
+    public HUnorderedListImpl() {
+        super(true, HNodeType.UNORDERED_LIST,"ul");
     }
 
-    @Override
-    public HUnorderedList add(HNode a) {
-        super.add(a);
-        return this;
-    }
-
-    public HNodeType type() {
-        return HNodeType.UNORDERED_LIST;
-    }
-
-    @Override
-    public HUnorderedList unset(HStyleType s) {
-        super.unset(s);
-        return this;
-    }
-
-    @Override
-    public HUnorderedList set(HStyle s) {
-        super.set(s);
-        return this;
-    }
 
 }

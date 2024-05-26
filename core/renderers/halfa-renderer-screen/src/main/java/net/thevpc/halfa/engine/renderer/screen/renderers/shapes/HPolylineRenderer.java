@@ -2,35 +2,44 @@ package net.thevpc.halfa.engine.renderer.screen.renderers.shapes;
 
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HPolyline;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
-import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
-import net.thevpc.halfa.spi.HUtils;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
+import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.util.ObjEx;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
+public class HPolylineRenderer extends AbstractHNodeRenderer {
+    HProperties defaultStyles = new HProperties();
 
-public class HPolylineRenderer extends AbstractHPartRenderer {
+    public HPolylineRenderer() {
+        super(HNodeType.POLYLINE);
+    }
 
-    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-        HPolyline t = (HPolyline) p;
-        Bounds2 size = ctx.getBounds();
-        Bounds2 b = selfBounds(t, ctx);
+    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        Bounds2 b = selfBounds(p, ctx);
         double x = b.getX();
         double y = b.getY();
-        Graphics2D g = ctx.getGraphics();
-        Double2[] points = t.points();
-        int[] xx = new int[points.length];
-        int[] yy = new int[points.length];
+        HGraphics g = ctx.graphics();
+        Double2[] points =  ObjEx.ofProp(p, HPropName.POINTS).asDouble2Array().get();
+        double[] xx = new double[points.length];
+        double[] yy = new double[points.length];
         for (int i = 0; i < points.length; i++) {
-            xx[i] = (int) (HUtils.doubleOf(points[i].getX()) / 100 * b.getWidth() + x);
-            yy[i] = (int) (HUtils.doubleOf(points[i].getY()) / 100 * b.getHeight() + y);
+            xx[i] = (HUtils.doubleOf(points[i].getX()) / 100 * b.getWidth() + x);
+            yy[i] = (HUtils.doubleOf(points[i].getY()) / 100 * b.getHeight() + y);
         }
-        if (applyLineColor(t, g, ctx,true)) {
-            g.drawPolyline(xx, yy, points.length);
+        if (!ctx.isDry()) {
+            if (applyLineColor(p, g, ctx, true)) {
+                g.drawPolyline(xx, yy, points.length);
+            }
         }
-        return b;
+        return new HSizeRequirements(b);
     }
 
 }

@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HPage;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -58,7 +58,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
         try {
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
-            for (HPage page : PagesHelper.resolvePages(document)) {
+            for (HNode page : PagesHelper.resolvePages(document)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
@@ -75,7 +75,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
         try {
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
-            for (HPage page : PagesHelper.resolvePages(part)) {
+            for (HNode page : PagesHelper.resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
@@ -169,9 +169,9 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
 
     public void renderPagePart(HNode part, PrintStream out) {
         switch (part.type()) {
-            case PAGE_GROUP:
+            case HNodeType.PAGE_GROUP:
                 break;
-            case PAGE:
+            case HNodeType.PAGE:
                 break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);

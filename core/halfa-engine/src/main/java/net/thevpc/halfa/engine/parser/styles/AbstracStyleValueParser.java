@@ -1,16 +1,15 @@
 package net.thevpc.halfa.engine.parser.styles;
 
-import net.thevpc.halfa.api.style.HStyleType;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstracStyleValueParser implements HStyleValueParser {
-    private HStyleType type;
+    private String type;
     private Set<String> ids;
 
-    public AbstracStyleValueParser(HStyleType type, String... ids) {
+    public AbstracStyleValueParser(String type, String... ids) {
+        this.type=type;
         this.ids = new HashSet<>(new HashSet<>(Arrays.asList(ids)));
     }
 

@@ -4,62 +4,14 @@
  */
 package net.thevpc.halfa.engine.nodes.filler;
 
-import net.thevpc.halfa.api.model.*;
-import net.thevpc.halfa.api.node.HFiller;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.engine.nodes.AbstractHNode;
-import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.tson.TsonElement;
-
-import java.util.Objects;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc
  */
-public class HFillerImpl extends AbstractHNode implements HFiller {
-    private XYConstraints constraints;
-
-    public HFillerImpl(XYConstraints constraints) {
-        this.constraints = constraints;
-    }
-
-    public XYConstraints getConstraints() {
-        return constraints;
-    }
-
-    @Override
-    public HNodeType type() {
-        return HNodeType.FILLER;
-    }
-
-    @Override
-    public String toString() {
-        return "Filler{" + constraints + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        HFillerImpl that = (HFillerImpl) o;
-        return Objects.equals(constraints, that.constraints);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(constraints);
-    }
-
-
-
-    @Override
-    public TsonElement toTson() {
-        return ToTsonHelper.of(
-                        this
-                ).addChildren(
-//                        startAngle==null?null: Tson.pair("start", TsonSer.toTson(startAngle)),
-//                        endAngle==null?null:Tson.pair("end",TsonSer.toTson(endAngle))
-                )
-                .build();
+public class HFillerImpl extends AbstractHNodeTypeFactory {
+    public HFillerImpl() {
+        super(false, HNodeType.FILLER);
     }
 }

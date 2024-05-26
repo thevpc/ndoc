@@ -6,6 +6,7 @@ package net.thevpc.halfa.api.style;
 
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.tson.TsonElement;
 
 /**
  *
@@ -13,4 +14,5 @@ import net.thevpc.halfa.api.node.HNode;
  */
 public interface HStyleRule extends HItem {
     HStyleRuleResult styles(HNode node);
+    TsonElement toTson();
 }

@@ -2,14 +2,16 @@ package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.engine.parser.nodes.*;
+import net.thevpc.halfa.engine.parser.styles.HStyleParser;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
-import net.thevpc.halfa.engine.parser.util.HParseHelper;
-import net.thevpc.halfa.engine.parser.util.TsonElementExt;
-import net.thevpc.halfa.engine.parser.util.TsonElementParseHelper;
-import net.thevpc.halfa.spi.HUtils;
+import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -21,6 +23,7 @@ import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author vpc
@@ -30,152 +33,13 @@ public class DefaultHDocumentItemParserFactory
     static Map<String, HITemNamedObjectParser> allParsers = new HashMap<>();
 
     static {
-        register(new SimpleHITemNamedObjectParser("rectangle") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofRectangle();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("square") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofSquare();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("ellipse", "oval") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofEllipse();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("circle") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofCircle();
-            }
-        });
-        register(new PolygonHITemNamedObjectParser());
-        register(new PolylineHITemNamedObjectParser());
-        register(new SimpleHITemNamedObjectParser("triangle") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofTriangle();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("hexagon") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofHexagon();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("octagon") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofOctagon();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("void") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofVoid();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("glue") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofGlue();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("vertical-glue", "vglue") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofGlueV();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("horizontal-glue", "hglue") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofGlueH();
-            }
-        });
-        register(new LineHITemNamedObjectParser());
-        register(new SimpleHITemNamedObjectParser("image") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofImage();
-            }
-        });
-        register(new TextHITemNamedObjectParser());
-        register(new LatexEquationHITemNamedObjectParser());
-        register(new LatexHITemNamedObjectParser());
-        register(new SimpleHITemNamedObjectParser("page") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofPage();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("stack") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofStack();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser("flow") {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofFlow();
-            }
-        });
-        register(new GridHITemNamedObjectParser());
-        register(new SimpleHITemNamedObjectParser(
-                "vgrid",
-                "v-grid",
-                "grid-v",
-                "vertical-grid"
-        ) {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofGridV();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser(
-                "hgrid",
-                "h-grid",
-                "grid-h",
-                "horizontal-grid"
-        ) {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofGridV();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser(
-                "ul", "unordered-list"
-        ) {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofUnorderedList();
-            }
-        });
-        register(new SimpleHITemNamedObjectParser(
-                "ol",
-                "ordered-list",
-                "numbered-list"
-        ) {
-            @Override
-            protected HNode node(HDocumentFactory f) {
-                return f.ofOrderedList();
-            }
-        });
-
         register(new ImportHITemNamedObjectParser());
-
         register(new StylesHITemNamedObjectParser());
     }
 
     private static void register(HITemNamedObjectParser s) {
         for (String id : s.ids()) {
-            String uid = HParseHelper.uid(id);
+            String uid = HUtils.uid(id);
             HITemNamedObjectParser o = allParsers.get(id);
             if (o != null) {
                 throw new IllegalArgumentException("clash : " + uid + " is already registered as item parser");
@@ -214,43 +78,34 @@ public class DefaultHDocumentItemParserFactory
             case MATRIX:
             case UPLET:
             case ALIAS: {
-                return NCallableSupport.of(10, () -> {
-                    return f.ofText(c.getString());
-                });
+                HNodeTypeFactory p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                if (p != null) {
+                    return p.parseNode(context);
+                }
+                break;
             }
             case NAME: {
                 String name = c.toName().getName();
-                String uid = HParseHelper.uid(name);
-                HITemNamedObjectParser p = allParsers.get(uid);
+                String uid = HUtils.uid(name);
+                HNodeTypeFactory p = engine.nodeTypeFactory(uid).orNull();
                 if (p != null) {
-                    return NCallableSupport.of(10, () -> {
-                        try {
-                            return p.parseItem(name, c, context).get();
-                        } catch (Exception ex) {
-                            return p.parseItem(name, c, context).get();
-                        }
-                    });
+                    return p.parseNode(context);
                 }
-                return NCallableSupport.of(10, () -> {
-                    return f.ofText(0, 0, name);
-                });
+                p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                if (p != null) {
+                    return p.parseNode(context);
+                }
+                break;
             }
             case PAIR: {
                 TsonPair p = c.toPair();
                 TsonElement k = p.getKey();
                 TsonElement v = p.getValue();
-                TsonElementParseHelper kh = new TsonElementParseHelper(k);
-                NOptional<String> nn = kh.asStringOrName();
+                ObjEx kh = new ObjEx(k);
+                NOptional<String> nn = kh.asString();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
-                    if (nnn.length() > 1 && nnn.startsWith("$")) {
-                        return NCallableSupport.of(10, () -> {
-                            return f.ofAssign()
-                                    .setLeft(nnn.substring(1))
-                                    .setRight(HUtils.fromTson(v)
-                                    );
-                        });
-                    } else if (nnn.equals("styles")) {
+                    if (nnn.equals("styles")) {
                         return NCallableSupport.of(10, () -> {
                             HITemNamedObjectParser pp = allParsers.get("styles");
                             NOptional<HItem> styles = pp.parseItem("styles", v, context);
@@ -258,31 +113,82 @@ public class DefaultHDocumentItemParserFactory
                         });
                     }
                 }
+                for (HNodeTypeFactory ff : engine.nodeTypeFactories()) {
+                    NCallableSupport<HItem> uu = ff.parseNode(context);
+                    if (uu.isValid()) {
+                        return uu;
+                    }
+                }
                 break;
             }
             case OBJECT:
             case FUNCTION:
             case ARRAY: {
-                TsonElementExt ee = new TsonElementExt(c);
+                ObjEx ee = new ObjEx(c);
                 if (NBlankable.isBlank(ee.name())) {
-                    if (context.expectedTypes().contains(HNodeType.PAGE)) {
-                        return NCallableSupport.of(10, () -> {
-                            return HItemListParser.readHItemList(c, f, context).get();
-                        });
-                    }
-                } else {
-                    String uid = HParseHelper.uid(ee.name());
-                    HITemNamedObjectParser p = allParsers.get(uid);
-                    if (p != null) {
-                        return NCallableSupport.of(10, () -> {
-                            try {
-                                return p.parseItem(ee.name(), c, context).get();
-                            } catch (Exception ex) {
-                                return p.parseItem(ee.name(), c, context).get();
+                    return NCallableSupport.of(10, new Supplier<HItem>() {
+                        @Override
+                        public HItem get() {
+                            HItemList pg = new HItemList();
+                            for (TsonElement child : ee.children()) {
+                                NOptional<HItem> u = context.engine().newNode(child, context);
+                                if (u.isPresent()) {
+                                    pg.add(u.get());
+                                } else {
+                                    HNode node = context.node();
+                                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",child,
+                                            node==null?"document":node.type()
+                                    ).toString());
+                                }
                             }
+
+//                            switch (c.type()) {
+//                                case FUNCTION:
+//                                case OBJECT:
+//                                case ARRAY: {
+//                                    for (TsonElement e : ee.args()) {
+//                                        NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);
+//                                        if (u.isPresent()) {
+//                                            for (HProp s : u.get()) {
+//                                                pg.add(s);
+//                                            }
+//                                        } else {
+////                                            return NOptional.ofError(NMsg.ofC("invalid %s for %s",e,context.node().type())).get();
+//                                            throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",e,context.node().type()).toString());
+//                                        }
+//                                    }
+//                                    for (TsonElement e : ee.children()) {
+//                                        NOptional<HItem> u = context.engine().newNode(e, context);
+//                                        if (u.isPresent()) {
+//                                            pg.add(u.get());
+//                                        } else {
+////                                            return NOptional.ofError(NMsg.ofC("invalid %s for %s",e,context.node().type())).get();
+//                                            throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",e,context.node().type()).toString());
+//                                       }
+//                                    }
+//                                }
+//                            }
+                            return pg;
+                        }
+                    });
+                } else {
+                    String uid = HUtils.uid(ee.name());
+                    HNodeTypeFactory p = engine.nodeTypeFactory(uid).orNull();
+                    if (p != null) {
+                        return p.parseNode(context);
+                    }
+                    HITemNamedObjectParser pp = allParsers.get(uid);
+                    if (pp != null) {
+                        return NCallableSupport.of(10, () -> {
+                            NOptional<HItem> styles = pp.parseItem(uid, c, context);
+                            if(!styles.isPresent()){
+                                pp.parseItem(uid, c, context).get();
+                            }
+                            return styles.get();
                         });
                     }
                 }
+                break;
             }
         }
         throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", context.source(), c));

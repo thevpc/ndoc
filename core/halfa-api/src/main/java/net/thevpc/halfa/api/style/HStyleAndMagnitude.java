@@ -1,15 +1,15 @@
 package net.thevpc.halfa.api.style;
 
 public class HStyleAndMagnitude implements Comparable<HStyleAndMagnitude> {
-    private HStyle style;
+    private HProp style;
     private HStyleMagnitude magnitude;
 
-    public HStyleAndMagnitude(HStyle style, HStyleMagnitude magnitude) {
+    public HStyleAndMagnitude(HProp style, HStyleMagnitude magnitude) {
         this.style = style;
         this.magnitude = magnitude;
     }
 
-    public HStyle getStyle() {
+    public HProp getStyle() {
         return style;
     }
 

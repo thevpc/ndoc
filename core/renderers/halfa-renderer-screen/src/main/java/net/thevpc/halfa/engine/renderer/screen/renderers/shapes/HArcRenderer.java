@@ -1,31 +1,35 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.shapes;
 
 import net.thevpc.halfa.api.model.Bounds2;
-import net.thevpc.halfa.api.node.HArc;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
-import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
-import net.thevpc.halfa.spi.HUtils;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
+import net.thevpc.halfa.spi.util.HUtils;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
+public class HArcRenderer extends AbstractHNodeRenderer {
+    HProperties defaultStyles = new HProperties();
 
-public class HArcRenderer extends AbstractHPartRenderer {
-
-    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-        HArc t = (HArc) p;
-        Bounds2 b = selfBounds(t, null, ctx);
+    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        Bounds2 b = selfBounds(p, null, ctx);
         double x = b.getX();
         double y = b.getY();
-        double startAngle = t.startAngle();
-        double endAngle = t.endAngle();
-        Graphics2D g = ctx.getGraphics();
-        applyLineColor(t, g, ctx,true);
-        g.drawArc((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
-                (int)startAngle,
-                (int)endAngle
-                );
-        return b;
+        double startAngle = (double) p.getPropertyValue(HPropName.FROM).orElse(0.0);
+        double endAngle = (double) p.getPropertyValue(HPropName.TO).orElse(0.0);
+        HGraphics g = ctx.graphics();
+        if (!ctx.isDry()) {
+            applyLineColor(p, g, ctx, true);
+            g.drawArc((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
+                    (int) startAngle,
+                    (int) endAngle
+            );
+        }
+        return new HSizeRequirements(b);
     }
 
 }

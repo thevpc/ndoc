@@ -4,25 +4,67 @@
  */
 package net.thevpc.halfa.engine.nodes.container;
 
-import net.thevpc.halfa.api.style.HStyles;
-import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HGridContainer;
 import net.thevpc.halfa.api.node.HNode;
-
-import java.util.List;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
+import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonPair;
 
 /**
  * @author vpc
  */
-public class HGridContainerImpl extends AbstractHContainer implements HGridContainer {
+public class HGridContainerImpl extends AbstractHNodeTypeFactory {
 
-    public HGridContainerImpl(List<HNode> children) {
-        super(children);
+    public HGridContainerImpl() {
+        super(true, HNodeType.GRID,"vgrid","hgrid");
     }
 
-    public HNodeType type() {
-        return HNodeType.GRID;
+    @Override
+    protected void processImplicitStyles(String id, HNode p, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (id){
+            case "vgrid":{
+                p.setProperty(HPropName.COLUMNS,1);
+                p.setProperty(HPropName.ROWS,-1);
+                break;
+            }
+            case "hgrid":{
+                p.setProperty(HPropName.COLUMNS,-1);
+                p.setProperty(HPropName.ROWS,1);
+                break;
+            }
+        }
     }
 
+    @Override
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()){
+            case PAIR:{
+                TsonPair pp = e.toPair();
+                TsonElement k = pp.getKey();
+                TsonElement v = pp.getValue();
+                ObjEx ph=new ObjEx(k);
+                NOptional<String> n = ph.asString();
+                if(n.isPresent()){
+                    switch (HUtils.uid(n.get())){
+                        case "columns":{
+                            p.setProperty(HProp.ofInt(HPropName.COLUMNS, new ObjEx(v).asInt().get()));
+                            return true;
+                        }
+                        case "rows":{
+                            p.setProperty(HProp.ofInt(HPropName.ROWS, new ObjEx(v).asInt().get()));
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return super.processArg(id, p, e, f, context);
+    }
 }

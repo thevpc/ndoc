@@ -4,9 +4,7 @@
  */
 package net.thevpc.halfa.api.node.container;
 
-import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.style.HStyle;
-import net.thevpc.halfa.api.style.HStyleType;
+import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HStyleRule;
 
@@ -24,15 +22,17 @@ public interface HContainer extends HNode {
 
     HContainer add(HNode a);
 
-    HContainer set(HStyle s);
+    HContainer addAll(HNode... a);
 
-    HContainer set(HStyle... s);
+    HContainer setProperty(HProp s);
+
+    HContainer set(HProp... s);
 
     HContainer addRule(HStyleRule s);
 
     HContainer removeRule(HStyleRule s);
 
-    HContainer addRule(HStyle... s);
+    HContainer addRule(HProp... s);
 
     HContainer addRules(HStyleRule... s);
 
@@ -40,6 +40,6 @@ public interface HContainer extends HNode {
 
     HStyleRule[] rules();
 
-    HContainer unset(HStyleType s);
+    HContainer unsetProperty(String s);
 
 }

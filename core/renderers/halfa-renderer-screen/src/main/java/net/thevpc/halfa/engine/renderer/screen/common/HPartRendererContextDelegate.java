@@ -1,26 +1,63 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.style.HStyle;
-import net.thevpc.halfa.api.style.HStyleType;
-import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
-import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
-import java.awt.*;
-
-public class HPartRendererContextDelegate implements HPartRendererContext {
-    private HPartRendererContext base;
-    private Bounds2 size;
+public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
+    private HNodeRendererContext base;
+    private Bounds2 bounds;
     private HNode basePart;
+    private HProperties defaultStyles;
+    private boolean dry;
 
-    public HPartRendererContextDelegate(HNode basePart, HPartRendererContext base, Bounds2 size) {
+    public HPartRendererContextDelegate(HNode basePart,
+                                        HNodeRendererContext base,
+                                        Bounds2 bounds,
+                                        HProperties defaultStyles,
+                                        boolean dry) {
         this.basePart = basePart;
         this.base = base;
-        this.size = size;
+        this.bounds = bounds;
+        this.defaultStyles = defaultStyles;
+        this.dry = dry;
+    }
+
+    @Override
+    public HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles) {
+        return new HPartRendererContextDelegate(node, base, bounds, defaultStyles==null?this.defaultStyles:defaultStyles, dry);
+    }
+
+    @Override
+    public HNodeRendererContext withBounds(HNode t, Bounds2 bounds2) {
+        return new HPartRendererContextDelegate(t, base, bounds2, defaultStyles, dry);
+    }
+
+    @Override
+    public HNodeRendererContext dryMode() {
+        return new HPartRendererContextDelegate(basePart, base, bounds, defaultStyles, true);
+    }
+
+    @Override
+    public boolean isDry() {
+        return dry;
+    }
+
+    @Override
+    public NSession session() {
+        return base.session();
+    }
+
+    @Override
+    public HGraphics graphics() {
+        return base.graphics();
     }
 
     @Override
@@ -28,17 +65,16 @@ public class HPartRendererContextDelegate implements HPartRendererContext {
         return base.getGlobalBounds();
     }
 
-    public Graphics2D getGraphics() {
-        return base.getGraphics();
-    }
-
     public Bounds2 getBounds() {
-        return size;
+        if(bounds!=null) {
+            return bounds;
+        }
+        return base.getBounds();
     }
 
     @Override
-    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-        return base.paintPagePart(p, ctx);
+    public HSizeRequirements rootRender(HNode p, HNodeRendererContext ctx) {
+        return base.rootRender(p, ctx);
     }
 
     @Override
@@ -46,31 +82,46 @@ public class HPartRendererContextDelegate implements HPartRendererContext {
         return base.engine();
     }
 
-    @Override
-    public HDocumentFactory documentFactory() {
-        return base.documentFactory();
-    }
 
     @Override
-    public HSizeRequirements computeSizeRequirements(HNode p, HPartRendererContext ctx) {
-        return base.computeSizeRequirements(p, ctx);
-    }
-
-    @Override
-    public NOptional<HStyle> getStyle(HNode t, HStyleType s) {
-        NOptional<HStyle> y = null;
+    public <T> NOptional<T> getProperty(HNode t, String s) {
+        NOptional<T> y = null;
         if (t != null) {
-            y = t.computeStyle(s);
+            y = t.computeProperty(s).map(HProp::getValue).map(x->{
+                try {
+                    return (T) x;
+                }catch (ClassCastException e){
+                    return null;
+                }
+            }).filter(x->x!=null);
             if (y.isPresent()) {
                 return y;
+            }
+        }
+        if (this.defaultStyles != null) {
+            NOptional<T> u = this.defaultStyles.get(s).map(HProp::getValue).map(x->{
+                try {
+                    return (T) x;
+                }catch (ClassCastException e){
+                    return null;
+                }
+            }).filter(x->x!=null);
+            if (u.isPresent()) {
+                return u;
             }
         }
         if (basePart != null) {
-            y = basePart.getStyle(s);
+            y = basePart.getProperty(s).map(HProp::getValue).map(x->{
+                try {
+                    return (T) x;
+                }catch (ClassCastException e){
+                    return null;
+                }
+            }).filter(x->x!=null);
             if (y.isPresent()) {
                 return y;
             }
         }
-        return base.getStyle(null, s);
+        return base.getProperty(null, s);
     }
 }

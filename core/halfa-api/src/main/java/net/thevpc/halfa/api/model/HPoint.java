@@ -10,6 +10,10 @@ public class HPoint {
         return new HPoint(x, y, true);
     }
 
+    public static HPoint ofParent(Double2 d) {
+        return new HPoint(d.getX(), d.getY(), false);
+    }
+
     public static HPoint ofParent(double x, double y) {
         return new HPoint(x, y, false);
     }

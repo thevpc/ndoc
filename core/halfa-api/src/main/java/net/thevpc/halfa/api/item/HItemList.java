@@ -46,10 +46,10 @@ public class HItemList implements HItem {
         return "HItemList" + items;
     }
 
-    @Override
-    public TsonElement toTson() {
-        return Tson.obj(
-                items.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
-        ).build();
-    }
+//    @Override
+//    public TsonElement toTson() {
+//        return Tson.obj(
+//                items.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
+//        ).build();
+//    }
 }

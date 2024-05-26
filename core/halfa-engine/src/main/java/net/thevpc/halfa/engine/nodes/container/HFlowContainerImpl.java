@@ -5,22 +5,15 @@
 package net.thevpc.halfa.engine.nodes.container;
 
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HFlowContainer;
-import net.thevpc.halfa.api.node.HNode;
-
-import java.util.List;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc
  */
-public class HFlowContainerImpl extends AbstractHContainer implements HFlowContainer {
-
-    public HFlowContainerImpl(List<HNode> children) {
-        super(children);
+public class HFlowContainerImpl extends AbstractHNodeTypeFactory {
+    public HFlowContainerImpl() {
+        super(true, HNodeType.FLOW);
     }
 
-    public HNodeType type() {
-        return HNodeType.FLOW;
-    }
 
 }

@@ -3,7 +3,6 @@ package net.thevpc.halfa.api.document;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HPageGroup;
 import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
@@ -14,7 +13,7 @@ public interface HDocument {
 
     HDocumentClass getDocumentClass();
 
-    HPageGroup root();
+    HContainer root();
 
     NOptional<String> getName(String name);
 
@@ -27,5 +26,4 @@ public interface HDocument {
     HDocument setProperty(String name, String value);
 
     void mergeDocument(HDocument other);
-    TsonElement toTson();
 }

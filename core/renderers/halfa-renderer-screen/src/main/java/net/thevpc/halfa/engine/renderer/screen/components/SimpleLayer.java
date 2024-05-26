@@ -1,15 +1,16 @@
 package net.thevpc.halfa.engine.renderer.screen.components;
 
 import net.thevpc.halfa.api.model.HAlign;
-import net.thevpc.halfa.engine.renderer.screen.DocumentView;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public abstract class SimpleLayer implements DocumentLayer {
+public abstract class SimpleLayer implements HDocumentLayer {
 
-    protected void drawStr(String str, HAlign a, Dimension size, Graphics2D g2d) {
-        Rectangle2D b = g2d.getFontMetrics().getStringBounds(str, g2d);
+    protected void drawStr(String str, HAlign a, Dimension size, HGraphics g2d) {
+
+        Rectangle2D b = g2d.getStringBounds(str);
 
         int x = 0;
         int y = 0;

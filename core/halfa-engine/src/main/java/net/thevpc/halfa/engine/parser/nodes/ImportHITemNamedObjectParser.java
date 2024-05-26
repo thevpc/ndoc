@@ -3,8 +3,7 @@ package net.thevpc.halfa.engine.parser.nodes;
 import net.thevpc.halfa.api.item.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.engine.parser.util.TsonElementParseHelper;
+import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -19,6 +18,11 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     }
 
     @Override
+    public boolean accept(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
+        return true;
+    }
+
+    @Override
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case FUNCTION: {
@@ -26,38 +30,20 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 if (u.size() == 0) {
                     return NOptional.ofError(s -> NMsg.ofC("missing path argument : %s", tsonElement));
                 }
-                HNode[] parents = context.parents();
-                HNode putInto = parents.length == 0 ? null : parents[parents.length - 1];
+                HNode putInto = context.node();
                 List<HItem> loaded = new ArrayList<>();
                 boolean someLoaded = false;
                 for (TsonElement ee : u) {
-                    TsonElementParseHelper t = new TsonElementParseHelper(ee);
-                    NOptional<String[]> p = t.asStringOrNameArray();
+                    ObjEx t = new ObjEx(ee);
+                    NOptional<String[]> p = t.asStringArrayOrString();
                     if (p.isPresent()) {
                         someLoaded = true;
                         for (String sp : p.get()) {
-                            HashSet<HNodeType> expected = new HashSet<>(Arrays.asList(HNodeType.values()));
-                            if (putInto != null) {
-                                switch (putInto.type()) {
-                                    case PAGE_GROUP: {
-                                        break;
-                                    }
-                                    case PAGE: {
-                                        expected.remove(HNodeType.PAGE_GROUP);
-                                        break;
-                                    }
-                                    default: {
-                                        expected.remove(HNodeType.PAGE);
-                                        expected.remove(HNodeType.PAGE_GROUP);
-                                        break;
-                                    }
-                                }
-                            }
                             List<NPath> list = context.resolvePath(sp).walkGlob().toList();
                             list.sort(Comparator.comparing(NPath::toString));
                             for (NPath nPath : list) {
                                 if (nPath.isRegularFile()) {
-                                    NOptional<HItem> se = context.engine().loadNode(putInto, expected, nPath);
+                                    NOptional<HItem> se = context.engine().loadNode(putInto, nPath);
                                     if (se.isPresent()) {
                                         loaded.add(se.get());
                                     } else {

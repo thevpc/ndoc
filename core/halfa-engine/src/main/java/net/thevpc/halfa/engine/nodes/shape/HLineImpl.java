@@ -1,71 +1,57 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
-import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.HUtils;
+import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonPair;
 
-public class HLineImpl extends AbstractHNode implements HLine {
-    private Double2 from;
-    private Double2 to;
-
+public class HLineImpl extends AbstractHNodeTypeFactory {
     public HLineImpl() {
-        this(new Double2(0, 0), new Double2(100, 100));
+        super(false, HNodeType.LINE);
     }
-
-    public HLineImpl(Double2 from, Double2 to) {
-        this.from = from;
-        this.to = to;
-    }
-
 
     @Override
-    public void mergeNode(HItem other) {
-        if (other != null) {
-            super.mergeNode(other);
-            if (other instanceof HLine) {
-                HLine t = (HLine) other;
-                if (t.from() != null && t.to() != null) {
-                    this.from = t.from();
-                    this.to = t.to();
-                } else if (t.from() != null) {
-                    if (this.from == null) {
-                        this.from = t.from();
-                    } else if (this.to == null) {
-                        this.from = t.to();
-                    } else {
-                        this.from = t.from();
-                    }
-                } else if (t.to() != null) {
-                    if (this.from == null) {
-                        this.from = t.to();
-                    } else if (this.to == null) {
-                        this.from = t.to();
-                    } else {
-                        this.to = t.to();
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()){
+            case PAIR:{
+                TsonPair pp = e.toPair();
+                TsonElement k = pp.getKey();
+                TsonElement v = pp.getValue();
+                ObjEx ph=new ObjEx(k);
+                NOptional<String> n = ph.asString();
+                if(n.isPresent()){
+                    switch (HUtils.uid(n.get())){
+                        case "from":{
+                            p.setProperty(HProp.ofDouble2(HPropName.FROM, new ObjEx(v).asDouble2().get()));
+                            return true;
+                        }
+                        case "to":{
+                            p.setProperty(HProp.ofDouble2(HPropName.FROM, new ObjEx(v).asDouble2().get()));
+                            return false;
+                        }
                     }
                 }
             }
         }
-    }
-
-    public HLine setFrom(Double2 from) {
-        this.from = from;
-        return this;
-    }
-
-    public HLine setTo(Double2 to) {
-        this.to = to;
-        return this;
+        return false;
     }
 
     @Override
-    public TsonElement toTson() {
+    public TsonElement toTson(HNode item) {
+        HNode node=(HNode) item;
+        HProp from = node.getProperty(HPropName.FROM).orElse(HProp.ofDouble2(HPropName.TO, 0,0));
+        HProp to = node.getProperty(HPropName.TO).orElse(HProp.ofDouble2(HPropName.TO, 100,100));
         return ToTsonHelper.of(
-                        this
+                        node, engine()
                 ).addChildren(
                         from==null?null:Tson.pair("from", HUtils.toTson(from)),
                         to==null?null:Tson.pair("to", HUtils.toTson(to))
@@ -73,19 +59,4 @@ public class HLineImpl extends AbstractHNode implements HLine {
                 .build();
     }
 
-
-    @Override
-    public Double2 from() {
-        return from;
-    }
-
-    @Override
-    public Double2 to() {
-        return to;
-    }
-
-    @Override
-    public HNodeType type() {
-        return HNodeType.LINE;
-    }
 }

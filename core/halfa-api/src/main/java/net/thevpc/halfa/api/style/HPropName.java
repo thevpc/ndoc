@@ -1,0 +1,51 @@
+package net.thevpc.halfa.api.style;
+
+/**
+ *
+ * @author vpc
+ */
+public class HPropName {
+
+    public static final String WIDTH="width";
+    public static final String HEIGHT="height";
+    public static final String POSITION="position";
+    public static final String SIZE="size";
+    public static final String ORIGIN="origin";
+    public static final String FONT_FAMILY="font-family";
+    public static final String FONT_SIZE="font-size";
+    public static final String VAR="var";
+    public static final String FONT_BOLD="font-bold";
+    public static final String FONT_ITALIC="font-italic";
+    public static final String FONT_UNDERLINED="font-underlined";
+    public static final String FOREGROUND_COLOR="foreground-color";
+    public static final String BACKGROUND_COLOR="background-color";
+    public static final String LINE_COLOR="line-color";
+    public static final String GRID_COLOR="grid-color";
+    public static final String DRAW_GRID="draw-grid";
+    public static final String FILL_BACKGROUND="fill-background";
+    public static final String DRAW_CONTOUR="draw-contour";
+    public static final String PRESERVE_SHAPE_RATIO="preserve-shape-ratio";
+    public static final String ROUND_CORNER="round-corner";
+    public static final String COLSPAN="colspan";
+    public static final String ROWSPAN="rowspan";
+    public static final String THEED="threed";
+    public static final String RAISED="raised";
+    public static final String COLUMNS="columns";
+    public static final String POINTS="points";
+    public static final String COUNT="count";
+    public static final String ROWS="rows";
+    public static final String ROWS_WEIGHT="rows-weight";
+    public static final String COLUMNS_WEIGHT="columns-weight";
+    public static final String STYLE_CLASS="style-class";
+    public static final String DISABLED="disabled";
+    public static final String TEMPLATE="template";
+    public static final String EXTENDS="extends";
+    public static final String NAME="name";
+    public static final String MAX_X="xmax";
+    public static final String MAX_Y="ymax";
+    public static final String VALUE="value";
+    public static final String FROM="from";
+    public static final String TO="to";
+
+    public static final String DEBUG = "debug";
+}

@@ -5,7 +5,7 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.style.HStyles;
+import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
@@ -29,8 +29,8 @@ public class HalfaExampleTestBullets {
                         .add(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
                                 f.ofUnorderedList()
-                                        .set(HStyles.gridColor(Color.GRAY))
-                                        .add(f.ofText("Example 1").set(HStyles.backgroundColor(Color.CYAN)))
+                                        .setProperty(HProps.gridColor(Color.GRAY))
+                                        .add(f.ofPlain("Example 1").setProperty(HProps.backgroundColor(Color.CYAN)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.YELLOW)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.RED)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.BLUE)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))

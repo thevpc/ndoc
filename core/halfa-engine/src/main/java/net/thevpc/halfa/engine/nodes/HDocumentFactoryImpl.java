@@ -1,33 +1,24 @@
 package net.thevpc.halfa.engine.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.style.HStyles;
+import net.thevpc.halfa.api.node.container.*;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.api.node.container.HFlowContainer;
-import net.thevpc.halfa.api.node.container.HGridContainer;
-import net.thevpc.halfa.api.node.container.HStackContainer;
-import net.thevpc.halfa.api.node.container.HUnorderedList;
+import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.engine.document.DefaultHDocument;
-import net.thevpc.halfa.engine.document.HPageGroupImpl;
-import net.thevpc.halfa.engine.document.HPageImpl;
-import net.thevpc.halfa.engine.nodes.container.*;
-import net.thevpc.halfa.engine.nodes.filler.HFillerImpl;
-import net.thevpc.halfa.engine.nodes.filler.HVoidImpl;
-import net.thevpc.halfa.engine.nodes.image.HImageImpl;
-import net.thevpc.halfa.engine.nodes.shape.*;
-import net.thevpc.halfa.engine.nodes.text.HLatexImpl;
-import net.thevpc.halfa.engine.nodes.text.HTextImpl;
-import net.thevpc.halfa.engine.nodes.text.HLatexEquationImpl;
 import net.thevpc.halfa.engine.styles.HDocumentRootRules;
 import net.thevpc.nuts.util.NAssert;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class HDocumentFactoryImpl implements HDocumentFactory {
+    private HEngineImpl engine;
+
+    public HDocumentFactoryImpl(HEngineImpl engine) {
+        this.engine = engine;
+    }
+
     @Override
     public HDocument ofDocument() {
         DefaultHDocument d = new DefaultHDocument();
@@ -36,430 +27,280 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
-    public HNode create(HNodeType type) {
-        NAssert.requireNonNull(type,"type");
-        switch (type) {
-            case ORDERED_LIST:
-                return ofOrderedList();
-            case UNORDERED_LIST:
-                return ofUnorderedList();
-            case FLOW:
-                return ofFlow();
-            case FILLER:
-                return ofGlue();
-            case IMAGE:
-                return ofImage();
-            case LINE:
-                return ofLine();
-            case GRID:
-                return ofGrid();
-            case POLYGON:
-                return ofPolygon();
-            case POLYLINE:
-                return ofPolyline();
-            case PAGE:
-                return ofPage();
-            case PAGE_GROUP:
-                return ofPageGroup();
-            case TEXT:
-                return ofText();
-            case STACK:
-                return ofStack();
-            case RECTANGLE:
-                return ofRectangle();
-            case EQUATION:
-                return ofEquation();
-            case LATEX:
-                return ofLatex();
-            case ELLIPSE:
-                return ofEllipse();
-            case ARC:
-                return ofArc();
-            case CUSTOM:
-                return ofText();
-        }
-        throw new IllegalArgumentException("not supported "+type);
+    public HNode of(String type) {
+        NAssert.requireNonNull(type, "type");
+        return engine.nodeTypeFactory(type)
+                .get().newNode();
     }
 
     @Override
-    public HPage ofPage() {
-        return new HPageImpl();
+    public HContainer ofPage() {
+        return (HContainer) of(HNodeType.PAGE);
     }
 
     @Override
-    public HPageGroup ofPageGroup() {
-        return new HPageGroupImpl();
+    public HContainer ofPageGroup() {
+        return (HContainer) of(HNodeType.PAGE_GROUP);
     }
 
 
     @Override
-    public HVoid ofVoid() {
-        return new HVoidImpl();
-    }
-    @Override
-    public HFiller ofGlue() {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofMin(), XLen.ofMin(), XLen.ofMaxParent()),
-                        new YLenConstraints(YLen.ofMin(), YLen.ofMin(), YLen.ofMaxParent())
-                )
-        );
+    public HNode ofVoid() {
+        return of(HNodeType.VOID);
     }
 
     @Override
-    public HFiller ofGlueV() {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofMin(), XLen.ofMin(), XLen.ofMin()),
-                        new YLenConstraints(YLen.ofMin(), YLen.ofMin(), YLen.ofMaxParent())
-                )
-        );
-    }
-
-    @Override
-    public HFiller ofGlueH() {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofMin(), XLen.ofMin(), XLen.ofMaxParent()),
-                        new YLenConstraints(YLen.ofMin(), YLen.ofMin(), YLen.ofMin())
-                )
-        );
-    }
-
-    @Override
-    public HFiller ofStrutV(double w) {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofParent(w), XLen.ofParent(w), XLen.ofParent(w)),
-                        new YLenConstraints(YLen.ofMin(), YLen.ofMin(), YLen.ofMaxParent())
-                )
-        );
-    }
-
-    @Override
-    public HFiller ofStrutH(double w) {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofMin(), XLen.ofMin(), XLen.ofMaxParent()),
-                        new YLenConstraints(YLen.ofParent(w), YLen.ofParent(w), YLen.ofParent(w))
-                )
-        );
-    }
-
-    @Override
-    public HFiller ofStrut(double w, double h) {
-        return new HFillerImpl(
-                new XYConstraints(
-                        new XLenConstraints(XLen.ofParent(w), XLen.ofParent(w), XLen.ofParent(w)),
-                        new YLenConstraints(YLen.ofParent(h), YLen.ofParent(h), YLen.ofParent(h))
-                )
-        );
-    }
-
-    @Override
-    public HArc ofArc(double from, double to) {
-        return new HArcImpl(
-                from, to
-        );
-    }
-
-    @Override
-    public HArc ofArc() {
-        return new HArcImpl(
-                null, null
-        );
-    }
-
-    @Override
-    public HFlowContainer ofFlow(double x, double y, HNode... children) {
-        return (HFlowContainer) ofFlow(children)
-                .set(HStyles.position(x, y))
+    public HNode ofGlue() {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.maxX(100))
+                .setProperty(HProps.maxY(100))
                 ;
     }
 
     @Override
-    public HCtrlAssign ofAssign() {
-        return new HCtrlAssignImpl();
-    }
-
-    @Override
-    public HFlowContainer ofFlow(HNode... children) {
-        return (HFlowContainer) new HFlowContainerImpl(new ArrayList<>(Arrays.asList(children)))
+    public HNode ofGlueV() {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.maxX(0))
+                .setProperty(HProps.maxY(100))
                 ;
     }
 
     @Override
-    public HStackContainer ofStack(HNode... children) {
-        return new HStackContainerImpl(new ArrayList<>(Arrays.asList(children)))
+    public HNode ofGlueH() {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.maxX(100))
+                .setProperty(HProps.maxY(0))
                 ;
     }
 
     @Override
-    public HStackContainer ofStack(double x, double y, HNode... children) {
-        return (HStackContainer) ofStack(children)
-                .set(HStyles.position(x, y));
-    }
-
-    @Override
-    public HUnorderedList ofUnorderedList(double x, double y, HNode... children) {
-        return (HUnorderedList) ofUnorderedList(children)
-                .set(HStyles.position(x, y))
+    public HNode ofStrutV(double w) {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.size(0, 100))
                 ;
     }
 
     @Override
-    public HOrderedList ofOrderedList(double x, double y, HNode... children) {
-        return (HOrderedList) ofOrderedList(children)
-                .set(HStyles.position(x, y));
-    }
-
-    @Override
-    public HUnorderedList ofUnorderedList(HNode... children) {
-        return new HUnorderedListImpl(new ArrayList<>(Arrays.asList(children)));
-    }
-
-    @Override
-    public HOrderedList ofOrderedList(HNode... children) {
-        return new HOrderedListImpl(new ArrayList<>(Arrays.asList(children)));
-    }
-
-
-    @Override
-    public HGridContainer ofGrid(int cols, int rows, HNode... children) {
-        return (HGridContainer) ofGrid(children)
-                .set(HStyles.columns(cols))
-                .set(HStyles.rows(rows))
+    public HNode ofStrutH(double w) {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.size(100, 0))
                 ;
     }
 
     @Override
-    public HGridContainer ofGrid(HNode... children) {
-        return new HGridContainerImpl(new ArrayList<>(Arrays.asList(children)))
+    public HNode ofStrut(double w, double h) {
+        return of(HNodeType.FILLER)
+                .setProperty(HProps.size(w, 0))
                 ;
     }
 
     @Override
-    public HGridContainer ofGridV(HNode... children) {
-        return ofGrid(1, -1, children)
+    public HNode ofArc(double from, double to) {
+        return of(HNodeType.ARC)
+                .setProperty(HProp.ofDouble(HPropName.FROM, from))
+                .setProperty(HProp.ofDouble(HPropName.FROM, to))
                 ;
     }
 
     @Override
-    public HGridContainer ofGridH(HNode... children) {
-        return ofGrid(-1, 1, children);
+    public HNode ofArc() {
+        return of(HNodeType.ARC);
     }
 
     @Override
-    public HText ofText(double x, double y, String hello) {
-        return (HText) ofText(hello)
-                .set(HStyles.position(x, y))
+    public HNode ofAssign() {
+        return of(HNodeType.ASSIGN);
+    }
+
+    @Override
+    public HNode ofAssign(String name, Object value) {
+        return ofAssign()
+                .setProperty(HPropName.VAR, name)
+                .setProperty(HPropName.VALUE, value)
                 ;
     }
 
     @Override
-    public HText ofText() {
-        return new HTextImpl(null);
+    public HContainer ofFlow() {
+        return (HContainer) of(HNodeType.FLOW);
     }
 
     @Override
-    public HText ofText(String hello) {
-        return new HTextImpl(hello);
+    public HContainer ofStack() {
+        return (HContainer) of(HNodeType.STACK);
     }
 
     @Override
-    public HRectangle ofRectangle(double x, double y, double width, double height) {
-        return (HRectangle) new HRectangleImpl()
-                .set(HStyles.position(x, y))
-                .set(HStyles.size(width, height))
+    public HContainer ofUnorderedList() {
+        return (HContainer) of(HNodeType.UNORDERED_LIST);
+    }
+
+    @Override
+    public HContainer ofOrderedList() {
+        return (HContainer) of(HNodeType.ORDERED_LIST);
+    }
+
+    @Override
+    public HContainer ofGrid(int cols, int rows) {
+        return (HContainer) ofGrid()
+                .setProperty(HPropName.COLUMNS, cols)
+                .setProperty(HPropName.ROWS, rows)
+                ;
+    }
+
+    public HContainer ofGrid() {
+        return (HContainer) of(HNodeType.GRID);
+    }
+
+    @Override
+    public HContainer ofGridV() {
+        return ofGrid()
+                .setProperty(HProps.columns(1))
+                .setProperty(HProps.rows(-1))
                 ;
     }
 
     @Override
-    public HRectangle ofRectangle() {
-        return new HRectangleImpl();
-    }
-
-    @Override
-    public HRectangle ofSquare(double x, double y, double width) {
-        return (HRectangle) ofRectangle(x, y, width, width)
-                .set(HStyles.preserveShapeRatio(true))
+    public HContainer ofGridH() {
+        return ofGrid()
+                .setProperty(HProps.columns(-1))
+                .setProperty(HProps.rows(1))
                 ;
     }
 
     @Override
-    public HRectangle ofSquare(double width) {
-        return (HRectangle) ofSquare()
-                .set(HStyles.size(width, width))
-                ;
+    public HNode ofPlain(String text) {
+        return ofPlain().setProperty(HPropName.VALUE, text);
     }
 
     @Override
-    public HRectangle ofSquare() {
-        return (HRectangle) ofRectangle()
-                .set(HStyles.preserveShapeRatio(true))
-                ;
+    public HNode ofText(String text) {
+        return ofText().setProperty(HPropName.VALUE, text);
     }
 
     @Override
-    public HEllipse ofEllipse(double x, double y, double width, double height) {
-        return (HEllipse) ofEllipse()
-                .set(HStyles.position(x, y))
-                .set(HStyles.size(width, height));
+    public HNode ofPlain() {
+        return of(HNodeType.PLAIN);
     }
 
     @Override
-    public HEllipse ofEllipse() {
-        return (HEllipse) new HEllipseImpl()
-                ;
+    public HNode ofRectangle() {
+        return of(HNodeType.RECTANGLE);
+    }
+
+    @Override
+    public HNode ofSphere() {
+        return of(HNodeType.SPHERE);
+    }
+
+    @Override
+    public HNode ofEllipsoid() {
+        return of(HNodeType.ELLIPSOID);
+    }
+
+    @Override
+    public HNode ofSquare() {
+        return of(HNodeType.SQUARE);
     }
 
 
     @Override
-    public HEllipse ofCircle() {
-        return (HEllipse) new HEllipseImpl()
-                .set(HStyles.preserveShapeRatio(true))
-                ;
+    public HNode ofEllipse() {
+        return of(HNodeType.ELLIPSE);
+    }
+
+
+    @Override
+    public HNode ofCircle() {
+        return of(HNodeType.CIRCLE);
     }
 
     @Override
-    public HPolygon ofTriangle() {
-        return ofPolygon(3);
+    public HNode ofTriangle() {
+        return of(HNodeType.TRIANGLE);
     }
 
     @Override
-    public HPolygon ofHexagon() {
-        return ofPolygon(6);
+    public HNode ofHexagon() {
+        return of(HNodeType.HEXAGON);
     }
 
     @Override
-    public HPolygon ofOctagon() {
-        return ofPolygon(8);
+    public HNode ofOctagon() {
+        return of(HNodeType.OCTAGON);
     }
 
     @Override
-    public HPolygon ofPentagon() {
-        return ofPolygon(5);
+    public HNode ofPentagon() {
+        return of(HNodeType.PENTAGON);
+    }
+
+    public HNode ofPolygon() {
+        return of(HNodeType.POLYGON);
+    }
+//    @Override
+//    public HNode ofPolygon(int edges) {
+//        if(edges<=2){
+//            throw new IllegalArgumentException("invalid edges "+edges+". must be >2");
+//        }
+//        switch (edges){
+//            case 3:{
+//                return ofPolygon(
+//                        new Double2(0,0),
+//                        new Double2(0,100),
+//                        new Double2(50,0)
+//                );
+//            }
+//            case 4:{
+//                return ofPolygon(
+//                        new Double2(0,0),
+//                        new Double2(0,100),
+//                        new Double2(100,100),
+//                        new Double2(100,0)
+//                );
+//            }
+//            default:{
+//                java.util.List<Double2> all=new ArrayList<>();
+//                    for (int i = 0; i <edges ; i++) {
+//                        all.add(
+//                                new Double2(
+//                                        50 + Math.sin(i*Math.PI*2/edges)*50,
+//                                        50 + Math.cos(i*Math.PI*2/edges)*50
+//                                )
+//                        );
+//                    }
+//                    return ofPolygon(all.toArray(new Double2[0]));
+//                }
+//        }
+//    }
+
+    @Override
+    public HNode ofPolyline() {
+        return of(HNodeType.POLYLINE);
     }
 
     @Override
-    public HPolygon ofPolygon(int edges) {
-        if(edges<=2){
-            throw new IllegalArgumentException("invalid edges "+edges+". must be >2");
-        }
-        switch (edges){
-            case 3:{
-                return ofPolygon(
-                        new Double2(0,0),
-                        new Double2(0,100),
-                        new Double2(50,0)
-                );
-            }
-            case 4:{
-                return ofPolygon(
-                        new Double2(0,0),
-                        new Double2(0,100),
-                        new Double2(100,100),
-                        new Double2(100,0)
-                );
-            }
-            default:{
-                java.util.List<Double2> all=new ArrayList<>();
-                    for (int i = 0; i <edges ; i++) {
-                        all.add(
-                                new Double2(
-                                        50 + Math.sin(i*Math.PI*2/edges)*50,
-                                        50 + Math.cos(i*Math.PI*2/edges)*50
-                                )
-                        );
-                    }
-                    return ofPolygon(all.toArray(new Double2[0]));
-                }
-        }
+    public HNode ofLine() {
+        return of(HNodeType.LINE);
     }
 
     @Override
-    public HEllipse ofCircle(double width) {
-        return (HEllipse) ofCircle()
-                .set(HStyles.size(width, width))
-                ;
+    public HNode ofImage() {
+        return of(HNodeType.IMAGE);
     }
 
     @Override
-    public HEllipse ofCircle(double x, double y, double width) {
-        return (HEllipse) ofCircle(width)
-                .set(HStyles.position(x, y))
-                ;
+    public HNode ofEquation() {
+        return of(HNodeType.EQUATION);
     }
 
     @Override
-    public HPolygon ofPolygon(Double2... points) {
-        return (HPolygon) new HPolygonImpl(points)
-                .set(HStyles.preserveShapeRatio(true))
-                ;
+    public HNode ofEquation(String value) {
+        return ofEquation().setProperty(HPropName.VALUE, value);
     }
 
     @Override
-    public HPolygon ofPolygon(double x, double y, double width, double height, Double2... points) {
-        return (HPolygon) ofPolygon(points)
-                .set(HStyles.position(x, y))
-                .set(HStyles.size(width, height))
-                ;
-    }
-
-    @Override
-    public HPolyline ofPolyline(double x, double y, double width, double height, Double2... points) {
-        return (HPolyline) ofPolyline(points)
-                .set(HStyles.position(x, y))
-                .set(HStyles.size(width, height))
-                ;
-    }
-
-    @Override
-    public HPolyline ofPolyline(Double2... points) {
-        return new HPolylineImpl(points);
-    }
-
-    @Override
-    public HLine ofLine(double x, double y, double maxx, double maxy) {
-        return (HLine) new HLineImpl(new Double2(x, y), new Double2(maxx, maxy))
-                .set(HStyles.position(0, 0))
-                .set(HStyles.size(maxx - x, maxy - y))
-                ;
-    }
-
-    @Override
-    public HLine ofLine() {
-        return (HLine) new HLineImpl()
-                ;
-    }
-
-    @Override
-    public HImage ofImage() {
-        return (HImage) new HImageImpl()
-                ;
-    }
-
-    @Override
-    public HImage ofImage(double x, double y, Image image) {
-        return (HImage) new HImageImpl(image)
-                .set(HStyles.position(x, y))
-                ;
-    }
-
-    @Override
-    public HLatexEquation ofEquation(double x, double y, String latex) {
-        return (HLatexEquation) new HLatexEquationImpl(latex)
-                .set(HStyles.position(x, y))
-                ;
-    }
-
-    @Override
-    public HLatexEquation ofEquation() {
-        return new HLatexEquationImpl();
-    }
-
-    @Override
-    public HLatex ofLatex() {
-        return new HLatexImpl();
+    public HNode ofText() {
+        return of(HNodeType.TEXT);
     }
 }

@@ -5,7 +5,7 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.style.HStyles;
+import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
@@ -28,25 +28,25 @@ public class HalfaExampleTestGrid {
                 .add(f.ofPage()
                                 .add(
                                         f.ofGrid(3,2)
-                                                .set(HStyles.columnsWeight(1,2,3,4,5,6))
+                                                .setProperty(HProps.columnsWeight(1,2,3,4,5,6))
                                                 .add(f.ofRectangle()
-                                                        .set(HStyles.backgroundColor(Color.BLUE))
-                                                        .set(HStyles.colspan(4))
+                                                        .setProperty(HProps.backgroundColor(Color.BLUE))
+                                                        .setProperty(HProps.colspan(4))
                                                 )
                                                 .add(
-                                                        f.ofRectangle().set(HStyles.backgroundColor(Color.RED))
-                                                                .set(HStyles.rowspan(4))
+                                                        f.ofRectangle().setProperty(HProps.backgroundColor(Color.RED))
+                                                                .setProperty(HProps.rowspan(4))
                                                 )
                                                 .add(f.ofGrid(4,4)
-                                                        .set(HStyles.colspan(3))
-                                                        .set(HStyles.rowspan(2))
-                                                .add(f.ofRectangle().set(HStyles.backgroundColor(Color.BLUE))
-                                                        .set(HStyles.colspan(5))
-                                                        .set(HStyles.rowspan(2))
+                                                        .setProperty(HProps.colspan(3))
+                                                        .setProperty(HProps.rowspan(2))
+                                                .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.BLUE))
+                                                        .setProperty(HProps.colspan(5))
+                                                        .setProperty(HProps.rowspan(2))
                                                 )
-                                                .add(f.ofRectangle().set(HStyles.backgroundColor(Color.RED)))
-                                                .add(f.ofRectangle().set(HStyles.backgroundColor(Color.GREEN)))
-                                                .add(f.ofRectangle().set(HStyles.backgroundColor(Color.YELLOW))))
+                                                .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.RED)))
+                                                .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.GREEN)))
+                                                .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.YELLOW))))
                                 )
                 )
 //                .add(f.page()

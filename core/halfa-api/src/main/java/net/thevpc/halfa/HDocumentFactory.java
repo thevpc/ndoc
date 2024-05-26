@@ -1,122 +1,93 @@
 package net.thevpc.halfa;
 
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.api.node.container.HFlowContainer;
-import net.thevpc.halfa.api.node.container.HGridContainer;
-import net.thevpc.halfa.api.node.container.HStackContainer;
-import net.thevpc.halfa.api.node.container.HUnorderedList;
-
-import java.awt.*;
+import net.thevpc.halfa.api.node.container.*;
 
 public interface HDocumentFactory {
     HDocument ofDocument();
 
-    HPage ofPage();
+    HContainer ofPage();
 
-    HPageGroup ofPageGroup();
+    HContainer ofPageGroup();
 
-    HNode create(HNodeType type);
+    HNode of(String type);
 
-    HText ofText(double x, double y, String hello);
+    HNode ofPlain(String text);
 
-    HText ofText(String hello);
+    HNode ofText(String text);
 
-    HText ofText();
+    HNode ofPlain();
 
-    HVoid ofVoid();
+    HNode ofVoid();
 
-    HFiller ofGlue();
+    HNode ofGlue();
 
-    HFiller ofGlueV();
+    HNode ofGlueV();
 
-    HFiller ofGlueH();
+    HNode ofGlueH();
 
-    HFiller ofStrutV(double w);
+    HNode ofStrutV(double w);
 
-    HFiller ofStrutH(double w);
+    HNode ofStrutH(double w);
 
-    HFiller ofStrut(double w, double h);
+    HNode ofStrut(double w, double h);
 
-    HArc ofArc(double from, double to);
+    HNode ofArc(double from, double to);
 
-    HArc ofArc();
+    HNode ofArc();
 
-    HCtrlAssign ofAssign();
-    HFlowContainer ofFlow(HNode... children);
+    HNode ofAssign();
 
-    HFlowContainer ofFlow(double x, double y, HNode... children);
+    HNode ofAssign(String name, Object value);
 
-    HStackContainer ofStack(double x, double y, HNode... children);
+    HContainer ofFlow();
 
-    HUnorderedList ofUnorderedList(double x, double y, HNode... children);
+    HContainer ofStack();
 
-    HOrderedList ofOrderedList(double x, double y, HNode... children);
+    HContainer ofUnorderedList();
 
-    HUnorderedList ofUnorderedList(HNode... children);
+    HContainer ofOrderedList();
 
-    HOrderedList ofOrderedList(HNode... children);
+    HContainer ofGrid(int cols, int rows);
 
-    HStackContainer ofStack(HNode... children);
+    HContainer ofGrid();
 
-    HGridContainer ofGrid(HNode... children);
+    HContainer ofGridV();
 
-    HGridContainer ofGrid(int cols, int rows, HNode... children);
+    HContainer ofGridH();
 
-    HGridContainer ofGridV(HNode... children);
+    HNode ofSphere();
 
-    HGridContainer ofGridH(HNode... children);
+    HNode ofEllipsoid();
 
-    HRectangle ofRectangle(double x, double y, double width, double height);
+    HNode ofRectangle();
 
-    HRectangle ofRectangle();
+    HNode ofSquare();
 
-    HRectangle ofSquare();
+    HNode ofEllipse();
 
-    HRectangle ofSquare(double width);
+    HNode ofCircle();
 
-    HRectangle ofSquare(double x, double y, double width);
+    HNode ofTriangle();
 
-    HEllipse ofEllipse(double x, double y, double width, double height);
+    HNode ofHexagon();
 
-    HEllipse ofEllipse();
+    HNode ofOctagon();
 
-    HEllipse ofCircle();
+    HNode ofPentagon();
 
-    HPolygon ofTriangle();
+    HNode ofPolygon();
 
-    HPolygon ofHexagon();
+    HNode ofPolyline();
 
-    HPolygon ofOctagon();
+    HNode ofLine();
 
-    HPolygon ofPentagon();
+    HNode ofImage();
 
-    HPolygon ofPolygon(int edges);
+    HNode ofEquation();
 
-    HEllipse ofCircle(double width);
+    HNode ofEquation(String value);
 
-    HEllipse ofCircle(double x, double y, double width);
-
-    HPolygon ofPolygon(double x, double y, double width, double height, Double2... points);
-
-    HPolygon ofPolygon(Double2... points);
-
-    HPolyline ofPolyline(double x, double y, double width, double height, Double2... points);
-
-    HPolyline ofPolyline(Double2... points);
-
-    HLine ofLine(double x, double y, double maxx, double maxy);
-
-    HLine ofLine();
-
-    HImage ofImage();
-
-    HImage ofImage(double x, double y, Image image);
-
-    HLatexEquation ofEquation(double x, double y, String latex);
-
-    HLatexEquation ofEquation();
-
-    HLatex ofLatex();
+    HNode ofText();
 }

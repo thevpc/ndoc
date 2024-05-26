@@ -5,7 +5,8 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.style.HStyles;
+import net.thevpc.halfa.api.node.container.HContainer;
+import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.HAlign;
@@ -28,56 +29,66 @@ public class HalfaExampleByCode1 {
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
                         .add(
-                                f.ofStack()
-                                        .set(HStyles.fontSize(50))
-                                        .set(HStyles.fontBold())
+                                ((HContainer)f.ofStack()
+                                        .setFontSize(50)
+                                        .setFontBold(true))
                                         .add(
-                                                f.ofRectangle(0, 0, 100, 15)
-                                                        .set(HStyles.backgroundColor(new Color(0x3f4e70)))
+                                                f.ofRectangle()
+                                                        .setPosition(0, 0)
+                                                        .setSize(100, 15)
+                                                        .setBackgroundColor("#3f4e70")
                                         )
                                         .add(
-                                                f.ofRectangle(0, 15, 100, 1)
-                                                        .set(HStyles.backgroundColor(new Color(0X21283a)))
+                                                f.ofRectangle()
+                                                        .setPosition(0, 15)
+                                                        .setSize(100, 1)
+                                                        .setBackgroundColor("#21283a")
                                         )
                                         .add(
-                                                f.ofText(50, 3, "Ceci est un Titre pas comme les autres")
-                                                        .set(HStyles.foregroundColor(Color.WHITE))
-                                                        .set(HStyles.fontSize(40))
-                                                        .set(HStyles.origin(HAlign.TOP))
+                                                f.ofPlain("Ceci est un Titre pas comme les autres")
+                                                        .setPosition(50, 3)
+                                                        .setForegroundColor("white")
+                                                        .setFontSize(40)
+                                                        .setOrigin(HAlign.TOP)
                                         )
                                         .add(
-                                                f.ofCircle(70, 50, 20)
-                                                        .set(HStyles.foregroundColor(Color.YELLOW))
-                                                        .set(HStyles.backgroundColor(new Color(0xffaa00)))
-                                                        .set(HStyles.lineColor(Color.RED))
-                                                        .set(HStyles.origin(HAlign.CENTER))
+                                                f.ofCircle()
+                                                        .setPosition(70, 50)
+                                                        .setSize(20)
+                                                        .setForegroundColor("yellow")
+                                                        .setBackgroundColor("#ffaa00")
+                                                        .setLineColor("red")
+                                                        .setOrigin(HAlign.CENTER)
                                         )
                                         .add(
-                                                f.ofRectangle(80, 70, 20, 20)
-                                                        .set(HStyles.preserveShapeRatio())
-                                                        .set(HStyles.foregroundColor(Color.GREEN))
-                                                        .set(HStyles.backgroundColor(new Color(0x555500)))
-                                                        .set(HStyles.lineColor(Color.RED))
-                                                        .set(HStyles.origin(HAlign.CENTER))
+                                                f.ofRectangle()
+                                                        .setPosition(80, 70)
+                                                        .setSize(20, 20)
+                                                        .setProperty(HProps.preserveShapeRatio())
+                                                        .setForegroundColor("green")
+                                                        .setBackgroundColor("#555500")
+                                                        .setLineColor("red")
+                                                        .setOrigin(HAlign.CENTER)
                                         )
                                         .add(
                                                 f.ofGrid(2, 2)
-                                                        .set(HStyles.rowsWeight(1, 3))
+                                                        .setProperty(HProps.rowsWeight(1, 3))
                                                         .add(f.ofGlue())
                                                         .add(f.ofGlue())
                                                         .add(
 
                                                                 f.ofUnorderedList()
-                                                                        .set(HStyles.gridColor(Color.GRAY))
-                                                                        .add(f.ofText("Ceci est un premier point"))
-                                                                        .add(f.ofText("Ceci est un second point"))
-                                                                        .add(f.ofText("Ceci est un troisieme point"))
+                                                                        .add(f.ofPlain("Ceci est un premier point"))
+                                                                        .add(f.ofPlain("Ceci est un second point"))
+                                                                        .add(f.ofPlain("Ceci est un troisieme point"))
+                                                                        .setGridColor("gray")
 
                                                         )
                                         )
                                         .add(
-                                                f.ofEquation(10, 80, "x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}")
-                                                        .set(HStyles.origin(HAlign.LEFT))
+                                                f.ofEquation("x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}")
+                                                        .setPosition(10, 80)
+                                                        .setOrigin(HAlign.LEFT)
                                         )
                         )
                 );

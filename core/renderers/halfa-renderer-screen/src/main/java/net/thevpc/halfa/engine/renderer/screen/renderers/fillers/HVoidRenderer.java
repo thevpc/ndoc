@@ -1,19 +1,24 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.fillers;
 
-import net.thevpc.halfa.api.model.Bounds2;
-import net.thevpc.halfa.api.model.XYConstraints;
-import net.thevpc.halfa.api.node.HFiller;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HVoid;
-import net.thevpc.halfa.engine.renderer.screen.HPartRendererContext;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHPartRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.containers.HSizeRequirements;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 
-import java.awt.*;
+public class HVoidRenderer extends AbstractHNodeRenderer {
+    HProperties defaultStyles = new HProperties();
 
-public class HVoidRenderer extends AbstractHPartRenderer {
-    public Bounds2 paintPagePart(HNode p, HPartRendererContext ctx) {
-        return ctx.getBounds();
+    public HVoidRenderer() {
+        super(
+                HNodeType.VOID,
+                HNodeType.ASSIGN
+                );
+    }
+
+    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+        return new HSizeRequirements();
     }
 
 

@@ -4,57 +4,45 @@
  */
 package net.thevpc.halfa.engine.nodes.image;
 
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.engine.nodes.AbstractHNode;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
-
-import java.awt.Image;
+import net.thevpc.tson.TsonStringLayout;
 
 
 /**
  * @author vpc
  */
-public class HImageImpl extends AbstractHNode implements HImage {
-
-    private Image image;
+public class HImageImpl extends AbstractHNodeTypeFactory {
 
     public HImageImpl() {
+        super(false, HNodeType.IMAGE);
     }
 
     @Override
-    public void mergeNode(HItem other) {
-        if (other != null) {
-            super.mergeNode(other);
-            if (other instanceof HImage) {
-                HImage t = (HImage) other;
-                if (t.image() != null) {
-                    this.image = t.image();
-                }
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()) {
+            case STRING: {
+                p.setProperty(HProp.ofString(HPropName.VALUE, e.toStr().raw()));
+                return true;
             }
         }
-    }
-
-    public HImageImpl(Image image) {
-        this.image = image;
-    }
-
-    @Override
-    public Image image() {
-        return image;
-    }
-
-    @Override
-    public HNodeType type() {
-        return HNodeType.IMAGE;
+        return false;
     }
 
 
     @Override
-    public TsonElement toTson() {
-        return ToTsonHelper.of(this)
-                .addArg(Tson.string("some-path"))
+    public TsonElement toTson(HNode item) {
+        return ToTsonHelper
+                .of(item,engine())
+                .inlineStringProp(HPropName.VALUE)
                 .build();
     }
 }
