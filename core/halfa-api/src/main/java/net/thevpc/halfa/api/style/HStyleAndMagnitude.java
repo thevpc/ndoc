@@ -1,5 +1,7 @@
 package net.thevpc.halfa.api.style;
 
+import java.util.Objects;
+
 public class HStyleAndMagnitude implements Comparable<HStyleAndMagnitude> {
     private HProp style;
     private HStyleMagnitude magnitude;
@@ -19,7 +21,7 @@ public class HStyleAndMagnitude implements Comparable<HStyleAndMagnitude> {
 
     @Override
     public int compareTo(HStyleAndMagnitude o) {
-        if (this.style.getName() != o.getStyle().getName()) {
+        if (!Objects.equals(this.style.getName(), o.getStyle().getName())) {
             return this.style.getName().compareTo(o.getStyle().getName());
         }
         return this.magnitude.compareTo(o.magnitude);

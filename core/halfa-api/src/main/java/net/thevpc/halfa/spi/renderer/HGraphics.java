@@ -26,13 +26,14 @@ public interface HGraphics {
 
     FontMetrics getFontMetrics();
 
-    Graphics context();
+    Graphics2D context();
 
     void setPaint(Paint paint);
 
     void setFont(Font font);
 
     void drawString(String str, double x, double i);
+    void debugString(String str, double x, double i);
 
     Color getColor();
 
@@ -65,4 +66,7 @@ public interface HGraphics {
     void setComposite(Composite composite);
 
     void fill(Shape shape);
+
+    void setStroke(Stroke stroke);
+    Stroke getStroke();
 }

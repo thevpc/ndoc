@@ -4,7 +4,6 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;
 import net.thevpc.halfa.spi.util.HParseHelper;
@@ -15,7 +14,9 @@ import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
 import net.thevpc.tson.TsonElementHeader;
 
 public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
@@ -35,8 +36,8 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
         return engine;
     }
 
-    public void init(HEngine engine){
-        this.engine=engine;
+    public void init(HEngine engine) {
+        this.engine = engine;
     }
 
     public boolean isContainer() {
@@ -57,16 +58,23 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
     protected void processImplicitStyles(String id, HNode p, HDocumentFactory f, HNodeFactoryParseContext context) {
 
     }
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+
+    protected boolean isAcceptableArgKeyPair(String s) {
         return false;
     }
 
-    protected boolean processChild(HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         return false;
     }
 
     protected String acceptTypeName(TsonElement e) {
         switch (e.type()) {
+            case NAME: {
+                if (acceptTypeName(e.toName().getName())) {
+                    return e.toName().getName();
+                }
+                break;
+            }
             case FUNCTION: {
                 if (acceptTypeName(e.toFunction().getName())) {
                     return e.toFunction().getName();
@@ -148,25 +156,32 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         }
                     } else {
                         if (!processArg(id, p, e, f, context2)) {
+                            ObjEx es = new ObjEx(e);
+                            if (es.isFunction()) {
+                                if (isAcceptableArgKeyPair(es.name())
+                                        ||
+                                        HStyleParser.acceptStyleName(es.name())
+                                ) {
+                                    return NOptional.ofNamedError(NMsg.ofC("[%s] invalid %s. did you mean %s:%s ?",
+                                            context2.source(),
+                                            e,
+                                            es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
+                                    ));
+                                }
+                            }
                             return NOptional.ofNamedError(NMsg.ofC("[%s] invalid %s", context2.source(), e));
                         }
                     }
                 }
                 for (TsonElement e : ee.children()) {
-                    if (p instanceof HContainer) {
-                        NOptional<HItem> u = engine.newNode(e, context2);
-                        if (u.isPresent()) {
-                            p.append(u.get());
-                        } else {
-                            NOptional<HItem> finalU = u;
-                            return NOptional.ofError(
-                                    s -> NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(s))
-                            );
-                        }
+                    NOptional<HItem> u = engine.newNode(e, context2);
+                    if (u.isPresent()) {
+                        p.append(u.get());
                     } else {
-                        if (!processChild(p, e, f, context2)) {
-                            return NOptional.ofNamedError(NMsg.ofC("[%s] invalid %s", context2.source(), e));
-                        }
+                        NOptional<HItem> finalU = u;
+                        return NOptional.ofError(
+                                s -> NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(s))
+                        );
                     }
                 }
             }
@@ -176,18 +191,14 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
 
     @Override
     public TsonElement toTson(HNode item) {
-        return ToTsonHelper.of((HNode) item,engine)
+        return ToTsonHelper.of((HNode) item, engine)
                 .build();
     }
 
 
     @Override
     public HNode newNode() {
-        if (isContainer()) {
-            return new DefaultHContainer(id());
-        } else {
-            return new DefaultHNode(id());
-        }
+        return new DefaultHNode(id());
     }
 
 }

@@ -15,7 +15,7 @@ public class TrapezoidRenderer extends HPolygonBaseRenderer {
         super(HNodeType.TRAPEZOID);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         double x1 = 20;
         double x2 = 20;
@@ -25,7 +25,7 @@ public class TrapezoidRenderer extends HPolygonBaseRenderer {
                 new Double2(100 - x2, 0),
                 new Double2(x1, 0),
         };
-        return render(p, points, ctx);
+        render(p, points, ctx);
     }
 
 }

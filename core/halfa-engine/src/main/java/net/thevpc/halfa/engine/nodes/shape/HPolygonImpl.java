@@ -90,8 +90,8 @@ public class HPolygonImpl extends AbstractHNodeTypeFactory {
                         node,
                         engine()
                 ).addChildren(
-                        count == null ? null : Tson.pair("count", HUtils.toTson(count)),
-                        points == null ? null : Tson.pair("points", HUtils.toTson(points))
+                        count == null ? null : Tson.ofPair("count", HUtils.toTson(count)),
+                        points == null ? null : Tson.ofPair("points", HUtils.toTson(points))
                 )
                 .build();
     }

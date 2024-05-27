@@ -10,7 +10,6 @@ import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
 
@@ -21,7 +20,7 @@ public class HPolylineRenderer extends AbstractHNodeRenderer {
         super(HNodeType.POLYLINE);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         Bounds2 b = selfBounds(p, ctx);
         double x = b.getX();
@@ -36,10 +35,11 @@ public class HPolylineRenderer extends AbstractHNodeRenderer {
         }
         if (!ctx.isDry()) {
             if (applyLineColor(p, g, ctx, true)) {
+                applyStroke(p, g, ctx);
                 g.drawPolyline(xx, yy, points.length);
             }
         }
-        return new HSizeRequirements(b);
+        paintDebugBox(p, ctx, g, b);
     }
 
 }

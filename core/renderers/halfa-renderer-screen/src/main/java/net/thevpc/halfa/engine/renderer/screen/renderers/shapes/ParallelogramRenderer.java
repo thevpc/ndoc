@@ -15,7 +15,7 @@ public class ParallelogramRenderer extends HPolygonBaseRenderer {
         super(HNodeType.PARALLELOGRAM);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         double w=20;
         Double2[] points =new Double2[]{
@@ -24,7 +24,7 @@ public class ParallelogramRenderer extends HPolygonBaseRenderer {
                 new Double2(100,0),
                 new Double2(w,0),
         };
-        return render(p,points,ctx);
+        render(p,points,ctx);
     }
 
 }

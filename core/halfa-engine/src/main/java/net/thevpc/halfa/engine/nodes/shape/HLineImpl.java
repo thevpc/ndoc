@@ -53,8 +53,8 @@ public class HLineImpl extends AbstractHNodeTypeFactory {
         return ToTsonHelper.of(
                         node, engine()
                 ).addChildren(
-                        from==null?null:Tson.pair("from", HUtils.toTson(from)),
-                        to==null?null:Tson.pair("to", HUtils.toTson(to))
+                        from==null?null:Tson.ofPair("from", HUtils.toTson(from)),
+                        to==null?null:Tson.ofPair("to", HUtils.toTson(to))
                 )
                 .build();
     }

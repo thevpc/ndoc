@@ -11,10 +11,8 @@ import net.thevpc.halfa.api.document.HDocumentClass;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
-import net.thevpc.halfa.engine.nodes.DefaultHContainer;
+import net.thevpc.halfa.engine.nodes.DefaultHNode;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 /**
  * @author vpc
@@ -23,7 +21,7 @@ public class DefaultHDocument implements HDocument {
 
     private HDocumentClass documentClass;
     private Properties properties = new Properties();
-    private DefaultHContainer root = new DefaultHContainer(HNodeType.PAGE_GROUP);
+    private DefaultHNode root = new DefaultHNode(HNodeType.PAGE_GROUP);
 
     public DefaultHDocument() {
     }
@@ -36,7 +34,7 @@ public class DefaultHDocument implements HDocument {
         this.documentClass = documentClass;
     }
 
-    public HContainer root() {
+    public HNode root() {
         return root;
     }
 

@@ -13,6 +13,7 @@ public class HPropName {
     public static final String ORIGIN="origin";
     public static final String FONT_FAMILY="font-family";
     public static final String FONT_SIZE="font-size";
+    public static final String STROKE="stroke";
     public static final String VAR="var";
     public static final String FONT_BOLD="font-bold";
     public static final String FONT_ITALIC="font-italic";
@@ -31,6 +32,8 @@ public class HPropName {
     public static final String THEED="threed";
     public static final String RAISED="raised";
     public static final String COLUMNS="columns";
+    public static final String XCOMPACT ="xcompact";
+    public static final String YCOMPACT ="ycompact";
     public static final String POINTS="points";
     public static final String COUNT="count";
     public static final String ROWS="rows";
@@ -46,6 +49,9 @@ public class HPropName {
     public static final String VALUE="value";
     public static final String FROM="from";
     public static final String TO="to";
+    public static final String PADDING="padding";
+    public static final String ROTATE="rotate";
 
     public static final String DEBUG = "debug";
+    public static final String DEBUG_COLOR="debug-color";
 }

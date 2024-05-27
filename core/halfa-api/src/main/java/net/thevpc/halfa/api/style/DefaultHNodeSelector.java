@@ -206,12 +206,12 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     @Override
     public TsonElement toTson() {
         if (important) {
-            return Tson.string("$");
+            return Tson.ofString("$");
         }
         List<TsonElement> c = new ArrayList<>();
         if (!names.isEmpty()) {
             for (String name : names) {
-                c.add(Tson.string(name));
+                c.add(Tson.ofString(name));
             }
         }
         if (!types.isEmpty()) {
@@ -225,12 +225,12 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             }
         }
         if(c.isEmpty()){
-            return Tson.string("*");
+            return Tson.ofString("*");
         }
         if(c.size()==1){
             return c.get(0);
         }
-        return Tson.uplet(c.toArray(new TsonElementBase[0])).build();
+        return Tson.ofUplet(c.toArray(new TsonElementBase[0])).build();
     }
 
     @Override

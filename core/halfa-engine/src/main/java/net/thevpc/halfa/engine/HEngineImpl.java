@@ -7,10 +7,9 @@ import java.util.*;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
@@ -364,7 +363,7 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public TsonElement toTson(HDocument doc) {
-        HContainer r = doc.root();
+        HNode r = doc.root();
         return nodeTypeFactory(r.type()).get().toTson(r);
     }
 }

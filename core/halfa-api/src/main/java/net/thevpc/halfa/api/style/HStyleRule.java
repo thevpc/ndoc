@@ -13,6 +13,12 @@ import net.thevpc.tson.TsonElement;
  * @author vpc
  */
 public interface HStyleRule extends HItem {
+    boolean accept(HNode node);
+
+    HStyleRuleSelector selector();
+
+    HProperties styles();
     HStyleRuleResult styles(HNode node);
+
     TsonElement toTson();
 }

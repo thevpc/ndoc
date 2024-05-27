@@ -13,6 +13,16 @@ public class HSizeRequirements {
     public HSizeRequirements() {
 
     }
+
+    public HSizeRequirements(double minX, double maxX, double preferredX, double minY, double maxY, double preferredY) {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.preferredX = preferredX;
+        this.minY = minY;
+        this.maxY = maxY;
+        this.preferredY = preferredY;
+    }
+
     public Bounds2 toBounds2() {
         return new Bounds2(
                 minX, minY,

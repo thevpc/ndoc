@@ -1,13 +1,13 @@
 net.thevpc.halfa.engine.renderer.screen.renderers.containers.HGridContainerRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.containers.HFlowContainerRenderer
-net.thevpc.halfa.engine.renderer.screen.renderers.containers.HFlowContainerRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.containers.HOrderedListRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.containers.HUnorderedListRenderer
+net.thevpc.halfa.engine.renderer.screen.renderers.containers.HStackContainerRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HFillerRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HVoidRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.images.HImageRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HEquationRenderer
-net.thevpc.halfa.engine.renderer.screen.renderers.text.HPlainRenderer
+net.thevpc.halfa.engine.renderer.screen.renderers.text.HPlainTextRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HTextRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.shapes.HSphereRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.shapes.HRectangleRenderer

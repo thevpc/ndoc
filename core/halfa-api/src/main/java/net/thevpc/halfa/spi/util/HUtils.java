@@ -1,9 +1,8 @@
 package net.thevpc.halfa.spi.util;
 
-import net.thevpc.halfa.api.model.Double2;
-import net.thevpc.halfa.api.model.Int2;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementBase;
@@ -61,37 +60,34 @@ public class HUtils {
             Object o
     ) {
         if (o == null) {
-            return Tson.nullElem();
+            return Tson.ofNull();
         }
         if (o instanceof String) {
-            return Tson.string((String) o);
+            return Tson.ofString((String) o);
         }
         if (o instanceof Double) {
-            return Tson.doubleElem((Double) o);
+            return Tson.ofDouble((Double) o);
         }
         if (o instanceof Integer) {
-            return Tson.intElem((Integer) o);
+            return Tson.ofInt((Integer) o);
         }
         if (o instanceof Boolean) {
-            return Tson.booleanElem((Boolean) o);
+            return Tson.ofBoolean((Boolean) o);
+        }
+        if (o instanceof TsonElement) {
+            return (TsonElement) o;
+        }
+        if (o instanceof TsonElementBase) {
+            return ((TsonElementBase) o).build();
         }
         if (o instanceof Point2D.Double) {
-            return Tson.uplet(
+            return Tson.ofUplet(
                     toTson(((Point2D.Double) o).getX()),
                     toTson(((Point2D.Double) o).getY())
             ).build();
         }
-        if (o instanceof Double2) {
-            return Tson.uplet(
-                    toTson(((Double2) o).getX()),
-                    toTson(((Double2) o).getY())
-            ).build();
-        }
-        if (o instanceof Int2) {
-            return Tson.uplet(
-                    toTson(((Int2) o).getX()),
-                    toTson(((Int2) o).getY())
-            ).build();
+        if (o instanceof ToTson) {
+            return ((ToTson) o).toTson();
         }
         if (o instanceof Enum) {
             return Tson.name(
@@ -100,7 +96,7 @@ public class HUtils {
         }
         if (o instanceof Color) {
             Color c = (Color) o;
-            return Tson.string(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
+            return Tson.ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
         }
         if (o.getClass().isArray()
         ) {
@@ -110,10 +106,10 @@ public class HUtils {
                 for (int i = 0; i < max; i++) {
                     a.add(toTson(Array.get(o, i)));
                 }
-                return Tson.array(a.toArray(new TsonElementBase[0])).build();
+                return Tson.ofArray(a.toArray(new TsonElementBase[0])).build();
             } else {
                 return
-                        Tson.array(
+                        Tson.ofArray(
                                 Arrays.stream((Object[]) o)
                                         .map(x -> toTson(x))
                                         .toArray(TsonElementBase[]::new)

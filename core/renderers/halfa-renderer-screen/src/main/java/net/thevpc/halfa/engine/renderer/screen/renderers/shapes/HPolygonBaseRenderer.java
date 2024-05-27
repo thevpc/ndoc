@@ -14,7 +14,7 @@ public abstract class HPolygonBaseRenderer extends AbstractHNodeRenderer {
         super(types);
     }
 
-    public HSizeRequirements render(HNode p, Double2[] points, HNodeRendererContext ctx) {
+    public void render(HNode p, Double2[] points, HNodeRendererContext ctx) {
         Bounds2 b = selfBounds(p, ctx);
         double x = HUtils.doubleOf(b.getX());
         double y = HUtils.doubleOf(b.getY());
@@ -31,10 +31,11 @@ public abstract class HPolygonBaseRenderer extends AbstractHNodeRenderer {
                 g.fillPolygon(xx, yy, points.length);
             }
             if (applyLineColor(p, g, ctx, !someBG)) {
+                applyStroke(p, g, ctx);
                 g.drawPolygon(xx, yy, points.length);
             }
         }
-        return new HSizeRequirements(b);
+        paintDebugBox(p, ctx, g, b);
     }
 
 }

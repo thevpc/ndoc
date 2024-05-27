@@ -23,7 +23,7 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
         );
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         int count=-1;
         switch (p.type()){
@@ -79,7 +79,7 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
                 );
             }
         }
-        return render(p,points,ctx);
+        render(p,points,ctx);
     }
 
 }

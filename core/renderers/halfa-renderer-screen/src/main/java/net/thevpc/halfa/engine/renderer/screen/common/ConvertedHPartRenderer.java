@@ -9,17 +9,16 @@ public abstract class ConvertedHPartRenderer extends AbstractHNodeRenderer {
         super(types);
     }
 
-    public abstract HNode convert(HNode p, HNodeRendererContext ctx) ;
-
-    private HNode convertAndInherit(HNode p, HNodeRendererContext ctx) {
-        HNode t = convert(p, ctx);
-        //just to inherit rules and so on...
-        t.setParent(p);
-        return t;
+    @Override
+    public HSizeRequirements sizeRequirements(HNode p, HNodeRendererContext ctx) {
+        HNode c = convert(p, ctx).setParent(p);
+        return ctx.sizeRequirementsOf(c);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
-        return ctx.render(convertAndInherit(p, ctx));
+    public abstract HNode convert(HNode p, HNodeRendererContext ctx);
+
+    public void render0(HNode p, HNodeRendererContext ctx) {
+        ctx.render(convert(p, ctx).setParent(p));
     }
 
 }

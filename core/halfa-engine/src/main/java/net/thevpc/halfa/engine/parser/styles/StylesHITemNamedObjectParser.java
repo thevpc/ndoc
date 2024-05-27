@@ -1,10 +1,8 @@
 package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.halfa.engine.parser.nodes.AbstractHITemNamedObjectParser;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
@@ -22,14 +20,15 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     }
     @Override
     public boolean accept(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
-        HNode node = context.node();
-        if(node==null){
-            return true;
-        }
-        if(node instanceof HContainer){
-            return true;
-        }
-        return  false;
+//        HNode node = context.node();
+        return true;
+//        if(node==null){
+//            return true;
+//        }
+//        if(node instanceof HContainer){
+//            return true;
+//        }
+//        return  false;
     }
 
 

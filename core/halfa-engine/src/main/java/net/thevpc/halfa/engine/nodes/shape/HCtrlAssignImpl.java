@@ -70,7 +70,7 @@ public class HCtrlAssignImpl extends AbstractHNodeTypeFactory {
             varValue = s.get().getValue();
         }
 
-        return Tson.pair("$" + varName, HUtils.toTson(varValue));
+        return Tson.ofPair("$" + varName, HUtils.toTson(varValue));
     }
 
 }

@@ -16,7 +16,7 @@
 /core/halfa-spi-utils/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
 /core/halfa-spi-utils/target/maven-status/maven-compiler-plugin/testCompile/testCompile/inputFiles.lst
 /core/halfa-spi-utils/target/halfa-spi-utils-0.8.4.jar
-/core/renderers/halfa-renderer-screen/target/classes/META-INF/services/net.thevpc.halfa.engine.renderer.screen.HNodeRenderer
+/core/renderers/halfa-renderer-screen/target/classes/META-INF/services/net.thevpc.halfa.spi.renderer.HNodeRenderer
 /core/renderers/halfa-renderer-screen/target/classes/META-INF/services/net.thevpc.halfa.spi.renderer.HDocumentRendererFactory
 /core/renderers/halfa-renderer-screen/target/classes/net/thevpc/halfa/engine/renderer/screen/common/AbstractHNodeRenderer.class
 /core/renderers/halfa-renderer-screen/target/classes/net/thevpc/halfa/engine/renderer/screen/common/AbstractHNodeRendererContext.class

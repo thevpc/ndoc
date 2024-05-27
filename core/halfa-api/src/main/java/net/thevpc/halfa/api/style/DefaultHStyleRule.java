@@ -12,19 +12,19 @@ public class DefaultHStyleRule implements HStyleRule {
     private final HStyleRuleSelector selector;
 
     public static DefaultHStyleRule ofAny(HProp... styles) {
-        return new DefaultHStyleRule(null, styles);
+        return new DefaultHStyleRule(DefaultHNodeSelector.ofAny(), styles);
     }
 
     public static DefaultHStyleRule ofType(String type, HProp... styles) {
-        return of(type == null ? null : DefaultHNodeSelector.ofType(type), styles);
+        return of(type == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofType(type), styles);
     }
 
     public static DefaultHStyleRule ofName(String name, HProp... styles) {
-        return of(name == null ? null : DefaultHNodeSelector.ofName(name), styles);
+        return of(name == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofName(name), styles);
     }
 
     public static DefaultHStyleRule ofClass(String name, HProp... styles) {
-        return of(name == null ? null : DefaultHNodeSelector.ofClasses(name), styles);
+        return of(name == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofClasses(name), styles);
     }
 
     public static DefaultHStyleRule of(HStyleRuleSelector filter, HProp... styles) {
@@ -35,7 +35,6 @@ public class DefaultHStyleRule implements HStyleRule {
         this.styles = new HProperties();
         this.magnetude = new HStyleMagnitude(
                 0,
-                1,
                 selector
         );
         this.selector = selector;
@@ -44,15 +43,29 @@ public class DefaultHStyleRule implements HStyleRule {
 
     public TsonElement toTson() {
         if(selector==null){
-            return Tson.pair(
-                    Tson.string("*"),
+            return Tson.ofPair(
+                    Tson.ofString("*"),
                     styles.toTson()
             );
         }
-        return Tson.pair(
+        return Tson.ofPair(
                 selector.toTson(),
                 styles.toTson()
         );
+    }
+
+    @Override
+    public boolean accept(HNode node) {
+        return selector.test(node);
+    }
+
+    public HStyleRuleSelector selector() {
+        return selector;
+    }
+
+    @Override
+    public HProperties styles() {
+        return styles;
     }
 
     @Override
@@ -71,7 +84,7 @@ public class DefaultHStyleRule implements HStyleRule {
 
                 @Override
                 public Set<HProp> value() {
-                    return styles.styles();
+                    return styles.toSet();
                 }
             };
         }
@@ -106,5 +119,11 @@ public class DefaultHStyleRule implements HStyleRule {
         return Objects.hash(magnetude, styles, selector);
     }
 
-
+    @Override
+    public String toString() {
+        return "DefaultHStyleRule{" +
+                selector +" : "
+                +styles
+                +'}';
+    }
 }

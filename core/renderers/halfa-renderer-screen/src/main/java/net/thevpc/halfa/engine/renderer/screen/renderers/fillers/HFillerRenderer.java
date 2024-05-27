@@ -16,19 +16,19 @@ public class HFillerRenderer extends AbstractHNodeRenderer {
         super(HNodeType.FILLER);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         HGraphics g = ctx.graphics();
         Bounds2 bounds = ctx.getBounds();
-        Bounds2 bb = new Bounds2(
+        Bounds2 b = new Bounds2(
                 bounds.getMinX(),
                 bounds.getMinY(),
                 bounds.getWidth(),
                 bounds.getHeight());
         if (!ctx.isDry()) {
             paintBackground(p, ctx, g, bounds);
-            paintBorderLine(p, ctx, g, bb);
+            paintBorderLine(p, ctx, g, b);
         }
-        return new HSizeRequirements(bb);
+        paintDebugBox(p, ctx, g, b);
     }
 
 

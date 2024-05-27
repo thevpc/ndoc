@@ -4,9 +4,9 @@ import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HStyleAndMagnitude;
+import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.nuts.util.NOptional;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +43,8 @@ public interface HNode extends HItem {
 
     NOptional<HProp> getProperty(String propertyName);
 
+    List<HProp> getProperties();
+
     NOptional<HProp> computeProperty(String propertyName);
 
     NOptional<HStyleAndMagnitude> computePropertyMagnetude(String propertyName);
@@ -53,6 +55,8 @@ public interface HNode extends HItem {
     HNode setProperty(HProp s);
 
     HNode setProperty(String name, Object value);
+
+    HNode setProperties(HProp... props);
 
     HNode addClass(String className);
 
@@ -66,9 +70,9 @@ public interface HNode extends HItem {
 
     HNode unsetProperty(String s);
 
-    void setParent(HNode parent);
+    HNode setParent(HNode parent);
 
-    void mergeNode(HItem other);
+    HNode mergeNode(HItem other);
 
     HNode setPosition(HAlign align);
 
@@ -97,12 +101,37 @@ public interface HNode extends HItem {
     HNode setFontSize(Number w);
 
     HNode setFontFamily(String w);
+
     HNode setFontBold(Boolean w);
+
     HNode setFontItalic(Boolean w);
+
     HNode setFontUnderlined(Boolean w);
+
     HNode setForegroundColor(String w);
+
     HNode setBackgroundColor(String w);
+
     HNode setLineColor(String w);
+
     HNode setGridColor(String w);
+
+    List<HNode> children();
+
+
+    HNode add(HNode a);
+
+    HNode addAll(HNode... a);
+
+
+    HNode addRule(HStyleRule s);
+
+    HNode removeRule(HStyleRule s);
+
+    HNode addRules(HStyleRule... s);
+
+    HNode clearRules();
+
+    HStyleRule[] rules();
 
 }

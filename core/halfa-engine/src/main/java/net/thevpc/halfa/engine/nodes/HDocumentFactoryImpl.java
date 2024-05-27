@@ -1,7 +1,6 @@
 package net.thevpc.halfa.engine.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.node.container.*;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProps;
@@ -34,13 +33,13 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
-    public HContainer ofPage() {
-        return (HContainer) of(HNodeType.PAGE);
+    public HNode ofPage() {
+        return of(HNodeType.PAGE);
     }
 
     @Override
-    public HContainer ofPageGroup() {
-        return (HContainer) of(HNodeType.PAGE_GROUP);
+    public HNode ofPageGroup() {
+        return  of(HNodeType.PAGE_GROUP);
     }
 
 
@@ -121,39 +120,39 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
-    public HContainer ofFlow() {
-        return (HContainer) of(HNodeType.FLOW);
+    public HNode ofFlow() {
+        return  of(HNodeType.FLOW);
     }
 
     @Override
-    public HContainer ofStack() {
-        return (HContainer) of(HNodeType.STACK);
+    public HNode ofStack() {
+        return  of(HNodeType.STACK);
     }
 
     @Override
-    public HContainer ofUnorderedList() {
-        return (HContainer) of(HNodeType.UNORDERED_LIST);
+    public HNode ofUnorderedList() {
+        return  of(HNodeType.UNORDERED_LIST);
     }
 
     @Override
-    public HContainer ofOrderedList() {
-        return (HContainer) of(HNodeType.ORDERED_LIST);
+    public HNode ofOrderedList() {
+        return  of(HNodeType.ORDERED_LIST);
     }
 
     @Override
-    public HContainer ofGrid(int cols, int rows) {
-        return (HContainer) ofGrid()
+    public HNode ofGrid(int cols, int rows) {
+        return  ofGrid()
                 .setProperty(HPropName.COLUMNS, cols)
                 .setProperty(HPropName.ROWS, rows)
                 ;
     }
 
-    public HContainer ofGrid() {
-        return (HContainer) of(HNodeType.GRID);
+    public HNode ofGrid() {
+        return  of(HNodeType.GRID);
     }
 
     @Override
-    public HContainer ofGridV() {
+    public HNode ofGridV() {
         return ofGrid()
                 .setProperty(HProps.columns(1))
                 .setProperty(HProps.rows(-1))
@@ -161,7 +160,7 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
-    public HContainer ofGridH() {
+    public HNode ofGridH() {
         return ofGrid()
                 .setProperty(HProps.columns(-1))
                 .setProperty(HProps.rows(1))

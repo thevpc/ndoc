@@ -10,6 +10,7 @@ import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.halfa.spi.utils.PagesHelper;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -37,13 +38,13 @@ public class DocumentView {
     private PageView currentShowingPage;
     private Map<String, PageView> pagesMapById = new HashMap<>();
     private Map<Integer, PageView> pagesMapByIndex = new HashMap<>();
-    private RenderFactoryManager renderFactoryManager;
+    private HNodeRendererManager rendererManager;
 
     public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, NSession session) {
         this.documentSupplier = documentSupplier;
         this.halfaEngine = halfaEngine;
         this.session = session;
-        renderFactoryManager=new RenderFactoryManager(halfaEngine);
+        rendererManager =new RendererManagerImpl(halfaEngine);
 
         frame = new JFrame();
         contentPane = new ContentPanel();
@@ -59,8 +60,8 @@ public class DocumentView {
         return session;
     }
 
-    public RenderFactoryManager getRenderFactoryManager() {
-        return renderFactoryManager;
+    public HNodeRendererManager getRendererManager() {
+        return rendererManager;
     }
 
     public String getPageSourceName() {

@@ -21,7 +21,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
         super(HNodeType.RECTANGLE, HNodeType.SQUARE);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         HProperties defaultStyles=rectangleStyles;
         switch (p.type()){
             case HNodeType.RECTANGLE:{
@@ -57,6 +57,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                     g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
                 if (applyLineColor(p, g, ctx, !someBG)) {
+                    applyStroke(p, g, ctx);
                     g.drawRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
             } else if (round) {
@@ -67,6 +68,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                     g.fillRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
                 if (applyLineColor(p, g, ctx, !someBG)) {
+                    applyStroke(p, g, ctx);
                     g.drawRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
             } else if (threeD) {
@@ -75,11 +77,12 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                     g.fill3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
                 if (applyLineColor(p, g, ctx, !someBG)) {
+                    applyStroke(p, g, ctx);
                     g.draw3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
             }
         }
-        return new HSizeRequirements(new Bounds2(x, y, b.getWidth(), b.getWidth()));
+        paintDebugBox(p, ctx, g, b);
     }
 
 }

@@ -5,7 +5,6 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
@@ -14,8 +13,6 @@ import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
-
-import java.awt.*;
 
 /**
  * @author vpc
@@ -29,9 +26,9 @@ public class HalfaExampleByCode1 {
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
                         .add(
-                                ((HContainer)f.ofStack()
+                                f.ofStack()
                                         .setFontSize(50)
-                                        .setFontBold(true))
+                                        .setFontBold(true)
                                         .add(
                                                 f.ofRectangle()
                                                         .setPosition(0, 0)

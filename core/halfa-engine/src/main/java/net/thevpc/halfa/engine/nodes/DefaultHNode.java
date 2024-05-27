@@ -1,25 +1,28 @@
 package net.thevpc.halfa.engine.nodes;
 
-import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.nuts.util.NUtils;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DefaultHNode implements HNode {
+    private String nodeType;
     private Object source;
     protected HNode parent;
     private HProperties properties = new HProperties();
-    private String nodeType;
+    private List<HNode> children = new ArrayList<>();
+    private List<HStyleRule> styleRules = new ArrayList<>();
 
     public DefaultHNode(String nodeType) {
         this.nodeType = nodeType;
@@ -54,12 +57,12 @@ public class DefaultHNode implements HNode {
 
     @Override
     public Object computeSource() {
-        Object s= source();
-        if(s!=null){
+        Object s = source();
+        if (s != null) {
             return s;
         }
         HNode p = parent();
-        if(p!=null){
+        if (p != null) {
             return p.computeSource();
         }
         return null;
@@ -67,7 +70,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public List<HProp> props() {
-        return new ArrayList<>(properties.styles());
+        return new ArrayList<>(properties.toSet());
     }
 
     public HNode setSource(Object source) {
@@ -144,48 +147,69 @@ public class DefaultHNode implements HNode {
         return computePropertyMagnetude(propertyName).map(HStyleAndMagnitude::getStyle);
     }
 
+    private static class HStyleRuleResult2 {
+        HStyleRule rule;
+        HProp property;
+
+        public HStyleRuleResult2(HStyleRule rule, HProp property) {
+            this.rule = rule;
+            this.property = property;
+        }
+
+        @Override
+        public String toString() {
+            return "HStyleRuleResult2{" +
+                    "rule=" + rule +
+                    ", property=" + property +
+                    '}';
+        }
+    }
+
+    private HStyleRuleResult2[] _HStyleRuleResult2(HNode p, String propertyName) {
+        HStyleRule[] rules = p.rules();
+        List<HStyleRuleResult2> rr = new ArrayList<>();
+        for (HStyleRule rule : rules) {
+            if (rule.accept(this)) {
+                rule.styles().get(propertyName)
+                        .ifPresent(u1 -> {
+                            rr.add(new HStyleRuleResult2(rule, u1));
+                        });
+            }
+        }
+        return rr.toArray(new HStyleRuleResult2[0]);
+    }
+
     public NOptional<HStyleAndMagnitude> computePropertyMagnetude(String propertyName) {
+        propertyName = HUtils.uid(propertyName);
         NOptional<HProp> u = properties.get(propertyName);
         if (u.isPresent()) {
             return NOptional.of(
                     new HStyleAndMagnitude(
                             u.get(),
-                            new HStyleMagnitude(0, 1, DefaultHNodeSelector.ofImportant())
+                            new HStyleMagnitude(0, DefaultHNodeSelector.ofImportant())
                     )
             );
         }
         HNode p = parent();
         int distance = 1;
         while (p != null) {
-            if (p instanceof HContainer) {
-                HStyleRule[] rules = ((DefaultHContainer) p).rules();
-                HStyleMagnitude bestMag = null;
-                HProp bestStyle = null;
-                for (HStyleRule rule : rules) {
-                    HStyleRuleResult ss = rule.styles(this);
-                    if (ss.isValid()) {
-                        Set<HProp> ch = ss.value();
-                        HProp u1 = ch.stream().filter(x -> x.getName() == propertyName).findAny().orElse(null);
-                        if (u1 != null) {
-                            if (bestMag == null || ss.magnitude().compareTo(bestMag) <= 0) {
-                                bestMag = ss.magnitude();
-                                bestStyle = u1;
-                            }
-                        }
-                    }
+            HStyleMagnitude bestMag = null;
+            HProp bestStyle = null;
+            HStyleRuleResult2[] validRules = _HStyleRuleResult2(p, propertyName);
+            for (HStyleRuleResult2 rule : validRules) {
+                HStyleMagnitude m2 = new HStyleMagnitude(distance, rule.rule.selector());
+                if (bestMag == null || m2.compareTo(bestMag) <= 0) {
+                    bestMag = m2;
+                    bestStyle = rule.property;
                 }
-                if (bestMag != null) {
-                    return NOptional.of(
-                            new HStyleAndMagnitude(
-                                    bestStyle,
-                                    new HStyleMagnitude(
-                                            distance,
-                                            bestMag.getSupportLevel(),
-                                            bestMag.getSelector()
-                                    )
-                            )
-                    );
-                }
+            }
+            if (bestMag != null) {
+                return NOptional.of(
+                        new HStyleAndMagnitude(
+                                bestStyle,
+                                new HStyleMagnitude(distance, bestMag.getSelector())
+                        )
+                );
             }
             distance++;
             p = p.parent();
@@ -195,7 +219,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setProperty(String name, Object value) {
-        properties.set(name,value);
+        properties.set(name, value);
         return this;
     }
 
@@ -301,12 +325,13 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public void setParent(HNode parent) {
+    public HNode setParent(HNode parent) {
         this.parent = parent;
+        return this;
     }
 
     @Override
-    public void mergeNode(HItem other) {
+    public HNode mergeNode(HItem other) {
         if (other != null) {
             if (other instanceof HItemList) {
                 for (HItem item : ((HItemList) other).getItems()) {
@@ -320,8 +345,13 @@ public class DefaultHNode implements HNode {
                     this.source = hn.source();
                 }
                 this.properties.set(hn.props());
+                addRules(hn.rules());
+                for (HNode child : hn.children()) {
+                    add(child);
+                }
             }
         }
+        return this;
     }
 
     @Override
@@ -333,9 +363,14 @@ public class DefaultHNode implements HNode {
                     b |= append(item);
                 }
                 return b;
-            }
-            if (a instanceof HProp) {
+            } else if (a instanceof HProp) {
                 setProperty((HProp) a);
+                return true;
+            } else if (a instanceof HStyleRule) {
+                addRule((HStyleRule) a);
+                return true;
+            } else if (a instanceof HNode) {
+                add((HNode) a);
                 return true;
             }
         }
@@ -344,37 +379,37 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setPosition(HAlign align) {
-        setProperty(HPropName.POSITION,align);
+        setProperty(HPropName.POSITION, align);
         return this;
     }
 
     @Override
     public HNode setPosition(Number x, Number y) {
-        setPosition(new Double2(x,y));
+        setPosition(new Double2(x, y));
         return this;
     }
 
     @Override
     public HNode setPosition(Double2 d) {
-        setProperty(HPropName.POSITION,d);
+        setProperty(HPropName.POSITION, d);
         return this;
     }
 
     @Override
     public HNode setOrigin(HAlign align) {
-        setProperty(HPropName.POSITION,align);
+        setProperty(HPropName.ORIGIN, align);
         return this;
     }
 
     @Override
     public HNode setOrigin(Number x, Number y) {
-        setOrigin(new Double2(x,y));
+        setOrigin(new Double2(x, y));
         return this;
     }
 
     @Override
     public HNode setOrigin(Double2 d) {
-        setProperty(HPropName.POSITION,d);
+        setProperty(HPropName.ORIGIN, d);
         return this;
     }
 
@@ -387,8 +422,8 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode at(Number x, Number y) {
-        setPosition(x,y);
-        setOrigin(x,y);
+        setPosition(x, y);
+        setOrigin(x, y);
         return this;
     }
 
@@ -401,81 +436,206 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setSize(Number size) {
-        return setSize(new Double2(size,size));
+        return setSize(new Double2(size, size));
     }
 
     @Override
     public HNode setSize(Double2 size) {
         HProp old = getProperty(HPropName.SIZE).orNull();
-        Double2 oo=old==null?null:(Double2) old.getValue();
-        if(oo==null){
-            oo=new Double2(null,null);
+        Double2 oo = old == null ? null : (Double2) old.getValue();
+        if (oo == null) {
+            oo = new Double2(null, null);
         }
-        Number w=size==null?null:size.getX();
-        Number h=size==null?null:size.getY();
-        setProperty(HPropName.SIZE,new Double2(
-                NUtils.firstNonNull(w,oo.getX()),
-                NUtils.firstNonNull(h,oo.getY())
+        Number w = size == null ? null : size.getX();
+        Number h = size == null ? null : size.getY();
+        setProperty(HPropName.SIZE, new Double2(
+                NUtils.firstNonNull(w, oo.getX()),
+                NUtils.firstNonNull(h, oo.getY())
         ));
         return this;
     }
 
     @Override
-    public HNode setSize(Number w,Number h) {
-        setSize(new Double2(w,h));
+    public HNode setSize(Number w, Number h) {
+        setSize(new Double2(w, h));
         return this;
     }
 
     @Override
     public HNode setFontSize(Number w) {
-        setProperty(HPropName.FONT_SIZE,w);
+        setProperty(HPropName.FONT_SIZE, w);
         return this;
     }
 
     @Override
     public HNode setFontFamily(String w) {
-        setProperty(HPropName.FONT_FAMILY,w);
+        setProperty(HPropName.FONT_FAMILY, w);
         return this;
     }
 
     @Override
     public HNode setFontBold(Boolean w) {
-        setProperty(HPropName.FONT_BOLD,w);
+        setProperty(HPropName.FONT_BOLD, w);
         return this;
     }
 
     @Override
     public HNode setFontItalic(Boolean w) {
-        setProperty(HPropName.FONT_ITALIC,w);
+        setProperty(HPropName.FONT_ITALIC, w);
         return this;
     }
 
     @Override
     public HNode setFontUnderlined(Boolean w) {
-        setProperty(HPropName.FONT_UNDERLINED,w);
+        setProperty(HPropName.FONT_UNDERLINED, w);
         return this;
     }
 
     @Override
     public HNode setForegroundColor(String w) {
-        setProperty(HPropName.FOREGROUND_COLOR,w);
+        setProperty(HPropName.FOREGROUND_COLOR, w);
         return this;
     }
 
     @Override
     public HNode setBackgroundColor(String w) {
-        setProperty(HPropName.BACKGROUND_COLOR,w);
+        setProperty(HPropName.BACKGROUND_COLOR, w);
         return this;
     }
 
     @Override
     public HNode setLineColor(String w) {
-        setProperty(HPropName.LINE_COLOR,w);
+        setProperty(HPropName.LINE_COLOR, w);
         return this;
     }
+
     @Override
     public HNode setGridColor(String w) {
-        setProperty(HPropName.GRID_COLOR,w);
+        setProperty(HPropName.GRID_COLOR, w);
         return this;
+    }
+
+    @Override
+    public List<HProp> getProperties() {
+        return new ArrayList<>(properties.toSet());
+    }
+
+    @Override
+    public HNode setProperties(HProp... props) {
+        if (props != null) {
+            for (HProp prop : props) {
+                setProperty(prop);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public HNode addAll(HNode... a) {
+        if (a != null) {
+            for (HNode n : a) {
+                add(n);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public HNode add(HNode a) {
+        if (a != null) {
+            children.add(a);
+            a.setParent(this);
+        }
+        return this;
+    }
+
+    @Override
+    public List<HNode> children() {
+        return children;
+    }
+
+    @Override
+    public HNode addRule(HStyleRule s) {
+        if (s != null) {
+            styleRules.add(s);
+        }
+        return this;
+    }
+
+    @Override
+    public HNode addRules(HStyleRule... rules) {
+        if (rules != null) {
+            for (HStyleRule rule : rules) {
+                addRule(rule);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public HNode removeRule(HStyleRule s) {
+        styleRules.remove(s);
+        return this;
+    }
+
+    @Override
+    public HNode clearRules() {
+        for (HStyleRule rule : rules()) {
+            removeRule(rule);
+        }
+        return this;
+    }
+
+    @Override
+    public HStyleRule[] rules() {
+        return styleRules.toArray(new HStyleRule[0]);
+    }
+
+//    @Override
+//    public HNode addRule(HProp... s) {
+//        if (s != null) {
+//            Set<HProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
+//            if (!ss.isEmpty()) {
+//                addRule(DefaultHStyleRule.ofAny(s));
+//            }
+//        }
+//        return this;
+//    }
+//
+    private TsonElement toTson0() {
+        if (!styleRules.isEmpty() || !children.isEmpty()) {
+            TsonObjectBuilder o = Tson.ofObj(nodeType);
+            if (source != null) {
+                o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
+            }
+            for (HProp p : properties.toList()) {
+                o.header().add(p.toTson());
+            }
+            if (!styleRules.isEmpty()) {
+                o.add("rules", Tson.ofObj(styleRules.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)));
+            }
+            for (HNode child : children()) {
+                if (child instanceof DefaultHNode) {
+                    o.add(((DefaultHNode) child).toTson0());
+                } else {
+                    o.add(Tson.ofString(child.toString()));
+                }
+            }
+            return o.build();
+        } else {
+            TsonFunctionBuilder o = Tson.ofFunction(nodeType);
+            if (source != null) {
+                o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
+            }
+            for (HProp p : properties.toList()) {
+                o.add(p.toTson());
+            }
+            return o.build();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return toTson0().toString();
     }
 }

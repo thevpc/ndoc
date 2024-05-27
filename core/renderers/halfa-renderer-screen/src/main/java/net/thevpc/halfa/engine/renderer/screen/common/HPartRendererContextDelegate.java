@@ -6,8 +6,10 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
@@ -16,33 +18,47 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     private Bounds2 bounds;
     private HNode basePart;
     private HProperties defaultStyles;
+    private HGraphics graphics;
     private boolean dry;
 
     public HPartRendererContextDelegate(HNode basePart,
                                         HNodeRendererContext base,
                                         Bounds2 bounds,
                                         HProperties defaultStyles,
-                                        boolean dry) {
+                                        boolean dry,
+                                        HGraphics graphics
+                                        ) {
         this.basePart = basePart;
         this.base = base;
         this.bounds = bounds;
         this.defaultStyles = defaultStyles;
         this.dry = dry;
+        this.graphics = graphics;
+    }
+
+    @Override
+    public HNodeRendererManager manager() {
+        return base.manager();
     }
 
     @Override
     public HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles) {
-        return new HPartRendererContextDelegate(node, base, bounds, defaultStyles==null?this.defaultStyles:defaultStyles, dry);
+        return new HPartRendererContextDelegate(node, base, bounds, defaultStyles==null?this.defaultStyles:defaultStyles, dry,graphics);
     }
 
     @Override
     public HNodeRendererContext withBounds(HNode t, Bounds2 bounds2) {
-        return new HPartRendererContextDelegate(t, base, bounds2, defaultStyles, dry);
+        return new HPartRendererContextDelegate(t, base, bounds2, defaultStyles, dry,graphics);
+    }
+
+    @Override
+    public HNodeRendererContext withGraphics(HGraphics graphics) {
+        return new HPartRendererContextDelegate(basePart, base, bounds, defaultStyles, dry, graphics);
     }
 
     @Override
     public HNodeRendererContext dryMode() {
-        return new HPartRendererContextDelegate(basePart, base, bounds, defaultStyles, true);
+        return new HPartRendererContextDelegate(basePart, base, bounds, defaultStyles, true,graphics);
     }
 
     @Override
@@ -57,6 +73,9 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
 
     @Override
     public HGraphics graphics() {
+        if(graphics!=null){
+            return graphics;
+        }
         return base.graphics();
     }
 
@@ -73,8 +92,8 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     }
 
     @Override
-    public HSizeRequirements rootRender(HNode p, HNodeRendererContext ctx) {
-        return base.rootRender(p, ctx);
+    public void rootRender(HNode p, HNodeRendererContext ctx) {
+        base.rootRender(p, ctx);
     }
 
     @Override

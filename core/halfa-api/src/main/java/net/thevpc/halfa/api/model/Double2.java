@@ -1,6 +1,10 @@
 package net.thevpc.halfa.api.model;
 
-public class Double2 {
+import net.thevpc.tson.ToTson;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+
+public class Double2 implements ToTson {
     private Double x;
     private Double y;
 
@@ -22,4 +26,18 @@ public class Double2 {
         return "(" + x + ", " + y + ')';
     }
 
+    public Double2 mul(double w, double h) {
+        return new Double2(
+                x * w,
+                y * h
+        );
+    }
+
+    @Override
+    public TsonElement toTson() {
+        return Tson.ofUplet(
+                Tson.ofDouble(getX()),
+                Tson.ofDouble(getY())
+        ).build();
+    }
 }

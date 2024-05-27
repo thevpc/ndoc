@@ -2,14 +2,13 @@ package net.thevpc.halfa;
 
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.api.node.container.*;
 
 public interface HDocumentFactory {
     HDocument ofDocument();
 
-    HContainer ofPage();
+    HNode ofPage();
 
-    HContainer ofPageGroup();
+    HNode ofPageGroup();
 
     HNode of(String type);
 
@@ -41,21 +40,21 @@ public interface HDocumentFactory {
 
     HNode ofAssign(String name, Object value);
 
-    HContainer ofFlow();
+    HNode ofFlow();
 
-    HContainer ofStack();
+    HNode ofStack();
 
-    HContainer ofUnorderedList();
+    HNode ofUnorderedList();
 
-    HContainer ofOrderedList();
+    HNode ofOrderedList();
 
-    HContainer ofGrid(int cols, int rows);
+    HNode ofGrid(int cols, int rows);
 
-    HContainer ofGrid();
+    HNode ofGrid();
 
-    HContainer ofGridV();
+    HNode ofGridV();
 
-    HContainer ofGridH();
+    HNode ofGridH();
 
     HNode ofSphere();
 

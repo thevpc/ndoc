@@ -3,9 +3,7 @@ package net.thevpc.halfa.api.document;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 public interface HDocument {
 
@@ -13,7 +11,7 @@ public interface HDocument {
 
     HDocumentClass getDocumentClass();
 
-    HContainer root();
+    HNode root();
 
     NOptional<String> getName(String name);
 

@@ -74,12 +74,16 @@ public class HProperties {
         return map.size();
     }
 
-    public Set<HProp> styles() {
+    public Set<HProp> toSet() {
         return new HashSet<>(map.values());
     }
 
+    public List<HProp> toList() {
+        return new ArrayList<>(map.values());
+    }
+
     public TsonElement toTson() {
-        return Tson.obj(
+        return Tson.ofObj(
                 map.values().stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
         ).build();
     }

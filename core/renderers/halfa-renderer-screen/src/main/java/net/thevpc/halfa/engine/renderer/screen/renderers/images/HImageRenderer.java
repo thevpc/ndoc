@@ -78,7 +78,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
         return null;
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         Image image = loadImage(p.getPropertyValue(HPropName.VALUE), p, ctx);
 
@@ -99,7 +99,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                 g.drawImage(image, (int) x, (int) (y - b.getMinY()), null);
             }
         }
-        return new HSizeRequirements(new Bounds2(x,y,b.getWidth(),b.getWidth()));
+        paintDebugBox(p, ctx, g, b);
     }
 
 

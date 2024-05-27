@@ -5,13 +5,14 @@ import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 
 public abstract class AbstractHNodeRendererContext implements HNodeRendererContext {
-    public HSizeRequirements render(HNode p) {
-        return rootRender(p, this);
+    public void render(HNode p) {
+        rootRender(p, this);
     }
 
     @Override
@@ -29,18 +30,24 @@ public abstract class AbstractHNodeRendererContext implements HNodeRendererConte
 
     @Override
     public HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles) {
-        return new HPartRendererContextDelegate(node, this, null, defaultStyles, isDry());
+        return new HPartRendererContextDelegate(node, this, null, defaultStyles, isDry(),null);
     }
 
     @Override
     public HNodeRendererContext withBounds(HNode t, Bounds2 bounds2) {
-        return new HPartRendererContextDelegate(t, this, bounds2, null, isDry());
+        return new HPartRendererContextDelegate(t, this, bounds2, null, isDry(),null);
     }
 
     @Override
     public HNodeRendererContext dryMode() {
-        return new HPartRendererContextDelegate(null, this, null, null, true);
+        return new HPartRendererContextDelegate(null, this, null, null, true,null);
     }
+
+    @Override
+    public HNodeRendererContext withGraphics(HGraphics graphics) {
+        return new HPartRendererContextDelegate(null, this, null, null, isDry(),graphics);
+    }
+
 
     @Override
     public NPath resolvePath(String path, HNode node) {

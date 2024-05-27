@@ -4,7 +4,6 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.nuts.NSession;
@@ -12,6 +11,13 @@ import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
 
 public interface HNodeRendererContext {
+
+    default HSizeRequirements sizeRequirementsOf(HNode p){
+        return manager().getRenderer(p.type()).get().sizeRequirements(p,this);
+    }
+
+    HNodeRendererManager manager();
+
     HNodeRendererContext dryMode();
 
     boolean isDry();
@@ -24,9 +30,9 @@ public interface HNodeRendererContext {
 
     NSession session();
 
-    HSizeRequirements render(HNode p) ;
+    void render(HNode p);
 
-    HSizeRequirements rootRender(HNode p, HNodeRendererContext ctx);
+    void rootRender(HNode p, HNodeRendererContext ctx);
 
     HEngine engine();
 
@@ -38,7 +44,9 @@ public interface HNodeRendererContext {
 
     NPath resolvePath(NPath path, HNode node);
 
-    NPath resolvePath(String path,HNode node) ;
+    NPath resolvePath(String path, HNode node);
 
     HNodeRendererContext withBounds(HNode t, Bounds2 bounds2);
+
+    HNodeRendererContext withGraphics(HGraphics graphics);
 }

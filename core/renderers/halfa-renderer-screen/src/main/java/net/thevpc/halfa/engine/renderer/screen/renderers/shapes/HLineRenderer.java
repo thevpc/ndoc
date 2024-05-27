@@ -11,7 +11,6 @@ import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
 
@@ -22,7 +21,7 @@ public class HLineRenderer extends AbstractHNodeRenderer {
         super(HNodeType.LINE);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         Bounds2 b = selfBounds(p, ctx);
         Double2 from = HPoint.ofParent(ObjEx.ofProp(p, HPropName.FROM).asDouble2().get()).value(b, ctx.getGlobalBounds());
@@ -30,6 +29,7 @@ public class HLineRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
             applyLineColor(p, g, ctx, true);
+            applyStroke(p, g, ctx);
             g.drawLine(HUtils.doubleOf(from.getX()), HUtils.doubleOf(from.getY()),
                     HUtils.doubleOf(to.getX()), HUtils.doubleOf(to.getY())
             );
@@ -38,7 +38,8 @@ public class HLineRenderer extends AbstractHNodeRenderer {
         double miny = Math.min(from.getY(), to.getY());
         double maxX = Math.max(from.getX(), to.getX());
         double maxY = Math.max(from.getY(), to.getY());
-        return new HSizeRequirements(new Bounds2(minx, miny, maxX, maxY));
+        Bounds2 b2 = new Bounds2(minx, miny, maxX, maxY);
+        paintDebugBox(p, ctx, g, b2);
     }
 
 }

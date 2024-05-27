@@ -8,6 +8,7 @@ import net.thevpc.halfa.api.model.Double2;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
@@ -18,7 +19,7 @@ import java.util.Objects;
  *
  * @author vpc
  */
-public class HProp implements HItem {
+public class HProp implements HItem, ToTson {
 
     private String name;
     private Object value;
@@ -143,6 +144,6 @@ public class HProp implements HItem {
     }
 
     public TsonElement toTson() {
-        return Tson.pair(HUtils.toTson(name), HUtils.toTson(value));
+        return Tson.ofPair(HUtils.toTson(name), HUtils.toTson(value));
     }
 }

@@ -1,7 +1,6 @@
 package net.thevpc.halfa.spi.utils;
 
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
 
@@ -38,7 +37,7 @@ public class PagesHelper {
             case HNodeType.STACK: {
                 if (!part.isTemplate()) {
                     if (!part.isDisabled()) {
-                        for (HNode p : ((HContainer) part).children()) {
+                        for (HNode p : part.children()) {
                             fillPages(p, all);
                         }
                     }

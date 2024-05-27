@@ -17,8 +17,8 @@ public class HVoidRenderer extends AbstractHNodeRenderer {
                 );
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
-        return new HSizeRequirements();
+    public void render0(HNode p, HNodeRendererContext ctx) {
+        //Do nothing
     }
 
 

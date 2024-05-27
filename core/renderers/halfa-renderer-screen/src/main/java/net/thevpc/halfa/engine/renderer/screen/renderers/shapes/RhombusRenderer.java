@@ -15,7 +15,7 @@ public class RhombusRenderer extends HPolygonBaseRenderer {
         super(HNodeType.RHOMBUS);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         Double2[] points =new Double2[]{
                 new Double2(0,50),
@@ -23,7 +23,7 @@ public class RhombusRenderer extends HPolygonBaseRenderer {
                 new Double2(100,50),
                 new Double2(50,100),
         };
-        return render(p, points, ctx);
+        render(p, points, ctx);
     }
 
 }

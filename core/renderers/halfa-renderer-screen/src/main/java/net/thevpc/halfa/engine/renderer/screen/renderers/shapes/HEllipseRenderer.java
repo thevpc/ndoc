@@ -21,9 +21,9 @@ public class HEllipseRenderer extends AbstractHNodeRenderer {
         );
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
-        Bounds2 b = selfBounds(p, null, ctx);
+        Bounds2 b = selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
@@ -33,10 +33,11 @@ public class HEllipseRenderer extends AbstractHNodeRenderer {
                 g.fillOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
             if (applyLineColor(p, g, ctx, !someBG)) {
+                applyStroke(p, g, ctx);
                 g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
         }
-        return new HSizeRequirements(new Bounds2(x,y,b.getWidth(),b.getWidth()));
+        paintDebugBox(p, ctx, g, b);
     }
 
 }

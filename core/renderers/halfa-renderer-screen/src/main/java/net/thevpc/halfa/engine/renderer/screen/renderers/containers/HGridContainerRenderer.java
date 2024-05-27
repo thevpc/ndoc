@@ -2,11 +2,8 @@ package net.thevpc.halfa.engine.renderer.screen.renderers.containers;
 
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.model.Double2;
-import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.api.style.HProps;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
@@ -36,16 +33,15 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         WeightInfo wi;
     }
 
-    public ComputePositionsResult computePositions(HContainer t, Bounds2 expectedBounds, HNodeRendererContext ctx) {
+    private ComputePositionsResult computePositions(HNode t, Bounds2 expectedBounds, HNodeRendererContext ctx) {
         java.util.List<HNode> children = t.children();
         List<HPagePartExtInfo> effPositions = new ArrayList<>();
         int minColumns = 0;
         int minRows = 0;
-        HNodeRendererContext ctxDry = ctx.dryMode();
         for (int i = 0; i < children.size(); i++) {
             HNode cc = children.get(i);
             HPagePartExtInfo e = new HPagePartExtInfo();
-            e.part = cc;
+            e.node = cc;
             e.colspan = colspan(cc, ctx);
             e.rowspan = rowspan(cc, ctx);
             if (e.colspan > minColumns) {
@@ -54,11 +50,13 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
             if (e.rowspan > minRows) {
                 minRows = e.rowspan;
             }
-            e.sizeRequirements = ctxDry.render(cc);
+            e.sizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
             e.index = i;
             effPositions.add(e);
         }
 
+        boolean xCompact = (Boolean) ctx.getProperty(t, HPropName.XCOMPACT).orElse(false);
+        boolean yCompact = (Boolean) ctx.getProperty(t, HPropName.YCOMPACT).orElse(false);
         Integer cols = (Integer) ctx.getProperty(t, HPropName.COLUMNS).orElse(-1);
         Integer rows = (Integer) ctx.getProperty(t, HPropName.ROWS).orElse(-1);
         if (cols == null) {
@@ -115,9 +113,9 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
                 double hh = childrenHeight * (ee.height / 100);
                 double jx = (wi.colStart[ee.colRow.x] / 100) * childrenHeight + xOffset;
                 double jy = (wi.rowStart[ee.colRow.y] / 100) * childrenHeight + yOffset;
-                ee.bounds = new Bounds2(jx,jy,ww,hh);
-                HNodeRendererContext ctx3 = ctx.withBounds(t,ee.bounds).dryMode();
-                ee.sizeRequirements = ctx3.render(ee.part);
+                ee.bounds = new Bounds2(jx, jy, ww, hh);
+                HNodeRendererContext ctx2 = ctx.withBounds(ee.node, ee.bounds);
+                ee.sizeRequirements = ctx2.manager().getRenderer(ee.node.type()).get().sizeRequirements(ee.node, ctx2);
             }
         }
 
@@ -130,7 +128,7 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
             double maxPref = 0;
             for (HPagePartExtInfo ee : effPositions) {
                 if (ee.colRow != null) {
-                    double newY = ee.sizeRequirements.preferredY;
+                    double newY = ee.sizeRequirements.minY;
                     if (newY > 0) {
                         preferredRowsWeight[ee.colRow.y] = newY;
                         if (minPref == 0 || minPref > newY) {
@@ -160,8 +158,8 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
                 wi = wi2;
                 double extraOffset = childrenHeight - sumY;
                 childrenHeight = sumY;
-                xOffset += posAnchor.getX()/100.0*extraOffset;
-                yOffset += posAnchor.getY()/100.0*extraOffset;
+                xOffset += posAnchor.getX() / 100.0 * extraOffset;
+                yOffset += posAnchor.getY() / 100.0 * extraOffset;
 //                switch (posAnchor) {
 //                    case CENTER:
 //                    case LEFT:
@@ -205,36 +203,50 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         return r;
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    @Override
+    public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        Bounds2 expectedBounds = selfBounds(p, ctx);
-        HContainer t = (HContainer) p;
+        Bounds2 expectedBounds = super.selfBounds(p, ctx);
         HGraphics g = ctx.graphics();
+        g.setColor(Color.RED);
+        g.drawRect(expectedBounds);
         Bounds2 a = expectedBounds;
-
-        if (!ctx.isDry()) {
-            paintBackground(t, ctx, g, a);
-        }
-        ComputePositionsResult r = computePositions(t, expectedBounds, ctx);
+        ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
         for (HPagePartExtInfo ee : r.effPositions) {
             if (ee.colRow != null) {
-                HNodeRendererContext ctx3 = ctx.withBounds(t, ee.bounds);
-                if(!ctx.isDry()) {
-                    if(ObjEx.of(ctx.getProperty(p,HPropName.DEBUG).orNull()).asInt().orElse(0)>0) {
-                        g.setColor(Color.BLUE);
+                a = expand(ee.bounds, a);
+            }
+        }
+        return a;
+    }
+
+    public void render0(HNode p, HNodeRendererContext ctx) {
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
+        Bounds2 expectedBounds = selfBounds(p, ctx);
+        HGraphics g = ctx.graphics();
+
+        if (!ctx.isDry()) {
+            paintBackground(p, ctx, g, expectedBounds);
+        }
+        ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
+        for (HPagePartExtInfo ee : r.effPositions) {
+            if (ee.colRow != null) {
+                HNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
+                if (!ctx.isDry()) {
+                    if (getDebugLevel(p, ctx) > 0) {
+                        g.setColor(getDebugColor(p, ctx));
+                        g.setFont(new Font("Verdana", Font.PLAIN, 8));
                         g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
                     }
                 }
-                HSizeRequirements r1 = ctx3.render(ee.part);
-                a = expand(r1.toBounds2(), a);
+                ctx3.render(ee.node);
             }
         }
 
-        drawGrid(p,r, ctx);
-        paintBorderLine(t, ctx, g, a);
-
-        return new HSizeRequirements(a);
+        drawGrid(p, r, ctx);
+        paintBorderLine(p, ctx, g, expectedBounds);
     }
+
 
     private void drawGrid(HNode p, ComputePositionsResult r, HNodeRendererContext ctx) {
         if (ctx.isDry()) {
@@ -289,7 +301,7 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         return ii;
     }
 
-    private WeightInfo loadWeightInfo(int cols, int rows, HContainer t, HNodeRendererContext ctx) {
+    private WeightInfo loadWeightInfo(int cols, int rows, HNode t, HNodeRendererContext ctx) {
         WeightInfo ii = new WeightInfo();
         ii.colsWeight = (double[]) ctx.getProperty(t, HPropName.COLUMNS_WEIGHT).orElse(null);
         ii.rowsWeight = (double[]) ctx.getProperty(t, HPropName.ROWS_WEIGHT).orElse(null);
@@ -444,7 +456,7 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         Point colRow;
         double width;
         double height;
-        HNode part;
+        HNode node;
         HSizeRequirements sizeRequirements;
         int colspan;
         int rowspan;

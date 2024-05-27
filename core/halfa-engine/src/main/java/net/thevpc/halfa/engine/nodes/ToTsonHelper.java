@@ -3,9 +3,7 @@ package net.thevpc.halfa.engine.nodes;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.api.style.HProp;
-import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
@@ -24,13 +22,13 @@ public class ToTsonHelper {
     private Set<String> excludeSet = new HashSet<>();
     private HEngine engine;
 
-    public static ToTsonHelper of(HNode node,HEngine engine) {
+    public static ToTsonHelper of(HNode node, HEngine engine) {
         return new ToTsonHelper(
                 HUtils.uid(node.type())
-                , node,engine);
+                , node, engine);
     }
 
-    public ToTsonHelper(String name, HNode node,HEngine engine) {
+    public ToTsonHelper(String name, HNode node, HEngine engine) {
         this.name = name;
         this.node = node;
         this.engine = engine;
@@ -48,32 +46,32 @@ public class ToTsonHelper {
                 args2.add(p.toTson());
             }
         }
-        if (node instanceof HContainer) {
-            HStyleRule[] rules = ((HContainer) node).rules();
+        if (node.children().size() > 0 || node.rules().length > 0) {
+            HStyleRule[] rules = node.rules();
             if (rules.length > 0) {
                 ch.add(
-                        Tson.pair("styles",
-                                Tson.obj(
+                        Tson.ofPair("styles",
+                                Tson.ofObj(
                                         Arrays.stream(rules).map(x -> x.toTson()).toArray(TsonElement[]::new)
                                 )
                         )
                 );
             }
             ch.addAll(children);
-            for (HNode child : ((HContainer) node).children()) {
+            for (HNode child : node.children()) {
                 ch.add(
                         engine.nodeTypeFactory(child.type()).get().toTson(child)
                 );
             }
             if (Objects.equals(node.type(), HNodeType.PAGE_GROUP)) {
                 //TODO fix me, styles ignored. is that okkay?
-                TsonObjectBuilder u = Tson.obj(ch.toArray(new TsonElementBase[0]));
+                TsonObjectBuilder u = Tson.ofObj(ch.toArray(new TsonElementBase[0]));
                 if (node.getParentTemplate() != null) {
                     u.annotation(node.getParentTemplate());
                 }
                 return u.build();
             } else {
-                TsonObjectBuilder u = Tson.obj(name, args2.toArray(new TsonElementBase[0]),
+                TsonObjectBuilder u = Tson.ofObj(name, args2.toArray(new TsonElementBase[0]),
                         ch.toArray(new TsonElementBase[0])
                 );
                 if (node.getParentTemplate() != null) {
@@ -82,7 +80,7 @@ public class ToTsonHelper {
                 return u.build();
             }
         } else {
-            TsonFunctionBuilder u = Tson.function(name, args2.toArray(new TsonElementBase[0]));
+            TsonFunctionBuilder u = Tson.ofFunction(name, args2.toArray(new TsonElementBase[0]));
             if (node.getParentTemplate() != null) {
                 u.annotation(node.getParentTemplate());
             }
@@ -124,14 +122,14 @@ public class ToTsonHelper {
 
     public ToTsonHelper inlineStringProp(String name) {
         String value = ObjEx.ofProp(node, name).asString().orNull();
-        if(value!=null){
-            boolean multiLine=
-                    value.indexOf('\n')>=0
-                    || value.indexOf('\r')>=0;
-            if(!multiLine){
-                addArg(Tson.string(value, TsonStringLayout.DOUBLE_QUOTE));
-            }else{
-                addArg(Tson.string(value, TsonStringLayout.TRIPLE_DOUBLE_QUOTE));
+        if (value != null) {
+            boolean multiLine =
+                    value.indexOf('\n') >= 0
+                            || value.indexOf('\r') >= 0;
+            if (!multiLine) {
+                addArg(Tson.ofString(value, TsonStringLayout.DOUBLE_QUOTE));
+            } else {
+                addArg(Tson.ofString(value, TsonStringLayout.TRIPLE_DOUBLE_QUOTE));
             }
         }
         excludeProps(name);

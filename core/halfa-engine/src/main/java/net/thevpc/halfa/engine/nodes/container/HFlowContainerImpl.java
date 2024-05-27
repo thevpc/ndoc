@@ -14,6 +14,4 @@ public class HFlowContainerImpl extends AbstractHNodeTypeFactory {
     public HFlowContainerImpl() {
         super(true, HNodeType.FLOW);
     }
-
-
 }

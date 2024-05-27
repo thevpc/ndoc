@@ -8,7 +8,7 @@ public class Bounds2 {
     private Double w;
     private Double h;
 
-    public Bounds2(Number x, Number y, Double w, Double h) {
+    public Bounds2(Number x, Number y, Number w, Number h) {
         this.x = x == null ? null : x.doubleValue();
         this.y = y == null ? null : y.doubleValue();
         this.w = w == null ? null : w.doubleValue();

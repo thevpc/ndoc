@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.item.HItemList;
+import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;

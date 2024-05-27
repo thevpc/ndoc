@@ -73,7 +73,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
         return ToTsonHelper.of(
                         node,engine()
                 ).addChildren(
-                        points == null ? null : Tson.pair("points", HUtils.toTson(points))
+                        points == null ? null : Tson.ofPair("points", HUtils.toTson(points))
                 )
                 .build();
     }

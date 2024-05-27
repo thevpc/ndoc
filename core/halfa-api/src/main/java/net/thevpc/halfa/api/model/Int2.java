@@ -1,6 +1,10 @@
 package net.thevpc.halfa.api.model;
 
-public class Int2 {
+import net.thevpc.tson.ToTson;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+
+public class Int2 implements ToTson {
     private Integer x;
     private Integer y;
 
@@ -21,4 +25,13 @@ public class Int2 {
     public String toString() {
         return "(" + x + ", " + y + ')';
     }
+
+    @Override
+    public TsonElement toTson() {
+        return Tson.ofUplet(
+                Tson.ofInt(getX()),
+                Tson.ofInt(getY())
+        ).build();
+    }
+
 }

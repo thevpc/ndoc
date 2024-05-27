@@ -22,7 +22,7 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
         ellipsoidDefaultStyles.set(HPropName.PRESERVE_SHAPE_RATIO,false);
     }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         HProperties defaultStyles=sphereDefaultStyles;
         switch (p.type()){
             case HNodeType.SPHERE:{
@@ -35,7 +35,7 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
             }
         }
         ctx=ctx.withDefaultStyles(p,defaultStyles);
-        Bounds2 b = selfBounds(p, null, ctx);
+        Bounds2 b = selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
@@ -45,10 +45,11 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
                 g.fillSphere((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), 45, 50f);
             }
             if (applyLineColor((HNode) p, g, ctx, !someBG)) {
+                applyStroke(p, g, ctx);
                 g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
         }
-        return new HSizeRequirements(new Bounds2(x,y,b.getWidth(),b.getWidth()));
+        paintDebugBox(p, ctx, g, b);
     }
 
 }

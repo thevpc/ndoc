@@ -28,7 +28,7 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
         super(HNodeType.EQUATION);
     }
 
-//    @Override
+    //    @Override
 //    public HSizeRequirements computeSizeRequirements(HNode p, HNodeRendererContext ctx) {
 //        ctx=ctx.withDefaultStyles(p,defaultStyles);
 //        String message = ObjEx.ofProp(p, HPropName.VALUE).asString().orNull();
@@ -54,8 +54,48 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
 //        r.preferredY = hh;
 //        return r;
 //    }
+    @Override
+    public HSizeRequirements sizeRequirements(HNode p, HNodeRendererContext ctx) {
+        Bounds2 s = selfBounds(p, ctx);
+        Bounds2 bb = ctx.getBounds();
+        return new HSizeRequirements(
+                s.getWidth(),
+                Math.max(bb.getWidth(), s.getWidth()),
+                s.getWidth(),
+                s.getHeight(),
+                Math.max(bb.getHeight(), s.getHeight()),
+                s.getHeight()
+        );
+    }
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
+        String message = ObjEx.ofProp(p, HPropName.VALUE).asString().orNull();
+        if (message == null) {
+            message = "";
+        }
+        HGraphics g = ctx.graphics();
+        String msg = NStringUtils.trim(message);
+        if (msg.isEmpty()) {
+            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(),0.0,0.0);
+        } else {
+            TeXFormula formula;
+            try {
+                formula = new TeXFormula(msg);
+            } catch (Exception ex) {
+                formula = new TeXFormula("?error?");
+                ex.printStackTrace();
+            }
+            float size = (float) (resolveFontSize(p, g, ctx) * 1.188);
+            TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+
+            // insert a border
+            icon.setInsets(new Insets(0, 0, 0, 0));
+            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(),icon.getIconWidth(), icon.getIconHeight());
+        }
+    }
+
+
+    public void render0(HNode p, HNodeRendererContext ctx) {
         String message = ObjEx.ofProp(p, HPropName.VALUE).asString().orNull();
         if (message == null) {
             message = "";
@@ -73,7 +113,6 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                     g.fillRect((int) x, (int) y, HUtils.intOf(selfBounds.getWidth()), HUtils.intOf(selfBounds.getHeight()));
                 }
             }
-            return new HSizeRequirements(selfBounds);
         } else {
             TeXFormula formula;
             boolean error = false;
@@ -90,7 +129,10 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            Bounds2 selfBounds = selfBounds((HNode) p, new Double2(icon.getIconWidth(), icon.getIconHeight()), ctx);
+            Bounds2 selfBounds = selfBounds((HNode) p
+                    , new Double2(icon.getIconWidth(), icon.getIconHeight())
+                    ,null
+                    , ctx);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
@@ -105,9 +147,6 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
 
                 paintBorderLine(p, ctx, g, selfBounds);
             }
-//            paintBorderLine(t,  ctx,g,selfBounds);
-
-            return new HSizeRequirements(selfBounds);
         }
     }
 

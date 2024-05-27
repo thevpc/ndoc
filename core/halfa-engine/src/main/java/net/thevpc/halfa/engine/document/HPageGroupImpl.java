@@ -6,7 +6,6 @@ package net.thevpc.halfa.engine.document;
 
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.node.container.HContainer;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 
 import java.util.ArrayList;
@@ -24,9 +23,8 @@ public class HPageGroupImpl extends AbstractHNodeTypeFactory {
 
     @Override
     public boolean validateNode(HNode node) {
-        HContainer nnode=(HContainer) node;
         boolean someChanges=false;
-        List<HNode> children = new ArrayList<>(nnode.children());
+        List<HNode> children = new ArrayList<>(node.children());
         List<HNode> newChildren = new ArrayList<>();
         List<HNode> pending=null;
         for (HNode c : children) {
@@ -38,7 +36,7 @@ public class HPageGroupImpl extends AbstractHNodeTypeFactory {
                         || Objects.equals(c.type(),HNodeType.PAGE)
                 ){
                     if(pending!=null && pending.size()>0){
-                        HContainer newPage = (HContainer) engine().documentFactory().of(HNodeType.PAGE);
+                        HNode newPage = engine().documentFactory().of(HNodeType.PAGE);
                         newChildren.add(newPage);
                         newPage.addAll(pending.toArray(new HNode[0]));
                         pending=null;
@@ -54,13 +52,13 @@ public class HPageGroupImpl extends AbstractHNodeTypeFactory {
             }
         }
         if(pending!=null && pending.size()>0){
-            HContainer newPage = (HContainer) engine().documentFactory().of(HNodeType.PAGE);
+            HNode newPage = engine().documentFactory().of(HNodeType.PAGE);
             newPage.addAll(pending.toArray(new HNode[0]));
             newChildren.add(newPage);
         }
         if(someChanges){
-            nnode.children().clear();
-            nnode.addAll(newChildren.toArray(new HNode[0]));
+            node.children().clear();
+            node.addAll(newChildren.toArray(new HNode[0]));
         }
         return someChanges;
     }

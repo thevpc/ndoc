@@ -41,12 +41,12 @@ public class HGraphicsImpl implements HGraphics {
 
     @Override
     public void drawRect(double x, double y, double w, double h) {
-        g.fillRect((int) x, (int) y, (int) w, (int) h);
+        g.drawRect((int) x, (int) y, (int) w, (int) h);
     }
 
     @Override
     public Rectangle2D getStringBounds(String str) {
-        return getFontMetrics().getStringBounds(str==null?"":str, context());
+        return getFontMetrics().getStringBounds(str == null ? "" : str, context());
     }
 
     @Override
@@ -64,14 +64,14 @@ public class HGraphicsImpl implements HGraphics {
 
     @Override
     public void drawRect(Bounds2 a) {
-        fillRect(
+        drawRect(
                 HUtils.doubleOf(a.getMinX()), HUtils.intOf(a.getMinY()),
                 HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
         );
     }
 
     @Override
-    public Graphics context() {
+    public Graphics2D context() {
         return g;
     }
 
@@ -88,6 +88,23 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void drawString(String str, double x, double y) {
         g.drawString(str == null ? "" : str, (int) x, (int) y);
+    }
+
+    @Override
+    public void debugString(String str, double x, double y) {
+        Color c = g.getColor();
+        Font of = g.getFont();
+        g.setColor(Color.RED);
+        Font arial = new Font("Courrier", Font.PLAIN, 16);
+        g.setFont(arial);
+        int debugRow=0;
+        Rectangle2D fm = g.getFontMetrics(arial).getStringBounds("Abcdefghijklmnopqrstuvwxyz", g);
+        for (String n : String.valueOf(str).trim().split("\n")) {
+            g.drawString(n, (int) x, (int) (y + fm.getHeight() * debugRow));
+            debugRow++;
+        }
+        g.setFont(of);
+        g.setColor(c);
     }
 
     @Override
@@ -178,31 +195,41 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
-    public void fillSphere(double x, double y, double w, double h,double lightAngle,float radius) {
+    public void setStroke(Stroke stroke) {
+        g.setStroke(stroke);
+    }
+
+    @Override
+    public Stroke getStroke() {
+        return g.getStroke();
+    }
+
+    @Override
+    public void fillSphere(double x, double y, double w, double h, double lightAngle, float radius) {
         Color c = getColor();
         float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
         int rgb = c.getRGB();
-        float hue = (rgb)/255f; // if you want to use 0-255 range
+        float hue = (rgb) / 255f; // if you want to use 0-255 range
         double wh = Math.max(w, h);
 
-        double x0=x+w/2;
-        double y0=y+h/2;
-        double radAngle=lightAngle/180*Math.PI;
-        if(radius>100){
-            radius=100;
-        }else if(radius<0){
-            radius=0;
+        double x0 = x + w / 2;
+        double y0 = y + h / 2;
+        double radAngle = lightAngle / 180 * Math.PI;
+        if (radius > 100) {
+            radius = 100;
+        } else if (radius < 0) {
+            radius = 0;
         }
 
-        int max=(wh<=10)?10:(wh<=100)?30:(wh<=200)?50:100;
+        int max = (wh <= 10) ? 10 : (wh <= 100) ? 30 : (wh <= 200) ? 50 : 100;
         for (int i = 0; i <= max; i++) {
-            double r=i*1.0/max*radius;
-            double lx=x0+Math.cos(radAngle)*(r/100)*w/2;
-            double ly=y0+Math.sin(radAngle)*(r/100)*h/2;
-            double lw=(radius-r)/100*w*2;
-            double lh=(radius-r)/100*h*2;
-            setColor(Color.getHSBColor(hsb[0], 1 - (i*1.f / max), hsb[2]));
-            fillOval(lx-(lw)/2, ly-lh/2, lw, lh);
+            double r = i * 1.0 / max * radius;
+            double lx = x0 + Math.cos(radAngle) * (r / 100) * w / 2;
+            double ly = y0 + Math.sin(radAngle) * (r / 100) * h / 2;
+            double lw = (radius - r) / 100 * w * 2;
+            double lh = (radius - r) / 100 * h * 2;
+            setColor(Color.getHSBColor(hsb[0], 1 - (i * 1.f / max), hsb[2]));
+            fillOval(lx - (lw) / 2, ly - lh / 2, lw, lh);
         }
     }
 

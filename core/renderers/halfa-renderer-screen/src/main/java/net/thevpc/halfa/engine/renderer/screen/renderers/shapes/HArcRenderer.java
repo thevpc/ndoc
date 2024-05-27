@@ -14,9 +14,9 @@ import net.thevpc.halfa.spi.util.HUtils;
 public class HArcRenderer extends AbstractHNodeRenderer {
     HProperties defaultStyles = new HProperties();
 
-    public HSizeRequirements render(HNode p, HNodeRendererContext ctx) {
+    public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
-        Bounds2 b = selfBounds(p, null, ctx);
+        Bounds2 b = selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         double startAngle = (double) p.getPropertyValue(HPropName.FROM).orElse(0.0);
@@ -24,12 +24,13 @@ public class HArcRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
             applyLineColor(p, g, ctx, true);
+            applyStroke(p, g, ctx);
             g.drawArc((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
                     (int) startAngle,
                     (int) endAngle
             );
         }
-        return new HSizeRequirements(b);
+        paintDebugBox(p, ctx, g, b);
     }
 
 }
