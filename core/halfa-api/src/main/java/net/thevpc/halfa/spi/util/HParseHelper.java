@@ -4,18 +4,17 @@
  */
 package net.thevpc.halfa.spi.util;
 
-import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.model.HSize;
-import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonAnnotation;
 import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementType;
-import net.thevpc.tson.TsonPair;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- *
  * @author vpc
  */
 public class HParseHelper {
@@ -168,7 +167,6 @@ public class HParseHelper {
 //    }
 
 
-
 //    public static Boolean toBoolean(TsonElement e, ParseMode mode) {
 //        switch (e.type()) {
 //            case BOOLEAN: {
@@ -263,12 +261,25 @@ public class HParseHelper {
 
     public static boolean fillAnnotations(TsonElement e, HNode p) {
         for (TsonAnnotation a : e.getAnnotations()) {
-            if(p.getParentTemplate()==null) {
-                p.setParentTemplate(a.getName());
-            }else{
-                return false;
+            String nn = a.getName();
+            if (!NBlankable.isBlank(nn)) {
+                HashSet<String> o = new HashSet<>(Arrays.asList(p.getAncestors()));
+                o.add(HUtils.uid(nn));
+                p.setAncestors(o.toArray(new String[0]));
             }
+            // add classes as well
+            Set<String> allClasses = new HashSet<>();
+            for (TsonElement cls : a.all()) {
+                NOptional<String[]> ss = ObjEx.of(cls).asStringArrayOrString();
+                if (ss.isPresent()) {
+                    allClasses.addAll(Arrays.asList(ss.get()));
+                }
+            }
+            if (!allClasses.isEmpty()) {
+                p.addStyleClasses(allClasses.toArray(new String[0]));
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 }

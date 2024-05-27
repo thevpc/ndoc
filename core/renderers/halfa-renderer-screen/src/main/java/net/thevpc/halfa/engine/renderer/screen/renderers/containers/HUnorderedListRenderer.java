@@ -29,17 +29,17 @@ public class HUnorderedListRenderer extends ConvertedHPartRenderer {
             switch (child.type()){
                 case HNodeType.UNORDERED_LIST:
                 case HNodeType.ORDERED_LIST:{
-                    all.add(f.ofVoid().addClasses("ul-bullet"));
+                    all.add(f.ofVoid().addStyleClasses("ul-bullet"));
                     break;
                 }
                 default:{
                     all.add(f.ofSphere()
                                     .setProperty(HProps.size(30))
-                            .addClasses("ul-bullet"));
+                            .addStyleClasses("ul-bullet"));
                     break;
                 }
             }
-            all.add(child.addClasses("ul-item"));
+            all.add(child.addStyleClasses("ul-item"));
         }
         return f.ofGrid().addAll(all.toArray(new HNode[0]))
                 .setProperty(HProp.ofInt(HPropName.COLUMNS,2))

@@ -40,6 +40,8 @@ public interface HEngine {
 
     HDocumentRenderer newRenderer(String type);
 
+    HDocument compileDocument(HDocument document);
+
     boolean validateNode(HNode node);
 
     NOptional<HDocument> loadDocument(NPath of);

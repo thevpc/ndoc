@@ -42,7 +42,7 @@ public class HPropName {
     public static final String STYLE_CLASS="style-class";
     public static final String DISABLED="disabled";
     public static final String TEMPLATE="template";
-    public static final String EXTENDS="extends";
+    public static final String ANCESTORS ="extends";
     public static final String NAME="name";
     public static final String MAX_X="xmax";
     public static final String MAX_Y="ymax";

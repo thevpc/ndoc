@@ -70,8 +70,8 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
             }
             xRef += w;
         }
-        double w=Math.max(expectedWidth,e.size.getX());
-        double h=Math.max(expectedHeight,e.size.getY());
+        double w=Math.max(expectedWidth,e.size==null?0:e.size.getX());
+        double h=Math.max(expectedHeight,e.size==null?0:e.size.getY());
         e.fullSize=new Double2(w,h);
         return e;
     }
@@ -97,8 +97,8 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         Elems ee = compute(p, bg,ctx);
         Bounds2 newExpectedBounds =selfBounds(p, ee.size,null, ctx);
 
-        g.setColor(Color.BLUE);
-        g.drawRect(newExpectedBounds);
+//        g.setColor(Color.BLUE);
+//        g.drawRect(newExpectedBounds);
         if(getDebugLevel(p, ctx)>=10) {
             g.debugString(
                     "Flow:\n"
@@ -122,6 +122,6 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         }
 
 
-        paintBorderLine(p, ctx, g, newExpectedBounds);
+        paintBorderLine(p, ctx, g, bg);
     }
 }

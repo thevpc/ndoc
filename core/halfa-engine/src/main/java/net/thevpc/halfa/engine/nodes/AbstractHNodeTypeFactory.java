@@ -12,12 +12,18 @@ import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementBase;
 import net.thevpc.tson.TsonElementHeader;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
 
@@ -144,9 +150,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
             case OBJECT:
             case ARRAY: {
                 ObjEx ee = new ObjEx(tsonElement);
-                if (!HParseHelper.fillAnnotations(tsonElement, p)) {
-                    return NOptional.ofNamedError(NMsg.ofC("[%s] page can have only a single parent template", context2.source()));
-                }
+                HParseHelper.fillAnnotations(tsonElement, p);
                 processImplicitStyles(id, p, f, context2);
                 for (TsonElement e : ee.args()) {
                     NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context2);
@@ -201,4 +205,8 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
         return new DefaultHNode(id());
     }
 
+    @Override
+    public boolean validateNode(HNode node) {
+        return false;
+    }
 }

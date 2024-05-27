@@ -78,6 +78,10 @@ public class HProperties {
         return new HashSet<>(map.values());
     }
 
+    public HProp[] toArray() {
+        return toList().toArray(new HProp[0]);
+    }
+
     public List<HProp> toList() {
         return new ArrayList<>(map.values());
     }

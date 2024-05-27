@@ -103,7 +103,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         Stroke stroke=null;
         TsonElement strokeElem = (TsonElement) ctx.getProperty(t, HPropName.STROKE).orElse(null);
         if(strokeElem!=null){
-            g.setStroke(new StrokeFactory().createStroke(strokeElem));
+            g.setStroke(StrokeFactory.createStroke(strokeElem));
             return true;
         }
         return false;
@@ -406,11 +406,13 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         paintDebugBox(t, ctx, g, a);
         if (requireDrawContour(t, g, ctx)) {
             if (applyLineColor(t, g, ctx, true)) {
+                Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);
                 g.drawRect(
                         HUtils.intOf(a.getMinX()), HUtils.intOf(a.getMinY()),
                         HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
                 );
+                g.setStroke(s);
             }
         }
 

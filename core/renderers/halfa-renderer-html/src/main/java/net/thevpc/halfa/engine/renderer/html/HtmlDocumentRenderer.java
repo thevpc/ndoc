@@ -39,6 +39,7 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
 
     @Override
     public void render(HDocument document, OutputStream os) {
+        document=halfaEngine.compileDocument(document);
         PrintStream out = new PrintStream(os);
         out.println("<html>");
         out.println("<body>");

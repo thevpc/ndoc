@@ -207,9 +207,9 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
     public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 expectedBounds = super.selfBounds(p, ctx);
-        HGraphics g = ctx.graphics();
-        g.setColor(Color.RED);
-        g.drawRect(expectedBounds);
+//        HGraphics g = ctx.graphics();
+//        g.setColor(Color.RED);
+//        g.drawRect(expectedBounds);
         Bounds2 a = expectedBounds;
         ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
         for (HPagePartExtInfo ee : r.effPositions) {

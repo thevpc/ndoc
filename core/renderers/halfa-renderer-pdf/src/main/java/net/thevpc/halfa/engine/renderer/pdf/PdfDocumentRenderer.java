@@ -56,6 +56,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     @Override
     public void render(HDocument document, OutputStream stream) {
         try {
+            document=halfaEngine.compileDocument(document);
             HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (HNode page : PagesHelper.resolvePages(document)) {

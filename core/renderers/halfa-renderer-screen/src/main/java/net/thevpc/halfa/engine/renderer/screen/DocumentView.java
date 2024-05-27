@@ -44,7 +44,7 @@ public class DocumentView {
         this.documentSupplier = documentSupplier;
         this.halfaEngine = halfaEngine;
         this.session = session;
-        rendererManager =new RendererManagerImpl(halfaEngine);
+        rendererManager = new RendererManagerImpl(halfaEngine);
 
         frame = new JFrame();
         contentPane = new ContentPanel();
@@ -114,7 +114,7 @@ public class DocumentView {
 
 
             Graphics2D g2d = (Graphics2D) g;
-            HGraphics hg=new HGraphicsImpl(g2d);
+            HGraphics hg = new HGraphicsImpl(g2d);
             g2d.setRenderingHint(
                     RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -215,6 +215,7 @@ public class DocumentView {
         }
         this.currentShowingPage = null;
         document = documentSupplier.get();
+        document = halfaEngine.compileDocument(document);
         List<HNode> pages = PagesHelper.resolvePages(document);
         pageViews.clear();
         contentPane.removeAll();

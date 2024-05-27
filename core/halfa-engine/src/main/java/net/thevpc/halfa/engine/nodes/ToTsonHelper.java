@@ -4,10 +4,14 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.api.style.HStyleValue;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.nuts.io.NHashName;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.*;
 
 import java.util.*;
@@ -20,6 +24,7 @@ public class ToTsonHelper {
     private HNode node;
     private Predicate<String> exclude;
     private Set<String> excludeSet = new HashSet<>();
+    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(HPropName.STYLE_CLASS,HPropName.ANCESTORS));
     private HEngine engine;
 
     public static ToTsonHelper of(HNode node, HEngine engine) {
@@ -42,6 +47,8 @@ public class ToTsonHelper {
             if (
                     (exclude == null || !exclude.test(p.getName()))
                             && !excludeSet.contains(p.getName())
+                            //exclude class and
+                    && !defaultExcludeSet.contains(p.getName())
             ) {
                 args2.add(p.toTson());
             }
@@ -63,28 +70,29 @@ public class ToTsonHelper {
                         engine.nodeTypeFactory(child.type()).get().toTson(child)
                 );
             }
-            if (Objects.equals(node.type(), HNodeType.PAGE_GROUP)) {
-                //TODO fix me, styles ignored. is that okkay?
-                TsonObjectBuilder u = Tson.ofObj(ch.toArray(new TsonElementBase[0]));
-                if (node.getParentTemplate() != null) {
-                    u.annotation(node.getParentTemplate());
-                }
-                return u.build();
-            } else {
-                TsonObjectBuilder u = Tson.ofObj(name, args2.toArray(new TsonElementBase[0]),
-                        ch.toArray(new TsonElementBase[0])
-                );
-                if (node.getParentTemplate() != null) {
-                    u.annotation(node.getParentTemplate());
-                }
-                return u.build();
-            }
+            TsonObjectBuilder u = Tson.ofObj(name, args2.toArray(new TsonElementBase[0]),
+                    ch.toArray(new TsonElementBase[0])
+            );
+            applyAnnotations(u);
+            return u.build();
         } else {
             TsonFunctionBuilder u = Tson.ofFunction(name, args2.toArray(new TsonElementBase[0]));
-            if (node.getParentTemplate() != null) {
-                u.annotation(node.getParentTemplate());
-            }
+            applyAnnotations(u);
             return u.build();
+        }
+    }
+    private void applyAnnotations(TsonElementBuilder u){
+        for (String ancestor : node.getAncestors()) {
+            u.annotation(ancestor);
+        }
+        NOptional<Object> e = node.getPropertyValue(HPropName.STYLE_CLASS);
+        if(e.isPresent()){
+            NOptional<String[]> sa = ObjEx.of(e.get()).asStringArrayOrString();
+            if(sa.isPresent()){
+                u.annotation(null,
+                        Arrays.stream(sa.get()).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new)
+                );
+            }
         }
     }
 

@@ -11,9 +11,14 @@ import java.util.List;
 import java.util.Set;
 
 public interface HNode extends HItem {
-    String getParentTemplate();
+    String getUuid();
+    HNode setUuid(String uuid);
+    String[] getAncestors();
 
-    HItem setParentTemplate(String parentTemplate);
+    String[] getStyleClasses();
+
+    HItem setAncestors(String[] parentTemplate);
+    HItem setStyleClasses(String[] classNames);
 
     boolean append(HItem a);
 
@@ -58,9 +63,9 @@ public interface HNode extends HItem {
 
     HNode setProperties(HProp... props);
 
-    HNode addClass(String className);
+    HNode addStyleClass(String className);
 
-    HNode addClasses(String... classNames);
+    HNode addStyleClasses(String... classNames);
 
     HNode removeClass(String className);
 
@@ -123,6 +128,8 @@ public interface HNode extends HItem {
 
     HNode addAll(HNode... a);
 
+    HNode setChildren(HNode... a);
+
 
     HNode addRule(HStyleRule s);
 
@@ -134,4 +141,9 @@ public interface HNode extends HItem {
 
     HStyleRule[] rules();
 
+    HNode copy();
+
+    String getName();
+
+    HNode setRules(HStyleRule[] rules);
 }

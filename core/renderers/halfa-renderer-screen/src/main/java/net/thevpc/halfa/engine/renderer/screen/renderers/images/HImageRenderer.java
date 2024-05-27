@@ -28,6 +28,16 @@ public class HImageRenderer extends AbstractHNodeRenderer {
     public HImageRenderer() {
         super(HNodeType.IMAGE);
     }
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
 
     private BufferedImage loadImage(Object img,HNode p,HNodeRendererContext ctx){
         if(img instanceof BufferedImage){
@@ -80,7 +90,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
 
     public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
-        Image image = loadImage(p.getPropertyValue(HPropName.VALUE), p, ctx);
+        BufferedImage image = loadImage(p.getPropertyValue(HPropName.VALUE).orNull(), p, ctx);
 
         HGraphics g = ctx.graphics();
 
@@ -96,7 +106,8 @@ public class HImageRenderer extends AbstractHNodeRenderer {
             applyForeground(p, g, ctx);
             if (image != null) {
                 // would resize?
-                g.drawImage(image, (int) x, (int) (y - b.getMinY()), null);
+                BufferedImage resized = resize(image, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                g.drawImage(resized, (int) x, (int) y, null);
             }
         }
         paintDebugBox(p, ctx, g, b);

@@ -93,6 +93,12 @@ public class StrokeFactory {
                 return createStroke(o.asString().get(), e);
             }
         }
+        {
+            NOptional<Float> d = o.asFloat();
+            if(d.isPresent()) {
+                return new BasicStroke(d.get());
+            }
+        }
         return new BasicStroke();
     }
 
@@ -145,7 +151,7 @@ public class StrokeFactory {
                     break;
                 }
                 case "dash": {
-                    dash = ke.getValue().asFloatArray().orElse(null);
+                    dash = ke.getValue().asFloatArrayOrFloat().orElse(null);
                     break;
                 }
                 case "cap": {

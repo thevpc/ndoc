@@ -25,8 +25,8 @@ public class HOrderedListRenderer extends ConvertedHPartRenderer {
         HDocumentFactory f = ctx.documentFactory();
         List<HNode> all = new ArrayList<>();
         for (HNode child : p.children()) {
-            all.add(f.of(HNodeType.SPHERE).addClasses("ol-bullet"));
-            all.add(child.addClasses("ol-item"));
+            all.add(f.of(HNodeType.SPHERE).addStyleClasses("ol-bullet"));
+            all.add(child.addStyleClasses("ol-item"));
         }
         return f.ofGrid().addAll(all.toArray(new HNode[0]))
                 .setProperty(HProp.ofInt(HPropName.COLUMNS,2))

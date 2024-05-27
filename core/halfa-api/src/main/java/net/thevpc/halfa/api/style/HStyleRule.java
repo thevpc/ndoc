@@ -21,4 +21,5 @@ public interface HStyleRule extends HItem {
     HStyleRuleResult styles(HNode node);
 
     TsonElement toTson();
+
 }

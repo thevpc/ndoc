@@ -7,16 +7,13 @@ import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.nuts.util.NNameFormat;
-import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.nuts.util.NUtils;
+import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DefaultHNode implements HNode {
+    private String uuid;
     private String nodeType;
     private Object source;
     protected HNode parent;
@@ -29,25 +26,57 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
+    public String getUuid() {
+        return uuid;
+    }
+
+    public HNode setUuid(String uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    @Override
     public String type() {
         return this.nodeType;
     }
 
-    public String getParentTemplate() {
-        NOptional<HProp> style = getProperty(HPropName.EXTENDS);
+    public String[] getAncestors() {
+        NOptional<HProp> style = getProperty(HPropName.ANCESTORS);
         if (style.isEmpty()) {
-            return null;
+            return new String[0];
         }
         Object v = style.get().getValue();
         if (v == null) {
-            return null;
+            return new String[0];
         }
-        return (String) v;
+        String[] v1 = (String[]) v;
+        return Arrays.stream(v1).filter(x -> !NBlankable.isBlank(x))
+                .map(HUtils::uid)
+                .distinct()
+                .toArray(String[]::new)
+                ;
     }
 
+    @Override
+    public String[] getStyleClasses() {
+        NOptional<HProp> style = getProperty(HPropName.STYLE_CLASS);
+        if (style.isEmpty()) {
+            return new String[0];
+        }
+        Object v = style.get().getValue();
+        if (v == null) {
+            return new String[0];
+        }
+        String[] v1 = (String[]) v;
+        return Arrays.stream(v1).filter(x -> !NBlankable.isBlank(x))
+                .map(HUtils::uid)
+                .distinct()
+                .toArray(String[]::new)
+                ;
+    }
 
-    public DefaultHNode setParentTemplate(String parentTemplate) {
-        setProperty(HProps.inherits(parentTemplate));
+    public DefaultHNode setAncestors(String[] parentTemplate) {
+        setProperty(HProps.ancestors(parentTemplate));
         return this;
     }
 
@@ -266,7 +295,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode addClass(String className) {
+    public HNode addStyleClass(String className) {
         className = validateClassName(className);
         if (className != null) {
             Set<String> s = _oldClassNames();
@@ -277,7 +306,22 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode addClasses(String... classNames) {
+    public HItem setStyleClasses(String[] classNames) {
+        Set<String> s = new HashSet<>();
+        if (classNames != null) {
+            for (String c : classNames) {
+                c = validateClassName(c);
+                if (c != null) {
+                    s.add(c);
+                }
+            }
+        }
+        setProperty(HProps.styleClasses(s.toArray(new String[0])));
+        return this;
+    }
+
+    @Override
+    public HNode addStyleClasses(String... classNames) {
         if (classNames != null) {
             Set<String> s = _oldClassNames();
             for (String c : classNames) {
@@ -531,6 +575,13 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
+    public HNode setChildren(HNode... children) {
+        this.children.clear();
+        addAll(children);
+        return this;
+    }
+
+    @Override
     public HNode addAll(HNode... a) {
         if (a != null) {
             for (HNode n : a) {
@@ -563,6 +614,13 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
+    public HNode setRules(HStyleRule[] rules) {
+        styleRules.clear();
+        addRules(rules);
+        return this;
+    }
+
+    @Override
     public HNode addRules(HStyleRule... rules) {
         if (rules != null) {
             for (HStyleRule rule : rules) {
@@ -591,7 +649,17 @@ public class DefaultHNode implements HNode {
         return styleRules.toArray(new HStyleRule[0]);
     }
 
-//    @Override
+    public HNode copy() {
+        DefaultHNode o = new DefaultHNode(nodeType);
+        o.setUuid(UUID.randomUUID().toString());
+        o.setSource(source());
+        o.setProperties(properties.toArray());
+        o.addAll(children().stream().map(HNode::copy).toArray(HNode[]::new));
+        o.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
+        return o;
+    }
+
+    //    @Override
 //    public HNode addRule(HProp... s) {
 //        if (s != null) {
 //            Set<HProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
@@ -603,13 +671,35 @@ public class DefaultHNode implements HNode {
 //    }
 //
     private TsonElement toTson0() {
+        String[] a = getAncestors();
+        String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
             TsonObjectBuilder o = Tson.ofObj(nodeType);
+            if(a.length>0){
+                for (int i = 0; i < a.length; i++) {
+                    String s = a[i];
+                    if(i==a.length-1){
+                        o.annotation(s,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                    }else{
+                        o.annotation(s);
+                    }
+                }
+            }else if(styleClasses.length>0){
+                o.annotation(null,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+            }
             if (source != null) {
                 o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
             }
             for (HProp p : properties.toList()) {
-                o.header().add(p.toTson());
+                switch (p.getName()){
+                    case HPropName.ANCESTORS:
+                    case HPropName.STYLE_CLASS:{
+                        break;
+                    }
+                    default:{
+                        o.header().add(p.toTson());
+                    }
+                }
             }
             if (!styleRules.isEmpty()) {
                 o.add("rules", Tson.ofObj(styleRules.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)));
@@ -624,11 +714,31 @@ public class DefaultHNode implements HNode {
             return o.build();
         } else {
             TsonFunctionBuilder o = Tson.ofFunction(nodeType);
+            if(a.length>0){
+                for (int i = 0; i < a.length; i++) {
+                    String s = a[i];
+                    if(i==a.length-1){
+                        o.annotation(s,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                    }else{
+                        o.annotation(s);
+                    }
+                }
+            }else if(styleClasses.length>0){
+                o.annotation(null,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+            }
             if (source != null) {
                 o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
             }
             for (HProp p : properties.toList()) {
-                o.add(p.toTson());
+                switch (p.getName()){
+                    case HPropName.ANCESTORS:
+                    case HPropName.STYLE_CLASS:{
+                        break;
+                    }
+                    default:{
+                        o.add(p.toTson());
+                    }
+                }
             }
             return o.build();
         }
@@ -638,4 +748,10 @@ public class DefaultHNode implements HNode {
     public String toString() {
         return toTson0().toString();
     }
+
+    @Override
+    public String getName() {
+        return (String) getPropertyValue(HPropName.NAME).orNull();
+    }
+
 }

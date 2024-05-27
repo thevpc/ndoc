@@ -47,7 +47,7 @@ public class HStyleParser {
         register(ofBoolean(HPropName.THEED, "threed", "three-d"));
         register(ofBoolean(HPropName.TEMPLATE, "template"));
         register(ofString(HPropName.NAME, "name"));
-        register(ofString(HPropName.EXTENDS, "extends"));
+        register(ofStringArrayOrString(HPropName.ANCESTORS, "ancestors"));
         register(ofStringArrayOrString(HPropName.STYLE_CLASS, "class", "style-class"));
         register(ofPadding(HPropName.PADDING, "padding"));
         register(ofRotation(HPropName.ROTATE, "rotate"));
@@ -528,6 +528,7 @@ public class HStyleParser {
                         for (TsonElement el : v.toObject().all()) {
                             NOptional<HProp[]> s = parseStyle(el, f, context);
                             if (!s.isPresent()) {
+                                s = parseStyle(el, f, context);
                                 return NOptional.ofEmpty(s.getMessage());
                             }
                             styles.addAll(Arrays.asList(s.get()));

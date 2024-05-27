@@ -3,6 +3,7 @@ package net.thevpc.halfa.engine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
@@ -10,24 +11,25 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.halfa.spi.renderer.*;
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NNameFormat;
-import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonDocument;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonReader;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
-import net.thevpc.nuts.util.NOptional;
 
 /**
  * @author vpc
@@ -195,6 +197,12 @@ public class HEngineImpl implements HEngine {
     }
 
 
+
+
+    public HDocument compileDocument(HDocument document) {
+        return new HDocumentCompiler(this).compile(document);
+    }
+
     public boolean validateNode(HNode node) {
         return nodeTypeFactory(node.type()).get().validateNode(node);
     }
@@ -203,7 +211,9 @@ public class HEngineImpl implements HEngine {
     public NOptional<HDocument> loadDocument(NPath path) {
         if (path.exists()) {
             if (path.isRegularFile()) {
-                return loadTsonDocument(path).flatMap(x -> convertDocument(x, path));
+                return loadTsonDocument(path)
+                        .flatMap(x -> convertDocument(x, path))
+                        ;
             } else if (path.isDirectory()) {
                 List<NPath> all = path.stream().filter(x -> x.isRegularFile() && x.getName().endsWith(".hd")).toList();
                 if (all.isEmpty()) {
@@ -233,7 +243,6 @@ public class HEngineImpl implements HEngine {
                     updateSource(d.get(), nPath);
                     doc.root().append(d.get());
                 }
-                validateNode(doc.root());
                 return NOptional.of(doc);
             } else {
                 return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
@@ -332,7 +341,6 @@ public class HEngineImpl implements HEngine {
         NOptional<HItem> r = newNode(c, null);
         if (r.isPresent()) {
             docd.root().append(r.get());
-            validateNode(docd.root());
             return NOptional.of(docd);
         }
         return NOptional.ofError(s -> NMsg.ofC("invalid %s", r.getMessage().apply(s)));

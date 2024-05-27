@@ -177,8 +177,8 @@ public class HProps {
         return new HProp(HPropName.DISABLED, b);
     }
 
-    public static HProp inherits(String templateName) {
-        return new HProp(HPropName.EXTENDS, templateName);
+    public static HProp ancestors(String[] ancestors) {
+        return new HProp(HPropName.ANCESTORS, ancestors);
     }
 
     public static HProp name(String name) {

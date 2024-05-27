@@ -4,10 +4,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.style.DefaultHStyleRule;
-import net.thevpc.halfa.api.style.HProp;
-import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.ConvertedHPartRenderer;
 import net.thevpc.nuts.util.NStringUtils;
@@ -130,19 +127,28 @@ public class HTextRenderer extends ConvertedHPartRenderer {
                 })
                 .toArray(HProp[]::new);
         HProp[] containerSelfProps = p.getProperties().stream().toArray(HProp[]::new);
-        HProp[] containerPromotedProps = p.getProperties()
+        HProperties containerPromotedProps=new HProperties();
+        containerPromotedProps.set(p.getProperties()
                 .stream().filter(x -> {
-                    switch (x.getName()) {
-                        case HPropName.SIZE:
-                        case HPropName.ORIGIN:
-                        case HPropName.POSITION:
-                        case HPropName.VALUE: {
-                            return false;
-                        }
-                    }
-                    return true;
+//                    switch (x.getName()) {
+//                        case HPropName.SIZE:
+//                        case HPropName.ORIGIN:
+//                        case HPropName.POSITION:
+//                        case HPropName.VALUE:
+//                        case HPropName.STROKE:
+//                        case HPropName.BACKGROUND_COLOR:
+//                        case HPropName.FOREGROUND_COLOR:
+//                        case HPropName.DRAW_CONTOUR:
+//                        case HPropName.D:
+//                        {
+//                            return false;
+//                        }
+//                    }
+                    return false;
                 })
-                .toArray(HProp[]::new);
+                .toArray(HProp[]::new));
+        containerPromotedProps.set(HPropName.DRAW_CONTOUR,false);
+        containerPromotedProps.set(HPropName.FILL_BACKGROUND,false);
 //        if(sb.length()>0){
 //            switch (mode){
 //                case "plain":{
@@ -171,7 +177,7 @@ public class HTextRenderer extends ConvertedHPartRenderer {
 //        }
         return f.ofFlow()
                 .setProperties(containerSelfProps)
-                .addRule(DefaultHStyleRule.ofAny(containerPromotedProps))
+                .addRule(DefaultHStyleRule.ofAny(containerPromotedProps.toArray()))
                 .addAll(all.toArray(new HNode[0]));
     }
 }

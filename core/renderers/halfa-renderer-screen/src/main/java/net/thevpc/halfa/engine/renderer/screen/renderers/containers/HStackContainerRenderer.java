@@ -21,16 +21,16 @@ public class HStackContainerRenderer extends AbstractHNodeRenderer {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 selfBounds = selfBounds(p, ctx);
         HGraphics g = ctx.graphics();
-
-        if (!ctx.isDry()) {
-            paintBackground(p, ctx, g, selfBounds);
+        HNodeRendererContext ctx2 = ctx.withBounds(p, selfBounds);
+        if (!ctx2.isDry()) {
+            paintBackground(p, ctx2, g, selfBounds);
         }
         List<HNode> texts = p.children();
         for (HNode text : texts) {
-            ctx.render(text);
+            ctx2.render(text);
         }
-        if (!ctx.isDry()) {
-            paintBorderLine(p, ctx, g, selfBounds);
+        if (!ctx2.isDry()) {
+            paintBorderLine(p, ctx2, g, selfBounds);
         }
     }
 

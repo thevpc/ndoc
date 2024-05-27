@@ -6,6 +6,9 @@ import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 
+/**
+ * immutable value object
+ */
 public class DefaultHStyleRule implements HStyleRule {
     private final HStyleMagnitude magnetude;
     private final HProperties styles;

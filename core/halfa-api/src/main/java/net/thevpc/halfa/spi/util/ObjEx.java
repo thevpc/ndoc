@@ -447,6 +447,18 @@ public class ObjEx {
         return a;
     }
 
+    public NOptional<float[]> asFloatArrayOrFloat() {
+        NOptional<float[]> a = asFloatArray();
+        if (a.isPresent()) {
+            return a;
+        }
+        NOptional<Float> b = asFloat();
+        if (b.isPresent()) {
+            return NOptional.of(new float[]{b.get()});
+        }
+        return a;
+    }
+
     public NOptional<float[]> asFloatArray() {
         return asDoubleArray().map(x -> {
             float[] ff = new float[x.length];
