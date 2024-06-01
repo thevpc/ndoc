@@ -133,7 +133,7 @@ public class HGraphicsImpl implements HGraphics {
 
     @Override
     public void drawPolygon(double[] xx, double[] yy, int length) {
-        g.fillPolygon(
+        g.drawPolygon(
                 Arrays.stream(xx).mapToInt(d -> (int) d).toArray()
                 , Arrays.stream(yy).mapToInt(d -> (int) d).toArray()
                 , length

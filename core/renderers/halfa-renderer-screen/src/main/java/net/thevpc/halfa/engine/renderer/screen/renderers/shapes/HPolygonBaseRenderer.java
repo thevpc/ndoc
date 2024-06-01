@@ -15,7 +15,7 @@ public abstract class HPolygonBaseRenderer extends AbstractHNodeRenderer {
     }
 
     public void render(HNode p, Double2[] points, HNodeRendererContext ctx) {
-        Bounds2 b = selfBounds(p, ctx);
+         Bounds2 b = selfBounds(p, ctx);
         double x = HUtils.doubleOf(b.getX());
         double y = HUtils.doubleOf(b.getY());
         HGraphics g = ctx.graphics();
@@ -34,6 +34,7 @@ public abstract class HPolygonBaseRenderer extends AbstractHNodeRenderer {
                 applyStroke(p, g, ctx);
                 g.drawPolygon(xx, yy, points.length);
             }
+            paintBorderLine(p, ctx,g,b);
         }
         paintDebugBox(p, ctx, g, b);
     }

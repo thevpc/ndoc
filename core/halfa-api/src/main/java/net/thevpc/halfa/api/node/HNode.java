@@ -12,19 +12,20 @@ import java.util.Set;
 
 public interface HNode extends HItem {
     String getUuid();
+
     HNode setUuid(String uuid);
+
     String[] getAncestors();
 
     String[] getStyleClasses();
 
     HItem setAncestors(String[] parentTemplate);
+
     HItem setStyleClasses(String[] classNames);
 
     boolean append(HItem a);
 
     Object source();
-
-    Object computeSource();
 
     HNode setSource(Object source);
 
@@ -49,10 +50,6 @@ public interface HNode extends HItem {
     NOptional<HProp> getProperty(String propertyName);
 
     List<HProp> getProperties();
-
-    NOptional<HProp> computeProperty(String propertyName);
-
-    NOptional<HStyleAndMagnitude> computePropertyMagnetude(String propertyName);
 
 
     HNode setName(String name);
@@ -146,4 +143,6 @@ public interface HNode extends HItem {
     String getName();
 
     HNode setRules(HStyleRule[] rules);
+
+    void setChildAt(int i, HNode c);
 }

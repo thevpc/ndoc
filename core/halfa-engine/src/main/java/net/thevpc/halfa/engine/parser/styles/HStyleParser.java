@@ -10,7 +10,6 @@ import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -40,9 +39,9 @@ public class HStyleParser {
         register(ofBoolean(HPropName.FONT_UNDERLINED, "underlined", "font-underlined"));
         register(ofBoolean(HPropName.DRAW_CONTOUR, new String[]{"draw-contour"}, new String[]{"no-contour"}));
         register(ofBoolean(HPropName.DRAW_GRID, "draw-grid"));
-        register(ofBoolean(HPropName.DISABLED, new String[]{"disabled"}, new String[]{"enabled"}));
+        register(ofBoolean(HPropName.HIDE, new String[]{"hide"}, new String[]{"show"}));
         register(ofBoolean(HPropName.FILL_BACKGROUND, "fill", "fill-background"));
-        register(ofBoolean(HPropName.PRESERVE_SHAPE_RATIO, "preserve-shape-ratio"));
+        register(ofBoolean(HPropName.PRESERVE_ASPECT_RATIO, "preserve-aspect-ratio"));
         register(ofBoolean(HPropName.RAISED, "raised"));
         register(ofBoolean(HPropName.THEED, "threed", "three-d"));
         register(ofBoolean(HPropName.TEMPLATE, "template"));
@@ -75,11 +74,13 @@ public class HStyleParser {
         return new AbstracStyleValueParser(type, ids) {
             @Override
             public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Color> r = new ObjEx(e).parseColor();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid %s", context.source(), id));
+                //TODO fix me
+                return NOptional.of(new HProp[]{new HProp(type, e)});
+//                NOptional<Color> r = new ObjEx(e).parseColor(null);
+//                if (r.isPresent()) {
+//                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
+//                }
+//                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid %s", context.source(), id));
             }
         };
     }
@@ -141,11 +142,12 @@ public class HStyleParser {
             @Override
             public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
                 String kk = NNameFormat.LOWER_KEBAB_CASE.format(id);
+                boolean b = ObjEx.of(e).asBoolean().orElse(false);
                 if (trueSet.contains(kk)) {
-                    return NOptional.of(new HProp[]{new HProp(type, true)});
+                    return NOptional.of(new HProp[]{new HProp(type, b)});
                 }
                 if (falseSet.contains(kk)) {
-                    return NOptional.of(new HProp[]{new HProp(type, false)});
+                    return NOptional.of(new HProp[]{new HProp(type, !b)});
                 }
                 return NOptional.of(new HProp[]{});
             }

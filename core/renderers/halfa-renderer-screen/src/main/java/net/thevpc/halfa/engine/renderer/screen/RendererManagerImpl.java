@@ -45,7 +45,7 @@ public class RendererManagerImpl implements HNodeRendererManager {
     public NOptional<HNodeRenderer> getRenderer(String type){
         HNodeRenderer r = getRenderers().get(type);
         if (r == null) {
-            return NOptional.ofNamedEmpty(type);
+            return NOptional.ofNamedEmpty("renderer for "+type);
         }
         return NOptional.of(r);
     }

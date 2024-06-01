@@ -9,6 +9,7 @@ import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HStackContainerRenderer extends AbstractHNodeRenderer {
     HProperties defaultStyles = new HProperties();
@@ -25,7 +26,10 @@ public class HStackContainerRenderer extends AbstractHNodeRenderer {
         if (!ctx2.isDry()) {
             paintBackground(p, ctx2, g, selfBounds);
         }
-        List<HNode> texts = p.children();
+        HNodeRendererContext finalCtx = ctx;
+        List<HNode> texts = p.children()
+                .stream().filter(x-> resolveVisible(x, finalCtx.graphics(), finalCtx)).collect(Collectors.toList())
+                ;
         for (HNode text : texts) {
             ctx2.render(text);
         }

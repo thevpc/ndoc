@@ -20,12 +20,13 @@ public class HPropName {
     public static final String FONT_UNDERLINED="font-underlined";
     public static final String FOREGROUND_COLOR="foreground-color";
     public static final String BACKGROUND_COLOR="background-color";
+    public static final String COLOR_PALETTE="color-palette";
     public static final String LINE_COLOR="line-color";
     public static final String GRID_COLOR="grid-color";
     public static final String DRAW_GRID="draw-grid";
     public static final String FILL_BACKGROUND="fill-background";
     public static final String DRAW_CONTOUR="draw-contour";
-    public static final String PRESERVE_SHAPE_RATIO="preserve-shape-ratio";
+    public static final String PRESERVE_ASPECT_RATIO ="preserve-aspect-ratio";
     public static final String ROUND_CORNER="round-corner";
     public static final String COLSPAN="colspan";
     public static final String ROWSPAN="rowspan";
@@ -40,7 +41,7 @@ public class HPropName {
     public static final String ROWS_WEIGHT="rows-weight";
     public static final String COLUMNS_WEIGHT="columns-weight";
     public static final String STYLE_CLASS="style-class";
-    public static final String DISABLED="disabled";
+    public static final String HIDE ="disabled";
     public static final String TEMPLATE="template";
     public static final String ANCESTORS ="extends";
     public static final String NAME="name";

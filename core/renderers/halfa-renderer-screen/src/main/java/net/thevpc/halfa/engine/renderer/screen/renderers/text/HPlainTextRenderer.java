@@ -15,7 +15,6 @@ import net.thevpc.nuts.util.NStringUtils;
 
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public class HPlainTextRenderer extends AbstractHNodeRenderer {
@@ -114,7 +113,7 @@ public class HPlainTextRenderer extends AbstractHNodeRenderer {
                                     )
                                     .stream().map(x ->
                                             {
-                                                Object n = finalCtx.getProperty(p, x).orNull();
+                                                Object n = finalCtx.computePropertyValue(p, x).orNull();
                                                 if (n == null) {
                                                     return n;
                                                 }

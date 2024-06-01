@@ -30,7 +30,7 @@ public class HItemListParser {
                         return NOptional.ofNamedError("invalid " + e + " for page-group");
                     }
                 }
-                for (TsonElement e : ee.children()) {
+                for (TsonElement e : ee.body()) {
                     NOptional<HItem> u = context.engine().newNode(e, context);
                     if (u.isPresent()) {
                         pg.add(u.get());

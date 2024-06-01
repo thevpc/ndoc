@@ -7,7 +7,6 @@ package net.thevpc.halfa.examples;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;

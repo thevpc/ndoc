@@ -10,6 +10,10 @@ import java.util.*;
 public class HProperties {
     private Map<String, HProp> map = new HashMap<>();
 
+    public boolean containsKey(String k){
+        return map.containsKey(k);
+    }
+
     public void set(String s,Object value) {
         map.put(s,new HProp(s,value));
     }

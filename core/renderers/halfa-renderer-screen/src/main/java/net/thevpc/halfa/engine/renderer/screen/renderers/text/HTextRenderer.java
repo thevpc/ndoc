@@ -126,9 +126,10 @@ public class HTextRenderer extends ConvertedHPartRenderer {
                     return true;
                 })
                 .toArray(HProp[]::new);
-        HProp[] containerSelfProps = p.getProperties().stream().toArray(HProp[]::new);
+        HProperties containerSelfProps=new HProperties();
+        containerSelfProps.set(ctx.engine().computeProperties(p).toArray(new HProp[0]));
         HProperties containerPromotedProps=new HProperties();
-        containerPromotedProps.set(p.getProperties()
+        containerPromotedProps.set(ctx.engine().computeInheritedProperties(p)
                 .stream().filter(x -> {
 //                    switch (x.getName()) {
 //                        case HPropName.SIZE:
@@ -144,7 +145,7 @@ public class HTextRenderer extends ConvertedHPartRenderer {
 //                            return false;
 //                        }
 //                    }
-                    return false;
+                    return true;
                 })
                 .toArray(HProp[]::new));
         containerPromotedProps.set(HPropName.DRAW_CONTOUR,false);
@@ -176,7 +177,7 @@ public class HTextRenderer extends ConvertedHPartRenderer {
 //            h.setProperty(o);
 //        }
         return f.ofFlow()
-                .setProperties(containerSelfProps)
+                .setProperties(containerSelfProps.toArray())
                 .addRule(DefaultHStyleRule.ofAny(containerPromotedProps.toArray()))
                 .addAll(all.toArray(new HNode[0]));
     }

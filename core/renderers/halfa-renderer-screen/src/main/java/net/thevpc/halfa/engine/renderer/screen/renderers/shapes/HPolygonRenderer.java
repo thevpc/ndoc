@@ -75,7 +75,7 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
                 double angle = i * 1.0 / points.length * 2 * Math.PI;
                 points[i] = new Double2(
                         x0+w0*Math.cos(angle)
-                        ,y0+h0+Math.sin(angle)
+                        ,y0+h0*Math.sin(angle)
                 );
             }
         }

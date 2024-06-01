@@ -1,11 +1,12 @@
-package net.thevpc.halfa.engine;
+package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererFactoryContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NStringUtils;
 
-class HDocumentRendererFactoryContextImpl implements HDocumentRendererFactoryContext {
+public class HDocumentRendererFactoryContextImpl implements HDocumentRendererFactoryContext {
     private final HEngineImpl hEngine;
     private final String type;
 

@@ -62,7 +62,7 @@ public class HProps {
     }
 
     public static HProp preserveShapeRatio(boolean value) {
-        return new HProp(HPropName.PRESERVE_SHAPE_RATIO, value);
+        return new HProp(HPropName.PRESERVE_ASPECT_RATIO, value);
     }
 
     public static HProp drawContour(boolean value) {
@@ -174,7 +174,7 @@ public class HProps {
     }
 
     public static HProp disabled(boolean b) {
-        return new HProp(HPropName.DISABLED, b);
+        return new HProp(HPropName.HIDE, b);
     }
 
     public static HProp ancestors(String[] ancestors) {

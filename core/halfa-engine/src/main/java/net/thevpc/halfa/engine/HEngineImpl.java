@@ -3,7 +3,6 @@ package net.thevpc.halfa.engine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
@@ -11,14 +10,15 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.style.HProp;
-import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.engine.impl.DefaultHNodeFactoryParseContext;
+import net.thevpc.halfa.engine.impl.HDocumentCompiler;
+import net.thevpc.halfa.engine.impl.HDocumentRendererFactoryContextImpl;
+import net.thevpc.halfa.engine.impl.HPropCalculator;
 import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.halfa.spi.renderer.*;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -43,9 +43,12 @@ public class HEngineImpl implements HEngine {
     private Map<String, HNodeTypeFactory> nodeTypeFactories;
     private Map<String, String> nodeTypeAliases;
     private HDocumentFactory factory;
+    private HPropCalculator hPropCalculator = new HPropCalculator();
+    HDocumentCompiler hDocumentCompiler;
 
     public HEngineImpl(NSession session) {
         this.session = session;
+        hDocumentCompiler = new HDocumentCompiler(this);
     }
 
     public NSession getSession() {
@@ -197,10 +200,8 @@ public class HEngineImpl implements HEngine {
     }
 
 
-
-
     public HDocument compileDocument(HDocument document) {
-        return new HDocumentCompiler(this).compile(document);
+        return hDocumentCompiler.compile(document);
     }
 
     public boolean validateNode(HNode node) {
@@ -374,4 +375,31 @@ public class HEngineImpl implements HEngine {
         HNode r = doc.root();
         return nodeTypeFactory(r.type()).get().toTson(r);
     }
+
+
+    @Override
+    public NOptional<HProp> computeProperty(HNode node, String propertyName) {
+        return hPropCalculator.computeProperty(node, propertyName);
+    }
+
+    @Override
+    public List<HProp> computeProperties(HNode node) {
+        return hPropCalculator.computeProperties(node);
+    }
+
+    @Override
+    public List<HProp> computeInheritedProperties(HNode node) {
+        return hPropCalculator.computeInheritedProperties(node);
+    }
+
+    @Override
+    public <T> NOptional<T> computePropertyValue(HNode node, String propertyName) {
+        return hPropCalculator.computePropertyValue(node, propertyName);
+    }
+
+    @Override
+    public Object computeSource(HNode node) {
+        return hDocumentCompiler.computeSource(node);
+    }
+
 }

@@ -3,6 +3,7 @@ package net.thevpc.halfa.engine.renderer.screen.common;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -10,6 +11,9 @@ import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class HPartRendererContextImpl extends AbstractHNodeRendererContext {
     private HGraphics g3;
@@ -50,9 +54,9 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
     }
 
     @Override
-    public <T> NOptional<T> getProperty(HNode t, String s) {
+    public <T> NOptional<T> computePropertyValue(HNode t, String s) {
         if (t != null) {
-            return t.computeProperty(s).map(HProp::getValue).map(x->{
+            return engine().computeProperty(t,s).map(HProp::getValue).map(x->{
                 try {
                     return (T) x;
                 }catch (ClassCastException e){
@@ -61,5 +65,10 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
             }).filter(x->x!=null);
         }
         return NOptional.ofNamedEmpty("style " + s);
+    }
+
+    @Override
+    public List<HProp> computeProperties(HNode t) {
+        return engine().computeProperties(t);
     }
 }

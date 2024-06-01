@@ -4,16 +4,19 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
 
+import java.util.List;
+
 public interface HNodeRendererContext {
 
-    default HSizeRequirements sizeRequirementsOf(HNode p){
-        return manager().getRenderer(p.type()).get().sizeRequirements(p,this);
+    default HSizeRequirements sizeRequirementsOf(HNode p) {
+        return manager().getRenderer(p.type()).get().sizeRequirements(p, this);
     }
 
     HNodeRendererManager manager();
@@ -38,7 +41,9 @@ public interface HNodeRendererContext {
 
     HDocumentFactory documentFactory();
 
-    <T> NOptional<T> getProperty(HNode t, String s);
+    <T> NOptional<T> computePropertyValue(HNode t, String s);
+
+    List<HProp> computeProperties(HNode t);
 
     HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles);
 

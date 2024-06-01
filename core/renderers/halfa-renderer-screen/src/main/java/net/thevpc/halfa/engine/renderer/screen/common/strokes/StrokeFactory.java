@@ -48,8 +48,8 @@ public class StrokeFactory {
             case "wobble": {
                 return WobbleStroke.of(e);
             }
-            case "brush": {
-                return BrushStroke.of(e);
+            case "sloppy": {
+                return SloppyStroke.of(e);
             }
             case "zigzag": {
                 return ZigzagStroke.of(e);
@@ -136,7 +136,7 @@ public class StrokeFactory {
         double miterLimit = 10;
         float[] dash = null;
         double dashPhase = 0;
-        for (Map.Entry<String, ObjEx> ke : o.argsMap().entrySet()) {
+        for (Map.Entry<String, ObjEx> ke : o.argsOrBodyMap().entrySet()) {
             switch (HUtils.uid(ke.getKey())) {
                 case "width": {
                     width = ke.getValue().asDouble().orElse(width);

@@ -3,8 +3,7 @@ package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementType;
+import net.thevpc.tson.*;
 
 import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;
@@ -12,16 +11,18 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.Random;
 
-public class BrushStroke implements Stroke{
+public class SloppyStroke implements Stroke {
 
     private float width;
+    private float sloppyness;
     private Random random;
     private Stroke base;
 
     public static Stroke of(TsonElement e) {
         ObjEx o = ObjEx.of(e);
-        double width = 5;
-        Stroke base=null;
+        double sloppyness = 5;
+        Stroke base = null;
+        TsonObjectBuilder basic = null;
         for (TsonElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
@@ -31,30 +32,59 @@ public class BrushStroke implements Stroke{
             ) {
                 if (base == null) {
                     base = StrokeFactory.createStroke(arg);
+                } else {
+                    base = CompositeStroke.of(base, StrokeFactory.createStroke(arg));
                 }
+            } else if(arg.type().isNumber()){
+                sloppyness=ObjEx.of(arg).asDouble().orElse(sloppyness);
             } else {
-                NOptional<ObjEx.SimplePair> sp = o.asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(arg).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair ke = sp.get();
                     switch (HUtils.uid(ke.getName())) {
-                        case "width": {
-                            width = ke.getValue().asDouble().orElse(width);
+                        case "width":
+                        case "dash-phase":
+                        case "miter-limit":
+                        case "dash":
+                        case "cap":
+                        case "join":
+                        {
+                            if (basic == null) {
+                                basic = Tson.ofObj();
+                            }
+                            basic.set(HUtils.uid(ke.getName()), (TsonElement)ke.getValue().raw());
+                            break;
+                        }
+                        case "sloppyness":
+                        case "s": {
+                            sloppyness = ke.getValue().asDouble().orElse(sloppyness);
                             break;
                         }
                     }
                 }
             }
         }
-        return new BrushStroke(
+        if (base == null) {
+            if (basic == null) {
+                base = StrokeFactory.createBasic(ObjEx.of(Tson.ofObj()));
+            } else {
+                base = StrokeFactory.createBasic(ObjEx.of(basic));
+            }
+        } else {
+            if (basic != null) {
+                base = CompositeStroke.of(StrokeFactory.createBasic(ObjEx.of(basic)), base);
+            }
+        }
+        return new SloppyStroke(
                 base,
-                (float) width
+                (float) sloppyness
         );
     }
 
-    public BrushStroke(Stroke base,float width) {
+    public SloppyStroke(Stroke base, float width) {
         this.width = width;
         this.random = new Random();
-        this.base=base==null?new BasicStroke():base;
+        this.base = base == null ? new BasicStroke() : base;
     }
 
     @Override
@@ -91,7 +121,7 @@ public class BrushStroke implements Stroke{
                 case PathIterator.SEG_LINETO:
                     thisX = points[0];
                     thisY = points[1];
-                    result.lineTo(thisX+random.nextFloat()* 2*width-width, thisY+random.nextFloat()* 2*width-width);
+                    result.lineTo(thisX + random.nextFloat() * 2 * width - width, thisY + random.nextFloat() * 2 * width - width);
                     result.lineTo(lastX, lastY);
                     result.lineTo(thisX, thisY);
 ////                    float dx = thisX - lastX;

@@ -14,10 +14,14 @@ public class CompositeStroke implements Stroke {
         ObjEx o = ObjEx.of(e);
         List<TsonElement> args = new ArrayList<>();
         args.addAll(o.args());
-        args.addAll(o.children());
+        args.addAll(o.body());
         return new CompositeStroke(
                 args.stream().map(StrokeFactory::createStroke).toArray(Stroke[]::new)
         );
+    }
+
+    public static CompositeStroke of(Stroke... strokes) {
+        return new CompositeStroke(strokes);
     }
 
     public CompositeStroke(Stroke... strokes) {

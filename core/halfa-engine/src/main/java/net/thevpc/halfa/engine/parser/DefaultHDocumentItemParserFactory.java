@@ -14,12 +14,11 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -127,46 +126,7 @@ public class DefaultHDocumentItemParserFactory
                     return NCallableSupport.of(10, new Supplier<HItem>() {
                         @Override
                         public HItem get() {
-                            HItemList pg = new HItemList();
-                            for (TsonElement child : ee.children()) {
-                                NOptional<HItem> u = context.engine().newNode(child, context);
-                                if (u.isPresent()) {
-                                    pg.add(u.get());
-                                } else {
-                                    HNode node = context.node();
-                                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",child,
-                                            node==null?"document":node.type()
-                                    ).toString());
-                                }
-                            }
-
-//                            switch (c.type()) {
-//                                case FUNCTION:
-//                                case OBJECT:
-//                                case ARRAY: {
-//                                    for (TsonElement e : ee.args()) {
-//                                        NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);
-//                                        if (u.isPresent()) {
-//                                            for (HProp s : u.get()) {
-//                                                pg.add(s);
-//                                            }
-//                                        } else {
-////                                            return NOptional.ofError(NMsg.ofC("invalid %s for %s",e,context.node().type())).get();
-//                                            throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",e,context.node().type()).toString());
-//                                        }
-//                                    }
-//                                    for (TsonElement e : ee.children()) {
-//                                        NOptional<HItem> u = context.engine().newNode(e, context);
-//                                        if (u.isPresent()) {
-//                                            pg.add(u.get());
-//                                        } else {
-////                                            return NOptional.ofError(NMsg.ofC("invalid %s for %s",e,context.node().type())).get();
-//                                            throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s",e,context.node().type()).toString());
-//                                       }
-//                                    }
-//                                }
-//                            }
-                            return pg;
+                            return parsNoNameBloc(context);
                         }
                     });
                 } else {
@@ -179,7 +139,7 @@ public class DefaultHDocumentItemParserFactory
                     if (pp != null) {
                         return NCallableSupport.of(10, () -> {
                             NOptional<HItem> styles = pp.parseItem(uid, c, context);
-                            if(!styles.isPresent()){
+                            if (!styles.isPresent()) {
                                 pp.parseItem(uid, c, context).get();
                             }
                             return styles.get();
@@ -190,6 +150,145 @@ public class DefaultHDocumentItemParserFactory
             }
         }
         throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", context.source(), c));
+    }
+
+    private boolean isRootBloc(HNodeFactoryParseContext context){
+        HNode[] nodes = context.nodePath();
+        if(nodes.length>1){
+            return false;
+        }
+        if(nodes.length==1){
+            if(!Objects.equals(nodes[0].type(),HNodeType.PAGE_GROUP)){
+                return false;
+            }
+        }
+        TsonElement c = context.element();
+//        HEngine engine = context.engine();
+        for (TsonAnnotation a : c.getAnnotations()) {
+            String nn = a.getName();
+            if (!NBlankable.isBlank(nn)) {
+                return false;
+            }
+            boolean foundHalfa=false;
+            boolean foundVersion=false;
+            boolean foundOther=false;
+            for (TsonElement cls : a.all()) {
+                switch (cls.type()){
+                    case STRING:{
+                        if(cls.toStr().getValue().equalsIgnoreCase("halfa")){
+                            foundHalfa=true;
+                        }else if(isVersionString(cls.toStr().getValue())){
+                            foundVersion=true;
+                        }else{
+                            foundOther=true;
+                        }
+                        break;
+                    }
+                    case NAME:{
+                        if(cls.toName().getName().equalsIgnoreCase("halfa")){
+                            foundHalfa=true;
+                        }else if(isVersionString(cls.toStr().getValue())){
+                            foundVersion=true;
+                        }else{
+                            foundOther=true;
+                        }
+                        break;
+                    }
+                    default:{
+                        if(cls.type().isNumber()){
+                            BigDecimal bi = cls.toNumber().getBigDecimal();
+                            foundVersion=true;
+                        }else{
+                            foundOther=true;
+                        }
+                        break;
+                    }
+                }
+            }
+            if(foundHalfa){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isVersionString(String value) {
+        if(value!=null){
+            value=value.trim();
+            if(value.length()>0){
+                if(value.charAt(0)>='0' && value.charAt(0)>='9'){
+                    for (char c : value.toCharArray()) {
+                        if(!Character.isAlphabetic(c) && !Character.isDigit(c)
+                                && c!='.' && c!='_' && c!='-'
+
+                        ){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private HItem parsNoNameBloc(HNodeFactoryParseContext context){
+        TsonElement c = context.element();
+        HEngine engine = context.engine();
+        HDocumentFactory f = engine.documentFactory();
+        HashSet<String> allAncestors = null;
+        HashSet<String> allStyles = null;
+        ObjEx ee = new ObjEx(c);
+        for (TsonAnnotation a : c.getAnnotations()) {
+            String nn = a.getName();
+            if (!NBlankable.isBlank(nn)) {
+                if (allAncestors == null) {
+                    allAncestors = new HashSet<>();
+                }
+                allAncestors.add(HUtils.uid(nn));
+            }
+            // add classes as well
+
+            for (TsonElement cls : a.all()) {
+                if (allStyles == null) {
+                    allStyles = new HashSet<>();
+                }
+                NOptional<String[]> ss = ObjEx.of(cls).asStringArrayOrString();
+                if (ss.isPresent()) {
+                    allStyles.addAll(Arrays.asList(ss.get()));
+                }
+            }
+        }
+        HNode node = context.node();
+        if ((allStyles != null || allAncestors != null) && ! isRootBloc(context)) {
+            HNode pg = f.ofStack();
+            pg.setAncestors(allAncestors==null?null:allAncestors.toArray(new String[0]));
+            pg.setStyleClasses(allStyles==null?null:allStyles.toArray(new String[0]));
+            for (TsonElement child : ee.body()) {
+                NOptional<HItem> u = context.engine().newNode(child, context);
+                if (u.isPresent()) {
+                    pg.append(u.get());
+                } else {
+                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s", child,
+                            node == null ? "document" : node.type()
+                    ).toString());
+                }
+            }
+            return pg;
+        } else {
+            HItemList pg = new HItemList();
+            for (TsonElement child : ee.body()) {
+                NOptional<HItem> u = context.engine().newNode(child, context);
+                if (u.isPresent()) {
+                    pg.add(u.get());
+                } else {
+                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s", child,
+                            node == null ? "document" : node.type()
+                    ).toString());
+                }
+            }
+            return pg;
+        }
     }
 
 }

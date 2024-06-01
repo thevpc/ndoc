@@ -23,7 +23,7 @@ public class WobbleStroke implements Stroke {
         double detail = 2;
         double amplitude = 2;
         double flatness = 1;
-        for (Map.Entry<String, ObjEx> ke : o.argsMap().entrySet()) {
+        for (Map.Entry<String, ObjEx> ke : o.argsOrBodyMap().entrySet()) {
             switch (HUtils.uid(ke.getKey())) {
                 case "details": {
                     detail = ke.getValue().asDouble().orElse(detail);

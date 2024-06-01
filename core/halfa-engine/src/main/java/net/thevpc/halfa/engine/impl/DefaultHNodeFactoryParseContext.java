@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine;
+package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
@@ -96,7 +96,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             if (nodePath != null) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
                     if (nodePath.get(i) != null) {
-                        Object ss = nodePath.get(i).computeSource();
+                        Object ss = engine().computeSource(nodePath.get(i));
                         if (ss != null) {
                             src = ss;
                             break;

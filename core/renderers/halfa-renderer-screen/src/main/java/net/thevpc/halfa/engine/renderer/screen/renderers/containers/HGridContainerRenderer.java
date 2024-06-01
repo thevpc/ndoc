@@ -55,10 +55,10 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
             effPositions.add(e);
         }
 
-        boolean xCompact = (Boolean) ctx.getProperty(t, HPropName.XCOMPACT).orElse(false);
-        boolean yCompact = (Boolean) ctx.getProperty(t, HPropName.YCOMPACT).orElse(false);
-        Integer cols = (Integer) ctx.getProperty(t, HPropName.COLUMNS).orElse(-1);
-        Integer rows = (Integer) ctx.getProperty(t, HPropName.ROWS).orElse(-1);
+        boolean xCompact = (Boolean) ctx.computePropertyValue(t, HPropName.XCOMPACT).orElse(false);
+        boolean yCompact = (Boolean) ctx.computePropertyValue(t, HPropName.YCOMPACT).orElse(false);
+        Integer cols = (Integer) ctx.computePropertyValue(t, HPropName.COLUMNS).orElse(-1);
+        Integer rows = (Integer) ctx.computePropertyValue(t, HPropName.ROWS).orElse(-1);
         if (cols == null) {
             cols = -1;
         }
@@ -120,7 +120,7 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         }
 
         //re-evaluate paintable zone
-        Double2 posAnchor = ObjEx.of(ctx.getProperty(t, HPropName.ORIGIN).orNull()).asDouble2OrHAlign().orElse(null);
+        Double2 posAnchor = ObjEx.of(ctx.computePropertyValue(t, HPropName.ORIGIN).orNull()).asDouble2OrHAlign().orElse(null);
 
         if (posAnchor != null) {
             double[] preferredRowsWeight = new double[effPositions.size()];
@@ -303,8 +303,8 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
 
     private WeightInfo loadWeightInfo(int cols, int rows, HNode t, HNodeRendererContext ctx) {
         WeightInfo ii = new WeightInfo();
-        ii.colsWeight = (double[]) ctx.getProperty(t, HPropName.COLUMNS_WEIGHT).orElse(null);
-        ii.rowsWeight = (double[]) ctx.getProperty(t, HPropName.ROWS_WEIGHT).orElse(null);
+        ii.colsWeight = (double[]) ctx.computePropertyValue(t, HPropName.COLUMNS_WEIGHT).orElse(null);
+        ii.rowsWeight = (double[]) ctx.computePropertyValue(t, HPropName.ROWS_WEIGHT).orElse(null);
         revalidateWeightInfo(cols, rows, ii);
         return ii;
     }

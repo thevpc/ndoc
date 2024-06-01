@@ -84,18 +84,6 @@ public class DefaultHNode implements HNode {
         return source;
     }
 
-    @Override
-    public Object computeSource() {
-        Object s = source();
-        if (s != null) {
-            return s;
-        }
-        HNode p = parent();
-        if (p != null) {
-            return p.computeSource();
-        }
-        return null;
-    }
 
     @Override
     public List<HProp> props() {
@@ -128,7 +116,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public boolean isDisabled() {
-        NOptional<HProp> style = getProperty(HPropName.DISABLED);
+        NOptional<HProp> style = getProperty(HPropName.HIDE);
         if (style.isEmpty()) {
             return false;
         }
@@ -170,80 +158,6 @@ public class DefaultHNode implements HNode {
 
     public NOptional<HProp> getProperty(String propertyName) {
         return properties.get(propertyName);
-    }
-
-    public NOptional<HProp> computeProperty(String propertyName) {
-        return computePropertyMagnetude(propertyName).map(HStyleAndMagnitude::getStyle);
-    }
-
-    private static class HStyleRuleResult2 {
-        HStyleRule rule;
-        HProp property;
-
-        public HStyleRuleResult2(HStyleRule rule, HProp property) {
-            this.rule = rule;
-            this.property = property;
-        }
-
-        @Override
-        public String toString() {
-            return "HStyleRuleResult2{" +
-                    "rule=" + rule +
-                    ", property=" + property +
-                    '}';
-        }
-    }
-
-    private HStyleRuleResult2[] _HStyleRuleResult2(HNode p, String propertyName) {
-        HStyleRule[] rules = p.rules();
-        List<HStyleRuleResult2> rr = new ArrayList<>();
-        for (HStyleRule rule : rules) {
-            if (rule.accept(this)) {
-                rule.styles().get(propertyName)
-                        .ifPresent(u1 -> {
-                            rr.add(new HStyleRuleResult2(rule, u1));
-                        });
-            }
-        }
-        return rr.toArray(new HStyleRuleResult2[0]);
-    }
-
-    public NOptional<HStyleAndMagnitude> computePropertyMagnetude(String propertyName) {
-        propertyName = HUtils.uid(propertyName);
-        NOptional<HProp> u = properties.get(propertyName);
-        if (u.isPresent()) {
-            return NOptional.of(
-                    new HStyleAndMagnitude(
-                            u.get(),
-                            new HStyleMagnitude(0, DefaultHNodeSelector.ofImportant())
-                    )
-            );
-        }
-        HNode p = parent();
-        int distance = 1;
-        while (p != null) {
-            HStyleMagnitude bestMag = null;
-            HProp bestStyle = null;
-            HStyleRuleResult2[] validRules = _HStyleRuleResult2(p, propertyName);
-            for (HStyleRuleResult2 rule : validRules) {
-                HStyleMagnitude m2 = new HStyleMagnitude(distance, rule.rule.selector());
-                if (bestMag == null || m2.compareTo(bestMag) <= 0) {
-                    bestMag = m2;
-                    bestStyle = rule.property;
-                }
-            }
-            if (bestMag != null) {
-                return NOptional.of(
-                        new HStyleAndMagnitude(
-                                bestStyle,
-                                new HStyleMagnitude(distance, bestMag.getSelector())
-                        )
-                );
-            }
-            distance++;
-            p = p.parent();
-        }
-        return NOptional.ofNamedEmpty("no style : " + propertyName);
     }
 
     @Override
@@ -754,4 +668,9 @@ public class DefaultHNode implements HNode {
         return (String) getPropertyValue(HPropName.NAME).orNull();
     }
 
+    @Override
+    public void setChildAt(int i, HNode c) {
+        NAssert.requireNonNull(c,"node");
+        children.set(i,c);
+    }
 }

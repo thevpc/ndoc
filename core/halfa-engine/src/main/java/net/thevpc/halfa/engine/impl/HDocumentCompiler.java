@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine;
+package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
@@ -25,7 +25,7 @@ public class HDocumentCompiler {
     public HDocument compile(HDocument document) {
         HNode root = document.root();
         processUuid(root);
-        processAncestors(root);
+        root= processInheritance(root);
         processRootPages(root);
         return document;
     }
@@ -95,13 +95,14 @@ public class HDocumentCompiler {
         }
     }
 
-    protected boolean processAncestors(HNode node) {
+    protected HNode processInheritance(HNode node) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
             Set<String> newAncestors = new HashSet<>(Arrays.asList(t));
             HProperties inheritedProps=new HProperties();
             List<HNode> inheritedChildren=new ArrayList<>();
             List<HStyleRule> inheritedRules=new ArrayList<>();
+            List<HNode> ancestorsList=new ArrayList<>();
             for (String a : t) {
                 HNode aa = findAncestor(node, a);
                 if (aa != null) {
@@ -118,7 +119,13 @@ public class HDocumentCompiler {
                             }
                         }
                     }
-                    inheritedChildren.addAll(aa.children().stream().map(x->x.copy()).collect(Collectors.toList()));
+                    ancestorsList.add(aa);
+                    for (HNode child : aa.children()) {
+                        Object source = computeSource(child);
+                        child=child.copy();
+                        child.setSource(source);
+                        inheritedChildren.add(child);
+                    }
                     inheritedRules.addAll(Arrays.asList(aa.rules()));
                 } else {
                     throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
@@ -137,15 +144,25 @@ public class HDocumentCompiler {
                 node.setRules(inheritedRules.toArray(new HStyleRule[0]));
             }
             if(!inheritedChildren.isEmpty()){
-                inheritedChildren.addAll(node.children());
+                for (HNode child : node.children()) {
+                    Object source = computeSource(child);
+                    child=child.copy();
+                    child.setSource(source);
+                    inheritedChildren.add(child);
+                }
                 node.setChildren(inheritedChildren.toArray(new HNode[0]));
             }
-            return true;
+            return node;
         }
-        for (HNode child : node.children()) {
-            processAncestors(child);
+        List<HNode> children = node.children();
+        for (int i = 0; i < children.size(); i++) {
+            HNode child = children.get(i);
+            HNode child2 = processInheritance(child);
+            if (child2!=child){
+                node.setChildAt(i,child2);
+            }
         }
-        return false;
+        return node;
     }
 
     protected HNode findAncestor(HNode node, String name) {
@@ -169,4 +186,15 @@ public class HDocumentCompiler {
     }
 
 
+
+    public Object computeSource(HNode node) {
+        while(node!=null) {
+            Object s = node.source();
+            if (s != null) {
+                return s;
+            }
+            node = node.parent();
+        }
+        return null;
+    }
 }

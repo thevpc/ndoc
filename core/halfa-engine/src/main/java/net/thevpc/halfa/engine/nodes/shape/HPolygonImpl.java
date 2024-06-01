@@ -23,6 +23,11 @@ public class HPolygonImpl extends AbstractHNodeTypeFactory {
     @Override
     protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
+            case INT:
+            case LONG: {
+                p.setProperty(HProp.ofInt(HPropName.COUNT, new ObjEx(e).asInt().get()));
+                return true;
+            }
             case PAIR: {
                 NOptional<ObjEx.SimplePair> sp = new ObjEx(e).asSimplePair();
                 if (sp.isPresent()) {
@@ -90,8 +95,8 @@ public class HPolygonImpl extends AbstractHNodeTypeFactory {
                         node,
                         engine()
                 ).addChildren(
-                        count == null ? null : Tson.ofPair("count", HUtils.toTson(count)),
-                        points == null ? null : Tson.ofPair("points", HUtils.toTson(points))
+                        count == null ? null : Tson.ofPair("count", HUtils.toTson(count.getValue())),
+                        points == null ? null : Tson.ofPair("points", HUtils.toTson(points.getValue()))
                 )
                 .build();
     }

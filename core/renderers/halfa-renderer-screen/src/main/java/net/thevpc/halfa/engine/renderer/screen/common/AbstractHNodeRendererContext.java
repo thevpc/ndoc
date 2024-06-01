@@ -54,7 +54,7 @@ public abstract class AbstractHNodeRendererContext implements HNodeRendererConte
         if (NBlankable.isBlank(path)) {
             return null;
         }
-        Object src = node.computeSource();
+        Object src = engine().computeSource(node);
         NPath base;
         if (src instanceof NPath) {
             NPath sp = (NPath) src;

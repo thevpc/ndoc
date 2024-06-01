@@ -12,18 +12,12 @@ import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementBase;
 import net.thevpc.tson.TsonElementHeader;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
 
@@ -82,25 +76,25 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                 break;
             }
             case FUNCTION: {
-                if (acceptTypeName(e.toFunction().getName())) {
-                    return e.toFunction().getName();
+                if (acceptTypeName(e.toFunction().name())) {
+                    return e.toFunction().name();
                 }
                 break;
             }
             case OBJECT: {
                 TsonElementHeader h = e.toObject().getHeader();
                 if (h != null) {
-                    if (acceptTypeName(h.getName())) {
-                        return h.getName();
+                    if (acceptTypeName(h.name())) {
+                        return h.name();
                     }
                 }
                 break;
             }
             case ARRAY: {
-                TsonElementHeader h = e.toArray().getHeader();
+                TsonElementHeader h = e.toArray().header();
                 if (h != null) {
-                    if (acceptTypeName(h.getName())) {
-                        return h.getName();
+                    if (acceptTypeName(h.name())) {
+                        return h.name();
                     }
                 }
                 break;
@@ -177,7 +171,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         }
                     }
                 }
-                for (TsonElement e : ee.children()) {
+                for (TsonElement e : ee.body()) {
                     NOptional<HItem> u = engine.newNode(e, context2);
                     if (u.isPresent()) {
                         p.append(u.get());

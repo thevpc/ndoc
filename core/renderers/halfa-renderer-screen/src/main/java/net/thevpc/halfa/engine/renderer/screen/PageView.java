@@ -69,8 +69,9 @@ public class PageView extends JComponent {
         HGraphics hg = new HGraphicsImpl(g2d);
 
         drawBackground(hg);
-        drawGrid(hg);
-
+        if(false) {
+            drawGrid(hg);
+        }
         HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size, this.documentView.session());
         for (HNode child : page.children()) {
             render(child, ctx);

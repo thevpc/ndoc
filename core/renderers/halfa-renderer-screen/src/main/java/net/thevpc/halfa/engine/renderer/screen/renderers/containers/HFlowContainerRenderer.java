@@ -12,6 +12,7 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 
 import java.awt.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HFlowContainerRenderer extends AbstractHNodeRenderer {
     HProperties defaultStyles = new HProperties();
@@ -33,7 +34,8 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
     }
 
     private Elems compute(HNode p, Bounds2 expectedBounds,HNodeRendererContext ctx) {
-        List<HNode> texts = p.children();
+        List<HNode> texts = p.children()
+                .stream().filter(x-> resolveVisible(x, ctx.graphics(), ctx)).collect(Collectors.toList());
         Elems e = new Elems();
         e.elems = new Elem[texts.size()];
         double allWidth = 0;

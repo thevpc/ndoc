@@ -5,11 +5,9 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
-import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
 import net.thevpc.halfa.spi.util.HUtils;
 
 public class HSphereRenderer extends AbstractHNodeRenderer {
@@ -18,8 +16,8 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
 
     public HSphereRenderer() {
         super(HNodeType.SPHERE,HNodeType.ELLIPSOID);
-        sphereDefaultStyles.set(HPropName.PRESERVE_SHAPE_RATIO,true);
-        ellipsoidDefaultStyles.set(HPropName.PRESERVE_SHAPE_RATIO,false);
+        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO,true);
+        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO,false);
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {

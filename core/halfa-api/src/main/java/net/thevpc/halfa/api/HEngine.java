@@ -11,6 +11,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
@@ -51,4 +52,13 @@ public interface HEngine {
     NOptional<HDocument> loadDocument(InputStream is);
 
     TsonElement toTson(HDocument doc);
+
+    NOptional<HProp> computeProperty(HNode node, String propertyName);
+
+    List<HProp> computeInheritedProperties(HNode node);
+    List<HProp> computeProperties(HNode node);
+
+    <T> NOptional<T> computePropertyValue(HNode node, String propertyName);
+
+    Object computeSource(HNode node);
 }

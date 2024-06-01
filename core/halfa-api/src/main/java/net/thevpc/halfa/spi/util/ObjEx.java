@@ -36,39 +36,30 @@ public class ObjEx {
     }
 
     public ObjEx(Object element) {
+        if (element instanceof TsonElementBuilder) {
+            element = ((TsonElementBuilder) element).build();
+        }
         this.element = element;
     }
 
     private void _parsedChildren() {
         if (!parsedChildren) {
             parsedChildren = true;
-            if (element instanceof TsonElement) {
-                TsonElement te = (TsonElement) element;
+            if (element instanceof TsonContainer) {
+                TsonContainer te = (TsonContainer) element;
                 switch (te.type()) {
-                    case FUNCTION: {
-                        TsonFunction item = te.toFunction();
-                        name = HUtils.uid(item.name());
-                        args.addAll(item.all());
-                        break;
-                    }
-                    case OBJECT: {
-                        TsonObject item = te.toObject();
-                        TsonElementHeader header = item.getHeader();
-                        if (header != null) {
-                            name = header.name();
-                            args.addAll(header.all());
-                        }
-                        children.addAll(item.all());
-                        break;
-                    }
+                    case FUNCTION:
+                    case OBJECT:
                     case ARRAY: {
-                        TsonArray item = te.toArray();
-                        TsonElementHeader header = item.getHeader();
-                        if (header != null) {
-                            name = header.name();
-                            args.addAll(header.all());
+                        name = HUtils.uid(te.name());
+                        TsonElementList a = te.args();
+                        if (a != null) {
+                            args.addAll(a.toList());
                         }
-                        children.addAll(item.all());
+                        a = te.body();
+                        if (a != null) {
+                            children.addAll(a.toList());
+                        }
                         break;
                     }
                 }
@@ -106,12 +97,29 @@ public class ObjEx {
         return name;
     }
 
-    public Map<String,ObjEx> argsMap() {
-        Map<String,ObjEx> a=new HashMap<>();
+    public Map<String, ObjEx> argsOrBodyMap() {
+        Map<String, ObjEx> a = new HashMap<>();
         for (TsonElement arg : args()) {
             NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
-            if(sp.isPresent()){
-                a.put(HUtils.uid(sp.get().name),sp.get().value);
+            if (sp.isPresent()) {
+                a.put(HUtils.uid(sp.get().name), sp.get().value);
+            }
+        }
+        for (TsonElement arg : body()) {
+            NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
+            if (sp.isPresent()) {
+                a.put(HUtils.uid(sp.get().name), sp.get().value);
+            }
+        }
+        return a;
+    }
+
+    public Map<String, ObjEx> argsMap() {
+        Map<String, ObjEx> a = new HashMap<>();
+        for (TsonElement arg : args()) {
+            NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
+            if (sp.isPresent()) {
+                a.put(HUtils.uid(sp.get().name), sp.get().value);
             }
         }
         return a;
@@ -122,12 +130,12 @@ public class ObjEx {
         return args;
     }
 
-    public List<TsonElement> children() {
+    public List<TsonElement> body() {
         _parsedChildren();
         return children;
     }
 
-    public NOptional<Color> parseColor() {
+    public NOptional<Color> parseColor(ColorPalette palette) {
         if (element instanceof Color) {
             return NOptional.of((Color) element);
         }
@@ -139,7 +147,7 @@ public class ObjEx {
                 case SHORT:
                 case LONG:
                 case INT: {
-                    return new ObjEx(te.toInt().getInt()).parseColor();
+                    return new ObjEx(te.toInt().getInt()).parseColor(palette);
                 }
                 case UPLET: {
                     NOptional<int[]> ri = asIntArray();
@@ -176,7 +184,7 @@ public class ObjEx {
                 case NAME: {
                     ObjEx h = new ObjEx(element);
                     String s = h.asString().get();
-                    return new ObjEx(s).parseColor();
+                    return new ObjEx(s).parseColor(palette);
                 }
             }
         } else {
@@ -221,6 +229,18 @@ public class ObjEx {
                                     )
                             );
                         }
+                    }
+                }
+                if (s.toLowerCase().startsWith("c")) {
+                    NOptional<Integer> u = NLiteral.of(s.substring(1).trim()).asInt();
+                    if (u.isPresent()) {
+                        if (palette != null) {
+                            Color c = palette.getColor(u.get());
+                            if (c != null) {
+                                return NOptional.of(c);
+                            }
+                        }
+                        return NOptional.of(DefaultColorPalette.INSTANCE.getColor(u.get()));
                     }
                 }
                 switch (NNameFormat.LOWER_KEBAB_CASE.format(s.toLowerCase())) {
@@ -527,6 +547,44 @@ public class ObjEx {
         return a;
     }
 
+    public NOptional<Object[]> asObjectArray() {
+        if (element instanceof Object[]) {
+            return NOptional.of((Object[]) element);
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case ARRAY: {
+                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                }
+                case OBJECT: {
+                    return NOptional.of(te.toObject().all().toArray(new TsonElement[0]));
+                }
+                case UPLET: {
+                    return NOptional.of(te.toUplet().all().toArray(new TsonElement[0]));
+                }
+            }
+        }
+        return NOptional.ofNamedEmpty("Object[] from " + element);
+    }
+
+    public NOptional<Color[]> asColorArray() {
+        NOptional<Object[]> o = asObjectArray();
+        if(o.isPresent()){
+            List<Color> cc=new ArrayList<>();
+            for (Object oi : o.get()) {
+                NOptional<Color> y = ObjEx.of(oi).parseColor(null);
+                if(y.isPresent()){
+                    cc.add(y.get());
+                }else{
+                    return NOptional.ofNamedEmpty("Object[] from " + element);
+                }
+            }
+            return NOptional.of(cc.toArray(new Color[0]));
+        }
+        return NOptional.ofNamedEmpty("Object[] from " + element);
+    }
+
     public NOptional<String[]> asStringArray() {
         if (element instanceof String[]) {
             return NOptional.of((String[]) element);
@@ -629,44 +687,45 @@ public class ObjEx {
             return NOptional.of((Padding) element);
         }
         NOptional<double[]> d = asDoubleArray();
-        if(d.isPresent()){
+        if (d.isPresent()) {
             double[] dd = d.get();
-            switch (dd.length){
-                case 1:{
+            switch (dd.length) {
+                case 1: {
                     return NOptional.of(Padding.of(dd[0]));
                 }
-                case 2:{
-                    return NOptional.of(Padding.of(dd[0],dd[1]));
+                case 2: {
+                    return NOptional.of(Padding.of(dd[0], dd[1]));
                 }
-                case 3:{
-                    return NOptional.of(Padding.of(dd[0],dd[1],dd[2]));
+                case 3: {
+                    return NOptional.of(Padding.of(dd[0], dd[1], dd[2]));
                 }
-                case 4:{
-                    return NOptional.of(Padding.of(dd[0],dd[1],dd[2],dd[3]));
+                case 4: {
+                    return NOptional.of(Padding.of(dd[0], dd[1], dd[2], dd[3]));
                 }
             }
         }
         return NOptional.ofNamedEmpty("Padding from " + element);
     }
+
     public NOptional<Rotation> asRotation() {
         if (element instanceof Rotation) {
             return NOptional.of((Rotation) element);
         }
         NOptional<double[]> d = asDoubleArray();
-        if(d.isPresent()){
+        if (d.isPresent()) {
             double[] dd = d.get();
-            switch (dd.length){
-                case 1:{
-                    return NOptional.of(new Rotation(dd[0],50,50));
+            switch (dd.length) {
+                case 1: {
+                    return NOptional.of(new Rotation(dd[0], 50, 50));
                 }
-                case 3:{
-                    return NOptional.of(new Rotation(dd[0],dd[1],dd[2]));
+                case 3: {
+                    return NOptional.of(new Rotation(dd[0], dd[1], dd[2]));
                 }
             }
         }
         NOptional<Double> dd = asDouble();
-        if(dd.isPresent()){
-            return NOptional.of(new Rotation(dd.get(),50,50));
+        if (dd.isPresent()) {
+            return NOptional.of(new Rotation(dd.get(), 50, 50));
         }
         return NOptional.ofNamedEmpty("Rotation from " + element);
     }
@@ -676,9 +735,9 @@ public class ObjEx {
             return NOptional.of((Double4) element);
         }
         NOptional<double[]> d = asDoubleArray();
-        if(d.isPresent()){
+        if (d.isPresent()) {
             double[] dd = d.get();
-            if(dd.length==4){
+            if (dd.length == 4) {
                 return NOptional.of(new Double4(dd[0], dd[1], dd[2], dd[3]));
             }
         }
@@ -690,9 +749,9 @@ public class ObjEx {
             return NOptional.of((Double2) element);
         }
         NOptional<double[]> d = asDoubleArray();
-        if(d.isPresent()){
+        if (d.isPresent()) {
             double[] dd = d.get();
-            if(dd.length==2){
+            if (dd.length == 2) {
                 return NOptional.of(new Double2(dd[0], dd[1]));
             }
         }
