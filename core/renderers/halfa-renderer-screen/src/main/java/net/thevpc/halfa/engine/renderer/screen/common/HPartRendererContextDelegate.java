@@ -11,7 +11,6 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
-import java.util.Collections;
 import java.util.List;
 
 public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
@@ -93,8 +92,8 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     }
 
     @Override
-    public void rootRender(HNode p, HNodeRendererContext ctx) {
-        base.rootRender(p, ctx);
+    public void render(HNode p, HNodeRendererContext ctx) {
+        base.render(p, ctx);
     }
 
     @Override

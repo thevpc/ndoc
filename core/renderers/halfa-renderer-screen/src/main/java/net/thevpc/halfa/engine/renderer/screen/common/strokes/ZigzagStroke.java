@@ -38,14 +38,17 @@ public class ZigzagStroke implements Stroke {
                     base = StrokeFactory.createStroke(arg);
                 }
             } else {
-                NOptional<ObjEx.SimplePair> sp = o.asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(arg).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair ke = sp.get();
                     switch (HUtils.uid(ke.getName())) {
-                        case "amplitude": {
+                        case "amp":
+                        case "amplitude":
+                        {
                             amplitude = ke.getValue().asDouble().orElse(amplitude);
                             break;
                         }
+                        case "length":
                         case "wavelength": {
                             wavelength = ke.getValue().asDouble().orElse(wavelength);
                             break;

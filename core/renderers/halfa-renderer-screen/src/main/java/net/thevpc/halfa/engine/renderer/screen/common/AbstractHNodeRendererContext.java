@@ -4,7 +4,6 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.io.NPath;
@@ -12,7 +11,7 @@ import net.thevpc.nuts.util.NBlankable;
 
 public abstract class AbstractHNodeRendererContext implements HNodeRendererContext {
     public void render(HNode p) {
-        rootRender(p, this);
+        render(p, this);
     }
 
     @Override

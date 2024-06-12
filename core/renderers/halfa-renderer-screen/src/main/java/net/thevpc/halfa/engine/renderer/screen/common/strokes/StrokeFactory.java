@@ -1,5 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
+import net.thevpc.halfa.engine.renderer.screen.common.shapes.ShapeFactory;
 import net.thevpc.halfa.engine.renderer.screen.common.shapes.ShapeHelper;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;
@@ -14,30 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StrokeFactory {
-    private static Shape createStrokeShape(TsonElement e) {
-        ObjEx o = ObjEx.of(e);
-        if (o.name() != null) {
-            switch (o.name()) {
-                case "star": {
-                    double radius = 5;
-                    for (TsonElement arg : o.args()) {
-                        NOptional<ObjEx.SimplePair> sp = ObjEx.of(arg).asSimplePair();
-                        if (sp.isPresent()) {
-                            ObjEx.SimplePair ke = sp.get();
-                            switch (HUtils.uid(ke.getName())) {
-                                case "radius": {
-                                    radius = ke.getValue().asDouble().orElse(radius);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    return ShapeHelper.createDefaultStar(radius, 0, 0);
-                }
-            }
-        }
-        return new Ellipse2D.Float(0, 0, 4, 4);
-    }
+
 
     public static Stroke createStroke(String name, TsonElement e) {
         ObjEx o = ObjEx.of(e);
@@ -112,7 +90,7 @@ public class StrokeFactory {
                             || arg.type() == TsonElementType.ARRAY
                             || arg.type() == TsonElementType.OBJECT
             ) {
-                base.add(createStrokeShape(arg));
+                base.add(ShapeFactory.createShape(arg));
             } else {
                 NOptional<ObjEx.SimplePair> sp = o.asSimplePair();
                 if (sp.isPresent()) {
@@ -187,7 +165,7 @@ public class StrokeFactory {
                                 break;
                             }
                             case "round": {
-                                cap = BasicStroke.JOIN_ROUND;
+                                join = BasicStroke.JOIN_ROUND;
                                 break;
                             }
                         }

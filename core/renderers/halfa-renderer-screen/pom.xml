@@ -60,11 +60,6 @@
             <version>0.8.4</version>
         </dependency>
         <dependency>
-            <groupId>net.thevpc.halfa</groupId>
-            <artifactId>halfa-spi-utils</artifactId>
-            <version>0.8.4</version>
-        </dependency>
-        <dependency>
             <groupId>org.scilab.forge</groupId>
             <artifactId>jlatexmath</artifactId>
             <version>1.0.7</version>

@@ -144,7 +144,7 @@ public class PageView extends JComponent {
         }
 
         @Override
-        public void rootRender(HNode p, HNodeRendererContext ctx) {
+        public void render(HNode p, HNodeRendererContext ctx) {
             PageView.this.render(p, ctx);
         }
 

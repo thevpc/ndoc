@@ -1,4 +1,4 @@
-package net.thevpc.halfa.spi.utils;
+package net.thevpc.halfa.spi.util;
 
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
@@ -23,7 +23,7 @@ public class PagesHelper {
     public static void fillPages(HNode part, List<HNode> all) {
         switch (part.type()) {
             case HNodeType.PAGE: {
-                HNode p = (HNode) part;
+                HNode p = part;
                 if (!p.isTemplate()) {
                     if (!p.isDisabled()) {
                         all.add(p);

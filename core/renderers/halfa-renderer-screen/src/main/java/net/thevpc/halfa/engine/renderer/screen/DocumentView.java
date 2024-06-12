@@ -11,7 +11,7 @@ import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.halfa.spi.utils.PagesHelper;
+import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 

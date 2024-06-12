@@ -11,7 +11,6 @@
     <modules>
         <module>core/halfa-api</module>
         <module>core/halfa-engine</module>
-        <module>core/halfa-spi-utils</module>
         <module>core/renderers/halfa-renderer-pdf</module>
         <module>core/renderers/halfa-renderer-html</module>
         <module>core/renderers/halfa-renderer-screen</module>

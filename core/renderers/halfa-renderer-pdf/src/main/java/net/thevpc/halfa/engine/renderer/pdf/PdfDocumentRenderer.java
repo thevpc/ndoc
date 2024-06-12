@@ -27,7 +27,7 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
-import net.thevpc.halfa.spi.utils.PagesHelper;
+import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;

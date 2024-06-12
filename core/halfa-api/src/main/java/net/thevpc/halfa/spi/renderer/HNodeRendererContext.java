@@ -35,7 +35,7 @@ public interface HNodeRendererContext {
 
     void render(HNode p);
 
-    void rootRender(HNode p, HNodeRendererContext ctx);
+    void render(HNode p, HNodeRendererContext ctx);
 
     HEngine engine();
 
@@ -45,11 +45,11 @@ public interface HNodeRendererContext {
 
     List<HProp> computeProperties(HNode t);
 
-    HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles);
-
     NPath resolvePath(NPath path, HNode node);
 
     NPath resolvePath(String path, HNode node);
+
+    HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles);
 
     HNodeRendererContext withBounds(HNode t, Bounds2 bounds2);
 

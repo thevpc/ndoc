@@ -29,7 +29,9 @@ public class WobbleStroke implements Stroke {
                     detail = ke.getValue().asDouble().orElse(detail);
                     break;
                 }
-                case "amplitude": {
+                case "amp":
+                case "amplitude":
+                {
                     amplitude = ke.getValue().asDouble().orElse(amplitude);
                     break;
                 }

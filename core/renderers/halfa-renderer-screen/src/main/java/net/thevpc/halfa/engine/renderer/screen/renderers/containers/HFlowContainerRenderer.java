@@ -10,7 +10,6 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 
-import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
