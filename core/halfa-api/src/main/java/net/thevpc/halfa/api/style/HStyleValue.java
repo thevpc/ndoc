@@ -1,7 +1,7 @@
 package net.thevpc.halfa.api.style;
 
-import net.thevpc.halfa.api.model.Double2;
-import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 

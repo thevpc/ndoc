@@ -1,13 +1,30 @@
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.HElement2D;
+import net.thevpc.halfa.api.model.elem2d.HPoint2D;
+import net.thevpc.halfa.api.model.elem2d.Vector2D;
+import net.thevpc.halfa.api.model.elem3d.HElement3D;
+import net.thevpc.halfa.api.model.elem3d.Light3D;
+import net.thevpc.halfa.api.model.elem3d.Matrix3D;
+import net.thevpc.halfa.api.model.elem3d.Projection3D;
 
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 
 public interface HGraphics {
+
+    Light3D getLight3D();
+
+    Light3D setLight3D(Light3D light3D);
+
+    void drawArrayHead(HPoint2D origin, Vector2D direction,
+                       double arrowWidth, double arrowHeight,
+                       HArrayHead head
+                       );
+
     void setColor(Color red);
 
     void fillOval(double x, double y, double w, double h);
@@ -33,6 +50,7 @@ public interface HGraphics {
     void setFont(Font font);
 
     void drawString(String str, double x, double i);
+
     void debugString(String str, double x, double i);
 
     Color getColor();
@@ -68,5 +86,14 @@ public interface HGraphics {
     void fill(Shape shape);
 
     void setStroke(Stroke stroke);
+
     Stroke getStroke();
+
+    void draw3D(HElement3D element3D, HPoint2D origin);
+
+    void draw2D(HElement2D element2D);
+
+    void transform3D(Matrix3D transform3D);
+
+    void project3D(Projection3D projection3D);
 }

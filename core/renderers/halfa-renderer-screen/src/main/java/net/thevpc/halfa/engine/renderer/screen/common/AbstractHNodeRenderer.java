@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
+import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.style.HStyleValue;
-import net.thevpc.halfa.api.model.*;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.strokes.StrokeFactory;
@@ -108,6 +108,15 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         fontSize = fontSize;// / Math.max(PageView.REF_SIZE.width, PageView.REF_SIZE.height) * Math.max(size.getWidth(), size.getHeight());
         return fontSize;
 
+    }
+
+    protected Stroke resolveStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
+        Stroke stroke = null;
+        TsonElement strokeElem = (TsonElement) ctx.computePropertyValue(t, HPropName.STROKE).orElse(null);
+        if (strokeElem != null) {
+            return StrokeFactory.createStroke(strokeElem);
+        }
+        return null;
     }
 
     protected boolean applyStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
@@ -323,6 +332,14 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         return true;
     }
 
+    public Paint resolveBackgroundColor(HNode t, HGraphics g, HNodeRendererContext ctx) {
+        if (ctx.isDry()) {
+            return null;
+        }
+        Paint color = getColorProperty(HPropName.BACKGROUND_COLOR, t, ctx).orNull();
+        return color;
+    }
+
     public boolean applyBackgroundColor(HNode t, HGraphics g, HNodeRendererContext ctx) {
         if (ctx.isDry()) {
             return false;
@@ -381,6 +398,25 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
             return false;
         }
         return true;
+    }
+
+    public Paint resolveLineColor(HNode t, HGraphics g, HNodeRendererContext ctx, boolean force) {
+        if (ctx.isDry()) {
+            return null;
+        }
+        Paint color = getColorProperty(HPropName.LINE_COLOR, t, ctx).orNull();
+        if (color != null) {
+            return color;
+        }
+        if (force) {
+            //would resolve default color instead ?
+            Color cc = g.getColor();
+            if(cc==null){
+                return Color.BLACK;
+            }
+            return cc;
+        }
+        return null;
     }
 
     public boolean applyLineColor(HNode t, HGraphics g, HNodeRendererContext ctx, boolean force) {

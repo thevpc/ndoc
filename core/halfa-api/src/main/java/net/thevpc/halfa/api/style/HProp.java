@@ -4,7 +4,9 @@
  */
 package net.thevpc.halfa.api.style;
 
-import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.elem2d.HPoint2D;
+import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NNameFormat;
@@ -51,11 +53,30 @@ public class HProp implements HItem, ToTson {
         return new HProp(name, new Double2(x, y));
     }
 
+    public static HProp ofHPoint2D(String name, double x, double y) {
+        return new HProp(name, new HPoint2D(x, y));
+    }
+
     public static HProp ofDouble2(String name, Double2 d) {
         return new HProp(name, d);
     }
 
+    public static HProp ofHPoint2D(String name, HPoint2D d) {
+        return new HProp(name, d);
+    }
+    public static HProp ofHPoint3D(String name, HPoint3D d) {
+        return new HProp(name, d);
+    }
+
     public static HProp ofDouble2Array(String name, Double2... d) {
+        return new HProp(name, d);
+    }
+
+    public static HProp ofHPoint2DArray(String name, HPoint2D... d) {
+        return new HProp(name, d);
+    }
+
+    public static HProp ofHPoint3DArray(String name, HPoint3D... d) {
         return new HProp(name, d);
     }
 

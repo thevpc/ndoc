@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.renderer.HGraphics;

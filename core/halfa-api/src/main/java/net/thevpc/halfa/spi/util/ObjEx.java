@@ -1,6 +1,8 @@
 package net.thevpc.halfa.spi.util;
 
-import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.elem2d.*;
+import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NLiteral;
@@ -11,10 +13,8 @@ import net.thevpc.tson.*;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class ObjEx {
     private Object element;
@@ -521,7 +521,13 @@ public class ObjEx {
             }
         }
         if (element instanceof Double2) {
-            return NOptional.of(new double[]{((Double2) element).getY(), ((Double2) element).getY()});
+            return NOptional.of(new double[]{((Double2) element).getX(), ((Double2) element).getY()});
+        }
+        if (element instanceof HPoint2D) {
+            return NOptional.of(new double[]{((HPoint2D) element).getY(), ((HPoint2D) element).getY()});
+        }
+        if (element instanceof HPoint3D) {
+            return NOptional.of(new double[]{((HPoint3D) element).getY(), ((HPoint3D) element).getY(), ((HPoint3D) element).getZ()});
         }
         if (element instanceof Double4) {
             Double4 d = (Double4) element;
@@ -748,6 +754,10 @@ public class ObjEx {
         if (element instanceof Double2) {
             return NOptional.of((Double2) element);
         }
+        if (element instanceof HPoint2D) {
+            HPoint2D p=(HPoint2D) element;
+            return NOptional.of(new Double2(p.x,p.y));
+        }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
@@ -756,6 +766,72 @@ public class ObjEx {
             }
         }
         return NOptional.ofNamedEmpty("Double2 from " + element);
+    }
+
+    public NOptional<Double3> asDouble3() {
+        if (element instanceof Double3) {
+            return NOptional.of((Double3) element);
+        }
+        if (element instanceof HPoint3D) {
+            HPoint3D p=(HPoint3D) element;
+            return NOptional.of(new Double3(p.x,p.y,p.z));
+        }
+        NOptional<double[]> d = asDoubleArray();
+        if (d.isPresent()) {
+            double[] dd = d.get();
+            if (dd.length == 3) {
+                return NOptional.of(new Double3(dd[0], dd[1], dd[2]));
+            }
+        }
+        return NOptional.ofNamedEmpty("Double3 from " + element);
+    }
+
+    public NOptional<HPoint2D> asHPoint2D() {
+        if (element instanceof HPoint2D) {
+            return NOptional.of((HPoint2D) element);
+        }
+        NOptional<double[]> d = asDoubleArray();
+        if (d.isPresent()) {
+            double[] dd = d.get();
+            if (dd.length == 2) {
+                return NOptional.of(new HPoint2D(dd[0], dd[1]));
+            }
+        }
+        return NOptional.ofNamedEmpty("HPoint2D from " + element);
+    }
+
+    public NOptional<HArrayHead> asHArrayHead() {
+        if (element instanceof HArrayHead) {
+            return NOptional.of((HArrayHead) element);
+        }
+        NOptional<String> s = asString();
+        if(s.isPresent()){
+            String v = s.get().trim();
+            if(v.isEmpty()){
+                return NOptional.of(HArrayHead.NONE);
+            }
+            try{
+                HArrayHead y = HArrayHead.valueOf(NNameFormat.CONST_NAME.format(v));
+                return NOptional.of(y);
+            }catch (Exception e){
+                //
+            }
+        }
+        return NOptional.ofNamedError("HArrayHead from " + element);
+    }
+
+    public NOptional<HPoint3D> asHPoint3D() {
+        if (element instanceof HPoint3D) {
+            return NOptional.of((HPoint3D) element);
+        }
+        NOptional<double[]> d = asDoubleArray();
+        if (d.isPresent()) {
+            double[] dd = d.get();
+            if (dd.length == 2) {
+                return NOptional.of(new HPoint3D(dd[0], dd[1], dd[2]));
+            }
+        }
+        return NOptional.ofNamedEmpty("HPoint3D from " + element);
     }
 
 
@@ -773,7 +849,7 @@ public class ObjEx {
             case "int": {
                 return (NOptional<T>) asInt();
             }
-            case "net.thevpc.halfa.api.model.Double2": {
+            case "net.thevpc.halfa.api.model.elem2d.Double2": {
                 return (NOptional<T>) asDouble2();
             }
             case "[Lnet.thevpc.halfa.api.model.Double2;": {
@@ -788,6 +864,28 @@ public class ObjEx {
             default: {
                 throw new IllegalArgumentException("unsupported type " + type);
             }
+        }
+    }
+
+    public NOptional<HPoint2D[]> asHPoint2DArray() {
+        NOptional<Double2[]> u = asDouble2Array();
+        if(u.isPresent()){
+            return NOptional.of(
+                    Arrays.stream(u.get()).map(x->new HPoint2D(x.getX(),x.getY())).toArray(HPoint2D[]::new)
+            );
+        }else{
+            return (NOptional) u;
+        }
+    }
+
+    public NOptional<HPoint3D[]> asHPoint3DArray() {
+        NOptional<Double3[]> u = asDouble3Array();
+        if(u.isPresent()){
+            return NOptional.of(
+                    Arrays.stream(u.get()).map(x->new HPoint3D(x.getX(),x.getY(),x.getZ())).toArray(HPoint3D[]::new)
+            );
+        }else{
+            return (NOptional) u;
         }
     }
 
@@ -823,6 +921,40 @@ public class ObjEx {
             }
         }
         return NOptional.ofNamedEmpty("Double2[] from " + element);
+    }
+
+    public NOptional<Double3[]> asDouble3Array() {
+        if (element instanceof Double3[]) {
+            return NOptional.of((Double3[]) element);
+        }
+        if (element instanceof TsonElement[]) {
+            TsonElement[] arr = (TsonElement[]) element;
+            Double3[] aa = new Double3[arr.length];
+            for (int i = 0; i < aa.length; i++) {
+                NOptional<Double3> d = ObjEx.of(arr[i]).asDouble3();
+                if (d.isPresent()) {
+                    aa[i] = d.get();
+                } else {
+                    return NOptional.ofNamedEmpty("Double3[] from " + element);
+                }
+            }
+            return NOptional.of(aa);
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case ARRAY: {
+                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asDouble3Array();
+                }
+                case OBJECT: {
+                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asDouble3Array();
+                }
+                case UPLET: {
+                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asDouble3Array();
+                }
+            }
+        }
+        return NOptional.ofNamedEmpty("Double3[] from " + element);
     }
 
     public boolean isFunction() {

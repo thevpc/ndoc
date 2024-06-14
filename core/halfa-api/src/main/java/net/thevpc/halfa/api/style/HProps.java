@@ -2,7 +2,9 @@ package net.thevpc.halfa.api.style;
 
 import java.awt.*;
 
-import net.thevpc.halfa.api.model.*;
+import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
+import net.thevpc.halfa.api.model.elem2d.HSize;
 
 /**
  * @author vpc

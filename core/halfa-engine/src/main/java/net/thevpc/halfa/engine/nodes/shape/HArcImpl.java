@@ -7,6 +7,4 @@ public class HArcImpl extends AbstractHNodeTypeFactory {
     public HArcImpl() {
         super(false, HNodeType.ARC);
     }
-
-
 }

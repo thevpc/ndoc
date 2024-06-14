@@ -1,8 +1,8 @@
 package net.thevpc.halfa.engine.nodes;
 
 import net.thevpc.halfa.api.node.HItemList;
-import net.thevpc.halfa.api.model.Double2;
-import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;

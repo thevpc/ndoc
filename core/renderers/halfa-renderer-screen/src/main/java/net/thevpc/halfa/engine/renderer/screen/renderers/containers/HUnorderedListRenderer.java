@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.containers;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;

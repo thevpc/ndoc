@@ -15,6 +15,7 @@ public class HNodeType {
     public static final String UNORDERED_LIST="unordered-list";
     public static final String POLYGON="polygon";
     public static final String POLYLINE="polyline";
+    public static final String SCENE3D="scene3d";
     public static final String LINE="line";
     public static final String ARC="arc";
     public static final String IMAGE="image";

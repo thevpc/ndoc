@@ -1,6 +1,5 @@
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.model.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 

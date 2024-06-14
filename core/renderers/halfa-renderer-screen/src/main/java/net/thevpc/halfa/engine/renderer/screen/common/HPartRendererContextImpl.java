@@ -1,18 +1,14 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
-import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
-import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
-import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class HPartRendererContextImpl extends AbstractHNodeRendererContext {

@@ -1,11 +1,10 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.shapes;
 
-import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.ObjEx;
 
@@ -55,9 +54,9 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
         if(count<3){
             count = ObjEx.ofProp(p, HPropName.COUNT).asInt().orElse(-1);
         }
-        Double2[] points =null;
+        HPoint2D[] points =null;
         if(count<3){
-            points =  ObjEx.ofProp(p, HPropName.POINTS).asDouble2Array().get();
+            points =  ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().get();
             if(points.length<3){
                 points=null;
             }
@@ -66,14 +65,14 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
             if(count<3){
                 count=3;
             }
-            points=new Double2[count];
+            points=new HPoint2D[count];
             double x0=50;
             double y0=50;
             double w0=50;
             double h0=50;
             for (int i = 0; i < points.length; i++) {
                 double angle = i * 1.0 / points.length * 2 * Math.PI;
-                points[i] = new Double2(
+                points[i] = new HPoint2D(
                         x0+w0*Math.cos(angle)
                         ,y0+h0*Math.sin(angle)
                 );

@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.renderers.text;
 
-import net.thevpc.halfa.api.model.Bounds2;
-import net.thevpc.halfa.api.model.Double2;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
@@ -10,7 +10,6 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.Gx;
-import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextDelegate;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.util.ObjEx;

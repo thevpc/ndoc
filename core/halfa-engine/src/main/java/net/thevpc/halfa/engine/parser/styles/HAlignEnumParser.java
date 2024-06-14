@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.parser.styles;
 
-import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;

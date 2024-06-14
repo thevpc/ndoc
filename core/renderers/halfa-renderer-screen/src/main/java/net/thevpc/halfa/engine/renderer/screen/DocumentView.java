@@ -2,8 +2,9 @@ package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.model.HAlign;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResourceMonitor;
+import net.thevpc.halfa.engine.renderer.screen.common.TextUtils;
 import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
@@ -24,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 import java.util.function.Supplier;
 
 public class DocumentView {
@@ -39,6 +41,10 @@ public class DocumentView {
     private Map<String, PageView> pagesMapById = new HashMap<>();
     private Map<Integer, PageView> pagesMapByIndex = new HashMap<>();
     private HNodeRendererManager rendererManager;
+    private Timer timer;
+    private boolean inCheckResourcesChanged;
+    private boolean inLoadDocument;
+    private Throwable currentThrowable;
 
     public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, NSession session) {
         this.documentSupplier = documentSupplier;
@@ -54,6 +60,36 @@ public class DocumentView {
         frame.setSize(PageView.REF_SIZE);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         prepareContentPane();
+        timer = new Timer("DocumentViewResourcesMonitor", true);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkResourcesChanged();
+            }
+        }, 3000, 1000);
+    }
+
+    private void checkResourcesChanged() {
+        if (inLoadDocument) {
+            return;
+        }
+        if (inCheckResourcesChanged) {
+            return;
+        }
+        this.inCheckResourcesChanged = true;
+        try {
+            if (inLoadDocument) {
+                return;
+            }
+            if (document != null) {
+                HResourceMonitor r = document.resources();
+                if (r.changed()) {
+                    reloadDocument();
+                }
+            }
+        } finally {
+            this.inCheckResourcesChanged = false;
+        }
     }
 
     public NSession session() {
@@ -107,11 +143,9 @@ public class DocumentView {
             layers.add(new SourceNameSimpleLayer());
         }
 
-
         @Override
         public void paint(Graphics g) {
             super.paint(g);
-
 
             Graphics2D g2d = (Graphics2D) g;
             HGraphics hg = new HGraphicsImpl(g2d);
@@ -122,30 +156,11 @@ public class DocumentView {
             for (HDocumentLayer filter : layers) {
                 filter.draw(DocumentView.this, size, hg);
             }
-        }
-
-        private void drawStr(String str, HAlign a, Graphics2D g2d) {
-            Dimension size = getSize();
-            Rectangle2D b = g2d.getFontMetrics().getStringBounds(str, g2d);
-
-            int x = 0;
-            int y = 0;
-            switch (a) {
-                case LEFT: {
-                    x = 10;
-                    y = (int) (size.getHeight() - b.getHeight());
-                    break;
-                }
-                case RIGHT: {
-                    x = (int) (size.getWidth() - b.getWidth()) - 10;
-                    y = (int) (size.getHeight() - b.getHeight());
-                    break;
-                }
+            if (currentThrowable != null) {
+                g2d.setColor(Color.RED);
+                g2d.setFont(new Font("Arial", Font.PLAIN, 14));
+                TextUtils.drawThrowable(currentThrowable, new Rectangle2D.Double(20, 20, 1000, 1000), g2d);
             }
-            g2d.setColor(Color.LIGHT_GRAY);
-            g2d.drawString(str, x + 2, y + 2);
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.drawString(str, x, y);
         }
 
         public void doShow(String id) {
@@ -205,56 +220,72 @@ public class DocumentView {
         });
     }
 
-    private void reloadDocument() {
-        PageView oldPage = this.currentShowingPage;
-        int oldIndex = 0;
-        String oldId = null;
-        if (oldPage != null) {
-            oldIndex = oldPage.index();
-            oldId = oldPage.id();
+    private boolean reloadDocument() {
+        if (inLoadDocument) {
+            return false;
         }
-        this.currentShowingPage = null;
-        document = documentSupplier.get();
-        document = halfaEngine.compileDocument(document);
-        List<HNode> pages = PagesHelper.resolvePages(document);
-        pageViews.clear();
-        contentPane.removeAll();
-        pagesMapById.clear();
-        pagesMapByIndex.clear();
-
-        for (int i = 0; i < pages.size(); i++) {
-            HNode page = pages.get(i);
-            pageViews.add(new PageView(
-                    page,
-                    UUID.randomUUID().toString(), i, this
-            ));
-        }
-        if (pageViews.isEmpty()) {
-            pageViews.add(new PageView(
-                    halfaEngine.documentFactory().ofPage(),
-                    UUID.randomUUID().toString(), 0, this
-            ));
-        }
-        for (PageView pageView : pageViews) {
-            contentPane.add(pageView.component(), pageView.id());
-            pagesMapById.put(pageView.id(), pageView);
-            pagesMapByIndex.put(pageView.index(), pageView);
-        }
-        if (oldId != null) {
-            PageView oo = pagesMapById.get(oldId);
-            if (oo != null) {
-                showPage(oo.index());
-            } else {
-                oo = pagesMapByIndex.get(oldIndex);
+        this.inLoadDocument = true;
+        try {
+            PageView oldPage = this.currentShowingPage;
+            int oldIndex = 0;
+            String oldId = null;
+            if (oldPage != null) {
+                oldIndex = oldPage.index();
+                oldId = oldPage.id();
+            }
+            this.currentShowingPage = null;
+            this.currentThrowable = null;
+            try {
+                document = halfaEngine.compileDocument(documentSupplier.get());
+            } catch (Exception ex) {
+                this.currentThrowable = ex;
+            }
+            if (document == null) {
+                document = halfaEngine.documentFactory().ofDocument();
+            }
+            document.resources().save();
+            List<HNode> pages = PagesHelper.resolvePages(document);
+            pageViews.clear();
+            contentPane.removeAll();
+            pagesMapById.clear();
+            pagesMapByIndex.clear();
+            for (int i = 0; i < pages.size(); i++) {
+                HNode page = pages.get(i);
+                pageViews.add(new PageView(
+                        page,
+                        UUID.randomUUID().toString(), i, this
+                ));
+            }
+            if (pageViews.isEmpty()) {
+                pageViews.add(new PageView(
+                        halfaEngine.documentFactory().ofPage(),
+                        UUID.randomUUID().toString(), 0, this
+                ));
+            }
+            for (PageView pageView : pageViews) {
+                contentPane.add(pageView.component(), pageView.id());
+                pagesMapById.put(pageView.id(), pageView);
+                pagesMapByIndex.put(pageView.index(), pageView);
+            }
+            if (oldId != null) {
+                PageView oo = pagesMapById.get(oldId);
                 if (oo != null) {
                     showPage(oo.index());
                 } else {
-                    showPage(0);
+                    oo = pagesMapByIndex.get(oldIndex);
+                    if (oo != null) {
+                        showPage(oo.index());
+                    } else {
+                        showPage(0);
+                    }
                 }
+            } else {
+                showPage(0);
             }
-        } else {
-            showPage(0);
+        } finally {
+            this.inLoadDocument = false;
         }
+        return true;
     }
 
     private void lastPage() {

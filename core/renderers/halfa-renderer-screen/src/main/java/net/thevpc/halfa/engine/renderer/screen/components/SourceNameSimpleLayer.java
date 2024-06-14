@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.components;
 
-import net.thevpc.halfa.api.model.HAlign;
+import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.engine.renderer.screen.DocumentView;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 

@@ -3,17 +3,19 @@ package net.thevpc.halfa.api.document;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 
 public interface HDocument {
+    HResourceMonitor resources();
 
     HDocument add(HNode part);
 
-    HDocumentClass getDocumentClass();
+    HDocumentClass documentClass();
 
     HNode root();
 
-    NOptional<String> getName(String name);
+    NOptional<String> name();
 
     Properties getProperties();
 

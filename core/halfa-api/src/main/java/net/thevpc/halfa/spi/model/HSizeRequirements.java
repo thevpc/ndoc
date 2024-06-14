@@ -1,6 +1,6 @@
 package net.thevpc.halfa.spi.model;
 
-import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
 
 public class HSizeRequirements {
     public double minX;

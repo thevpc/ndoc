@@ -12,6 +12,8 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.engine.nodes.DefaultHNode;
+import net.thevpc.halfa.api.resources.HResourceMonitor;
+import net.thevpc.halfa.engine.resources.HResourceMonitorImpl;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -22,11 +24,16 @@ public class DefaultHDocument implements HDocument {
     private HDocumentClass documentClass;
     private Properties properties = new Properties();
     private DefaultHNode root = new DefaultHNode(HNodeType.PAGE_GROUP);
+    private HResourceMonitor resources = new HResourceMonitorImpl();
 
     public DefaultHDocument() {
     }
 
-    public HDocumentClass getDocumentClass() {
+    public HResourceMonitor resources() {
+        return resources;
+    }
+
+    public HDocumentClass documentClass() {
         return documentClass;
     }
 
@@ -42,7 +49,7 @@ public class DefaultHDocument implements HDocument {
         return properties;
     }
 
-    public NOptional<String> getName(String name) {
+    public NOptional<String> name() {
         return getProperty("name");
     }
 
@@ -66,16 +73,16 @@ public class DefaultHDocument implements HDocument {
 
     @Override
     public void mergeDocument(HDocument other) {
-        if(other!=null){
-            if(documentClass==null){
-                documentClass = other.getDocumentClass();
-            }else{
+        if (other != null) {
+            if (documentClass == null) {
+                documentClass = other.documentClass();
+            } else {
                 //ignore!
             }
             for (Map.Entry<Object, Object> e : other.getProperties().entrySet()) {
-                if(!properties.containsKey(e.getKey())) {
-                    properties.setProperty((String)e.getKey(), (String) e.getValue());
-                }else{
+                if (!properties.containsKey(e.getKey())) {
+                    properties.setProperty((String) e.getKey(), (String) e.getValue());
+                } else {
                     //ignore
                 }
             }

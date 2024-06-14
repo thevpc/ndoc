@@ -4,6 +4,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;
 import net.thevpc.halfa.spi.util.HParseHelper;
@@ -64,6 +65,16 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
     }
 
     protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        return false;
+    }
+
+    protected boolean isAncestorScene3D(HNode p) {
+        while (p!=null){
+            if(p.type()== HNodeType.SCENE3D){
+                return true;
+            }
+            p=p.parent();
+        }
         return false;
     }
 

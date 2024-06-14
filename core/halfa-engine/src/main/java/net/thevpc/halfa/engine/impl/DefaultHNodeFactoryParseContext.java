@@ -2,6 +2,7 @@ package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
@@ -12,22 +13,29 @@ import net.thevpc.tson.TsonElement;
 import java.util.*;
 
 public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext {
+    private final HDocument document;
     private final TsonElement element;
     private final HEngine engine;
     private final NSession session;
     private final List<HNode> nodePath = new ArrayList<>();
     private final Object source;
 
-    public DefaultHNodeFactoryParseContext(TsonElement element, HEngine engine, NSession session
+    public DefaultHNodeFactoryParseContext(HDocument document,
+                                           TsonElement element, HEngine engine, NSession session
             , List<HNode> nodePath
             ,
                                            Object source
     ) {
+        this.document = document;
         this.element = element;
         this.engine = engine;
         this.session = session;
         this.source = source;
         this.nodePath.addAll(nodePath);
+    }
+
+    public HDocument document() {
+        return document;
     }
 
     @Override
@@ -38,7 +46,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         List<HNode> nodePath2 = new ArrayList<>();
         nodePath2.addAll(Arrays.asList(nodePath()));
         nodePath2.add(node);
-        return new DefaultHNodeFactoryParseContext(element, engine(), session, nodePath2, source);
+        return new DefaultHNodeFactoryParseContext(document(), element, engine(), session, nodePath2, source);
     }
 
     @Override

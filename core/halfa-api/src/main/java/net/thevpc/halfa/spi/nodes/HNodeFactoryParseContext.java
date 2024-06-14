@@ -2,6 +2,7 @@ package net.thevpc.halfa.spi.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -16,6 +17,8 @@ public interface HNodeFactoryParseContext {
     HNodeFactoryParseContext push(HNode node);
 
     HNode node();
+
+    HDocument document();
 
     HNode[] nodePath();
 

@@ -21,22 +21,38 @@ public class HLineImpl extends AbstractHNodeTypeFactory {
 
     @Override
     protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()){
-            case PAIR:{
+        switch (e.type()) {
+            case PAIR: {
                 TsonPair pp = e.toPair();
                 TsonElement k = pp.getKey();
                 TsonElement v = pp.getValue();
-                ObjEx ph=new ObjEx(k);
+                ObjEx ph = new ObjEx(k);
                 NOptional<String> n = ph.asString();
-                if(n.isPresent()){
-                    switch (HUtils.uid(n.get())){
-                        case "from":{
-                            p.setProperty(HProp.ofDouble2(HPropName.FROM, new ObjEx(v).asDouble2().get()));
+                if (n.isPresent()) {
+                    switch (HUtils.uid(n.get())) {
+                        case "from": {
+                            if (isAncestorScene3D(p)) {
+                                p.setProperty(HProp.ofHPoint3D(HPropName.FROM, new ObjEx(v).asHPoint3D().get()));
+                            } else {
+                                p.setProperty(HProp.ofHPoint2D(HPropName.FROM, new ObjEx(v).asHPoint2D().get()));
+                            }
                             return true;
                         }
-                        case "to":{
-                            p.setProperty(HProp.ofDouble2(HPropName.FROM, new ObjEx(v).asDouble2().get()));
+                        case "to": {
+                            if (isAncestorScene3D(p)) {
+                                p.setProperty(HProp.ofHPoint3D(HPropName.TO, new ObjEx(v).asHPoint3D().get()));
+                            } else {
+                                p.setProperty(HProp.ofHPoint2D(HPropName.TO, new ObjEx(v).asHPoint2D().get()));
+                            }
                             return false;
+                        }
+                        case "start-arrow": {
+                            p.setProperty(new HProp(HPropName.START_ARROW, new ObjEx(v).asHArrayHead().get()));
+                            return true;
+                        }
+                        case "end-arrow": {
+                            p.setProperty(new HProp(HPropName.END_ARROW, new ObjEx(v).asHArrayHead().get()));
+                            return true;
                         }
                     }
                 }
@@ -47,14 +63,13 @@ public class HLineImpl extends AbstractHNodeTypeFactory {
 
     @Override
     public TsonElement toTson(HNode item) {
-        HNode node=(HNode) item;
-        HProp from = node.getProperty(HPropName.FROM).orElse(HProp.ofDouble2(HPropName.TO, 0,0));
-        HProp to = node.getProperty(HPropName.TO).orElse(HProp.ofDouble2(HPropName.TO, 100,100));
+        HProp from = item.getProperty(HPropName.FROM).orElse(HProp.ofHPoint2D(HPropName.TO, 0, 0));
+        HProp to = item.getProperty(HPropName.TO).orElse(HProp.ofHPoint2D(HPropName.TO, 100, 100));
         return ToTsonHelper.of(
-                        node, engine()
+                        item, engine()
                 ).addChildren(
-                        from==null?null:Tson.ofPair("from", HUtils.toTson(from)),
-                        to==null?null:Tson.ofPair("to", HUtils.toTson(to))
+                        from == null ? null : Tson.ofPair("from", HUtils.toTson(from)),
+                        to == null ? null : Tson.ofPair("to", HUtils.toTson(to))
                 )
                 .build();
     }

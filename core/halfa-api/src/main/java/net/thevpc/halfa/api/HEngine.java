@@ -27,6 +27,7 @@ import net.thevpc.tson.TsonElement;
 public interface HEngine {
 
     List<HNodeTypeFactory> nodeTypeFactories();
+
     NOptional<HNodeTypeFactory> nodeTypeFactory(String id);
 
     HDocumentFactory documentFactory();
@@ -47,7 +48,7 @@ public interface HEngine {
 
     NOptional<HDocument> loadDocument(NPath of);
 
-    NOptional<HItem> loadNode(HNode into, NPath of);
+    NOptional<HItem> loadNode(HNode into, NPath of, HDocument document);
 
     NOptional<HDocument> loadDocument(InputStream is);
 
@@ -56,6 +57,7 @@ public interface HEngine {
     NOptional<HProp> computeProperty(HNode node, String propertyName);
 
     List<HProp> computeInheritedProperties(HNode node);
+
     List<HProp> computeProperties(HNode node);
 
     <T> NOptional<T> computePropertyValue(HNode node, String propertyName);

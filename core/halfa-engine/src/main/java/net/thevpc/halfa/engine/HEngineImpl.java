@@ -11,12 +11,14 @@ import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.engine.document.DefaultHDocument;
 import net.thevpc.halfa.engine.impl.DefaultHNodeFactoryParseContext;
 import net.thevpc.halfa.engine.impl.HDocumentCompiler;
 import net.thevpc.halfa.engine.impl.HDocumentRendererFactoryContextImpl;
 import net.thevpc.halfa.engine.impl.HPropCalculator;
 import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
@@ -44,7 +46,7 @@ public class HEngineImpl implements HEngine {
     private Map<String, String> nodeTypeAliases;
     private HDocumentFactory factory;
     private HPropCalculator hPropCalculator = new HPropCalculator();
-    HDocumentCompiler hDocumentCompiler;
+    private HDocumentCompiler hDocumentCompiler;
 
     public HEngineImpl(NSession session) {
         this.session = session;
@@ -66,7 +68,9 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public NOptional<HItem> newNode(TsonElement element, HNodeFactoryParseContext ctx) {
-        HNodeFactoryParseContext newContext = new DefaultHNodeFactoryParseContext(element, this, session,
+        HNodeFactoryParseContext newContext = new DefaultHNodeFactoryParseContext(
+                ctx.document(),
+                element, this, session,
                 ctx == null ? new ArrayList<>() : Arrays.asList(ctx.nodePath())
                 , ctx == null ? null : ctx.source()
         );
@@ -216,6 +220,8 @@ public class HEngineImpl implements HEngine {
                         .flatMap(x -> convertDocument(x, path))
                         ;
             } else if (path.isDirectory()) {
+                HDocument document = documentFactory().ofDocument();
+                document.resources().add(path.resolve( "*.hd"));
                 List<NPath> all = path.stream().filter(x -> x.isRegularFile() && x.getName().endsWith(".hd")).toList();
                 if (all.isEmpty()) {
                     return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
@@ -235,16 +241,16 @@ public class HEngineImpl implements HEngine {
                 if (main != null) {
                     all.add(0, main);
                 }
-                HDocument doc = documentFactory().ofDocument();
                 for (NPath nPath : all) {
-                    NOptional<HItem> d = loadNode(doc.root(), nPath);
+                    document.resources().add(nPath);
+                    NOptional<HItem> d = loadNode(document.root(), nPath, document);
                     if (!d.isPresent()) {
                         return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
                     }
                     updateSource(d.get(), nPath);
-                    doc.root().append(d.get());
+                    document.root().append(d.get());
                 }
-                return NOptional.of(doc);
+                return NOptional.of(document);
             } else {
                 return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
             }
@@ -268,10 +274,10 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public NOptional<HItem> loadNode(HNode into, NPath path) {
+    public NOptional<HItem> loadNode(HNode into, NPath path, HDocument document) {
         if (path.exists()) {
             if (path.isRegularFile()) {
-                NOptional<HItem> d = loadNode0(into, path);
+                NOptional<HItem> d = loadNode0(into, path, document);
                 if (d.isPresent()) {
                     updateSource(d.get(), path);
                 }
@@ -281,7 +287,7 @@ public class HEngineImpl implements HEngine {
                 all.sort((a, b) -> a.getName().compareTo(b.getName()));
                 HItem node = null;
                 for (NPath nPath : all) {
-                    NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath);
+                    NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath, document);
                     if (!d.isPresent()) {
                         return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
                     }
@@ -338,6 +344,11 @@ public class HEngineImpl implements HEngine {
         }
         TsonElement c = doc.getContent();
         HDocument docd = documentFactory().ofDocument();
+        if (source instanceof HResource) {
+            docd.resources().add((HResource) source);
+        } else if (source instanceof NPath) {
+            docd.resources().add((NPath) source);
+        }
         docd.root().setSource(source);
         NOptional<HItem> r = newNode(c, null);
         if (r.isPresent()) {
@@ -348,7 +359,7 @@ public class HEngineImpl implements HEngine {
     }
 
 
-    private NOptional<HItem> loadNode0(HNode into, NPath path) {
+    private NOptional<HItem> loadNode0(HNode into, NPath path, HDocument document) {
         TsonReader tr = Tson.reader();
         TsonDocument doc;
         try {
@@ -362,6 +373,7 @@ public class HEngineImpl implements HEngine {
             parents.add(into);
         }
         return newNode(c, new DefaultHNodeFactoryParseContext(
+                document,
                 null,
                 this,
                 session,

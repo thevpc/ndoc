@@ -49,6 +49,8 @@ public class HPropName {
     public static final String MAX_Y="ymax";
     public static final String VALUE="value";
     public static final String FROM="from";
+    public static final String START_ARROW ="start-arrow";
+    public static final String END_ARROW ="end-arrow";
     public static final String TO="to";
     public static final String PADDING="padding";
     public static final String ROTATE="rotate";

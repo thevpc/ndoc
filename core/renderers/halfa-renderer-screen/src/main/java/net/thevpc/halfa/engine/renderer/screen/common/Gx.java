@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
-import net.thevpc.halfa.api.model.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 
 import java.awt.*;

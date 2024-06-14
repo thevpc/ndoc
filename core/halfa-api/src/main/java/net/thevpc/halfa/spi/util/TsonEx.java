@@ -1,7 +1,7 @@
 //package net.thevpc.halfa.spi.util;
 //
-//import net.thevpc.halfa.api.model.Double2;
-//import net.thevpc.halfa.api.model.Int2;
+//import net.thevpc.halfa.api.model.elem2d.Double2;
+//import net.thevpc.halfa.api.model.elem2d.Int2;
 //import net.thevpc.nuts.util.NLiteral;
 //import net.thevpc.nuts.util.NNameFormat;
 //import net.thevpc.nuts.util.NOptional;
@@ -283,7 +283,7 @@
 //            case "int": {
 //                return (NOptional<T>) asInt();
 //            }
-//            case "net.thevpc.halfa.api.model.Double2": {
+//            case "net.thevpc.halfa.api.model.elem2d.Double2": {
 //                return (NOptional<T>) asDouble2();
 //            }
 //            case "[Lnet.thevpc.halfa.api.model.Double2;": {
