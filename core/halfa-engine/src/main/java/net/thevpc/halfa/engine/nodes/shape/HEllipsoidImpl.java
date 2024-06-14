@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HEllipsoidImpl extends AbstractHNodeTypeFactory {
 
     public HEllipsoidImpl() {
-        super(false, HNodeType.SPHERE);
+        super(false, HNodeType.ELLIPSOID);
     }
 
 }

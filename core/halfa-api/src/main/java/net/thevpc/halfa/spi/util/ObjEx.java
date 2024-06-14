@@ -893,6 +893,11 @@ public class ObjEx {
         if (element instanceof Double2[]) {
             return NOptional.of((Double2[]) element);
         }
+        if (element instanceof HPoint2D[]) {
+            return NOptional.of(
+                    Arrays.stream((HPoint2D[])element).map(x->new Double2(x.getX(),x.getY())).toArray(Double2[]::new)
+            );
+        }
         if (element instanceof TsonElement[]) {
             TsonElement[] arr = (TsonElement[]) element;
             Double2[] aa = new Double2[arr.length];

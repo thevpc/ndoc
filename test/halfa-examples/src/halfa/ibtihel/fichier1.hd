@@ -1,0 +1,21 @@
+{
+styles:{
+    .simple-page:{
+    background-color: c1
+    }
+
+}
+page{
+    polygon(points:[(0,0),(100,0),(100,10),(0,20)],background-color:red)
+    @(simple-page) plain("demo",position:(50,50),origin:(50,50),font-bold)
+
+}
+include ("fichier2.hd")
+
+
+page{
+text("bye")
+}
+
+}
+

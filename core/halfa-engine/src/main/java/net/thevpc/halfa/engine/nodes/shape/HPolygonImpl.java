@@ -65,7 +65,7 @@ public class HPolygonImpl extends AbstractHNodeTypeFactory {
                             } else {
                                 p.setProperty(HProp.ofHPoint2DArray(HPropName.POINTS, v.asHPoint2DArray().get()));
                             }
-                            return false;
+                            return true;
                         }
                     }
                 }
