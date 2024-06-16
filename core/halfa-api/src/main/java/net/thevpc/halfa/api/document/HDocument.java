@@ -26,4 +26,6 @@ public interface HDocument {
     HDocument setProperty(String name, String value);
 
     void mergeDocument(HDocument other);
+
+    public HDocument copy();
 }

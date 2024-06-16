@@ -3,7 +3,10 @@ package net.thevpc.halfa.engine.impl;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
+import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -13,19 +16,24 @@ import net.thevpc.tson.TsonElement;
 import java.util.*;
 
 public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext {
+    private final HMessageList messages;
     private final HDocument document;
     private final TsonElement element;
     private final HEngine engine;
     private final NSession session;
     private final List<HNode> nodePath = new ArrayList<>();
-    private final Object source;
+    private final HResource source;
 
-    public DefaultHNodeFactoryParseContext(HDocument document,
-                                           TsonElement element, HEngine engine, NSession session
+    public DefaultHNodeFactoryParseContext(
+              HDocument document
+            , TsonElement element
+            , HEngine engine
+            , NSession session
             , List<HNode> nodePath
-            ,
-                                           Object source
+            , HResource source
+            , HMessageList messages
     ) {
+        this.messages = messages;
         this.document = document;
         this.element = element;
         this.engine = engine;
@@ -34,19 +42,24 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         this.nodePath.addAll(nodePath);
     }
 
+    @Override
+    public HMessageList messages() {
+        return messages;
+    }
+
     public HDocument document() {
         return document;
     }
 
     @Override
     public HNodeFactoryParseContext push(HNode node) {
-        if(node==null){
+        if (node == null) {
             return this;
         }
         List<HNode> nodePath2 = new ArrayList<>();
         nodePath2.addAll(Arrays.asList(nodePath()));
         nodePath2.add(node);
-        return new DefaultHNodeFactoryParseContext(document(), element, engine(), session, nodePath2, source);
+        return new DefaultHNodeFactoryParseContext(document(), element, engine(), session, nodePath2, source, messages);
     }
 
     @Override
@@ -54,7 +67,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         return engine().documentFactory();
     }
 
-    public Object source() {
+    public HResource source() {
         return source;
     }
 
@@ -65,10 +78,10 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
 
     @Override
     public HNode node() {
-        if(nodePath.isEmpty()){
+        if (nodePath.isEmpty()) {
             return null;
         }
-        return nodePath.get(nodePath.size()-1);
+        return nodePath.get(nodePath.size() - 1);
     }
 
     @Override
@@ -99,12 +112,12 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         if (NBlankable.isBlank(path)) {
             return null;
         }
-        Object src = source;
+        HResource src = source;
         if (src == null) {
             if (nodePath != null) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
                     if (nodePath.get(i) != null) {
-                        Object ss = engine().computeSource(nodePath.get(i));
+                        HResource ss = engine().computeSource(nodePath.get(i));
                         if (ss != null) {
                             src = ss;
                             break;
@@ -114,8 +127,8 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             }
         }
         NPath base;
-        if (src instanceof NPath) {
-            NPath sp = (NPath) src;
+        if (src instanceof NPathHResource) {
+            NPath sp = ((NPathHResource) src).getPath();
             if (sp.isRegularFile()) {
                 sp = sp.getParent();
             }

@@ -1,0 +1,16 @@
+    page(template,name:"conclusion"){
+        text("My Title AAAA2", at:center, class:title,fill:true, bg:red, fg:yellow),
+        grid(columns:4, rows:4, column-weight:[1,2], row-weight:[1,2],
+            size:(50,100)
+        ){
+            /* first row */
+            rectangle(color:red), square(color:blue), text("something",font-size:24), void
+            /* second row */
+            void                , square(color:blue), void                              , void
+        },
+        eq("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:center
+            ),
+    },

@@ -2,6 +2,7 @@ package net.thevpc.halfa.api.node;
 
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HAlign;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.nuts.util.NOptional;
@@ -24,9 +25,9 @@ public interface HNode extends HItem {
 
     boolean append(HItem a);
 
-    Object source();
+    HResource source();
 
-    HNode setSource(Object source);
+    HNode setSource(HResource source);
 
     boolean isTemplate();
 

@@ -19,7 +19,7 @@ import net.thevpc.nuts.util.NOptional;
 /**
  * @author vpc
  */
-public class DefaultHDocument implements HDocument {
+public class DefaultHDocument implements HDocument, Cloneable {
 
     private HDocumentClass documentClass;
     private Properties properties = new Properties();
@@ -29,30 +29,37 @@ public class DefaultHDocument implements HDocument {
     public DefaultHDocument() {
     }
 
+    @Override
     public HResourceMonitor resources() {
         return resources;
     }
 
+    @Override
     public HDocumentClass documentClass() {
         return documentClass;
     }
 
+    @Override
     public void setDocumentClass(HDocumentClass documentClass) {
         this.documentClass = documentClass;
     }
 
+    @Override
     public HNode root() {
         return root;
     }
 
+    @Override
     public Properties getProperties() {
         return properties;
     }
 
+    @Override
     public NOptional<String> name() {
         return getProperty("name");
     }
 
+    @Override
     public HDocument setProperty(String name, String value) {
         if (value == null) {
             properties.remove(name);
@@ -62,11 +69,13 @@ public class DefaultHDocument implements HDocument {
         return this;
     }
 
+    @Override
     public HDocument add(HNode part) {
         root().add(part);
         return this;
     }
 
+    @Override
     public NOptional<String> getProperty(String name) {
         return NOptional.ofNamed(properties.getProperty(name), name);
     }
@@ -88,6 +97,24 @@ public class DefaultHDocument implements HDocument {
             }
             this.root().mergeNode(other.root());
         }
+    }
+
+    @Override
+    public HDocument copy() {
+        DefaultHDocument cloned;
+        try {
+            cloned = (DefaultHDocument) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        if (cloned.root != null) {
+            cloned.root = (DefaultHNode) cloned.root.copy();
+        }
+        if (cloned.properties != null) {
+            cloned.properties = new Properties();
+            cloned.properties.putAll(properties);
+        }
+        return cloned;
     }
 
 }

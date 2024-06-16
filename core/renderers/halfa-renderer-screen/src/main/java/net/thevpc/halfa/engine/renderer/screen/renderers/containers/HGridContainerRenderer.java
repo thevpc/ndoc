@@ -55,10 +55,10 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
             effPositions.add(e);
         }
 
-        boolean xCompact = (Boolean) ctx.computePropertyValue(t, HPropName.XCOMPACT).orElse(false);
-        boolean yCompact = (Boolean) ctx.computePropertyValue(t, HPropName.YCOMPACT).orElse(false);
-        Integer cols = (Integer) ctx.computePropertyValue(t, HPropName.COLUMNS).orElse(-1);
-        Integer rows = (Integer) ctx.computePropertyValue(t, HPropName.ROWS).orElse(-1);
+        boolean xCompact = (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.XCOMPACT).orElse(false)).asBoolean().get();
+        boolean yCompact = (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.YCOMPACT).orElse(false)).asBoolean().get();
+        Integer cols = (Integer) ObjEx.of(ctx.computePropertyValue(t, HPropName.COLUMNS).orElse(-1)).asInt().get();
+        Integer rows = (Integer) ObjEx.of(ctx.computePropertyValue(t, HPropName.ROWS).orElse(-1)).asInt().get();
         if (cols == null) {
             cols = -1;
         }
@@ -303,8 +303,8 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
 
     private WeightInfo loadWeightInfo(int cols, int rows, HNode t, HNodeRendererContext ctx) {
         WeightInfo ii = new WeightInfo();
-        ii.colsWeight = (double[]) ctx.computePropertyValue(t, HPropName.COLUMNS_WEIGHT).orElse(null);
-        ii.rowsWeight = (double[]) ctx.computePropertyValue(t, HPropName.ROWS_WEIGHT).orElse(null);
+        ii.colsWeight = (double[]) ObjEx.of(ctx.computePropertyValue(t, HPropName.COLUMNS_WEIGHT).orElse(null)).asDoubleArray().orNull();
+        ii.rowsWeight = (double[]) ObjEx.of(ctx.computePropertyValue(t, HPropName.ROWS_WEIGHT).orElse(null)).asDoubleArray().orNull();
         revalidateWeightInfo(cols, rows, ii);
         return ii;
     }

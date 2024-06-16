@@ -1,7 +1,7 @@
 {
 styles:{
     .simple-page:{
-    background-color: c1
+    background-color: $palette[1]
     }
 
 }

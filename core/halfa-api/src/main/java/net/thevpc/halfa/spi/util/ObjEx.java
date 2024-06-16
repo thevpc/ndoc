@@ -15,8 +15,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.List;
+import net.thevpc.halfa.api.util.TsonUtils;
+import net.thevpc.nuts.util.NMsg;
+import static net.thevpc.tson.TsonElementType.BIG_DECIMAL;
+import static net.thevpc.tson.TsonElementType.BYTE;
+import static net.thevpc.tson.TsonElementType.DOUBLE;
+import static net.thevpc.tson.TsonElementType.FLOAT;
+import static net.thevpc.tson.TsonElementType.INT;
+import static net.thevpc.tson.TsonElementType.LONG;
+import static net.thevpc.tson.TsonElementType.SHORT;
 
 public class ObjEx {
+
     private Object element;
     private String name;
     private List<TsonElement> args = new ArrayList<>();
@@ -32,6 +42,12 @@ public class ObjEx {
     }
 
     public static ObjEx of(Object element) {
+        if (element instanceof ObjEx) {
+            return (ObjEx) element;
+        }
+        if (element instanceof NOptional) {
+            return of(((NOptional)element).orNull());
+        }
         return new ObjEx(element);
     }
 
@@ -50,7 +66,8 @@ public class ObjEx {
                 switch (te.type()) {
                     case FUNCTION:
                     case OBJECT:
-                    case ARRAY: {
+                    case ARRAY:
+                    case UPLET: {
                         name = HUtils.uid(te.name());
                         TsonElementList a = te.args();
                         if (a != null) {
@@ -74,13 +91,13 @@ public class ObjEx {
             switch (te.type()) {
                 case PAIR: {
                     TsonElement key = te.toPair().getKey();
-                    NOptional<String> s = new ObjEx(key).asString();
+                    NOptional<String> s = ObjEx.of(key).asString();
                     if (s.isPresent()) {
                         return NOptional.of(
                                 new SimplePair(
                                         s.get(),
                                         key,
-                                        new ObjEx(te.toPair().getValue())
+                                        ObjEx.of(te.toPair().getValue())
                                 )
                         );
                     }
@@ -90,7 +107,6 @@ public class ObjEx {
         }
         return NOptional.ofNamedEmpty("pair");
     }
-
 
     public String name() {
         _parsedChildren();
@@ -135,7 +151,7 @@ public class ObjEx {
         return children;
     }
 
-    public NOptional<Color> parseColor(ColorPalette palette) {
+    public NOptional<Color> parseColor() {
         if (element instanceof Color) {
             return NOptional.of((Color) element);
         }
@@ -147,7 +163,7 @@ public class ObjEx {
                 case SHORT:
                 case LONG:
                 case INT: {
-                    return new ObjEx(te.toInt().getInt()).parseColor(palette);
+                    return ObjEx.of(te.toInt().getInt()).parseColor();
                 }
                 case UPLET: {
                     NOptional<int[]> ri = asIntArray();
@@ -182,19 +198,17 @@ public class ObjEx {
                 }
                 case STRING:
                 case NAME: {
-                    ObjEx h = new ObjEx(element);
+                    ObjEx h = ObjEx.of(element);
                     String s = h.asString().get();
-                    return new ObjEx(s).parseColor(palette);
+                    return ObjEx.of(s).parseColor();
                 }
             }
         } else {
-            if (
-                    element instanceof Integer
-                            || element instanceof Short
-                            || element instanceof Byte
-                            || element instanceof Long
-                            || element instanceof BigInteger
-            ) {
+            if (element instanceof Integer
+                    || element instanceof Short
+                    || element instanceof Byte
+                    || element instanceof Long
+                    || element instanceof BigInteger) {
                 return NOptional.of(new Color(((Number) element).intValue()));
             }
             if (element instanceof String) {
@@ -234,12 +248,6 @@ public class ObjEx {
                 if (s.toLowerCase().startsWith("c")) {
                     NOptional<Integer> u = NLiteral.of(s.substring(1).trim()).asInt();
                     if (u.isPresent()) {
-                        if (palette != null) {
-                            Color c = palette.getColor(u.get());
-                            if (c != null) {
-                                return NOptional.of(c);
-                            }
-                        }
                         return NOptional.of(DefaultColorPalette.INSTANCE.getColor(u.get()));
                     }
                 }
@@ -301,17 +309,27 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("color from " + element);
     }
 
-
     public NOptional<Float> asFloat() {
         return asDouble().map(Double::floatValue);
     }
 
+    public NOptional<Number> asNumber() {
+        if (element instanceof Number) {
+            return NOptional.of(((Number) element));
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            if (te.type().isNumber()) {
+                return NOptional.of(te.toNumber().getNumber());
+            }
+        }
+        return NOptional.ofNamedEmpty("number from " + element);
+    }
+
     public NOptional<Double> asDouble() {
-        if (
-                element instanceof Double
-                        || element instanceof Float
-                        || element instanceof BigDecimal
-        ) {
+        if (element instanceof Double
+                || element instanceof Float
+                || element instanceof BigDecimal) {
             return NOptional.of(((Number) element).doubleValue());
         }
         if (element instanceof String) {
@@ -342,13 +360,11 @@ public class ObjEx {
     }
 
     public NOptional<Integer> asInt() {
-        if (
-                element instanceof Integer
-                        || element instanceof Long
-                        || element instanceof Byte
-                        || element instanceof Short
-                        || element instanceof BigInteger
-        ) {
+        if (element instanceof Integer
+                || element instanceof Long
+                || element instanceof Byte
+                || element instanceof Short
+                || element instanceof BigInteger) {
             return NOptional.of(((Number) element).intValue());
         }
         if (element instanceof String) {
@@ -398,7 +414,6 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("boolean from " + element);
     }
 
-
     public NOptional<String> asString() {
         if (element instanceof String) {
             return NOptional.of((String) element);
@@ -416,7 +431,6 @@ public class ObjEx {
         }
         return NOptional.ofNamedEmpty("string from " + element);
     }
-
 
     public NOptional<int[]> asIntArray() {
         if (element instanceof int[]) {
@@ -532,11 +546,10 @@ public class ObjEx {
         if (element instanceof Double4) {
             Double4 d = (Double4) element;
             return NOptional.of(new double[]{
-                    d.getX1(),
-                    d.getX2(),
-                    d.getX3(),
-                    d.getX4(),
-            });
+                d.getX1(),
+                d.getX2(),
+                d.getX3(),
+                d.getX4(),});
         }
         return NOptional.ofNamedEmpty("double[] from " + element);
     }
@@ -576,13 +589,13 @@ public class ObjEx {
 
     public NOptional<Color[]> asColorArray() {
         NOptional<Object[]> o = asObjectArray();
-        if(o.isPresent()){
-            List<Color> cc=new ArrayList<>();
+        if (o.isPresent()) {
+            List<Color> cc = new ArrayList<>();
             for (Object oi : o.get()) {
-                NOptional<Color> y = ObjEx.of(oi).parseColor(null);
-                if(y.isPresent()){
+                NOptional<Color> y = ObjEx.of(oi).parseColor();
+                if (y.isPresent()) {
                     cc.add(y.get());
-                }else{
+                } else {
                     return NOptional.ofNamedEmpty("Object[] from " + element);
                 }
             }
@@ -755,8 +768,8 @@ public class ObjEx {
             return NOptional.of((Double2) element);
         }
         if (element instanceof HPoint2D) {
-            HPoint2D p=(HPoint2D) element;
-            return NOptional.of(new Double2(p.x,p.y));
+            HPoint2D p = (HPoint2D) element;
+            return NOptional.of(new Double2(p.x, p.y));
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
@@ -773,8 +786,8 @@ public class ObjEx {
             return NOptional.of((Double3) element);
         }
         if (element instanceof HPoint3D) {
-            HPoint3D p=(HPoint3D) element;
-            return NOptional.of(new Double3(p.x,p.y,p.z));
+            HPoint3D p = (HPoint3D) element;
+            return NOptional.of(new Double3(p.x, p.y, p.z));
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
@@ -805,15 +818,15 @@ public class ObjEx {
             return NOptional.of((HArrayHead) element);
         }
         NOptional<String> s = asString();
-        if(s.isPresent()){
+        if (s.isPresent()) {
             String v = s.get().trim();
-            if(v.isEmpty()){
+            if (v.isEmpty()) {
                 return NOptional.of(HArrayHead.NONE);
             }
-            try{
+            try {
                 HArrayHead y = HArrayHead.valueOf(NNameFormat.CONST_NAME.format(v));
                 return NOptional.of(y);
-            }catch (Exception e){
+            } catch (Exception e) {
                 //
             }
         }
@@ -833,7 +846,6 @@ public class ObjEx {
         }
         return NOptional.ofNamedEmpty("HPoint3D from " + element);
     }
-
 
     public <T> NOptional<T> as(Class<T> type) {
         switch (type.getName()) {
@@ -869,22 +881,22 @@ public class ObjEx {
 
     public NOptional<HPoint2D[]> asHPoint2DArray() {
         NOptional<Double2[]> u = asDouble2Array();
-        if(u.isPresent()){
+        if (u.isPresent()) {
             return NOptional.of(
-                    Arrays.stream(u.get()).map(x->new HPoint2D(x.getX(),x.getY())).toArray(HPoint2D[]::new)
+                    Arrays.stream(u.get()).map(x -> new HPoint2D(x.getX(), x.getY())).toArray(HPoint2D[]::new)
             );
-        }else{
+        } else {
             return (NOptional) u;
         }
     }
 
     public NOptional<HPoint3D[]> asHPoint3DArray() {
         NOptional<Double3[]> u = asDouble3Array();
-        if(u.isPresent()){
+        if (u.isPresent()) {
             return NOptional.of(
-                    Arrays.stream(u.get()).map(x->new HPoint3D(x.getX(),x.getY(),x.getZ())).toArray(HPoint3D[]::new)
+                    Arrays.stream(u.get()).map(x -> new HPoint3D(x.getX(), x.getY(), x.getZ())).toArray(HPoint3D[]::new)
             );
-        }else{
+        } else {
             return (NOptional) u;
         }
     }
@@ -895,7 +907,7 @@ public class ObjEx {
         }
         if (element instanceof HPoint2D[]) {
             return NOptional.of(
-                    Arrays.stream((HPoint2D[])element).map(x->new Double2(x.getX(),x.getY())).toArray(Double2[]::new)
+                    Arrays.stream((HPoint2D[]) element).map(x -> new Double2(x.getX(), x.getY())).toArray(Double2[]::new)
             );
         }
         if (element instanceof TsonElement[]) {
@@ -978,7 +990,26 @@ public class ObjEx {
         return !NBlankable.isBlank(name());
     }
 
+    public boolean isNumber() {
+        if (element instanceof Number) {
+            return true;
+        }
+        if (element instanceof TsonElement) {
+            return ((TsonElement) element).isNumber();
+        }
+        return false;
+    }
+
+    public NOptional<TsonElement> asTson() {
+        try {
+            return NOptional.of(TsonUtils.toTson(element));
+        } catch (Exception e) {
+            return NOptional.ofEmpty(NMsg.ofC("not tson : %s : %s", e, element));
+        }
+    }
+
     public static class SimplePair {
+
         private String name;
         private TsonElement key;
         private ObjEx value;

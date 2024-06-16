@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class HParseHelper {
 //    public static Object parsePairValue(TsonElement e,HNode node, String name, Class ...types){
-//        ObjEx ee = new ObjEx(e);
+//        ObjEx ee = ObjEx.of(e);
 //        NOptional<ObjEx.SimplePair> p = ee.asSimplePair();
 //        if(p.isPresent()){
 //            ObjEx.SimplePair r = p.get();

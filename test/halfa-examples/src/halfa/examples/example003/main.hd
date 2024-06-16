@@ -1,0 +1,44 @@
+@(halfa,"1.0")
+{
+    styles:{
+        //import("*.tcss"),
+        "" :{
+            color:blue,
+            font-size:40,
+        }
+        title:{
+            font-size:50,
+            bold:true
+        },
+    },
+    page(template,name:'course'){
+    },
+    page{
+        text("My Title"),
+        rectangle(
+            size:(50,50),
+            background:$palette[3],
+            rotate:45,
+            line-color:$palette[1],
+//            stroke:basic(dash:[30],width:5)
+            stroke:sloppy
+        )
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:(50,50),
+            origin:center){
+
+        },
+    },
+    page{
+        text("My Title 2"),
+        equation("""
+            x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:(50,50),
+            origin:center){
+
+        },
+    },
+}

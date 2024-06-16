@@ -26,32 +26,32 @@ public class HLineImpl extends AbstractHNodeTypeFactory {
                 TsonPair pp = e.toPair();
                 TsonElement k = pp.getKey();
                 TsonElement v = pp.getValue();
-                ObjEx ph = new ObjEx(k);
+                ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asString();
                 if (n.isPresent()) {
                     switch (HUtils.uid(n.get())) {
                         case "from": {
                             if (isAncestorScene3D(p)) {
-                                p.setProperty(HProp.ofHPoint3D(HPropName.FROM, new ObjEx(v).asHPoint3D().get()));
+                                p.setProperty(HProp.ofHPoint3D(HPropName.FROM, ObjEx.of(v).asHPoint3D().get()));
                             } else {
-                                p.setProperty(HProp.ofHPoint2D(HPropName.FROM, new ObjEx(v).asHPoint2D().get()));
+                                p.setProperty(HProp.ofHPoint2D(HPropName.FROM, ObjEx.of(v).asHPoint2D().get()));
                             }
                             return true;
                         }
                         case "to": {
                             if (isAncestorScene3D(p)) {
-                                p.setProperty(HProp.ofHPoint3D(HPropName.TO, new ObjEx(v).asHPoint3D().get()));
+                                p.setProperty(HProp.ofHPoint3D(HPropName.TO, ObjEx.of(v).asHPoint3D().get()));
                             } else {
-                                p.setProperty(HProp.ofHPoint2D(HPropName.TO, new ObjEx(v).asHPoint2D().get()));
+                                p.setProperty(HProp.ofHPoint2D(HPropName.TO, ObjEx.of(v).asHPoint2D().get()));
                             }
                             return false;
                         }
                         case "start-arrow": {
-                            p.setProperty(new HProp(HPropName.START_ARROW, new ObjEx(v).asHArrayHead().get()));
+                            p.setProperty(new HProp(HPropName.START_ARROW, ObjEx.of(v).asHArrayHead().get()));
                             return true;
                         }
                         case "end-arrow": {
-                            p.setProperty(new HProp(HPropName.END_ARROW, new ObjEx(v).asHArrayHead().get()));
+                            p.setProperty(new HProp(HPropName.END_ARROW, ObjEx.of(v).asHArrayHead().get()));
                             return true;
                         }
                     }

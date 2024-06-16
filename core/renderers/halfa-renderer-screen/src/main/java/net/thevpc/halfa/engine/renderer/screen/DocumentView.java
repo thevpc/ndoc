@@ -2,19 +2,21 @@ package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
+import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.engine.renderer.screen.common.TextUtils;
 import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,8 +29,10 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.function.Supplier;
+import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
 
 public class DocumentView {
+
     private HDocument document;
     private Supplier<HDocument> documentSupplier;
     private HEngine halfaEngine;
@@ -45,14 +49,25 @@ public class DocumentView {
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
     private Throwable currentThrowable;
+    private HMessageList messages;
+    private HDocumentRendererListener listener;
 
-    public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, NSession session) {
+    public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, HDocumentRendererListener listener, HMessageList messages,
+            NSession session) {
         this.documentSupplier = documentSupplier;
+        this.listener = listener;
         this.halfaEngine = halfaEngine;
+        this.messages = messages;
         this.session = session;
         rendererManager = new RendererManagerImpl(halfaEngine);
 
         frame = new JFrame();
+        frame.setTitle("HD Document Viewer");
+        frame.setIconImage(
+                ImageUtils.resizeImage(
+                        new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
+                         16, 16)
+        );
         contentPane = new ContentPanel();
 //        contentPane.setFocusTraversalKeysEnabled(false);
         frame.setContentPane(contentPane);
@@ -103,8 +118,8 @@ public class DocumentView {
     public String getPageSourceName() {
         Object s = getPageSource();
         if (s != null) {
-            if (s instanceof NPath) {
-                return ((NPath) s).getName();
+            if (s instanceof NPathHResource) {
+                return ((NPathHResource) s).getPath().getName();
             }
         }
         return null;
@@ -132,6 +147,7 @@ public class DocumentView {
     }
 
     public class ContentPanel extends JPanel {
+
         CardLayout cardLayout;
         List<HDocumentLayer> layers = new ArrayList<>();
 
@@ -236,7 +252,11 @@ public class DocumentView {
             this.currentShowingPage = null;
             this.currentThrowable = null;
             try {
-                document = halfaEngine.compileDocument(documentSupplier.get());
+                HDocument rawDocument = documentSupplier.get();
+                listener.onChangedRawDocument(rawDocument);
+                HDocument compiledDocument = halfaEngine.compileDocument(rawDocument.copy(), messages).get();
+                listener.onChangedCompiledDocument(compiledDocument);
+                document = compiledDocument;
             } catch (Exception ex) {
                 this.currentThrowable = ex;
             }

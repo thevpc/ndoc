@@ -7,7 +7,9 @@ package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
+import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HMessageListImpl;
+import net.thevpc.halfa.spi.renderer.AbstractHDocumentRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
 import net.thevpc.nuts.NSession;
 
@@ -16,25 +18,26 @@ import java.util.function.Supplier;
 /**
  * @author vpc
  */
-public class ScreenDocumentRenderer implements HDocumentScreenRenderer {
+public class ScreenDocumentRenderer extends AbstractHDocumentRenderer implements HDocumentScreenRenderer {
 
-    private final NSession session;
-    private HEngine halfaEngine;
 
-    public ScreenDocumentRenderer(HEngine halfaEngine, NSession session) {
-        this.session = session;
-        this.halfaEngine = halfaEngine;
+    public ScreenDocumentRenderer(HEngine engine, NSession session) {
+        super(engine, session);
     }
 
     @Override
     public void render(HDocument document) {
-        DocumentView dv = new DocumentView(()->document, halfaEngine, session);
+        HMessageList messages2=this.messages;
+        if(messages2==null){
+            messages2=new HMessageListImpl(session, engine.computeSource(document.root()));
+        }
+        DocumentView dv = new DocumentView(() -> document, engine, eventListenerDelegate, messages2, session);
         dv.show();
     }
 
     @Override
     public void renderSupplier(Supplier<HDocument> document) {
-        DocumentView dv = new DocumentView(document, halfaEngine, session);
+        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages, session);
         dv.show();
     }
 }

@@ -19,7 +19,7 @@ public class HItemListParser {
             case FUNCTION:
             case OBJECT:
             case ARRAY: {
-                ObjEx ee = new ObjEx(ff);
+                ObjEx ee = ObjEx.of(ff);
                 for (TsonElement e : ee.args()) {
                     NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {

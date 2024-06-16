@@ -1,0 +1,9 @@
+@normal page(name:"Regex"){
+    @Header {
+        text("Regex"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+}

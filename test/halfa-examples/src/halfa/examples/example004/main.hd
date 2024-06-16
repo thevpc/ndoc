@@ -1,0 +1,26 @@
+@(halfa,"1.0")
+(name:'myname', classes:[class1,class2],disabled:false){
+    styles:{
+        "" :{
+            color:blue,
+            font-size:40,
+        }
+        title:{
+            font-size:50,
+            bold:true
+        },
+        (.myname, ul, somename):{
+
+        }
+    },
+    page{
+        text("My Title"),
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """
+            ,at:(50,50)
+            ){
+
+        }
+    }
+}

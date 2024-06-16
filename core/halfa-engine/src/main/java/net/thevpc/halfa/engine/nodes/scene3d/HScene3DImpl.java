@@ -19,7 +19,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
     protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = new ObjEx(e).asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();

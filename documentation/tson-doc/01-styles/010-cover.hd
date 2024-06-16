@@ -1,0 +1,171 @@
+page(template:cover){
+    styles{
+       .title:{
+           color: "#dddddd",
+           origin : center,
+           position : (50,27),
+           font-size:200,
+           font-family:Monospaced,
+           font-bold,
+           shadow:(color:gray,shift:(1,1))
+       }
+       .subtitle:{
+           color: $palette[2]
+           origin : center,
+           position : (50,40),
+           font-size:50,
+           font-bold,
+           font-family:Serif,
+       }
+       .author:{
+           color: $palette[1],
+           origin : center,
+           position : (50,60),
+           font-size:30,
+           font-bold,
+       }
+       .date:{
+           color: $palette[1],
+           origin : center,
+           position : (50,65),
+           font-size:20,
+           font-bold,
+       }
+       .version:{
+           color: $palette[1],
+           origin : center,
+           position : (50,69),
+           font-size:20,
+           font-bold,
+       },
+    }
+   rectangle(
+       origin : center,
+       position : (50,32),
+       size : (150,40),
+       background: $palette[2],
+       rotate:-5
+       draw-contour
+       stroke:{width:5}
+   )
+   rectangle(
+       origin : center,
+       position : (50,30),
+       size : (150,40),
+       background: $palette[1],
+       rotate:-5
+       draw-contour
+       stroke:{width:5}
+   )
+
+   //palette
+
+   rectangle(
+       origin : top-left,
+       position : (0.5,1),
+       size : (1,2),
+       background: $palette[1],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,3),
+       size : (1,2),
+       background: $palette[2],
+       line-color:gray
+       rotate:0
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,5),
+       size : (1,2),
+       background: $palette[3],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,7),
+       size : (1,2),
+       background: $palette[4],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,9),
+       size : (1,2),
+       background: $palette[5],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,11),
+       size : (1,2),
+       background: $palette[6],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,1.5),
+       size : (1,2),
+       background: $palette[7],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,3.5),
+       size : (1,2),
+       background: $palette[8],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,5.5),
+       size : (1,2),
+       background: $palette[9],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,7.5),
+       size : (1,2),
+       background: $palette[10],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,9.5),
+       size : (1,2),
+       background: $palette[11],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,11.5),
+       size : (1,2),
+       background: $palette[12],
+       rotate:0
+       line-color:gray
+       draw-contour
+   )
+}

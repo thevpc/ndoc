@@ -1,0 +1,16 @@
+@normal page(name:"Example"){
+    @Header {
+        text("Example"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+//    source(
+//        tson
+//        """
+//            12
+//        """
+//    )
+//    source(tson,file:"0020-example.tson")
+}

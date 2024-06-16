@@ -4,4 +4,5 @@ public interface HResource {
     void save();
     boolean changed();
     Object state();
+    String shortName();
 }

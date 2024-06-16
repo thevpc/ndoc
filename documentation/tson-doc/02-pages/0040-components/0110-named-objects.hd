@@ -1,0 +1,9 @@
+@normal page{
+    @Header {
+        text("NamedObjects"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+}

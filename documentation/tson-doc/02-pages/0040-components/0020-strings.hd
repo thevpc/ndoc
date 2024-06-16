@@ -1,0 +1,9 @@
+@normal page(name:"Strings"){
+    @Header {
+        text("Strings"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+}

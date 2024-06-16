@@ -19,8 +19,10 @@ import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
+import java.util.Map;
 
 public abstract class AbstractHNodeRenderer implements HNodeRenderer {
+
     private String[] types;
 
     public AbstractHNodeRenderer(String... types) {
@@ -98,13 +100,13 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     protected boolean resolveVisible(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        boolean d = (boolean) ctx.computePropertyValue(t, HPropName.HIDE).orElse(false);
+        boolean d = (boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.HIDE).orNull()).asBoolean().orElse(false);
         return !d;
     }
 
     protected double resolveFontSize(HNode t, HGraphics g, HNodeRendererContext ctx) {
 //        Bounds2 size = ctx.getBounds();
-        double fontSize = (double) ctx.computePropertyValue(t, HPropName.FONT_SIZE).orElse(40.0);
+        double fontSize = (double) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_SIZE).orNull()).asDouble().orElse(40.0);
         fontSize = fontSize;// / Math.max(PageView.REF_SIZE.width, PageView.REF_SIZE.height) * Math.max(size.getWidth(), size.getHeight());
         return fontSize;
 
@@ -112,7 +114,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
 
     protected Stroke resolveStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
         Stroke stroke = null;
-        TsonElement strokeElem = (TsonElement) ctx.computePropertyValue(t, HPropName.STROKE).orElse(null);
+        TsonElement strokeElem = (TsonElement) ObjEx.of(ctx.computePropertyValue(t, HPropName.STROKE).orNull()).asTson().orNull();
         if (strokeElem != null) {
             return StrokeFactory.createStroke(strokeElem);
         }
@@ -121,7 +123,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
 
     protected boolean applyStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
         Stroke stroke = null;
-        TsonElement strokeElem = (TsonElement) ctx.computePropertyValue(t, HPropName.STROKE).orElse(null);
+        TsonElement strokeElem = ObjEx.of(ctx.computePropertyValue(t, HPropName.STROKE).orNull()).asTson().orNull();
         if (strokeElem != null) {
             g.setStroke(StrokeFactory.createStroke(strokeElem));
             return true;
@@ -129,13 +131,12 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         return false;
     }
 
-
     protected void applyFont(HNode t, HGraphics g, HNodeRendererContext ctx) {
 //        Bounds2 size = ctx.getBounds();
         double fontSize = resolveFontSize(t, g, ctx);
-        boolean fontItalic = (boolean) ctx.computePropertyValue(t, HPropName.FONT_ITALIC).orElse(false);
-        boolean fontBold = (boolean) ctx.computePropertyValue(t, HPropName.FONT_BOLD).orElse(false);
-        String fontFamily = (String) ctx.computePropertyValue(t, HPropName.FONT_FAMILY).orElse("Arial");
+        boolean fontItalic = (boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_ITALIC).orNull()).asBoolean().orElse(false);
+        boolean fontBold = (boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_BOLD).orNull()).asBoolean().orElse(false);
+        String fontFamily = (String) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_FAMILY).orNull()).asString().orElse("Arial");
         g.setFont(new Font(NStringUtils.firstNonBlank(fontFamily, "Arial").trim(), Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0), (int) fontSize));
     }
 
@@ -145,11 +146,11 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     protected Double2 roundCornerArcs(HNode t, HNodeRendererContext ctx) {
-        return (Double2) ctx.computePropertyValue(t, HPropName.ROUND_CORNER).orElse(null);
+        return ObjEx.of(ctx.computePropertyValue(t, HPropName.ROUND_CORNER).orNull()).asDouble2().orNull();
     }
 
     protected int colspan(HNode t, HNodeRendererContext ctx) {
-        Integer i = (Integer) ctx.computePropertyValue(t, HPropName.COLSPAN).orElse(1);
+        Integer i = ObjEx.of(ctx.computePropertyValue(t, HPropName.COLSPAN).orNull()).asInt().orElse(1);
         if (i == null) {
             return 1;
         }
@@ -160,7 +161,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     protected int rowspan(HNode t, HNodeRendererContext ctx) {
-        Integer i = (Integer) ctx.computePropertyValue(t, HPropName.ROWSPAN).orElse(1);
+        Integer i = ObjEx.of(ctx.computePropertyValue(t, HPropName.ROWSPAN).orNull()).asInt().orElse(1);
         if (i == null) {
             return 1;
         }
@@ -171,52 +172,106 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     protected boolean preserveShapeRatio(HNode t, HNodeRendererContext ctx) {
-        Boolean b = (Boolean) ctx.computePropertyValue(t, HPropName.PRESERVE_ASPECT_RATIO).orElse(false);
+        Boolean b = ObjEx.of(ctx.computePropertyValue(t, HPropName.PRESERVE_ASPECT_RATIO).orNull()).asBoolean().orElse(false);
         return b == null ? false : b;
     }
 
     protected Boolean get3D(HNode t, HNodeRendererContext ctx) {
-        return (Boolean) ctx.computePropertyValue(t, HPropName.THEED).orElse(false);
+        return (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.THEED).orNull()).asBoolean().orElse(false);
     }
 
     protected Boolean getRaised(HNode t, HNodeRendererContext ctx) {
-        return (Boolean) ctx.computePropertyValue(t, HPropName.RAISED).orElse(null);
+        return (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.RAISED).orNull()).asBoolean().orNull();
     }
 
     public static NOptional<Double2> readStyleAsDouble2(HNode t, String s, HNodeRendererContext ctx) {
-        Object sv = ctx.computePropertyValue(t, s).orNull();
-        if (sv != null) {
-            return HStyleValue.toDouble2(sv);
-        }
-        return NOptional.ofNamedEmpty(s);
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2();
+    }
+    public static NOptional<Double2> readStyleAsDouble2OrHAlign(HNode t, String s, HNodeRendererContext ctx) {
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
     }
 
     public static NOptional<Double4> readStyleAsDouble4(HNode t, String s, HNodeRendererContext ctx) {
-        Object sv = ctx.computePropertyValue(t, s).orNull();
-        if (sv != null) {
-            return ObjEx.of(s).asDouble4();
-        }
-        return NOptional.ofNamedEmpty(s);
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble4();
     }
 
     public static NOptional<Padding> readStyleAsPadding(HNode t, String s, HNodeRendererContext ctx) {
-        Object sv = ctx.computePropertyValue(t, s).orNull();
-        if (sv != null) {
-            return ObjEx.of(s).asPadding();
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asPadding();
+    }
+
+    private static NOptional<HPoint2D> readStyleAsShadowDistance(Object sv, HNodeRendererContext ctx) {
+        ObjEx o = ObjEx.of(sv);
+        double ww = ctx.getBounds().getWidth();
+        double hh = ctx.getBounds().getHeight();
+        if (o.isNumber()) {
+            NOptional<Number> n = o.asNumber();
+            if (n.isPresent()) {
+                return NOptional.of(new HPoint2D(
+                        n.get().doubleValue() / 100.0 * ww,
+                        n.get().doubleValue() / 100.0 * hh
+                ));
+            }
+        } else {
+            NOptional<HPoint2D> n = o.asHPoint2D();
+            if (n.isPresent()) {
+                return NOptional.of(new HPoint2D(
+                        n.get().getX() / 100.0 * ww,
+                        n.get().getY() / 100.0 * hh
+                ));
+            }
         }
-        return NOptional.ofNamedEmpty(s);
+        return NOptional.ofNamedEmpty("shadow-distance");
+    }
+
+    public NOptional<Shadow> readStyleAsShadow(HNode t, String s, HNodeRendererContext ctx) {
+        Object sv = ctx.computePropertyValue(t, s).orNull();
+        ObjEx o = ObjEx.of(sv);
+        NOptional<HPoint2D> r = readStyleAsShadowDistance(sv, ctx);
+        if (r.isPresent()) {
+            Shadow ss = new Shadow();
+            ss.setTranslation(r.get());
+            return NOptional.of(ss);
+        }
+        if (sv instanceof TsonElement && ((TsonElement) sv).isContainer()) {
+            Shadow shadow = new Shadow();
+            for (Map.Entry<String, ObjEx> e : o.argsOrBodyMap().entrySet()) {
+                switch (e.getKey()) {
+                    case "distance":
+                    case "shift":
+                    case "origin": {
+                        NOptional<HPoint2D> d = readStyleAsShadowDistance(e.getValue(), ctx);
+                        if (d.isPresent()) {
+                            shadow.setTranslation(d.get());
+                        } else {
+                            return (NOptional) d;
+                        }
+                        break;
+                    }
+                    case "color": {
+                        NOptional<Color> d = e.getValue().parseColor();
+                        if (d.isPresent()) {
+                            shadow.setColor(d.get());
+                        } else {
+                            return (NOptional) d;
+                        }
+                        break;
+                    }
+                    default: {
+                        return NOptional.ofNamedEmpty("shadow");
+                    }
+                }
+            }
+            return NOptional.of(shadow);
+        }
+        return NOptional.ofNamedEmpty("shadow");
     }
 
     public static NOptional<Rotation> readStyleAsRotation(HNode t, String s, HNodeRendererContext ctx) {
-        Object sv = ctx.computePropertyValue(t, s).orNull();
-        if (sv != null) {
-            return ObjEx.of(sv).asRotation();
-        }
-        return NOptional.ofNamedEmpty(s);
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asRotation();
     }
 
     protected Double2 size(HNode t, Double2 minSize, HNodeRendererContext ctx) {
-        Double2 size = readStyleAsDouble2(t, HPropName.SIZE, ctx).orElse(new Double2(100, 100));
+        Double2 size = readStyleAsDouble2OrHAlign(t, HPropName.SIZE, ctx).orElse(new Double2(100, 100));
         boolean shapeRatio = preserveShapeRatio(t, ctx);
         double ww = ctx.getBounds().getWidth();
         double hh = ctx.getBounds().getHeight();
@@ -246,7 +301,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     protected Bounds2 bounds(HNode t, HNodeRendererContext ctx) {
-        Double2 size = (Double2) ctx.computePropertyValue(t, HPropName.SIZE).orElse(new Double2(100, 100));
+        Double2 size = ObjEx.of(ctx.computePropertyValue(t, HPropName.SIZE).orElse(new Double2(100, 100))).asDouble2().orNull();
         if (size == null) {
             size = new Double2(100, 100);
         }
@@ -274,12 +329,12 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         double pw = parentBounds.getWidth();
         double ph = parentBounds.getHeight();
 
-        Double2 pos = readStyleAsDouble2(t, HPropName.POSITION, ctx).orElse(new Double2(0, 0))
+        Double2 pos = readStyleAsDouble2OrHAlign(t, HPropName.POSITION, ctx).orElse(new Double2(0, 0))
                 .mul(pw / 100, ph / 100);
 
         double sw = selfSize.getX();
         double sh = selfSize.getY();
-        Double2 origin = readStyleAsDouble2(t, HPropName.ORIGIN, ctx).orElse(new Double2(0, 0))
+        Double2 origin = readStyleAsDouble2OrHAlign(t, HPropName.ORIGIN, ctx).orElse(new Double2(0, 0))
                 .mul(sw / 100, sh / 100);
 
         double x = pos.getX() - origin.getX() + parentBounds.getX();
@@ -289,30 +344,16 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
                 .mul(pw / 100, ph / 100);
 
         return new Bounds2(
-                x + padding.getLeft()
-                , y + padding.getTop()
-                , selfSize.getX() - padding.getLeft() - padding.getRight()
-                , selfSize.getY() - padding.getTop() - padding.getBottom()
+                x + padding.getLeft(),
+                y + padding.getTop(),
+                selfSize.getX() - padding.getLeft() - padding.getRight(),
+                selfSize.getY() - padding.getTop() - padding.getBottom()
         );
     }
 
-
-    protected NOptional<ColorPalette> getColorPalette(HNode t, HNodeRendererContext ctx) {
-        NOptional<Object> cp = ctx.computePropertyValue(t, HPropName.COLOR_PALETTE);
-        if (cp.isPresent()) {
-            ObjEx o = ObjEx.of(cp.get());
-            NOptional<Color[]> a = o.asColorArray();
-            if (a.isPresent()) {
-                return NOptional.of(new DefaultColorPalette(a.get()));
-            }
-        }
-        return NOptional.ofNamedEmpty(HPropName.COLOR_PALETTE);
-    }
-
     protected NOptional<Paint> getColorProperty(String propName, HNode t, HNodeRendererContext ctx) {
-        return NOptional.of(new ObjEx(ctx.computePropertyValue(t, propName).orElse(null)).parseColor(
-                getColorPalette(t, ctx).orNull()
-        ).orElse(null));
+        ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName).orElse(null));
+        return NOptional.of(r.parseColor().orElse(null));
     }
 
     protected Color getDebugColor(HNode t, HNodeRendererContext ctx) {
@@ -377,7 +418,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     public boolean requireDrawContour(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        Boolean b = (Boolean) ctx.computePropertyValue(t, HPropName.DRAW_CONTOUR).orElse(false);
+        Boolean b = (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.DRAW_CONTOUR).orElse(false)).asBoolean().orNull();
         if (b == null) {
             return false;
         }
@@ -385,7 +426,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     public boolean requireDrawGrid(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        Boolean b = (Boolean) ctx.computePropertyValue(t, HPropName.DRAW_GRID).orElse(false);
+        Boolean b = (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.DRAW_GRID).orElse(false)).asBoolean().orNull();
         if (b == null) {
             return false;
         }
@@ -393,7 +434,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     public boolean requireFillBackground(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        Boolean b = (Boolean) ctx.computePropertyValue(t, HPropName.FILL_BACKGROUND).orElse(false);
+        Boolean b = (Boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.FILL_BACKGROUND).orElse(false)).asBoolean().orNull();
         if (b == null) {
             return false;
         }
@@ -411,7 +452,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         if (force) {
             //would resolve default color instead ?
             Color cc = g.getColor();
-            if(cc==null){
+            if (cc == null) {
                 return Color.BLACK;
             }
             return cc;
@@ -450,7 +491,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
                     HUtils.doubleOf(a.getMinX()), HUtils.doubleOf(a.getMinY()),
                     HUtils.doubleOf(a.getWidth()), HUtils.doubleOf(a.getHeight())
             );
-            Double2 origin = readStyleAsDouble2(t, HPropName.ORIGIN, ctx).orElse(new Double2(0, 0));
+            Double2 origin = readStyleAsDouble2OrHAlign(t, HPropName.ORIGIN, ctx).orElse(new Double2(0, 0));
             double x = origin.getX() / 100 * a.getWidth() + a.getX();
             double y = origin.getY() / 100 * a.getHeight() + a.getY();
             g.setColor(getDebugColor(t, ctx));

@@ -1,0 +1,9 @@
+@normal page{
+    @Header {
+        text("Uplets"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+}

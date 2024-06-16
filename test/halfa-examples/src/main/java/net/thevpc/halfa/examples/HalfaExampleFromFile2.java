@@ -21,7 +21,7 @@ public class HalfaExampleFromFile2 {
         NSession session = Nuts.openWorkspace();
         HEngine e = new HEngineImpl(session);
         NPath file = NPath.of("src/halfa/test1.hd", session).toAbsolute().normalize();
-        HDocument doc = e.loadDocument(file).get();
+        HDocument doc = e.loadDocument(file, null).get();
 
         System.out.println(e.toTson(doc));
     }

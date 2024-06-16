@@ -97,7 +97,7 @@ public class DefaultHDocumentItemParserFactory
                 TsonPair p = c.toPair();
                 TsonElement k = p.getKey();
                 TsonElement v = p.getValue();
-                ObjEx kh = new ObjEx(k);
+                ObjEx kh = ObjEx.of(k);
                 NOptional<String> nn = kh.asString();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
@@ -120,7 +120,7 @@ public class DefaultHDocumentItemParserFactory
             case OBJECT:
             case FUNCTION:
             case ARRAY: {
-                ObjEx ee = new ObjEx(c);
+                ObjEx ee = ObjEx.of(c);
                 if (NBlankable.isBlank(ee.name())) {
                     return NCallableSupport.of(10, new Supplier<HItem>() {
                         @Override
@@ -148,7 +148,8 @@ public class DefaultHDocumentItemParserFactory
                 break;
             }
         }
-        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", context.source(), c));
+        context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c),context.source());
+        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
     private boolean isRootBloc(HNodeFactoryParseContext context){
@@ -237,7 +238,7 @@ public class DefaultHDocumentItemParserFactory
         HDocumentFactory f = engine.documentFactory();
         HashSet<String> allAncestors = null;
         HashSet<String> allStyles = null;
-        ObjEx ee = new ObjEx(c);
+        ObjEx ee = ObjEx.of(c);
         for (TsonAnnotation a : c.getAnnotations()) {
             String nn = a.getName();
             if (!NBlankable.isBlank(nn)) {

@@ -10,8 +10,11 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
 import java.util.List;
+import net.thevpc.halfa.api.util.TsonUtils;
+import net.thevpc.halfa.spi.util.HNodeEval;
 
 public abstract class HPartRendererContextImpl extends AbstractHNodeRendererContext {
+
     private HGraphics g3;
     private Bounds2 globalBound;
     private Bounds2 bound;
@@ -28,8 +31,6 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
     public boolean isDry() {
         return false;
     }
-
-
 
     @Override
     public NSession session() {
@@ -51,14 +52,27 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
 
     @Override
     public <T> NOptional<T> computePropertyValue(HNode t, String s) {
+        NOptional<Object> r = computePropertyValueImpl(t, s);
+        if (r.isPresent()) {
+            Object y = r.get();
+            HNodeEval ne = new HNodeEval(t);
+            Object u = ne.eval(TsonUtils.toTson(y));
+            if (u != null) {
+                return NOptional.of((T) u);
+            }
+        }
+        return (NOptional) r;
+    }
+
+    private <T> NOptional<T> computePropertyValueImpl(HNode t, String s) {
         if (t != null) {
-            return engine().computeProperty(t,s).map(HProp::getValue).map(x->{
+            return engine().computeProperty(t, s).map(HProp::getValue).map(x -> {
                 try {
                     return (T) x;
-                }catch (ClassCastException e){
+                } catch (ClassCastException e) {
                     return null;
                 }
-            }).filter(x->x!=null);
+            }).filter(x -> x != null);
         }
         return NOptional.ofNamedEmpty("style " + s);
     }

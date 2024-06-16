@@ -5,6 +5,7 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.*;
@@ -15,7 +16,7 @@ import java.util.*;
 public class DefaultHNode implements HNode {
     private String uuid;
     private String nodeType;
-    private Object source;
+    private HResource source;
     protected HNode parent;
     private HProperties properties = new HProperties();
     private List<HNode> children = new ArrayList<>();
@@ -80,7 +81,7 @@ public class DefaultHNode implements HNode {
         return this;
     }
 
-    public Object source() {
+    public HResource source() {
         return source;
     }
 
@@ -90,7 +91,7 @@ public class DefaultHNode implements HNode {
         return new ArrayList<>(properties.toSet());
     }
 
-    public HNode setSource(Object source) {
+    public HNode setSource(HResource source) {
         this.source = source;
         return this;
     }
@@ -602,7 +603,7 @@ public class DefaultHNode implements HNode {
                 o.annotation(null,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
             }
             if (source != null) {
-                o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
+                o.add(Tson.ofPair("source", Tson.ofString(source.shortName())));
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()){

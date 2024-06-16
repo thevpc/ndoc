@@ -1,0 +1,9 @@
+@normal page(name:"Literal"){
+    @Header {
+        text("Literals"),
+    }
+    @OneColumn{
+        ul{
+        }
+    }
+}

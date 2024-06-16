@@ -9,8 +9,11 @@ import java.util.List;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HDocumentLoadingResult;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
@@ -42,15 +45,15 @@ public interface HEngine {
 
     HDocumentRenderer newRenderer(String type);
 
-    HDocument compileDocument(HDocument document);
+    HDocumentLoadingResult compileDocument(HDocument document, HMessageList messages);
 
     boolean validateNode(HNode node);
 
-    NOptional<HDocument> loadDocument(NPath of);
+    HDocumentLoadingResult loadDocument(NPath of, HMessageList messages);
 
-    NOptional<HItem> loadNode(HNode into, NPath of, HDocument document);
+    NOptional<HItem> loadNode(HNode into, NPath of, HDocument document, HMessageList messages);
 
-    NOptional<HDocument> loadDocument(InputStream is);
+    HDocumentLoadingResult loadDocument(InputStream is, HMessageList messages);
 
     TsonElement toTson(HDocument doc);
 
@@ -62,5 +65,5 @@ public interface HEngine {
 
     <T> NOptional<T> computePropertyValue(HNode node, String propertyName);
 
-    Object computeSource(HNode node);
+    HResource computeSource(HNode node);
 }

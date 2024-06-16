@@ -11,8 +11,11 @@ import java.util.function.Supplier;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.spi.renderer.AbstractHDocumentRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
@@ -22,15 +25,13 @@ import net.thevpc.nuts.io.NPath;
  *
  * @author vpc
  */
-public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
+public class HtmlDocumentRenderer extends AbstractHDocumentRenderer implements HDocumentStreamRenderer {
 
-    private NSession session;
-    private HEngine halfaEngine;
 
-    public HtmlDocumentRenderer(HEngine halfaEngine, NSession session) {
-        this.halfaEngine = halfaEngine;
-        this.session = session;
+    public HtmlDocumentRenderer(HEngine engine, NSession session) {
+        super(engine, session);
     }
+
 
     @Override
     public void render(HDocument document) {
@@ -39,7 +40,11 @@ public class HtmlDocumentRenderer implements HDocumentStreamRenderer {
 
     @Override
     public void render(HDocument document, OutputStream os) {
-        document=halfaEngine.compileDocument(document);
+        HMessageList messages2=this.messages;
+        if(messages2==null){
+            messages2=new HMessageListImpl(session, engine.computeSource(document.root()));
+        }
+        document= engine.compileDocument(document, messages2).get();
         PrintStream out = new PrintStream(os);
         out.println("<html>");
         out.println("<body>");

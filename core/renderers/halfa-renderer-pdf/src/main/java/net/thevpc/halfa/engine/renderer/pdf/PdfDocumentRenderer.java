@@ -24,8 +24,11 @@ import java.util.function.Supplier;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.spi.renderer.AbstractHDocumentRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -38,14 +41,11 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 /**
  * @author vpc
  */
-public class PdfDocumentRenderer implements HDocumentStreamRenderer {
+public class PdfDocumentRenderer extends AbstractHDocumentRenderer implements HDocumentStreamRenderer {
 
-    private final NSession session;
-    private HEngine halfaEngine;
 
-    public PdfDocumentRenderer(HEngine halfaEngine, NSession session) {
-        this.session = session;
-        this.halfaEngine = halfaEngine;
+    public PdfDocumentRenderer(HEngine engine, NSession session) {
+        super(engine, session);
     }
 
     @Override
@@ -56,8 +56,12 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     @Override
     public void render(HDocument document, OutputStream stream) {
         try {
-            document=halfaEngine.compileDocument(document);
-            HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
+            HMessageList messages2=this.messages;
+            if(messages2==null){
+                messages2=new HMessageListImpl(session, engine.computeSource(document.root()));
+            }
+            document= engine.compileDocument(document, messages2).get();
+            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (HNode page : PagesHelper.resolvePages(document)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
@@ -74,7 +78,7 @@ public class PdfDocumentRenderer implements HDocumentStreamRenderer {
     @Override
     public void render(HNode part, OutputStream out) {
         try {
-            HDocumentStreamRenderer htmlRenderer = halfaEngine.newStreamRenderer("html");
+            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (HNode page : PagesHelper.resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);

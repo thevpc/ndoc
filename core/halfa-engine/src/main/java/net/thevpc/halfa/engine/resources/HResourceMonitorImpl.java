@@ -2,6 +2,8 @@ package net.thevpc.halfa.engine.resources;
 
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
+import net.thevpc.halfa.api.util.DefaultHResource;
+import net.thevpc.halfa.api.util.HResourceFactory;
 import net.thevpc.nuts.io.NPath;
 
 import java.util.HashSet;
@@ -71,5 +73,17 @@ public class HResourceMonitorImpl extends DefaultHResource implements HResourceM
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        HResourceMonitorImpl that = (HResourceMonitorImpl) o;
+        return Objects.equals(resources, that.resources);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), resources);
+    }
 }

@@ -1,0 +1,27 @@
+@("halfa#1.0")
+{
+    @cover page(){
+        text("My Title Cover"),
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:center
+        ),
+    },
+    @normal page(){
+        text("My Title Normal"),
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:center
+        ),
+    },
+    @conclusion page(){
+        text("My Title conclusion"),
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at: center
+        ),
+    }
+}

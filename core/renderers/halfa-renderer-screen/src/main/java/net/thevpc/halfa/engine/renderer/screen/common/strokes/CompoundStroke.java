@@ -42,7 +42,7 @@ public class CompoundStroke implements Stroke {
             }
         }
         if (base1 == null && base2 == null) {
-            return StrokeFactory.createBasic(new ObjEx(null));
+            return StrokeFactory.createBasic(ObjEx.of(null));
         }
         if (base1 == null) {
             return base2;

@@ -127,6 +127,9 @@ public class PageView extends JComponent {
 //    }
 
     public void render(HNode p, HNodeRendererContext ctx) {
+        if(p.isTemplate()){
+            return;
+        }
         HNodeRenderer r = documentView.getRendererManager().getRenderer(p.type()).get();
         r.render(p, ctx);
     }

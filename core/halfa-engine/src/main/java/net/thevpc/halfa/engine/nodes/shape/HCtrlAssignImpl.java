@@ -36,21 +36,21 @@ public class HCtrlAssignImpl extends AbstractHNodeTypeFactory {
                 TsonPair p = c.toPair();
                 TsonElement k = p.getKey();
                 TsonElement v = p.getValue();
-                ObjEx kh = new ObjEx(k);
+                ObjEx kh = ObjEx.of(k);
                 NOptional<String> nn = kh.asString();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
                     if (nnn.length() > 1 && nnn.startsWith("$")) {
                         return NCallableSupport.of(10, () -> f.ofAssign(
                                         nnn.substring(1),
-                                        HUtils.fromTson(v)
+                                        v
                                 ));
                     }
                 }
                 break;
             }
         }
-        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", context.source(), c));
+        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class HCtrlAssignImpl extends AbstractHNodeTypeFactory {
         Object varName = "var";
         Object varValue = null;
 
-        NOptional<HProp> s = n.getProperty(HPropName.VAR);
+        NOptional<HProp> s = n.getProperty(HPropName.NAME);
 
         if (!s.isEmpty()) {
             varName = s.get().getValue();

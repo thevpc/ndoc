@@ -22,7 +22,7 @@ public class HalfaExampleFromFolder {
         NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\halfa\\test\\halfa-examples\\src\\halfa\\ibtihel", session).toAbsolute().normalize();
         //NPath file = NPath.of("src/halfa/project", session).toAbsolute().normalize();
         System.out.println(file);
-        System.out.println(e.toTson(e.loadDocument(file).get()));
-        e.newScreenRenderer().renderSupplier(()->e.loadDocument(file).get());
+        System.out.println(e.toTson(e.loadDocument(file, null).get()));
+        e.newScreenRenderer().renderSupplier(()->e.loadDocument(file, null).get());
     }
 }

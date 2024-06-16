@@ -1,0 +1,163 @@
+page(template:normal){
+    styles{
+        .H1:{
+            color: $palette[4],
+            background: $palette[1],
+            position : (50,10),
+            origin : center,
+            size : (100,20),
+            font-size:50,
+            font-bold
+        }
+    }
+
+    stack(template:"Header",
+            position : (50,10),
+            size     : (100,20),
+            origin : center,
+    ){
+        styles:{
+            "*" :{
+                color: $palette[4],
+                font-size:50,
+                font-bold,
+            },
+            text :{
+                at:center
+                color:white
+                position:(50,50)
+            }
+        }
+        rectangle(
+            background: $palette[1],
+            position:(0,0),
+            size:(100,100)
+            line-color: $palette[1],
+            draw-contour:true,
+        )
+        rectangle(
+            background: $palette[2],
+            position:(0,98),
+            size:(100,3)
+        )
+        polygon(
+            5, show,
+            line-color: $palette[2],
+            size:(14,70),
+            at:center
+            position:(10,50),
+            rotate:0,
+            stroke:basic(width:3)
+        )
+        polygon(
+            5, show,
+            line-color: $palette[3],
+            size:(14,70),
+            at:center
+            position:(10,50),
+            rotate: 20
+            stroke:basic(width:3)
+        )
+        polygon(
+            5, show,
+            line-color: $palette[4],
+            size:(14,70),
+            at:center
+            position:(10,50),
+            rotate: 40
+            stroke:basic(width:3)
+        ),
+        image("../images/vpc.png", origin:center, position:(90,50),size:(10,40),preserve-aspect-ratio)
+        image("../images/eniso.png", origin:center, position:(10,50),size:(10,40),preserve-aspect-ratio)
+    }
+
+    stack(template:"HintError",
+            position : (50,80),
+            size     : (80,10),
+            origin : center,
+    ){
+        styles:{
+            "*" :{
+                color: $palette[1],
+                foreground-color:white,
+                font-size:20,
+                font-bold
+            }
+        }
+        rectangle(
+            background: $palette[3],
+            position:(0,0),
+            size:(100,100)
+            line-color: $palette[3],
+            draw-contour:true,
+            /*stroke:basic(width:4,dash:[20])*/
+            stroke:zigzag(amplitude:5,wavelength:5,basic(width:4))
+        )
+        image("../images/error.png", position:(95,-40),size:(10,80))
+    }
+//
+//    stack(template:"HintWarning",
+//            position : (50,80),
+//            size     : (80,10),
+//            origin : center,
+//    ){
+//        styles:{
+//            "*" :{
+//                color: $palette[1],
+//                foreground-color:white,
+//                font-size:20,
+//                font-bold
+//            }
+//        }
+//        rectangle(
+//            background: $palette[3],
+//            position:(0,0),
+//            size:(100,100)
+//            line-color: $palette[1],
+//            draw-contour:true,
+//            /*stroke:basic(width:4,dash:[20])*/
+//            stroke:sloppy(basic(width:2), width:4)
+//        )
+//        image("../images/warning.png", position:(95,-40),size:(10,80))
+//    }
+//
+//    stack(template:"HintInfo",
+//            position : (50,80),
+//            size     : (80,10),
+//            origin : center,
+//    ){
+//        styles:{
+//            "*" :{
+//                color: $palette[1],
+//                foreground-color:white,
+//                font-size:20,
+//                font-bold
+//            }
+//        }
+//        rectangle(
+//            background: $palette[3],
+//            position:(0,0),
+//            size:(100,100)
+//            line-color: $palette[1],
+//            draw-contour:true,
+//            /*stroke:basic(width:4,dash:[20])*/
+//            stroke:sloppy(basic(width:2), width:4)
+//        )
+//        image("../images/info.png", position:(95,-40),size:(10,80))
+//    }
+
+    stack(template:"OneColumn",
+            position : (0,22),
+            size     : (100,72),
+            origin : top-left,
+            font-size:20,
+            line-color: "#6b3a09",
+            font-bold
+    ){
+        styles:{
+            "*" :{
+                foreground-color:dark-gray
+            }
+        }
+    }
+}

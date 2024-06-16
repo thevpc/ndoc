@@ -14,7 +14,6 @@ public class HPropName {
     public static final String FONT_FAMILY="font-family";
     public static final String FONT_SIZE="font-size";
     public static final String STROKE="stroke";
-    public static final String VAR="var";
     public static final String FONT_BOLD="font-bold";
     public static final String FONT_ITALIC="font-italic";
     public static final String FONT_UNDERLINED="font-underlined";
@@ -54,6 +53,7 @@ public class HPropName {
     public static final String TO="to";
     public static final String PADDING="padding";
     public static final String ROTATE="rotate";
+    public static final String SHADOW="shadow";
 
     public static final String DEBUG = "debug";
     public static final String DEBUG_COLOR="debug-color";

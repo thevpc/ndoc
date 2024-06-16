@@ -61,17 +61,17 @@ public class Example extends Canvas {
                         .scale(1, 1, 1)
         );
         g3.project3D(projection);
-//        g3.drawElement3D(
-//                Element3DFactory.cube(new Point3D(-100, -100, -100), 200),
-//                getWidth() / 2, getHeight() / 2
+//        g3.draw3D(
+//                Element3DFactory.cube(new HPoint3D(-100, -100, -100), 200),
+//                new HPoint2D(getWidth() / 2, getHeight() / 2)
 //        );
         Element3DGroup gg = Element3DFactory.group();
-//        gg.add(Element3DFactory.sphereUV(new HPoint3D(-100, -100, -100), 200, 50));
-        gg.add(Element3DFactory.surface(
-                HUtils.dtimes(0,600,50)
-                ,HUtils.dtimes(0,600,50)
-                ,(x,y)->Math.sin(x/200* Math.PI)*Math.cos(y/200* Math.PI)*100
-        ));
+        gg.add(Element3DFactory.sphereUV(new HPoint3D(-100, -100, -100), 200, 50));
+//        gg.add(Element3DFactory.surface(
+//                HUtils.dtimes(0,600,50)
+//                ,HUtils.dtimes(0,600,50)
+//                ,(x,y)->Math.sin(x/200* Math.PI)*Math.cos(y/200* Math.PI)*100
+//        ));
         gg.add(Element3DFactory.axis(
                 new HPoint3D(0, 0, 0),
                 300

@@ -1,5 +1,6 @@
 package net.thevpc.halfa.spi.util;
 
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.ToTson;
@@ -15,6 +16,25 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HUtils {
+
+    public static String shortName(HResource a) {
+        if(a==null){
+            return null;
+        }
+        return a.shortName();
+    }
+    public static String strSnapshot(Object a) {
+        if(a==null) {
+            return "null";
+        };
+        for (String s : a.toString().split("\n")) {
+            s=s.trim();
+            if(!s.isEmpty()){
+                return s+"...";
+            }
+        }
+        return "";
+    }
 
     public static Double min(Double a, Double b) {
         if(a==null){
@@ -129,7 +149,7 @@ public class HUtils {
             case STRING:
                 return v.toStr().getValue();
         }
-        throw new IllegalArgumentException("unsupported yet : fromTons(" + v.getClass().getName() + ")");
+        throw new IllegalArgumentException("unsupported yet : fromTson(" + v.type() + ")");
     }
 
     public static String uid(String id) {

@@ -12,8 +12,11 @@ import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.List;
+import net.thevpc.halfa.api.util.TsonUtils;
+import net.thevpc.halfa.spi.util.HNodeEval;
 
 public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
+
     private HNodeRendererContext base;
     private Bounds2 bounds;
     private HNode basePart;
@@ -22,11 +25,11 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     private boolean dry;
 
     public HPartRendererContextDelegate(HNode basePart,
-                                        HNodeRendererContext base,
-                                        Bounds2 bounds,
-                                        HProperties defaultStyles,
-                                        boolean dry,
-                                        HGraphics graphics
+            HNodeRendererContext base,
+            Bounds2 bounds,
+            HProperties defaultStyles,
+            boolean dry,
+            HGraphics graphics
     ) {
         this.basePart = basePart;
         this.base = base;
@@ -119,6 +122,19 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
 
     @Override
     public <T> NOptional<T> computePropertyValue(HNode t, String s) {
+        NOptional<Object> r = computePropertyValueImpl(t, s);
+        if (r.isPresent()) {
+            Object y = r.get();
+            HNodeEval ne = new HNodeEval(t);
+            Object u = ne.eval(TsonUtils.toTson(y));
+            if (u != null) {
+                return NOptional.of((T) u);
+            }
+        }
+        return (NOptional)r;
+    }
+
+    private <T> NOptional<T> computePropertyValueImpl(HNode t, String s) {
         NOptional<T> y = null;
         if (t != null) {
             y = engine().computeProperty(t, s).map(HProp::getValue).map(x -> {

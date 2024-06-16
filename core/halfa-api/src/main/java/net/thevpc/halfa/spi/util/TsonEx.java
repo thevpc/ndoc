@@ -63,13 +63,13 @@
 //        switch (element.type()) {
 //            case PAIR: {
 //                TsonElement key = element.toPair().getKey();
-//                NOptional<String> s = new ObjEx(key).asString();
+//                NOptional<String> s = ObjEx.of(key).asString();
 //                if (s.isPresent()) {
 //                    return NOptional.of(
 //                            new SimplePair(
 //                                    s.get(),
 //                                    key,
-//                                    new ObjEx(element.toPair().getValue())
+//                                    ObjEx.of(element.toPair().getValue())
 //                            )
 //                    );
 //                }
@@ -106,7 +106,7 @@
 //            }
 //            case STRING:
 //            case NAME: {
-//                ObjEx h = new ObjEx(element);
+//                ObjEx h = ObjEx.of(element);
 //                String s = HUtils.uid(h.asString().get());
 //                if (s.startsWith("#")) {
 //                    return NOptional.of(new Color(Integer.parseInt(s.substring(1), 16)));
@@ -325,7 +325,7 @@
 //            case ARRAY: {
 //                List<String> ok = new ArrayList<>();
 //                for (TsonElement e : element.toArray().all()) {
-//                    NOptional<String> iu = new ObjEx(e).asString();
+//                    NOptional<String> iu = ObjEx.of(e).asString();
 //                    if (iu.isPresent()) {
 //                        ok.add(iu.get());
 //                    } else {
@@ -343,7 +343,7 @@
 //            case ARRAY: {
 //                List<Double> ok = new ArrayList<>();
 //                for (TsonElement e : element.toArray().all()) {
-//                    NOptional<Double> iu = new ObjEx(e).asDouble();
+//                    NOptional<Double> iu = ObjEx.of(e).asDouble();
 //                    if (iu.isPresent()) {
 //                        ok.add(iu.get());
 //                    } else {
@@ -362,7 +362,7 @@
 //            case ARRAY: {
 //                List<Double2> ok = new ArrayList<>();
 //                for (TsonElement e : element.toArray().all()) {
-//                    NOptional<Double2> iu = new ObjEx(e).asDouble2();
+//                    NOptional<Double2> iu = ObjEx.of(e).asDouble2();
 //                    if (iu.isPresent()) {
 //                        ok.add(iu.get());
 //                    } else {

@@ -114,7 +114,7 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     @Override
     public HNode ofAssign(String name, Object value) {
         return ofAssign()
-                .setProperty(HPropName.VAR, name)
+                .setProperty(HPropName.NAME, name)
                 .setProperty(HPropName.VALUE, value)
                 ;
     }

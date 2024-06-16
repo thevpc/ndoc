@@ -1,0 +1,26 @@
+@normal page{
+    @Header {
+        text("Annotations"),
+    }
+    @OneColumn{
+        ul{
+            "In this example, the pair is annotated with const"
+//            source(
+//                tson
+//                """
+//                    @annotation-name(args)
+//                    any-tson-element
+//                """
+//            )
+            "This is an example"
+//            source(
+//                tson
+//                """
+//                    @const(12)
+//                    x:12
+//                """
+//            )
+        }
+    }
+
+}

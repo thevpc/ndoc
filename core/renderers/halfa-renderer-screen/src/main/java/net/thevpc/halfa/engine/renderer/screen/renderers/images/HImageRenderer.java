@@ -3,6 +3,7 @@ package net.thevpc.halfa.engine.renderer.screen.renderers.images;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
@@ -10,6 +11,7 @@ import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NMsg;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -58,8 +60,15 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                     imageCache.put(key,i);
                 }
                 return i;
-            }catch (IOException e){
-                throw new IllegalArgumentException(e);
+            }catch (Exception e){
+                HResource src = ctx.engine().computeSource(p);
+                ctx.session().out().println(NMsg.ofC("[%s] [ERROR] image not found : %s as %s (%s)",
+                        src==null?null:src.shortName()
+                        , img,nPath,e));
+                for (Object key : keys) {
+                    imageCache.put(key,null);
+                }
+                return null;
             }
         }
         if(img instanceof NPath){
@@ -79,8 +88,15 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                     imageCache.put(key,i);
                 }
                 return i;
-            }catch (IOException e){
-                throw new IllegalArgumentException(e);
+            }catch (Exception e){
+                HResource src = ctx.engine().computeSource(p);
+                ctx.session().out().println(NMsg.ofC("[%s] [ERROR] image not found : %s (%s)",
+                        src==null?null:src.shortName(),
+                        img,e));
+                for (Object key : keys) {
+                    imageCache.put(key,null);
+                }
+                return null;
             }
         }
         return null;

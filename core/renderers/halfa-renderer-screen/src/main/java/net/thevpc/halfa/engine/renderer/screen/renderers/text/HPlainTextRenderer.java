@@ -16,8 +16,12 @@ import net.thevpc.nuts.util.NStringUtils;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import net.thevpc.halfa.api.model.elem2d.HPoint2D;
+import net.thevpc.halfa.api.model.elem2d.Shadow;
+import net.thevpc.nuts.util.NOptional;
 
 public class HPlainTextRenderer extends AbstractHNodeRenderer {
+
     HProperties defaultStyles = new HProperties();
 
     public HPlainTextRenderer() {
@@ -89,39 +93,38 @@ public class HPlainTextRenderer extends AbstractHNodeRenderer {
         bgBounds = bgBounds.expand(selfBounds);
 
         HNodeRendererContext finalCtx = ctx;
-        if(getDebugLevel(p, ctx)>=10) {
+        if (getDebugLevel(p, ctx) >= 10) {
             g.debugString(
                     "Plain:\n"
-                            + "expected=" + bgBounds0 + "\n"
-                            + "fullSize=" + selfBounds + "\n"
-                            + "newExpectedBounds=" + bgBounds + "\n"
-                            + "curr: " +
-                            Arrays.asList(
-                                            HPropName.SIZE,
-                                            HPropName.ORIGIN,
-                                            HPropName.POSITION
-                                    )
-                                    .stream().map(x ->
-                                            p.getProperty(x).orNull()
-                                    ).filter(x -> x != null).collect(Collectors.toList())
-                            + "\n"
-                            + "eff: " +
-                            Arrays.asList(
-                                            HPropName.SIZE,
-                                            HPropName.ORIGIN,
-                                            HPropName.POSITION
-                                    )
-                                    .stream().map(x ->
-                                            {
-                                                Object n = finalCtx.computePropertyValue(p, x).orNull();
-                                                if (n == null) {
-                                                    return n;
-                                                }
-                                                return new HProp(x, n);
-                                            }
-                                    ).filter(x -> x != null).collect(Collectors.toList())
-                            + "\n"
-                    ,
+                    + "expected=" + bgBounds0 + "\n"
+                    + "fullSize=" + selfBounds + "\n"
+                    + "newExpectedBounds=" + bgBounds + "\n"
+                    + "curr: "
+                    + Arrays.asList(
+                            HPropName.SIZE,
+                            HPropName.ORIGIN,
+                            HPropName.POSITION
+                    )
+                            .stream().map(x
+                                    -> p.getProperty(x).orNull()
+                            ).filter(x -> x != null).collect(Collectors.toList())
+                    + "\n"
+                    + "eff: "
+                    + Arrays.asList(
+                            HPropName.SIZE,
+                            HPropName.ORIGIN,
+                            HPropName.POSITION
+                    )
+                            .stream().map(x
+                                    -> {
+                                Object n = finalCtx.computePropertyValue(p, x).orNull();
+                                if (n == null) {
+                                    return n;
+                                }
+                                return new HProp(x, n);
+                            }
+                            ).filter(x -> x != null).collect(Collectors.toList())
+                    + "\n",
                     30, 100
             );
         }
@@ -134,6 +137,25 @@ public class HPlainTextRenderer extends AbstractHNodeRenderer {
         if (!ctx.isDry()) {
             paintBackground(p, ctx, g, bgBounds);
 
+            NOptional<Shadow> shadowOptional = readStyleAsShadow(p, HPropName.SHADOW, ctx);
+            if (shadowOptional.isPresent()) {
+                Shadow shadow = shadowOptional.get();
+                if (shadow.getColor() != null) {
+                    g.setPaint(shadow.getColor());
+                } else {
+                    g.setPaint(g.getColor().brighter());
+                }
+                HPoint2D translation = shadow.getTranslation();
+                if (translation == null) {
+                    translation = new HPoint2D(0, 0);
+                }
+                for (int i = 0; i < textBounds.length; i++) {
+                    g.drawString(allLines[i],
+                             x + translation.getX(),
+                             (y + lineYOffset[i]) + translation.getX()
+                    );
+                }
+            }
             applyForeground(p, g, ctx);
             for (int i = 0; i < textBounds.length; i++) {
                 g.drawString(allLines[i], x, (y + lineYOffset[i]));
@@ -141,6 +163,5 @@ public class HPlainTextRenderer extends AbstractHNodeRenderer {
             paintBorderLine(p, ctx, g, selfBounds);
         }
     }
-
 
 }

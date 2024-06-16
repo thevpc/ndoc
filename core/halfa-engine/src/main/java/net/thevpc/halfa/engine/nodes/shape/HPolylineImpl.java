@@ -26,7 +26,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
     protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = new ObjEx(e).asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();
@@ -64,7 +64,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
             }
             case UPLET: {
                 if (isAncestorScene3D(p)) {
-                    NOptional<HPoint3D> p2d = new ObjEx(e.toPair().getValue()).asHPoint3D();
+                    NOptional<HPoint3D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint3D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(p, p2d.get());
                         return true;
@@ -72,7 +72,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                         return false;
                     }
                 } else {
-                    NOptional<HPoint2D> p2d = new ObjEx(e.toPair().getValue()).asHPoint2D();
+                    NOptional<HPoint2D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint2D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(p, p2d.get());
                         return true;

@@ -2,32 +2,45 @@ package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
+import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HMessageType;
+import net.thevpc.halfa.api.document.HDocumentLoadingResult;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.engine.parser.HDocumentLoadingResultImpl;
 import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class HDocumentCompiler {
-    private HEngine engine;
 
-    public HDocumentCompiler(HEngine engine) {
+    private HEngine engine;
+    private NSession session;
+
+    public HDocumentCompiler(HEngine engine, NSession session) {
         this.engine = engine;
+        this.session = session;
     }
 
-    public HDocument compile(HDocument document) {
+    public HDocumentLoadingResult compile(HDocument document, HMessageList messages) {
+        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(engine.computeSource(document.root()), messages, session);
+        result.setDocument(document);
         HNode root = document.root();
         processUuid(root);
-        root= processInheritance(root);
+        root = processInheritance(root, result);
+        root = removeTemplates(root, result);
         processRootPages(root);
-        return document;
+        return result;
     }
 
     public boolean processRootPages(HNode node) {
@@ -51,7 +64,9 @@ public class HDocumentCompiler {
                             someChanges |= processRootPages(c);
                             if (Objects.equals(c.type(), HNodeType.PAGE_GROUP)
                                     || Objects.equals(c.type(), HNodeType.PAGE)
-                            ) {
+                                    //assign are retained in the same level!
+                                    || Objects.equals(c.type(), HNodeType.ASSIGN)
+                                    ) {
                                 if (pending != null && !pending.isEmpty()) {
                                     HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
                                     newChildren.add(newPage);
@@ -95,25 +110,46 @@ public class HDocumentCompiler {
         }
     }
 
-    protected HNode processInheritance(HNode node) {
+    protected HNode removeTemplates(HNode node, HDocumentLoadingResultImpl result) {
+        List<HNode> children = node.children();
+        for (int i = children.size() - 1; i >= 0; i--) {
+            HNode child = children.get(i);
+            if (child.isTemplate()) {
+                children.remove(i);
+            } else {
+                removeTemplates(child, result);
+            }
+        }
+        return node;
+    }
+
+    protected HNode processInheritance(HNode node, HDocumentLoadingResultImpl result) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
             Set<String> newAncestors = new HashSet<>(Arrays.asList(t));
-            HProperties inheritedProps=new HProperties();
-            List<HNode> inheritedChildren=new ArrayList<>();
-            List<HStyleRule> inheritedRules=new ArrayList<>();
-            List<HNode> ancestorsList=new ArrayList<>();
+            HProperties inheritedProps = new HProperties();
+            List<HNode> inheritedChildren = new ArrayList<>();
+            List<HStyleRule> inheritedRules = new ArrayList<>();
+            List<HNode> ancestorsList = new ArrayList<>();
             for (String a : t) {
-                HNode aa = findAncestor(node, a);
+                HNode aa = null;
+                try {
+                    aa = findAncestor(node, a);
+                } catch (Exception ex) {
+                    result.messages().addError(NMsg.ofC("ancestor %s is invalid for %s : %s", a, HUtils.strSnapshot(node), ex),
+                            null,
+                            engine.computeSource(node)
+                    );
+                }
                 if (aa != null) {
                     newAncestors.remove(a);
                     for (HProp p : aa.getProperties()) {
-                        switch (p.getName()){
+                        switch (p.getName()) {
                             case HPropName.NAME:
-                            case HPropName.TEMPLATE:{
+                            case HPropName.TEMPLATE: {
                                 break;
                             }
-                            default:{
+                            default: {
                                 inheritedProps.set(p);
                                 break;
                             }
@@ -121,14 +157,19 @@ public class HDocumentCompiler {
                     }
                     ancestorsList.add(aa);
                     for (HNode child : aa.children()) {
-                        Object source = computeSource(child);
-                        child=child.copy();
+                        HResource source = computeSource(child);
+                        child = child.copy();
                         child.setSource(source);
                         inheritedChildren.add(child);
                     }
                     inheritedRules.addAll(Arrays.asList(aa.rules()));
                 } else {
-                    throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
+                    result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("ancestor not found %s for %s", a,
+                            HUtils.strSnapshot(node)
+                    ), null,
+                            engine.computeSource(node)
+                    );
+                    //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
                 }
             }
             node.setProperty(HPropName.ANCESTORS, newAncestors.toArray(new String[0]));
@@ -138,28 +179,28 @@ public class HDocumentCompiler {
                     node.setProperty(p);
                 }
             }
-            if(!inheritedRules.isEmpty()){
+            if (!inheritedRules.isEmpty()) {
                 //must add them upfront
                 inheritedRules.addAll(Arrays.asList(node.rules()));
                 node.setRules(inheritedRules.toArray(new HStyleRule[0]));
             }
-            if(!inheritedChildren.isEmpty()){
+            if (!inheritedChildren.isEmpty()) {
                 for (HNode child : node.children()) {
-                    Object source = computeSource(child);
-                    child=child.copy();
+                    HResource source = computeSource(child);
+                    child = child.copy();
                     child.setSource(source);
                     inheritedChildren.add(child);
                 }
                 node.setChildren(inheritedChildren.toArray(new HNode[0]));
             }
-            return node;
+            //return node;
         }
         List<HNode> children = node.children();
         for (int i = 0; i < children.size(); i++) {
             HNode child = children.get(i);
-            HNode child2 = processInheritance(child);
-            if (child2!=child){
-                node.setChildAt(i,child2);
+            HNode child2 = processInheritance(child, result);
+            if (child2 != child) {
+                node.setChildAt(i, child2);
             }
         }
         return node;
@@ -174,7 +215,14 @@ public class HDocumentCompiler {
                     && Objects.equals(HUtils.uid(x.getName()), finalName)
             ).collect(Collectors.toList());
             if (r.size() > 1) {
-                throw new IllegalArgumentException("too many templates : " + finalName + " : " + r);
+                StringBuilder sb = new StringBuilder();
+                sb.append("too many templates : ").append(finalName);
+                for (int i = 0; i < r.size(); i++) {
+                    HNode hNode = r.get(i);
+                    HResource n = engine.computeSource(hNode);
+                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(HUtils.strSnapshot(hNode));
+                }
+                throw new IllegalArgumentException(sb.toString());
             }
             if (r.size() == 1) {
                 temp = r.get(0);
@@ -185,11 +233,9 @@ public class HDocumentCompiler {
         return temp;
     }
 
-
-
-    public Object computeSource(HNode node) {
-        while(node!=null) {
-            Object s = node.source();
+    public HResource computeSource(HNode node) {
+        while (node != null) {
+            HResource s = node.source();
             if (s != null) {
                 return s;
             }

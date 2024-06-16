@@ -4,6 +4,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.io.NPath;
@@ -55,8 +56,8 @@ public abstract class AbstractHNodeRendererContext implements HNodeRendererConte
         }
         Object src = engine().computeSource(node);
         NPath base;
-        if (src instanceof NPath) {
-            NPath sp = (NPath) src;
+        if (src instanceof NPathHResource) {
+            NPath sp = ((NPathHResource) src).getPath();
             if (sp.isRegularFile()) {
                 sp = sp.getParent();
             }

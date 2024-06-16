@@ -1,0 +1,15 @@
+// this is a comment
+someInt:12
+someBigDecimal:123366558877.3255Z
+@MyAnnotation() page(simple:[1]){
+    fct(file:"0010-page-first-example.tson")
+    arrOfUplets:[(1,2),(3,4)]
+    someObj:{
+        name:'name',
+        notPair(3)
+    }
+}
+m:[
+    1+i5, i1 ;
+    1+i5, [i1] /* this is a subMatrix*/
+]

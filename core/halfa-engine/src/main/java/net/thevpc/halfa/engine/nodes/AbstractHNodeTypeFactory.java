@@ -69,11 +69,11 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
     }
 
     protected boolean isAncestorScene3D(HNode p) {
-        while (p!=null){
-            if(p.type()== HNodeType.SCENE3D){
+        while (p != null) {
+            if (p.type() == HNodeType.SCENE3D) {
                 return true;
             }
-            p=p.parent();
+            p = p.parent();
         }
         return false;
     }
@@ -142,7 +142,8 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                     }
             );
         }
-        return NCallableSupport.invalid(ss -> NMsg.ofC("invalid %s : %S", id(), e));
+        //context.messages().addError(NMsg.ofC("invalid %s : %s", id(), e), context.source());
+        return NCallableSupport.invalid(ss -> NMsg.ofC("invalid %s : %s", id(), e));
     }
 
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
@@ -154,7 +155,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
             case FUNCTION:
             case OBJECT:
             case ARRAY: {
-                ObjEx ee = new ObjEx(tsonElement);
+                ObjEx ee = ObjEx.of(tsonElement);
                 HParseHelper.fillAnnotations(tsonElement, p);
                 processImplicitStyles(id, p, f, context2);
                 for (TsonElement e : ee.args()) {
@@ -165,20 +166,26 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         }
                     } else {
                         if (!processArg(id, p, e, f, context2)) {
-                            ObjEx es = new ObjEx(e);
+                            ObjEx es = ObjEx.of(e);
                             if (es.isFunction()) {
                                 if (isAcceptableArgKeyPair(es.name())
                                         ||
                                         HStyleParser.acceptStyleName(es.name())
                                 ) {
-                                    return NOptional.ofNamedError(NMsg.ofC("[%s] invalid %s. did you mean %s:%s ?",
+                                    context2.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                                            context2.source(),
+                                            e,
+                                            es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
+                                    ), context2.source());
+                                    return NOptional.ofNamedError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                                             context2.source(),
                                             e,
                                             es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
                                     ));
                                 }
                             }
-                            return NOptional.ofNamedError(NMsg.ofC("[%s] invalid %s", context2.source(), e));
+                            context2.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement), context2.source());
+                            return NOptional.ofNamedError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement));
                         }
                     }
                 }
@@ -188,6 +195,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         p.append(u.get());
                     } else {
                         NOptional<HItem> finalU = u;
+                        context2.messages().addError(NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(context2.session())), context2.source());
                         return NOptional.ofError(
                                 s -> NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(s))
                         );

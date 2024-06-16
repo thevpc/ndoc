@@ -1,23 +1,25 @@
 package net.thevpc.halfa.engine.impl;
 
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererFactoryContext;
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NStringUtils;
 
 public class HDocumentRendererFactoryContextImpl implements HDocumentRendererFactoryContext {
     private final HEngineImpl hEngine;
     private final String type;
 
-    public HDocumentRendererFactoryContextImpl(HEngineImpl hEngine, String type) {
+    public HDocumentRendererFactoryContextImpl(HEngineImpl hEngine,String type) {
         this.hEngine = hEngine;
-        this.type = type;
+        this.type = NStringUtils.trim(type);
     }
 
     @Override
     public String rendererType() {
-        return NStringUtils.trim(type);
+        return type;
     }
 
     @Override
