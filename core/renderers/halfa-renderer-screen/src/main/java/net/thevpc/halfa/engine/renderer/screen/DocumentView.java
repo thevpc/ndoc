@@ -62,7 +62,7 @@ public class DocumentView {
         rendererManager = new RendererManagerImpl(halfaEngine);
 
         frame = new JFrame();
-        frame.setTitle("HD Document Viewer");
+        frame.setTitle("H Document Viewer");
         frame.setIconImage(
                 ImageUtils.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
