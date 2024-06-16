@@ -22,7 +22,7 @@ public class HalfaExampleFromFolder2 {
         NSession session = Nuts.openWorkspace();
         HEngine engine = new HEngineImpl(session);
 
-        HDebugFrame f=new HDebugFrame(engine);
+        HDebugFrame f = new HDebugFrame(engine);
         f.model().setEngine(engine);
         String folder = "/home/vpc/education/education/modules/hyperfrequences/";
 //        String folder = "/home/vpc/xprojects/nuts/nuts-enterprise/halfa/test/halfa-examples/src/halfa/examples/example003/";
@@ -32,6 +32,6 @@ public class HalfaExampleFromFolder2 {
         HDocumentScreenRenderer renderer = engine.newScreenRenderer();
         renderer.setMessages(f.messages());
         renderer.addRendererListener(f.rendererListener());
-        renderer.renderSupplier(()->engine.loadDocument(file, f.messages()).get());
+        renderer.renderPath(file);
     }
 }

@@ -26,6 +26,7 @@ public class HalfaExampleFromFile1 {
         HDocument doc = e.loadDocument(file, null).get();
         System.out.println(e.toTson(doc));
         HDocumentStreamRenderer renderer = e.newStreamRenderer("pdf");
-        renderer.render(doc, NPath.ofUserHome(session).resolve("example.pdf"));
+        renderer.setOutput(NPath.ofUserHome(session).resolve("example.pdf"));
+        renderer.render(doc);
     }
 }

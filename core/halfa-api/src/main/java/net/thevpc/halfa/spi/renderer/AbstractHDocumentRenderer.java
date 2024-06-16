@@ -7,8 +7,10 @@ import net.thevpc.nuts.NSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.thevpc.nuts.io.NPath;
 
 public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
+
     private List<HDocumentRendererListener> eventListeners = new ArrayList<>();
     protected HDocumentRendererListener eventListenerDelegate = new HDocumentRendererListener() {
         @Override
@@ -41,10 +43,22 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
         }
     }
 
+    @Override
+    public void renderPath(NPath path) {
+        renderSupplier(r -> engine.loadDocument(path, r.messages()).get());
+    }
+
+    @Override
+    public void render(HDocument document) {
+        renderSupplier(e -> document);
+    }
+
+    @Override
     public HMessageList getMessages() {
         return messages;
     }
 
+    @Override
     public HDocumentRenderer setMessages(HMessageList messages) {
         this.messages = messages;
         return this;

@@ -36,5 +36,6 @@ public class HNodeType {
     public static final String FILLER="filler";
     public static final String VOID="void";
     public static final String ASSIGN="assign";
+    public static final String SOURCE="source";
 
 }

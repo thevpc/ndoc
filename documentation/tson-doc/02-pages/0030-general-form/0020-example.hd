@@ -3,14 +3,15 @@
         text("Example"),
     }
     @OneColumn{
-        ul{
-        }
+        source(tson,file:"0020-example.tson", position: (2,2))
+//        text(
+//            position: (2,2),
+//            ntf
+//            "
+//                #) Title 1
+//                hello ##hello## are you ###Okkay### ?
+//                ##) Title 2
+//                hello ##hello## are you ###Okkay### ?
+//            ")
     }
-//    source(
-//        tson
-//        """
-//            12
-//        """
-//    )
-//    source(tson,file:"0020-example.tson")
 }

@@ -1,9 +1,17 @@
 @normal page{
     @Header {
-        text("Arrays"),
+        text("Arrays & Matrices"),
     }
     @OneColumn{
         ul{
+            "this is an example"
+            source(
+                tson
+                """
+                    [ 1, 2 , 3, 4]   // this is an array
+                    [ 1, 2 ; 3, 4]   // this is a matrix using ';'
+                """
+            )
         }
     }
 }

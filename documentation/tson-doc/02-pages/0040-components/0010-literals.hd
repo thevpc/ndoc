@@ -4,6 +4,13 @@
     }
     @OneColumn{
         ul{
+            "this is an example"
+            source(
+                tson
+                """
+                    true, false
+                """
+            )
         }
     }
 }

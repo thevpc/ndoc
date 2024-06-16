@@ -131,13 +131,16 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         return false;
     }
 
-    protected void applyFont(HNode t, HGraphics g, HNodeRendererContext ctx) {
-//        Bounds2 size = ctx.getBounds();
+    public Font resolveFont(HNode t, HGraphics g, HNodeRendererContext ctx) {
         double fontSize = resolveFontSize(t, g, ctx);
         boolean fontItalic = (boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_ITALIC).orNull()).asBoolean().orElse(false);
         boolean fontBold = (boolean) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_BOLD).orNull()).asBoolean().orElse(false);
         String fontFamily = (String) ObjEx.of(ctx.computePropertyValue(t, HPropName.FONT_FAMILY).orNull()).asString().orElse("Arial");
-        g.setFont(new Font(NStringUtils.firstNonBlank(fontFamily, "Arial").trim(), Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0), (int) fontSize));
+        return (new Font(NStringUtils.firstNonBlank(fontFamily, "Arial").trim(), Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0), (int) fontSize));
+    }
+
+    protected void applyFont(HNode t, HGraphics g, HNodeRendererContext ctx) {
+        g.setFont(resolveFont(t, g, ctx));
     }
 
     protected SizeD mapDim(double w, double h, HNodeRendererContext ctx) {
@@ -187,6 +190,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     public static NOptional<Double2> readStyleAsDouble2(HNode t, String s, HNodeRendererContext ctx) {
         return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2();
     }
+
     public static NOptional<Double2> readStyleAsDouble2OrHAlign(HNode t, String s, HNodeRendererContext ctx) {
         return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
     }
@@ -248,7 +252,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
                         break;
                     }
                     case "color": {
-                        NOptional<Color> d = e.getValue().parseColor();
+                        NOptional<Color> d = e.getValue().asColor();
                         if (d.isPresent()) {
                             shadow.setColor(d.get());
                         } else {
@@ -353,11 +357,18 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
 
     protected NOptional<Paint> getColorProperty(String propName, HNode t, HNodeRendererContext ctx) {
         ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName).orElse(null));
-        return NOptional.of(r.parseColor().orElse(null));
+        return NOptional.of(r.asColor().orElse(null));
     }
 
     protected Color getDebugColor(HNode t, HNodeRendererContext ctx) {
         return (Color) getColorProperty(HPropName.DEBUG_COLOR, t, ctx).orElse(Color.GRAY);
+    }
+
+    public Paint resolveForeground(HNode t, HGraphics g, HNodeRendererContext ctx) {
+        if (ctx.isDry()) {
+            return null;
+        }
+        return getColorProperty(HPropName.FOREGROUND_COLOR, t, ctx).orElse(Color.BLACK);
     }
 
     protected boolean applyForeground(HNode t, HGraphics g, HNodeRendererContext ctx) {
@@ -503,7 +514,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         }
     }
 
-    protected void paintBorderLine(HNode t, HNodeRendererContext ctx, HGraphics g, Bounds2 a) {
+    public void paintBorderLine(HNode t, HNodeRendererContext ctx, HGraphics g, Bounds2 a) {
         if (ctx.isDry()) {
             return;
         }
@@ -522,7 +533,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
 
     }
 
-    protected void paintBackground(HNode t, HNodeRendererContext ctx, HGraphics g, Bounds2 a) {
+    public void paintBackground(HNode t, HNodeRendererContext ctx, HGraphics g, Bounds2 a) {
         if (ctx.isDry()) {
             return;
         }

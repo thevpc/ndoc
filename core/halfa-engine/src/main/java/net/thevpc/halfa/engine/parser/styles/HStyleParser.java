@@ -12,6 +12,7 @@ import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 import java.util.List;
+import net.thevpc.nuts.text.NTextStyleType;
 
 public class HStyleParser {
 
@@ -50,8 +51,18 @@ public class HStyleParser {
         register(ofStringArrayOrString(HPropName.STYLE_CLASS, "class", "style-class"));
         register(ofPadding(HPropName.PADDING, "padding"));
         register(ofRotation(HPropName.ROTATE, "rotate"));
-        register(ofTson(HPropName.STROKE, "stroke"));
-        register(ofTson(HPropName.SHADOW, "shadow"));
+        registerTson(HPropName.STROKE, HPropName.SHADOW);
+        for (NTextStyleType z : NTextStyleType.values()) {
+            if (!z.basic()) {
+                registerTson("source-" + z.id() + "-color");
+                registerTson("source-" + z.id() + "-background");
+                registerTson("source-" + z.id() + "-font-family");
+                registerTson("source-" + z.id() + "-font-bold");
+                registerTson("source-" + z.id() + "-font-italic");
+                registerTson("source-" + z.id() + "-font-underlined");
+            }
+        }
+
         register(new AtHStyleValueParser());
 
         register(ofIntOrBoolean(HPropName.DEBUG, "debug"));
@@ -74,6 +85,12 @@ public class HStyleParser {
             }
         });
 
+    }
+
+    private static void registerTson(String... all) {
+        for (String a : all) {
+            register(ofTson(a, a));
+        }
     }
 
     private static void register(HStyleValueParser s) {

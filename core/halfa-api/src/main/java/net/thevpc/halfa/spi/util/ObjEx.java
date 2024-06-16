@@ -46,7 +46,7 @@ public class ObjEx {
             return (ObjEx) element;
         }
         if (element instanceof NOptional) {
-            return of(((NOptional)element).orNull());
+            return of(((NOptional) element).orNull());
         }
         return new ObjEx(element);
     }
@@ -151,7 +151,7 @@ public class ObjEx {
         return children;
     }
 
-    public NOptional<Color> parseColor() {
+    public NOptional<Color> asColor() {
         if (element instanceof Color) {
             return NOptional.of((Color) element);
         }
@@ -163,7 +163,7 @@ public class ObjEx {
                 case SHORT:
                 case LONG:
                 case INT: {
-                    return ObjEx.of(te.toInt().getInt()).parseColor();
+                    return ObjEx.of(te.toInt().getInt()).asColor();
                 }
                 case UPLET: {
                     NOptional<int[]> ri = asIntArray();
@@ -200,7 +200,7 @@ public class ObjEx {
                 case NAME: {
                     ObjEx h = ObjEx.of(element);
                     String s = h.asString().get();
-                    return ObjEx.of(s).parseColor();
+                    return ObjEx.of(s).asColor();
                 }
             }
         } else {
@@ -587,12 +587,24 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("Object[] from " + element);
     }
 
+    public NOptional<Color[]> asColorArrayOrColor() {
+        NOptional<Color[]> a = asColorArray();
+        if (a.isPresent()) {
+            return a;
+        }
+        NOptional<Color> b = asColor();
+        if (b.isPresent()) {
+            return NOptional.of(new Color[]{b.get()});
+        }
+        return a;
+    }
+
     public NOptional<Color[]> asColorArray() {
         NOptional<Object[]> o = asObjectArray();
         if (o.isPresent()) {
             List<Color> cc = new ArrayList<>();
             for (Object oi : o.get()) {
-                NOptional<Color> y = ObjEx.of(oi).parseColor();
+                NOptional<Color> y = ObjEx.of(oi).asColor();
                 if (y.isPresent()) {
                     cc.add(y.get());
                 } else {

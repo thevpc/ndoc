@@ -2,8 +2,22 @@ $palette:["#26355D","#AF47D2","#DE3163","#2ECC71","#FF8F00","#FF7F50","#FFBF00",
 //$palette:["#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED","#26355D","#AF47D2","#DE3163","#2ECC71"]
 styles:{
     "*" : {
-        font-size : 40,
+        font-size : 30,
         debug-color: red,
+        font-family : "Serif",
+    }
+
+    source : {
+        font-size : 30,
+        font-family : "monospaced",
+        source-primary-color: $palette
+        source-keyword-color: $palette[1]
+        source-separator-color: $palette[5]
+        source-string-color: $palette[4]
+        source-comments-color: $palette[12]
+        source-keyword-font-bold,
+        //draw-contour,
+
     }
 
     .ul-bullet:{

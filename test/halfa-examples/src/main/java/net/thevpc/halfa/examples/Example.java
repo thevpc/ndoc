@@ -1,10 +1,9 @@
-package net.thevpc.halfa.engine.renderer.screen;
+package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.api.model.HArrayHead;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.*;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DGroup;
-import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 
 import javax.swing.*;

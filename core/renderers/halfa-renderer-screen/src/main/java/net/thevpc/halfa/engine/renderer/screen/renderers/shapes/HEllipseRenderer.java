@@ -19,6 +19,7 @@ public class HEllipseRenderer extends AbstractHNodeRenderer {
         );
     }
 
+    @Override
     public void render0(HNode p, HNodeRendererContext ctx) {
         ctx=ctx.withDefaultStyles(p,defaultStyles);
         Bounds2 b = selfBounds(p, null, null, ctx);

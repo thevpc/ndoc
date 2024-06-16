@@ -1,6 +1,7 @@
 net.thevpc.halfa.engine.nodes.text.HPlainTextImpl
 net.thevpc.halfa.engine.nodes.text.HTextImpl
 net.thevpc.halfa.engine.nodes.text.HEquationImpl
+net.thevpc.halfa.engine.nodes.text.HSourceImpl
 net.thevpc.halfa.engine.nodes.shape.HArcImpl
 net.thevpc.halfa.engine.nodes.shape.HCircleImpl
 net.thevpc.halfa.engine.nodes.shape.HCtrlAssignImpl

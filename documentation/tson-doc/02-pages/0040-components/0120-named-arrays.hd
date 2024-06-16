@@ -1,9 +1,19 @@
 @normal page{
     @Header {
-        text("Names Arrays"),
+        text("Named Arrays"),
     }
     @OneColumn{
         ul{
+            "this is an example"
+            source(
+                tson
+                """
+                    myArray[
+                        item1,
+                        item2
+                    ]
+                """
+            )
         }
     }
 }

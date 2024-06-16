@@ -30,11 +30,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.function.Supplier;
 import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
 
 public class DocumentView {
 
     private HDocument document;
-    private Supplier<HDocument> documentSupplier;
+    private HDocumentRendererSupplier documentSupplier;
     private HEngine halfaEngine;
     private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
@@ -51,8 +53,9 @@ public class DocumentView {
     private Throwable currentThrowable;
     private HMessageList messages;
     private HDocumentRendererListener listener;
+    private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
-    public DocumentView(Supplier<HDocument> documentSupplier, HEngine halfaEngine, HDocumentRendererListener listener, HMessageList messages,
+    public DocumentView(HDocumentRendererSupplier documentSupplier, HEngine halfaEngine, HDocumentRendererListener listener, HMessageList messages,
             NSession session) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
@@ -66,7 +69,7 @@ public class DocumentView {
         frame.setIconImage(
                 ImageUtils.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
-                         16, 16)
+                        16, 16)
         );
         contentPane = new ContentPanel();
 //        contentPane.setFocusTraversalKeysEnabled(false);
@@ -252,7 +255,7 @@ public class DocumentView {
             this.currentShowingPage = null;
             this.currentThrowable = null;
             try {
-                HDocument rawDocument = documentSupplier.get();
+                HDocument rawDocument = documentSupplier.get(rendererContext);
                 listener.onChangedRawDocument(rawDocument);
                 HDocument compiledDocument = halfaEngine.compileDocument(rawDocument.copy(), messages).get();
                 listener.onChangedCompiledDocument(compiledDocument);
@@ -361,6 +364,17 @@ public class DocumentView {
             if (i - 1 >= 0) {
                 showPage(i - 1);
             }
+        }
+    }
+
+    private class HDocumentRendererContextImpl implements HDocumentRendererContext {
+
+        public HDocumentRendererContextImpl() {
+        }
+
+        @Override
+        public HMessageList messages() {
+            return messages;
         }
     }
 }

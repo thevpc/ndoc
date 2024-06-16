@@ -70,7 +70,7 @@ public class HalfaOpenFile {
                 HDocumentScreenRenderer renderer = engine.newScreenRenderer();
                 renderer.setMessages(debugFrame.messages());
                 renderer.addRendererListener(debugFrame.rendererListener());
-                renderer.renderSupplier(() -> engine.loadDocument(path, debugFrame.messages()).get());
+                renderer.renderPath(path);
                 debugFrame.run();
             }
         }

@@ -28,7 +28,9 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.spi.renderer.AbstractHDocumentRenderer;
+import net.thevpc.halfa.spi.renderer.AbstractHDocumentStreamRenderer;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
+import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -41,26 +43,39 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 /**
  * @author vpc
  */
-public class PdfDocumentRenderer extends AbstractHDocumentRenderer implements HDocumentStreamRenderer {
+public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer implements HDocumentStreamRenderer {
 
+    private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
     public PdfDocumentRenderer(HEngine engine, NSession session) {
         super(engine, session);
     }
 
     @Override
-    public void renderSupplier(Supplier<HDocument> document) {
-        render(document.get());
+    public void renderSupplier(HDocumentRendererSupplier document) {
+        HDocument d = document.get(rendererContext);
+        Object o = output;
+        if (o == null) {
+            o = NPath.of("document.pdf", session);
+        }
+        if (o instanceof NPath) {
+            try (OutputStream os = ((NPath) o).getOutputStream()) {
+                renderStream(d, os);
+            } catch (IOException ex) {
+                throw new NIOException(session, ex);
+            }
+        } else if (o instanceof OutputStream) {
+            renderStream(d, (OutputStream) o);
+        }
     }
 
-    @Override
-    public void render(HDocument document, OutputStream stream) {
+    public void renderStream(HDocument document, OutputStream stream) {
         try {
-            HMessageList messages2=this.messages;
-            if(messages2==null){
-                messages2=new HMessageListImpl(session, engine.computeSource(document.root()));
+            HMessageList messages2 = this.messages;
+            if (messages2 == null) {
+                messages2 = new HMessageListImpl(session, engine.computeSource(document.root()));
             }
-            document= engine.compileDocument(document, messages2).get();
+            document = engine.compileDocument(document, messages2).get();
             HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (HNode page : PagesHelper.resolvePages(document)) {
@@ -76,7 +91,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentRenderer implements HD
     }
 
     @Override
-    public void render(HNode part, OutputStream out) {
+    public void renderNode(HNode part, OutputStream out) {
         try {
             HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
@@ -92,18 +107,12 @@ public class PdfDocumentRenderer extends AbstractHDocumentRenderer implements HD
         }
     }
 
-    @Override
-    public void render(HDocument document) {
-        render(document, NPath.of("result.pdf", session));
-    }
-
-
     public Supplier<InputStream> renderPage(HNode part, HDocumentStreamRenderer htmlRenderer) {
         try {
             ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(bos);
-            htmlRenderer.render(part, ps);
+            htmlRenderer.renderNode(part, ps);
             ps.flush();
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(bos.toString(), "./base.html");
@@ -183,13 +192,14 @@ public class PdfDocumentRenderer extends AbstractHDocumentRenderer implements HD
         }
     }
 
-    @Override
-    public void render(HDocument document, NPath path) {
-        try (OutputStream os = path.getOutputStream()) {
-            render(document, os);
-        } catch (IOException ex) {
-            throw new NIOException(session, ex);
+    private class HDocumentRendererContextImpl implements HDocumentRendererContext {
+
+        public HDocumentRendererContextImpl() {
+        }
+
+        @Override
+        public HMessageList messages() {
+            return messages;
         }
     }
-
 }

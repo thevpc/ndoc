@@ -18,12 +18,16 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.util.HUtils;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
+import java.text.AttributedCharacterIterator;
 import java.util.Arrays;
 
 public class HGraphicsImpl implements HGraphics {
+
     private Graphics2D g;
     private Color secondaryColor;
     private Projection3D projection3D = new Projection3D(1000);
@@ -39,18 +43,25 @@ public class HGraphicsImpl implements HGraphics {
 
         @Override
         public HElement3DPrimitive[] toPrimitives(HElement3D e) {
-            return element3DUIFactory.toPrimitives(e,this);
+            return element3DUIFactory.toPrimitives(e, this);
         }
     };
+
+    @Override
+    public Font getFont() {
+        return g.getFont();
+    }
 
     public HGraphicsImpl(Graphics2D g) {
         this.g = g;
     }
 
+    @Override
     public Light3D getLight3D() {
         return light3D;
     }
 
+    @Override
     public Light3D setLight3D(Light3D light3D) {
         return light3D;
     }
@@ -58,6 +69,11 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void setColor(Color c) {
         g.setColor(c);
+    }
+
+    @Override
+    public void setPaint(Paint c) {
+        g.setPaint(c);
     }
 
     @Override
@@ -136,11 +152,11 @@ public class HGraphicsImpl implements HGraphics {
                     int[] yy = new int[nodes.length];
                     for (int i = 0; i < xx.length; i++) {
                         HPoint2D pp = nodes[i];
-                        xx[i] = (int)(pp.x);
-                        yy[i] = (int)(pp.y);
+                        xx[i] = (int) (pp.x);
+                        yy[i] = (int) (pp.y);
                     }
 
-                    g.drawPolyline(xx,yy,xx.length);
+                    g.drawPolyline(xx, yy, xx.length);
                     //restore default stroke?
                     setStroke(oldStroke);
 //                    drawArrayHead(a, a.minus(b).asVector(), 5, 5, pr.getStartType());
@@ -164,8 +180,8 @@ public class HGraphicsImpl implements HGraphics {
                     int[] yy = new int[nodes.length];
                     for (int i = 0; i < xx.length; i++) {
                         HPoint2D pp = nodes[i];
-                        xx[i] = (int)(pp.x);
-                        yy[i] = (int)(pp.y);
+                        xx[i] = (int) (pp.x);
+                        yy[i] = (int) (pp.y);
                     }
 
                     if (pr.isFill()) {
@@ -292,9 +308,9 @@ public class HGraphicsImpl implements HGraphics {
                             bg = getColor();
                         }
                         if (bg instanceof Color) {
-                            setColor(Colors.withB((Color) bg
-//                                        , Math.abs(1 - (float) d)
-                                    , Math.abs((float) d)
+                            setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
+                                    ,
+                                    Math.abs((float) d)
                                     //, Math.abs(Math.abs((float) d))
                             ));
                         } else {
@@ -384,9 +400,9 @@ public class HGraphicsImpl implements HGraphics {
                                 bg = getColor();
                             }
                             if (bg instanceof Color) {
-                                setColor(Colors.withB((Color) bg
-//                                        , Math.abs(1 - (float) d)
-                                        , Math.abs((float) d)
+                                setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
+                                        ,
+                                        Math.abs((float) d)
                                         //, Math.abs(Math.abs((float) d))
                                 ));
                             } else {
@@ -445,8 +461,25 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
+    public Rectangle2D getStringBounds(AttributedCharacterIterator iterator) {
+        FontRenderContext frc = g.getFontRenderContext();
+        TextLayout textLayout = new TextLayout(iterator, frc);
+        return textLayout.getBounds();
+    }
+
+    @Override
     public FontMetrics getFontMetrics() {
         return g.getFontMetrics();
+    }
+
+    @Override
+    public FontMetrics getFontMetrics(Font f) {
+        return g.getFontMetrics(f);
+    }
+
+    @Override
+    public FontRenderContext getFontRenderContext() {
+        return g.getFontRenderContext();
     }
 
     @Override
@@ -471,11 +504,6 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
-    public void setPaint(Paint paint) {
-        g.setPaint(paint);
-    }
-
-    @Override
     public void setFont(Font font) {
         g.setFont(font);
     }
@@ -483,6 +511,11 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void drawString(String str, double x, double y) {
         g.drawString(str == null ? "" : str, (int) x, (int) y);
+    }
+
+    @Override
+    public void drawString(AttributedCharacterIterator iterator, double x, double y) {
+        g.drawString(iterator, (float) x, (float) y);
     }
 
     @Override
@@ -520,27 +553,27 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void fillPolygon(double[] xx, double[] yy, int length) {
         g.fillPolygon(
-                Arrays.stream(xx).mapToInt(d -> (int) d).toArray()
-                , Arrays.stream(yy).mapToInt(d -> (int) d).toArray()
-                , length
+                Arrays.stream(xx).mapToInt(d -> (int) d).toArray(),
+                Arrays.stream(yy).mapToInt(d -> (int) d).toArray(),
+                length
         );
     }
 
     @Override
     public void drawPolygon(double[] xx, double[] yy, int length) {
         g.drawPolygon(
-                Arrays.stream(xx).mapToInt(d -> (int) d).toArray()
-                , Arrays.stream(yy).mapToInt(d -> (int) d).toArray()
-                , length
+                Arrays.stream(xx).mapToInt(d -> (int) d).toArray(),
+                Arrays.stream(yy).mapToInt(d -> (int) d).toArray(),
+                length
         );
     }
 
     @Override
     public void drawPolyline(double[] xx, double[] yy, int length) {
         g.drawPolyline(
-                Arrays.stream(xx).mapToInt(d -> (int) d).toArray()
-                , Arrays.stream(yy).mapToInt(d -> (int) d).toArray()
-                , length
+                Arrays.stream(xx).mapToInt(d -> (int) d).toArray(),
+                Arrays.stream(yy).mapToInt(d -> (int) d).toArray(),
+                length
         );
     }
 

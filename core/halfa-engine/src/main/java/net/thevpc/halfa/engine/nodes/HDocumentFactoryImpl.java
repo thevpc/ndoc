@@ -208,6 +208,11 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
         return of(HNodeType.ELLIPSE);
     }
 
+    @Override
+    public HNode ofSource() {
+        return of(HNodeType.SOURCE);
+    }
+
 
     @Override
     public HNode ofCircle() {

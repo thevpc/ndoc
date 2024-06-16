@@ -11,8 +11,10 @@ import net.thevpc.halfa.api.model.elem3d.Matrix3D;
 import net.thevpc.halfa.api.model.elem3d.Projection3D;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
+import java.text.AttributedCharacterIterator;
 
 public interface HGraphics {
 
@@ -21,9 +23,11 @@ public interface HGraphics {
     Light3D setLight3D(Light3D light3D);
 
     void drawArrayHead(HPoint2D origin, Vector2D direction,
-                       double arrowWidth, double arrowHeight,
-                       HArrayHead head
-                       );
+            double arrowWidth, double arrowHeight,
+            HArrayHead head
+    );
+
+    void setPaint(Paint red);
 
     void setColor(Color red);
 
@@ -41,13 +45,19 @@ public interface HGraphics {
 
     Rectangle2D getStringBounds(String str);
 
+    Rectangle2D getStringBounds(AttributedCharacterIterator iterator);
+
     FontMetrics getFontMetrics();
+    FontMetrics getFontMetrics(Font f);
+    FontRenderContext getFontRenderContext();
+
+    Font getFont();
 
     Graphics2D context();
 
-    void setPaint(Paint paint);
-
     void setFont(Font font);
+
+    void drawString(AttributedCharacterIterator iterator, double x, double y);
 
     void drawString(String str, double x, double i);
 

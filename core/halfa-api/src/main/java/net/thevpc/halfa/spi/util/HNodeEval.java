@@ -7,6 +7,8 @@ package net.thevpc.halfa.spi.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
@@ -120,7 +122,7 @@ public class HNodeEval implements ObjectEvalContext {
                 case FUNCTION: {
                     TsonFunction ff = ee.toFunction();
                     List<TsonElement> r = ff.all()
-                            .stream().map(x -> eval(x)).toList();
+                            .stream().map(x -> eval(x)).collect(Collectors.toList());
                     NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
                     if (!oo.isEmpty()) {
                         return oo.get();

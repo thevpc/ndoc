@@ -4,6 +4,16 @@
     }
     @OneColumn{
         ul{
+            "this is an example"
+            source(
+                tson
+                """
+                    {
+                        name:"myObject",
+                        enabled,
+                    }
+                """
+            )
         }
     }
 }

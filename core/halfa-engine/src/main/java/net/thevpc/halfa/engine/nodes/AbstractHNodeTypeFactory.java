@@ -55,7 +55,6 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
         return aliases;
     }
 
-
     protected void processImplicitStyles(String id, HNode p, HDocumentFactory f, HNodeFactoryParseContext context) {
 
     }
@@ -159,19 +158,17 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                 HParseHelper.fillAnnotations(tsonElement, p);
                 processImplicitStyles(id, p, f, context2);
                 for (TsonElement e : ee.args()) {
-                    NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context2);
-                    if (u.isPresent()) {
-                        for (HProp s : u.get()) {
-                            p.append(s);
-                        }
-                    } else {
-                        if (!processArg(id, p, e, f, context2)) {
+                    if (!processArg(id, p, e, f, context2)) {
+                        NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context2);
+                        if (u.isPresent()) {
+                            for (HProp s : u.get()) {
+                                p.append(s);
+                            }
+                        } else {
                             ObjEx es = ObjEx.of(e);
                             if (es.isFunction()) {
                                 if (isAcceptableArgKeyPair(es.name())
-                                        ||
-                                        HStyleParser.acceptStyleName(es.name())
-                                ) {
+                                        || HStyleParser.acceptStyleName(es.name())) {
                                     context2.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                                             context2.source(),
                                             e,
@@ -211,7 +208,6 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
         return ToTsonHelper.of((HNode) item, engine)
                 .build();
     }
-
 
     @Override
     public HNode newNode() {

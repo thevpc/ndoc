@@ -47,6 +47,8 @@ public class HPropName {
     public static final String MAX_X="xmax";
     public static final String MAX_Y="ymax";
     public static final String VALUE="value";
+    public static final String FILE="file";
+    public static final String LANG="lang";
     public static final String FROM="from";
     public static final String START_ARROW ="start-arrow";
     public static final String END_ARROW ="end-arrow";
@@ -57,4 +59,5 @@ public class HPropName {
 
     public static final String DEBUG = "debug";
     public static final String DEBUG_COLOR="debug-color";
+    
 }

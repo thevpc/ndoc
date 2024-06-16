@@ -4,6 +4,7 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.node.*;
 
 public interface HDocumentFactory {
+
     HDocument ofDocument();
 
     HNode ofPage();
@@ -89,4 +90,6 @@ public interface HDocumentFactory {
     HNode ofEquation(String value);
 
     HNode ofText();
+
+    HNode ofSource();
 }

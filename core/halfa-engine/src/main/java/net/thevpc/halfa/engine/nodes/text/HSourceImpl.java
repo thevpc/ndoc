@@ -1,51 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package net.thevpc.halfa.engine.nodes.text;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
-import net.thevpc.halfa.engine.nodes.ToTsonHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
+import static net.thevpc.tson.TsonElementType.PAIR;
+import static net.thevpc.tson.TsonElementType.STRING;
 
-/**
- * @author vpc
- */
-public class HTextImpl extends AbstractHNodeTypeFactory {
+public class HSourceImpl extends AbstractHNodeTypeFactory {
 
-    public HTextImpl() {
-        super(false, HNodeType.TEXT);
-    }
-
-    @Override
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
-        switch (tsonElement.type()) {
-            case STRING: {
-                return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.toStr().raw())
-                );
-            }
-        }
-        return super.parseItem(id, tsonElement, context);
-    }
-
-    @Override
-    protected String acceptTypeName(TsonElement e) {
-        switch (e.type()) {
-            case STRING: {
-                return id();
-            }
-        }
-        return super.acceptTypeName(e);
+    public HSourceImpl() {
+        super(false, HNodeType.SOURCE);
     }
 
     @Override
@@ -66,7 +38,9 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "value":
-                        case "content": {
+                        case "code":
+                        case "content":
+                        {
                             node.setProperty(HPropName.VALUE, v.raw());
                             return true;
                         }
@@ -75,8 +49,8 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                             context.document().resources().add(nPath);
                             try {
                                 node.setProperty(HPropName.VALUE, nPath.readString().trim());
-                            } catch (Exception ex) {
-                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asString().get().trim(), nPath));
+                            }catch (Exception ex){
+                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s",v.asString().get().trim(),nPath));
                             }
                             return true;
                         }
@@ -92,11 +66,4 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
         return false;
     }
 
-    @Override
-    public TsonElement toTson(HNode item) {
-        return ToTsonHelper
-                .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
-                .build();
-    }
 }
