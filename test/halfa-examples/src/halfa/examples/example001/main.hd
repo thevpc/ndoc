@@ -12,9 +12,8 @@
         },
     },
     page(template,name:'course'){
-        triangle(rotate:30)
     },
-    @course page(background-color:red){
+    @course page{
         text("My Title"),
         rectangle(
             size:(50,50),

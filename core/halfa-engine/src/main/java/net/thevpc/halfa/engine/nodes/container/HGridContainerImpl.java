@@ -5,7 +5,6 @@
 package net.thevpc.halfa.engine.nodes.container;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.Int2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
@@ -45,14 +44,14 @@ public class HGridContainerImpl extends AbstractHNodeTypeFactory {
     }
 
     @Override
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()){
             case UPLET:{
                 NOptional<Int2> d = ObjEx.of(e).asInt2();
                 if(d.isPresent()){
                     Int2 dd = d.get();
-                    p.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(dd.getX()).asInt().get()));
-                    p.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(dd.getY()).asInt().get()));
+                    node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(dd.getX()).asInt().get()));
+                    node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(dd.getY()).asInt().get()));
                     return true;
                 }
                 return false;
@@ -62,21 +61,21 @@ public class HGridContainerImpl extends AbstractHNodeTypeFactory {
                 TsonElement k = pp.getKey();
                 TsonElement v = pp.getValue();
                 ObjEx ph=ObjEx.of(k);
-                NOptional<String> n = ph.asString();
+                NOptional<String> n = ph.asStringOrName();
                 if(n.isPresent()){
                     switch (HUtils.uid(n.get())){
                         case "columns":{
-                            p.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
+                            node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
                             return true;
                         }
                         case "rows":{
-                            p.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
+                            node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
                             return true;
                         }
                     }
                 }
             }
         }
-        return super.processArg(id, p, e, f, context);
+        return super.processArg(id, node, e, f, context);
     }
 }

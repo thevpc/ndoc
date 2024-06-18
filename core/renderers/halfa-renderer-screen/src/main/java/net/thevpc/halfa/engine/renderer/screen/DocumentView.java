@@ -149,6 +149,10 @@ public class DocumentView {
         return s;
     }
 
+    public HMessageList messages() {
+        return messages;
+    }
+
     public class ContentPanel extends JPanel {
 
         CardLayout cardLayout;

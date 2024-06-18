@@ -20,45 +20,45 @@ public class HLineImpl extends AbstractHNodeTypeFactory {
     }
 
     @Override
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 TsonPair pp = e.toPair();
                 TsonElement k = pp.getKey();
                 TsonElement v = pp.getValue();
                 ObjEx ph = ObjEx.of(k);
-                NOptional<String> n = ph.asString();
+                NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
                     switch (HUtils.uid(n.get())) {
                         case "from": {
-                            if (isAncestorScene3D(p)) {
-                                p.setProperty(HProp.ofHPoint3D(HPropName.FROM, ObjEx.of(v).asHPoint3D().get()));
+                            if (isAncestorScene3D(node)) {
+                                node.setProperty(HProp.ofHPoint3D(HPropName.FROM, ObjEx.of(v).asHPoint3D().get()));
                             } else {
-                                p.setProperty(HProp.ofHPoint2D(HPropName.FROM, ObjEx.of(v).asHPoint2D().get()));
+                                node.setProperty(HProp.ofHPoint2D(HPropName.FROM, ObjEx.of(v).asHPoint2D().get()));
                             }
                             return true;
                         }
                         case "to": {
-                            if (isAncestorScene3D(p)) {
-                                p.setProperty(HProp.ofHPoint3D(HPropName.TO, ObjEx.of(v).asHPoint3D().get()));
+                            if (isAncestorScene3D(node)) {
+                                node.setProperty(HProp.ofHPoint3D(HPropName.TO, ObjEx.of(v).asHPoint3D().get()));
                             } else {
-                                p.setProperty(HProp.ofHPoint2D(HPropName.TO, ObjEx.of(v).asHPoint2D().get()));
+                                node.setProperty(HProp.ofHPoint2D(HPropName.TO, ObjEx.of(v).asHPoint2D().get()));
                             }
                             return false;
                         }
                         case "start-arrow": {
-                            p.setProperty(new HProp(HPropName.START_ARROW, ObjEx.of(v).asHArrayHead().get()));
+                            node.setProperty(new HProp(HPropName.START_ARROW, ObjEx.of(v).asHArrayHead().get()));
                             return true;
                         }
                         case "end-arrow": {
-                            p.setProperty(new HProp(HPropName.END_ARROW, ObjEx.of(v).asHArrayHead().get()));
+                            node.setProperty(new HProp(HPropName.END_ARROW, ObjEx.of(v).asHArrayHead().get()));
                             return true;
                         }
                     }
                 }
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
     @Override

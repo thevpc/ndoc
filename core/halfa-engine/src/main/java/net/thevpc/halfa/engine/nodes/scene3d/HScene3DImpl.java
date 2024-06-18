@@ -16,7 +16,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
     }
 
     @Override
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
@@ -29,7 +29,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
                         {
                             NOptional<HPoint3D> p2d = v.asHPoint3D();
                             if (p2d.isPresent()) {
-                                p.setProperty(spp.getNameId(), p2d.get());
+                                node.setProperty(spp.getNameId(), p2d.get());
                                 return true;
                             } else {
                                 return false;
@@ -40,7 +40,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
                 break;
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
 }

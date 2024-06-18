@@ -21,7 +21,7 @@ public class ToTsonHelper {
     private HNode node;
     private Predicate<String> exclude;
     private Set<String> excludeSet = new HashSet<>();
-    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(HPropName.STYLE_CLASS,HPropName.ANCESTORS));
+    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(HPropName.CLASS, HPropName.ANCESTORS));
     private HEngine engine;
 
     public static ToTsonHelper of(HNode node, HEngine engine) {
@@ -45,7 +45,7 @@ public class ToTsonHelper {
                     (exclude == null || !exclude.test(p.getName()))
                             && !excludeSet.contains(p.getName())
                             //exclude class and
-                    && !defaultExcludeSet.contains(p.getName())
+                            && !defaultExcludeSet.contains(p.getName())
             ) {
                 args2.add(p.toTson());
             }
@@ -78,18 +78,16 @@ public class ToTsonHelper {
             return u.build();
         }
     }
-    private void applyAnnotations(TsonElementBuilder u){
+
+    private void applyAnnotations(TsonElementBuilder u) {
         for (String ancestor : node.getAncestors()) {
             u.annotation(ancestor);
         }
-        NOptional<Object> e = node.getPropertyValue(HPropName.STYLE_CLASS);
-        if(e.isPresent()){
-            NOptional<String[]> sa = ObjEx.of(e.get()).asStringArrayOrString();
-            if(sa.isPresent()){
-                u.annotation(null,
-                        Arrays.stream(sa.get()).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new)
-                );
-            }
+        NOptional<String[]> sa = ObjEx.of(node.getPropertyValue(HPropName.CLASS).orNull()).asStringArrayOrString();
+        if (sa.isPresent()) {
+            u.annotation(null,
+                    Arrays.stream(sa.get()).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new)
+            );
         }
     }
 
@@ -126,7 +124,7 @@ public class ToTsonHelper {
     }
 
     public ToTsonHelper inlineStringProp(String name) {
-        String value = ObjEx.ofProp(node, name).asString().orNull();
+        String value = ObjEx.ofProp(node, name).asStringOrName().orNull();
         if (value != null) {
             boolean multiLine =
                     value.indexOf('\n') >= 0

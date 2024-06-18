@@ -168,7 +168,7 @@ public class HProps {
     }
 
     public static HProp styleClasses(String... array) {
-        return new HProp(HPropName.STYLE_CLASS, array);
+        return new HProp(HPropName.CLASS, array);
     }
 
     public static HProp template(boolean b) {

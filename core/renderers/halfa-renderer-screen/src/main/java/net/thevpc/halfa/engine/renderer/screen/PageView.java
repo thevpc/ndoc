@@ -1,6 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.engine.renderer.screen.common.HPartRendererContextImpl;
@@ -71,7 +72,7 @@ public class PageView extends JComponent {
         if(false) {
             drawGrid(hg);
         }
-        HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size, this.documentView.session());
+        HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size, this.documentView.session(),documentView.messages());
         for (HNode child : page.children()) {
             render(child, ctx);
         }
@@ -136,8 +137,8 @@ public class PageView extends JComponent {
 
 
     private class MyHPartRendererContextImpl extends HPartRendererContextImpl {
-        public MyHPartRendererContextImpl(Graphics2D g2d, Dimension size, NSession session) {
-            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()), session);
+        public MyHPartRendererContextImpl(Graphics2D g2d, Dimension size, NSession session, HMessageList messages) {
+            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()), session,messages);
         }
 
         @Override

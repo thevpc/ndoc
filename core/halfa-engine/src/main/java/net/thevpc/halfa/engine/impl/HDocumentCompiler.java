@@ -123,6 +123,53 @@ public class HDocumentCompiler {
         return node;
     }
 
+    protected void prepareInheritanceSingle(String a,HNode node, HDocumentLoadingResultImpl result,
+                                             Set<String> newAncestors,
+                                             List<HNode> ancestorsList,
+                                             List<HNode> inheritedChildren,
+                                             HProperties inheritedProps,
+                                             List<HStyleRule> inheritedRules
+    ) {
+        HNode aa = null;
+        try {
+            aa = findAncestor(node, a);
+        } catch (Exception ex) {
+            result.messages().addError(NMsg.ofC("ancestor %s is invalid for %s : %s", a, HUtils.strSnapshot(node), ex),
+                    null,
+                    engine.computeSource(node)
+            );
+        }
+        if (aa != null) {
+            newAncestors.remove(a);
+            for (HProp p : aa.getProperties()) {
+                switch (p.getName()) {
+                    case HPropName.NAME:
+                    case HPropName.TEMPLATE: {
+                        break;
+                    }
+                    default: {
+                        inheritedProps.set(p);
+                        break;
+                    }
+                }
+            }
+            ancestorsList.add(aa);
+            for (HNode child : aa.children()) {
+                HResource source = computeSource(child);
+                child = child.copy();
+                child.setSource(source);
+                inheritedChildren.add(child);
+            }
+            inheritedRules.addAll(Arrays.asList(aa.rules()));
+        } else {
+            result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("ancestor not found '%s' for %s", a,
+                            HUtils.strSnapshot(node)
+                    ), null,
+                    engine.computeSource(node)
+            );
+            //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
+        }
+    }
     protected HNode processInheritance(HNode node, HDocumentLoadingResultImpl result) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
@@ -132,45 +179,7 @@ public class HDocumentCompiler {
             List<HStyleRule> inheritedRules = new ArrayList<>();
             List<HNode> ancestorsList = new ArrayList<>();
             for (String a : t) {
-                HNode aa = null;
-                try {
-                    aa = findAncestor(node, a);
-                } catch (Exception ex) {
-                    result.messages().addError(NMsg.ofC("ancestor %s is invalid for %s : %s", a, HUtils.strSnapshot(node), ex),
-                            null,
-                            engine.computeSource(node)
-                    );
-                }
-                if (aa != null) {
-                    newAncestors.remove(a);
-                    for (HProp p : aa.getProperties()) {
-                        switch (p.getName()) {
-                            case HPropName.NAME:
-                            case HPropName.TEMPLATE: {
-                                break;
-                            }
-                            default: {
-                                inheritedProps.set(p);
-                                break;
-                            }
-                        }
-                    }
-                    ancestorsList.add(aa);
-                    for (HNode child : aa.children()) {
-                        HResource source = computeSource(child);
-                        child = child.copy();
-                        child.setSource(source);
-                        inheritedChildren.add(child);
-                    }
-                    inheritedRules.addAll(Arrays.asList(aa.rules()));
-                } else {
-                    result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("ancestor not found %s for %s", a,
-                            HUtils.strSnapshot(node)
-                    ), null,
-                            engine.computeSource(node)
-                    );
-                    //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
-                }
+                prepareInheritanceSingle(a,node, result,newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
             node.setProperty(HPropName.ANCESTORS, newAncestors.toArray(new String[0]));
             for (HProp p : inheritedProps.toList()) {

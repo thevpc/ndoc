@@ -11,8 +11,6 @@ import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
-import static net.thevpc.tson.TsonElementType.PAIR;
-import static net.thevpc.tson.TsonElementType.STRING;
 
 public class HSourceImpl extends AbstractHNodeTypeFactory {
 
@@ -39,18 +37,17 @@ public class HSourceImpl extends AbstractHNodeTypeFactory {
                     switch (spp.getNameId()) {
                         case "value":
                         case "code":
-                        case "content":
-                        {
+                        case "content": {
                             node.setProperty(HPropName.VALUE, v.raw());
                             return true;
                         }
                         case "file": {
-                            NPath nPath = context.resolvePath(v.asString().get().trim());
+                            NPath nPath = context.resolvePath(v.asStringOrName().get().trim());
                             context.document().resources().add(nPath);
                             try {
                                 node.setProperty(HPropName.VALUE, nPath.readString().trim());
-                            }catch (Exception ex){
-                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s",v.asString().get().trim(),nPath));
+                            } catch (Exception ex) {
+                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath));
                             }
                             return true;
                         }
@@ -63,7 +60,7 @@ public class HSourceImpl extends AbstractHNodeTypeFactory {
                 break;
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
 }

@@ -18,8 +18,8 @@ public class HSourceRenderer extends HTextBaseRenderer {
     }
 
     protected HRichTextHelper createRichTextHelper(HNode p, HNodeRendererContext ctx) {
-        String lang=NStringUtils.trim(ObjEx.of(p.getPropertyValue(HPropName.LANG)).asString().orElse(""));
-        String codeStr = (ObjEx.of(p.getPropertyValue(HPropName.VALUE)).asString().orElse(""));
+        String lang=NStringUtils.trim(ObjEx.of(p.getPropertyValue(HPropName.LANG)).asStringOrName().orElse(""));
+        String codeStr = (ObjEx.of(p.getPropertyValue(HPropName.VALUE)).asStringOrName().orElse(""));
         codeStr=specialTrimCode(codeStr);
         NTexts ttt = NTexts.of(ctx.session());
         NTextCode ncode = ttt.ofCode(lang, codeStr);

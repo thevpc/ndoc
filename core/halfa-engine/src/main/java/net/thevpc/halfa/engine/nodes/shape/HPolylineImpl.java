@@ -23,7 +23,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
     }
 
     @Override
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
@@ -32,10 +32,10 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "point": {
-                            if (isAncestorScene3D(p)) {
+                            if (isAncestorScene3D(node)) {
                                 NOptional<HPoint3D> p2d = v.asHPoint3D();
                                 if (p2d.isPresent()) {
-                                    HPropUtils.addPoint(p, p2d.get());
+                                    HPropUtils.addPoint(node, p2d.get());
                                     return true;
                                 } else {
                                     return false;
@@ -43,7 +43,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                             } else {
                                 NOptional<HPoint2D> p2d = v.asHPoint2D();
                                 if (p2d.isPresent()) {
-                                    HPropUtils.addPoint(p, p2d.get());
+                                    HPropUtils.addPoint(node, p2d.get());
                                     return true;
                                 } else {
                                     return false;
@@ -51,10 +51,10 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                             }
                         }
                         case "points": {
-                            if (isAncestorScene3D(p)) {
-                                p.setProperty(HProp.ofHPoint3DArray(HPropName.POINTS, v.asHPoint3DArray().get()));
+                            if (isAncestorScene3D(node)) {
+                                node.setProperty(HProp.ofHPoint3DArray(HPropName.POINTS, v.asHPoint3DArray().get()));
                             } else {
-                                p.setProperty(HProp.ofHPoint2DArray(HPropName.POINTS, v.asHPoint2DArray().get()));
+                                node.setProperty(HProp.ofHPoint2DArray(HPropName.POINTS, v.asHPoint2DArray().get()));
                             }
                             return false;
                         }
@@ -63,10 +63,10 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                 break;
             }
             case UPLET: {
-                if (isAncestorScene3D(p)) {
+                if (isAncestorScene3D(node)) {
                     NOptional<HPoint3D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint3D();
                     if (p2d.isPresent()) {
-                        HPropUtils.addPoint(p, p2d.get());
+                        HPropUtils.addPoint(node, p2d.get());
                         return true;
                     } else {
                         return false;
@@ -74,7 +74,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                 } else {
                     NOptional<HPoint2D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint2D();
                     if (p2d.isPresent()) {
-                        HPropUtils.addPoint(p, p2d.get());
+                        HPropUtils.addPoint(node, p2d.get());
                         return true;
                     } else {
                         return false;
@@ -82,7 +82,7 @@ public class HPolylineImpl extends AbstractHNodeTypeFactory {
                 }
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
     @Override

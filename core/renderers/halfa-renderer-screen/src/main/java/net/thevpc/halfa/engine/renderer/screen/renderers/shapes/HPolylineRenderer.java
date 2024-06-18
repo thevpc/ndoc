@@ -7,6 +7,8 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -27,12 +29,12 @@ public class HPolylineRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
         HPoint2D[] points =  ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().get();
         if (!ctx.isDry()) {
-            Paint fc = resolveLineColor(p, g, ctx, true);
+            Paint fc = HPropValueByNameParser.resolveLineColor(p, ctx, true);
             g.draw2D(HElement2DFactory.polyline(points)
-                    .setLineStroke(resolveStroke(p, g, ctx))
+                    .setLineStroke(HNodeRendererUtils.resolveStroke(p, g, ctx))
                     .setLinePaint(fc));
         }
-        paintDebugBox(p, ctx, g, b);
+        HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
     }
 
 }

@@ -7,7 +7,7 @@ page(template:conclusion){
            size : (100,30),
            font-size:80,
            font-bold,
-           background: $palette[1]
+           background: $palette[1],
        }
        .subtitle:{
            color: "#2c779a"

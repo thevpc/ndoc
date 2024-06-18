@@ -1,6 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common;
 
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
@@ -8,12 +9,19 @@ import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.util.NAssert;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.spi.util.HNodeEval;
+import net.thevpc.nuts.util.NStringUtils;
 
 public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
 
@@ -25,11 +33,11 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     private boolean dry;
 
     public HPartRendererContextDelegate(HNode basePart,
-            HNodeRendererContext base,
-            Bounds2 bounds,
-            HProperties defaultStyles,
-            boolean dry,
-            HGraphics graphics
+                                        HNodeRendererContext base,
+                                        Bounds2 bounds,
+                                        HProperties defaultStyles,
+                                        boolean dry,
+                                        HGraphics graphics
     ) {
         this.basePart = basePart;
         this.base = base;
@@ -37,6 +45,11 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
         this.defaultStyles = defaultStyles;
         this.dry = dry;
         this.graphics = graphics;
+    }
+
+    @Override
+    public HMessageList messages() {
+        return base.messages();
     }
 
     @Override
@@ -121,8 +134,9 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
     }
 
     @Override
-    public <T> NOptional<T> computePropertyValue(HNode t, String s) {
-        NOptional<Object> r = computePropertyValueImpl(t, s);
+    public <T> NOptional<T> computePropertyValue(HNode t, String s, String... others) {
+        NAssert.requireNonBlank(s, "property name");
+        NOptional<Object> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
             HNodeEval ne = new HNodeEval(t);
@@ -131,47 +145,53 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
                 return NOptional.of((T) u);
             }
         }
-        return (NOptional)r;
+        return (NOptional) r;
     }
 
-    private <T> NOptional<T> computePropertyValueImpl(HNode t, String s) {
+    private <T> NOptional<T> computePropertyValueImpl(HNode t, String... all) {
         NOptional<T> y = null;
         if (t != null) {
-            y = engine().computeProperty(t, s).map(HProp::getValue).map(x -> {
-                try {
-                    return (T) x;
-                } catch (ClassCastException e) {
-                    return null;
+            for (String s : all) {
+                y = engine().computeProperty(t, s).map(HProp::getValue).map(x -> {
+                    try {
+                        return (T) x;
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                }).filter(x -> x != null);
+                if (y.isPresent()) {
+                    return y;
                 }
-            }).filter(x -> x != null);
-            if (y.isPresent()) {
-                return y;
             }
         }
         if (this.defaultStyles != null) {
-            NOptional<T> u = this.defaultStyles.get(s).map(HProp::getValue).map(x -> {
-                try {
-                    return (T) x;
-                } catch (ClassCastException e) {
-                    return null;
+            for (String s : all) {
+                NOptional<T> u = this.defaultStyles.get(s).map(HProp::getValue).map(x -> {
+                    try {
+                        return (T) x;
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                }).filter(x -> x != null);
+                if (u.isPresent()) {
+                    return u;
                 }
-            }).filter(x -> x != null);
-            if (u.isPresent()) {
-                return u;
             }
         }
         if (basePart != null) {
-            y = basePart.getProperty(s).map(HProp::getValue).map(x -> {
-                try {
-                    return (T) x;
-                } catch (ClassCastException e) {
-                    return null;
+            for (String s : all) {
+                y = basePart.getProperty(s).map(HProp::getValue).map(x -> {
+                    try {
+                        return (T) x;
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                }).filter(x -> x != null);
+                if (y.isPresent()) {
+                    return y;
                 }
-            }).filter(x -> x != null);
-            if (y.isPresent()) {
-                return y;
             }
         }
-        return base.computePropertyValue(null, s);
+        return base.computePropertyValue(null, all[0], Arrays.copyOfRange(all, 1, all.length));
     }
 }

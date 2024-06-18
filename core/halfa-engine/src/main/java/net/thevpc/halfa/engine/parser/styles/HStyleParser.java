@@ -12,389 +12,85 @@ import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 import java.util.List;
+
 import net.thevpc.nuts.text.NTextStyleType;
 
 public class HStyleParser {
 
-    static Map<String, HStyleValueParser> allStyleParsers = new HashMap<>();
+    //    static Map<String, HStyleValueParser> allStyleParsers = new HashMap<>();
+    static Set<String> COMMON_STYLE_PROPS = new HashSet<>();
 
     static {
-        register(ofColor(HPropName.BACKGROUND_COLOR, "background-color", "background", "bg"));
-        register(ofColor(HPropName.FOREGROUND_COLOR, "foreground-color", "foreground", "color", "fg"));
-        register(ofColor(HPropName.GRID_COLOR, "grid-color"));
-        register(ofColor(HPropName.LINE_COLOR, "line-color"));
-        register(ofInt(HPropName.COLUMNS, "columns", "cols"));
-        register(ofBoolean(HPropName.XCOMPACT, "xcompact"));
-        register(ofBoolean(HPropName.YCOMPACT, "ycompact"));
-        register(ofInt(HPropName.ROWS, "rows"));
-        register(ofInt(HPropName.COLSPAN, "colspan"));
-        register(ofInt(HPropName.ROWSPAN, "rowspan"));
-        register(ofPointOrAlign(HPropName.POSITION, "position", "pos"));
-        register(ofPointOrAlign(HPropName.ORIGIN, "origin"));
-        register(ofDoubleOrPointOrAlign(HPropName.SIZE, "size"));
-        register(ofDoubleArrayOrDouble(HPropName.COLUMNS_WEIGHT, "column-weight", "col-weight", "wcol"));
-        register(ofDoubleArrayOrDouble(HPropName.ROWS_WEIGHT, "row-weight", "wrow"));
-        register(ofDoubleSize(HPropName.FONT_SIZE, "font-size"));
-        register(ofString(HPropName.FONT_FAMILY, "font-family"));
-        register(ofBoolean(HPropName.FONT_BOLD, "bold", "font-bold"));
-        register(ofBoolean(HPropName.FONT_BOLD, "italic", "font-italic"));
-        register(ofBoolean(HPropName.FONT_UNDERLINED, "underlined", "font-underlined"));
-        register(ofBoolean(HPropName.DRAW_CONTOUR, new String[]{"draw-contour"}, new String[]{"no-contour"}));
-        register(ofBoolean(HPropName.DRAW_GRID, "draw-grid"));
-        register(ofBoolean(HPropName.HIDE, new String[]{"hide"}, new String[]{"show"}));
-        register(ofBoolean(HPropName.FILL_BACKGROUND, "fill", "fill-background"));
-        register(ofBoolean(HPropName.PRESERVE_ASPECT_RATIO, "preserve-aspect-ratio"));
-        register(ofBoolean(HPropName.RAISED, "raised"));
-        register(ofBoolean(HPropName.THEED, "threed", "three-d"));
-        register(ofString(HPropName.NAME, "name"));
-        register(ofStringArrayOrString(HPropName.ANCESTORS, "ancestors"));
-        register(ofStringArrayOrString(HPropName.STYLE_CLASS, "class", "style-class"));
-        register(ofPadding(HPropName.PADDING, "padding"));
-        register(ofRotation(HPropName.ROTATE, "rotate"));
-        registerTson(HPropName.STROKE, HPropName.SHADOW);
+        COMMON_STYLE_PROPS.addAll(Arrays.asList(HPropName.STROKE,
+                HPropName.SHADOW,
+                HPropName.POSITION,
+                HPropName.ORIGIN,
+                HPropName.SIZE,
+                HPropName.NAME,
+                HPropName.COLUMNS,
+                HPropName.ROWS,
+                HPropName.COLSPAN,
+                HPropName.ROWSPAN,
+                HPropName.GRID_COLOR,
+                HPropName.LINE_COLOR,
+                HPropName.ROTATE,
+                HPropName.PADDING,
+                HPropName.FONT_SIZE,
+                HPropName.DEBUG,
+                HPropName.DEBUG_COLOR,
+                HPropName.FONT_FAMILY,
+                HPropName.RAISED,
+                HPropName.FONT_BOLD,
+                HPropName.FONT_ITALIC,
+                HPropName.FONT_UNDERLINED,
+                HPropName.BACKGROUND_COLOR,
+                HPropName.FOREGROUND_COLOR,
+                HPropName.FILL_BACKGROUND,
+                HPropName.HIDE,
+                HPropName.DRAW_GRID,
+                HPropName.COLUMNS_WEIGHT,
+                HPropName.ROWS_WEIGHT,
+                HPropName.PRESERVE_ASPECT_RATIO,
+                HPropName.THEED,
+                HPropName.DRAW_CONTOUR,
+                HPropName.CLASS,
+                HPropName.ANCESTORS,
+                HPropName.AT,
+                HPropName.TEMPLATE));
+
         for (NTextStyleType z : NTextStyleType.values()) {
             if (!z.basic()) {
-                registerTson("source-" + z.id() + "-color");
-                registerTson("source-" + z.id() + "-background");
-                registerTson("source-" + z.id() + "-font-family");
-                registerTson("source-" + z.id() + "-font-bold");
-                registerTson("source-" + z.id() + "-font-italic");
-                registerTson("source-" + z.id() + "-font-underlined");
+                COMMON_STYLE_PROPS.addAll(Arrays.asList(new String[]{
+                        "source-" + z.id() + "-color",
+                        "source-" + z.id() + "-background",
+                        "source-" + z.id() + "-font-family",
+                        "source-" + z.id() + "-font-bold",
+                        "source-" + z.id() + "-font-italic",
+                        "source-" + z.id() + "-font-underlined",
+                }));
             }
         }
-
-        register(new AtHStyleValueParser());
-
-        register(ofIntOrBoolean(HPropName.DEBUG, "debug"));
-        register(ofColor(HPropName.DEBUG_COLOR, "debug-color"));
-        register(new AbstracStyleValueParser(HPropName.TEMPLATE, "template") {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Boolean> r = ObjEx.of(e).asBoolean();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(HPropName.TEMPLATE, r.get())});
-                }
-                NOptional<String> rs = ObjEx.of(e).asString();
-                if (rs.isPresent()) {
-                    return NOptional.of(new HProp[]{
-                        new HProp(HPropName.TEMPLATE, true),
-                        new HProp(HPropName.NAME, rs.get())
-                    });
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        });
-
+        COMMON_STYLE_PROPS.addAll(
+                Arrays.asList("color",
+                        "background",
+                        "bg",
+                        "fg",
+                        "show",
+                        "visible",
+                        "fill",
+                        "contour"
+                )
+        );
     }
 
-    private static void registerTson(String... all) {
-        for (String a : all) {
-            register(ofTson(a, a));
+    public static boolean isCommonStyleProperty(String s) {
+        if (NBlankable.isBlank(s)) {
+            return false;
         }
+        s = HUtils.uid(s);
+        return COMMON_STYLE_PROPS.contains(s);
     }
 
-    private static void register(HStyleValueParser s) {
-        for (String id : s.ids()) {
-            String uid = HUtils.uid(id);
-            HStyleValueParser o = allStyleParsers.get(uid);
-            if (o != null) {
-                throw new IllegalArgumentException("clash " + uid + " and " + Arrays.asList(o.ids()) + " in " + s + " vs " + o);
-            }
-            allStyleParsers.put(uid, s);
-        }
-    }
-
-    private static HStyleValueParser ofColor(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                //TODO fix me
-                return NOptional.of(new HProp[]{new HProp(type, e)});
-//                NOptional<Color> r = ObjEx.of(e).parseColor(null);
-//                if (r.isPresent()) {
-//                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-//                }
-//                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid %s", context.source(), id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofBoolean(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Boolean> r = ObjEx.of(e).asBoolean();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), id, e));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofIntOrBoolean(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                ObjEx objEx = ObjEx.of(e);
-                NOptional<Integer> i = objEx.asInt();
-                if (i.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, i.get())});
-                }
-                NOptional<Boolean> r = objEx.asBoolean();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get() ? 1 : 0)});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofBoolean(String type, String[] trueValues, String[] falseValues) {
-        Set<String> acceptable = new HashSet<>();
-        Set<String> trueSet = new HashSet<>();
-        Set<String> falseSet = new HashSet<>();
-        if (trueValues != null) {
-            for (String v : trueValues) {
-                if (!NBlankable.isBlank(v)) {
-                    v = NNameFormat.LOWER_KEBAB_CASE.format(v);
-                    acceptable.add(v);
-                    trueSet.add(v);
-                }
-            }
-        }
-        if (falseValues != null) {
-            for (String v : falseValues) {
-                if (!NBlankable.isBlank(v)) {
-                    v = NNameFormat.LOWER_KEBAB_CASE.format(v);
-                    acceptable.add(v);
-                    falseSet.add(v);
-                }
-            }
-        }
-        return new AbstracStyleValueParser(type, acceptable.toArray(new String[0])) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                String kk = NNameFormat.LOWER_KEBAB_CASE.format(id);
-                boolean b = ObjEx.of(e).asBoolean().orElse(false);
-                if (trueSet.contains(kk)) {
-                    return NOptional.of(new HProp[]{new HProp(type, b)});
-                }
-                if (falseSet.contains(kk)) {
-                    return NOptional.of(new HProp[]{new HProp(type, !b)});
-                }
-                return NOptional.of(new HProp[]{});
-            }
-        };
-    }
-
-    private static HStyleValueParser ofString(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<String> r = ObjEx.of(e).asString();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofDouble4(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Double4> r = ObjEx.of(e).asDouble4();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofPadding(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Padding> r = ObjEx.of(e).asPadding();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofRotation(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Rotation> r = ObjEx.of(e).asRotation();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofTson(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                return NOptional.of(new HProp[]{new HProp(type, e)});
-            }
-        };
-    }
-
-    private static HStyleValueParser ofDoubleSize(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Double> r = ObjEx.of(e).asDouble();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                NOptional<String> s = ObjEx.of(e).asString();
-                if (s.isPresent()) {
-                    switch (NNameFormat.LOWER_KEBAB_CASE.format(s.get())) {
-                        case "smallest": {
-                            return NOptional.of(new HProp[]{new HProp(type, 12)});
-                        }
-                        case "smaller": {
-                            return NOptional.of(new HProp[]{new HProp(type, 20)});
-                        }
-                        case "small": {
-                            return NOptional.of(new HProp[]{new HProp(type, 30)});
-                        }
-                        case "normal": {
-                            return NOptional.of(new HProp[]{new HProp(type, 40)});
-                        }
-                        case "large": {
-                            return NOptional.of(new HProp[]{new HProp(type, 60)});
-                        }
-                        case "larger": {
-                            return NOptional.of(new HProp[]{new HProp(type, 80)});
-                        }
-                        case "largest": {
-                            return NOptional.of(new HProp[]{new HProp(type, 100)});
-                        }
-                        default: {
-                            String ss = NStringUtils.trim(s.get());
-                            if (ss.matches("(-)?[0-9]+")) {
-                                return NOptional.of(new HProp[]{new HProp(type, Double.parseDouble(ss))});
-                            }
-                        }
-                    }
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofDoubleArrayOrDouble(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<double[]> r = ObjEx.of(e).asDoubleArrayOrDouble();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofStringArrayOrString(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<String[]> r = ObjEx.of(e).asStringArrayOrString();
-                if (r.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, r.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofPointOrAlign(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Double2> p = ObjEx.of(e).asDouble2();
-                if (p.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, p.get())});
-                }
-                NOptional<HAlign> uu = HAlignEnumParser.parseHAlign(e);
-                if (uu.isPresent()) {
-                    return NOptional.of(new HProp[]{new HProp(type, uu.get())});
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofDoubleOrPointOrAlign(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                {
-                    NOptional<Double> p = ObjEx.of(e).asDouble();
-                    if (p.isPresent()) {
-                        return NOptional.of(new HProp[]{new HProp(type, new Double2(p.get(), p.get()))});
-                    }
-                }
-                {
-                    NOptional<Double2> p = ObjEx.of(e).asDouble2();
-                    if (p.isPresent()) {
-                        return NOptional.of(new HProp[]{new HProp(type, p.get())});
-                    }
-                }
-                {
-                    NOptional<HAlign> p = HAlignEnumParser.parseHAlign(e);
-                    if (p.isPresent()) {
-                        return NOptional.of(new HProp[]{new HProp(type, p.get())});
-                    }
-                }
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-            }
-        };
-    }
-
-    private static HStyleValueParser ofInt(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Integer> r = ObjEx.of(e).asInt();
-                if (r.isPresent()) {
-                    return NOptional.of(
-                            new HProp[]{new HProp(type, r.get())}
-                    );
-                } else {
-                    return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-                }
-            }
-        };
-    }
-
-    private static HStyleValueParser ofDouble(String type, String... ids) {
-        return new AbstracStyleValueParser(type, ids) {
-            @Override
-            public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-                NOptional<Double> r = ObjEx.of(e).asDouble();
-                if (r.isPresent()) {
-                    return NOptional.of(
-                            new HProp[]{new HProp(type, r.get())}
-                    );
-                } else {
-                    return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-                }
-            }
-        };
-    }
 
     public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
@@ -423,7 +119,7 @@ public class HStyleParser {
                     switch (child.type()) {
                         case PAIR: {
                             ObjEx h = ObjEx.of(e.toPair().getKey());
-                            NOptional<String> k = h.asString();
+                            NOptional<String> k = h.asStringOrName();
                             if (k.isPresent()) {
                                 switch (HUtils.uid(k.get())) {
                                     case "class": {
@@ -497,52 +193,6 @@ public class HStyleParser {
                     }
 
                 }
-//                TsonElementParseHelper h = new TsonElementParseHelper(e.toPair().getKey());
-//                NOptional<String> k = h.asString();
-//                if (k.isPresent()) {
-//                    switch (HParseHelper.uid(k.get())) {
-//                        case "class": {
-//                            TsonElementParseHelper h2 = new TsonElementParseHelper(e.toPair().getValue());
-//                            NOptional<String[]> cc = h2.asStringArray();
-//                            if (cc.isPresent()) {
-//                                return NOptional.of(DefaultHNodeSelector.ofClasses(cc.get()));
-//                            } else {
-//                                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
-//                            }
-//                        }
-//                        case "name": {
-//                            TsonElementParseHelper h2 = new TsonElementParseHelper(e.toPair().getValue());
-//                            NOptional<String[]> cc = h2.asStringArray();
-//                            if (cc.isPresent()) {
-//                                return NOptional.of(DefaultHNodeSelector.ofName(cc.get()));
-//                            } else {
-//                                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
-//                            }
-//                        }
-//                        case "type": {
-//                            TsonElementParseHelper h2 = new TsonElementParseHelper(e.toPair().getValue());
-//                            NOptional<String[]> cc = h2.asStringArray();
-//                            if (cc.isPresent()) {
-//                                List<HNodeType> pp = new ArrayList<>();
-//                                for (String s : cc.get()) {
-//                                    NOptional<HNodeType> u = HNodeTypeEnumParser.parse(s);
-//                                    if (u.isPresent()) {
-//                                        pp.add(u.get());
-//                                    } else {
-//                                        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
-//                                    }
-//                                }
-//                                return NOptional.of(DefaultHNodeSelector.ofType(pp.toArray(new HNodeType[0])));
-//                            } else {
-//                                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
-//                            }
-//                        }
-//                        default: {
-//                            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
-//                        }
-//                    }
-//                }
-//                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
                 return NOptional.of(DefaultHNodeSelector.of(
                         names.toArray(new String[0]),
                         types.toArray(new String[0]),
@@ -577,7 +227,7 @@ public class HStyleParser {
                         }
                         return NOptional.of(
                                 new HStyleRule[]{
-                                    DefaultHStyleRule.of(r.get(), styles.toArray(new HProp[0]))
+                                        DefaultHStyleRule.of(r.get(), styles.toArray(new HProp[0]))
                                 }
                         );
                     }
@@ -589,34 +239,24 @@ public class HStyleParser {
         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule %s", HUtils.shortName(context.source()), e));
     }
 
-    public static boolean acceptStyleName(String e) {
-        String uid = HUtils.uid(e);
-        return allStyleParsers.containsKey(uid);
-    }
 
     public static NOptional<HProp[]> parseStyle(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 ObjEx h = ObjEx.of(e.toPair().getKey());
-                NOptional<String> u = h.asString();
+                NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    HStyleValueParser p = allStyleParsers.get(uid);
-                    if (p != null) {
-                        return p.parseValue(u.get(), e.toPair().getValue(), context);
-                    }
+                    return NOptional.of(new HProp[]{new HProp(uid, e.toPair().getValue())});
                 }
                 break;
             }
             case NAME: {
                 ObjEx h = ObjEx.of(e);
-                NOptional<String> u = h.asString();
+                NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    HStyleValueParser p = allStyleParsers.get(uid);
-                    if (p != null) {
-                        return p.parseValue(u.get(), Tson.ofBoolean(true), context);
-                    }
+                    return NOptional.of(new HProp[]{new HProp(uid, Tson.of(true))});
                 }
                 break;
             }
@@ -625,40 +265,4 @@ public class HStyleParser {
         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style %s. expected key:value format", HUtils.shortName(context.source()), e));
     }
 
-    private static class AtHStyleValueParser implements HStyleValueParser {
-
-        @Override
-        public String[] ids() {
-            return new String[]{"at"};
-        }
-
-        @Override
-        public NOptional<HProp[]> parseValue(String id, TsonElement e, HNodeFactoryParseContext context) {
-            NOptional<Double2> p = ObjEx.of(e).asDouble2();
-            if (p.isPresent()) {
-                return NOptional.of(
-                        new HProp[]{
-                            HProps.origin(0, 0),
-                            HProps.position(p.get().getX(), p.get().getY())
-                        }
-                );
-            }
-            NOptional<HAlign> uu = HAlignEnumParser.parseHAlign(e);
-            if (uu.isPresent()) {
-                return NOptional.of(
-                        new HProp[]{
-                            HProps.origin(uu.get()),
-                            HProps.position(uu.get())
-                        }
-                );
-            }
-            context.messages().addError(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id), context.source());
-            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid value %s for %s", HUtils.shortName(context.source()), e, id));
-        }
-
-        @Override
-        public String toString() {
-            return "HStyleValueParser(at)";
-        }
-    }
 }

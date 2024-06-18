@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class HUtils {
@@ -150,6 +151,23 @@ public class HUtils {
                 return v.toStr().getValue();
         }
         throw new IllegalArgumentException("unsupported yet : fromTson(" + v.type() + ")");
+    }
+
+    public static String[] uids(String[]... ids) {
+        LinkedHashSet<String> all=new LinkedHashSet<>();
+        if(ids!=null){
+            for (String[] ids1 : ids) {
+                if(ids1!=null){
+                    for (String s : ids1) {
+                        s=NStringUtils.trimToNull(s);
+                        if(s!=null){
+                            all.add(uid(s));
+                        }
+                    }
+                }
+            }
+        }
+        return all.toArray(new String[0]);
     }
 
     public static String uid(String id) {

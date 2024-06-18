@@ -98,7 +98,7 @@ public class DefaultHDocumentItemParserFactory
                 TsonElement k = p.getKey();
                 TsonElement v = p.getValue();
                 ObjEx kh = ObjEx.of(k);
-                NOptional<String> nn = kh.asString();
+                NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
                     if (nnn.equals("styles")) {
@@ -154,6 +154,9 @@ public class DefaultHDocumentItemParserFactory
 
     private boolean isRootBloc(HNodeFactoryParseContext context){
         HNode[] nodes = context.nodePath();
+        if(nodes.length==0){
+            return true;
+        }
         if(nodes.length>1){
             return false;
         }

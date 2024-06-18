@@ -7,6 +7,8 @@ import net.thevpc.halfa.api.model.elem2d.Shadow;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.util.NOptional;
@@ -44,6 +46,7 @@ public class HRichTextHelper {
     public Bounds2 computeBound(HNodeRendererContext ctx) {
         HGraphics g = ctx.graphics();
         bounds = new Rectangle2D.Double(0, 0, 0, 0);
+        double maxxY=0;
         for (int i = 0; i < rows.size(); i++) {
             HRichTextRow row = rows.get(i);
             double minX = 0;
@@ -72,8 +75,9 @@ public class HRichTextHelper {
                 row.yOffset = rows.get(i - 1).yOffset + rows.get(i - 1).textBounds.getHeight();//+ textBounds[i].getMinY();
             }
             Rectangle2D.Double.union(bounds, row.textBounds, bounds);
+            maxxY=row.yOffset+row.textBounds.getHeight();
         }
-        return new Bounds2(bounds.getMinX(),bounds.getMinY(),bounds.getWidth(),bounds.getHeight());
+        return new Bounds2(bounds.getMinX(),bounds.getMinY(),bounds.getWidth(),maxxY);
     }
 
     public interface ImagePainter{
@@ -116,10 +120,10 @@ public class HRichTextHelper {
         double x = selfBounds.getX();
         double y = selfBounds.getY();
         HGraphics g = ctx.graphics();
-        Font plainFont = rr.resolveFont(p, g, ctx);
-        rr.paintBackground(p, ctx, g, bgBounds);
-        Paint foreground = rr.resolveForeground(p, g, ctx);
-        NOptional<Shadow> shadowOptional = rr.readStyleAsShadow(p, HPropName.SHADOW, ctx);
+        Font plainFont = HPropValueByNameParser.getFont(p, ctx);
+        HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
+        Paint foreground = HPropValueByNameParser.resolveForegroundColor(p, ctx);
+        NOptional<Shadow> shadowOptional = HPropValueByNameParser.readStyleAsShadow(p, HPropName.SHADOW, ctx);
         if (shadowOptional.isPresent()) {
             Shadow shadow = shadowOptional.get();
             HPoint2D translation = shadow.getTranslation();
@@ -200,6 +204,6 @@ public class HRichTextHelper {
                 }
             }
         }
-        rr.paintBorderLine(p, ctx, g, selfBounds);
+        HNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
     }
 }

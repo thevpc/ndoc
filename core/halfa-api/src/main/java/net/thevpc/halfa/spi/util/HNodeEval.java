@@ -52,7 +52,7 @@ public class HNodeEval implements ObjectEvalContext {
                 if (HNodeType.ASSIGN.equals(cc.type())) {
                     String oName = cc.getName();
                     if (Objects.equals(oName, varName)) {
-                        Object pp = cc.getPropertyValue(HPropName.VALUE).orElse(null);
+                        Object pp = cc.getPropertyValue(HPropName.VALUE).orNull();
                         return eval(TsonUtils.toTson(pp));
                     }
                 }

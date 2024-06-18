@@ -50,7 +50,7 @@ public class HEngineImpl implements HEngine {
 
     public HEngineImpl(NSession session) {
         this.session = session;
-        hDocumentCompiler = new HDocumentCompiler(this,session);
+        hDocumentCompiler = new HDocumentCompiler(this, session);
     }
 
 
@@ -220,22 +220,23 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HDocumentLoadingResult loadDocument(NPath path, HMessageList messages) {
-        NAssert.requireNonNull(path,"path");
+        NAssert.requireNonNull(path, "path");
         HResource source = HResourceFactory.of(path);
-        HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source,messages,session);
+        HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages, session);
         HMessageListDelegateImpl messages1 = r.messages();
         if (path.exists()) {
             if (path.isRegularFile()) {
+                HResource nPathResource = HResourceFactory.of(path);
                 NOptional<TsonDocument> f = loadTsonDocument(path);
                 if (!f.isPresent()) {
-                    messages1.addError(f.getMessage().apply(session));
+                    messages1.addError(f.getMessage().apply(session),nPathResource);
                 }
                 TsonDocument d = f.get();
                 NOptional<HDocument> dd = convertDocument(d, r);
                 if (dd.isPresent()) {
                     r.setDocument(dd.get());
                 } else if (r.isSuccessful()) {
-                    messages1.addError(dd.getMessage().apply(session));
+                    messages1.addError(dd.getMessage().apply(session),nPathResource);
                 }
                 return r;
             } else if (path.isDirectory()) {
@@ -243,7 +244,7 @@ public class HEngineImpl implements HEngine {
                 document.resources().add(path.resolve("*.hd"));
                 List<NPath> all = path.stream().filter(x -> x.isRegularFile() && x.getName().endsWith(".hd")).toList();
                 if (all.isEmpty()) {
-                    messages1.addError(NMsg.ofC("invalid file %s", path));
+                    messages1.addError(NMsg.ofC("invalid folder (no valid enclosed files) %s", path));
                     return r;
                 }
                 NPath main = null;
@@ -262,19 +263,20 @@ public class HEngineImpl implements HEngine {
                     all.add(0, main);
                 }
                 for (NPath nPath : all) {
-                   // document.resources().add(nPath);
-                    NOptional<HItem> d =null;
+                    // document.resources().add(nPath);
+                    NOptional<HItem> d = null;
+                    HResource nPathResource = HResourceFactory.of(nPath);
                     try {
                         d = loadNode(document.root(), nPath, document, messages1);
-                    }catch (Exception ex){
-                        messages1.addError(NMsg.ofC("%s",ex));
+                    } catch (Exception ex) {
+                        messages1.addError(NMsg.ofC("unable to load %s : %s", nPath, ex), nPathResource);
                     }
                     if (d != null) {
                         if (!d.isPresent()) {
-                            messages1.addError(NMsg.ofC("invalid file %s", nPath));
+                            messages1.addError(NMsg.ofC("invalid file %s", nPath), nPathResource);
                             return r;
                         }
-                        updateSource(d.get(), HResourceFactory.of(nPath));
+                        updateSource(d.get(), nPathResource);
                         document.root().append(d.get());
                     }
                 }
@@ -366,7 +368,7 @@ public class HEngineImpl implements HEngine {
     }
 
     public HDocumentLoadingResult loadDocument(InputStream is, HMessageList messages) {
-        HDocumentLoadingResultImpl result=new HDocumentLoadingResultImpl(HResourceFactory.of(is),messages,session);
+        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(HResourceFactory.of(is), messages, session);
         NOptional<TsonDocument> f = loadTsonDocument(is);
         if (!f.isPresent()) {
             result.messages().addError(f.getMessage().apply(session));
@@ -418,8 +420,8 @@ public class HEngineImpl implements HEngine {
         try {
             doc = tr.readDocument(path.toPath().get());
         } catch (Throwable ex) {
-            messages.addError(NMsg.ofC("error parsing node from %s : %s", path,ex),ex, source);
-            return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path,ex));
+            messages.addError(NMsg.ofC("error parsing node from %s : %s", path, ex), ex, source);
+            return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path, ex));
         }
         TsonElement c = doc.getContent();
         ArrayList<HNode> parents = new ArrayList<>();

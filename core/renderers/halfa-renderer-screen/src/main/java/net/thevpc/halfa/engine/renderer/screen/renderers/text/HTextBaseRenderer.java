@@ -7,8 +7,10 @@ import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.*;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.ObjEx;
@@ -59,13 +61,13 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
     }
 
     public Bounds2 bgBounds(HNode p, HNodeRendererContext ctx) {
-        return selfBounds(p, null, null, ctx);
+        return HPropValueByNameParser.selfBounds(p, null, null, ctx);
     }
 
     public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
         HRichTextHelper helper = createRichTextHelper(p, ctx);
         Bounds2 bounds2 = helper.computeBound(ctx);
-        return selfBounds(p, new Double2(bounds2.getWidth(),bounds2.getHeight()), null, ctx);
+        return HPropValueByNameParser.selfBounds(p, new Double2(bounds2.getWidth(),bounds2.getHeight()), null, ctx);
     }
 
     protected abstract HRichTextHelper createRichTextHelper(HNode p, HNodeRendererContext ctx);
@@ -73,7 +75,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
     public void render0(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         HGraphics g = ctx.graphics();
-        applyFont(p, g, ctx);
+        HNodeRendererUtils.applyFont(p, g, ctx);
 
 
         HRichTextHelper helper = createRichTextHelper(p, ctx);
@@ -84,7 +86,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
         bgBounds = bgBounds.expand(selfBounds);
 
         HNodeRendererContext finalCtx = ctx;
-        if (getDebugLevel(p, ctx) >= 10) {
+        if (HPropValueByNameParser.getDebugLevel(p, ctx) >= 10) {
             g.debugString(
                     "Plain:\n"
                             + "expected=" + bgBounds0 + "\n"
@@ -201,7 +203,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
         result.lang = lang;
         result.code = rawText;
         HGraphics g = ctx.graphics();
-        applyFont(p, g, ctx);
+        HNodeRendererUtils.applyFont(p, g, ctx);
         //String[] allLines = code.trim().split("[\n]");
         NTexts ttt = NTexts.of(ctx.session());
         NTextTransformConfig nTextTransformConfig = new NTextTransformConfig();
@@ -390,7 +392,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                             .orElseUse(() -> ctx.computePropertyValue(node, "font-family"))
                             .orNull()
             );
-            String value = NStringUtils.trimToNull(e.asString().orNull());
+            String value = NStringUtils.trimToNull(e.asStringOrName().orNull());
             if (value == null) {
                 // od nothing
             } else {
@@ -446,7 +448,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                     HRichTextTokenType.IMAGE_PAINTER,
                     text.toString()
             );
-            double fontSize = resolveFontSize(p, ctx.graphics(), ctx);
+            double fontSize = HPropValueByNameParser.getFontSize(p, ctx);
             r.imagePainter = richTextHelper.createLatex(text, fontSize);
             richTextHelper.currRow().addToken(r);
         }

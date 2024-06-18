@@ -2,7 +2,7 @@
 {
     page{
         text("My Title 2", at:top, class:title),
-        grid(columns:4, rows:4, column-weight:[1,2], row-weight:[1,2],
+        grid(columns:4, rows:4, columns-weight:[1,2], rows-weight:[1,2],
             size:(50,100)
         ){
             /* first row */

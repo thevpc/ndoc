@@ -13,6 +13,17 @@
                         item2
                     }
                 """
+                background:blue
+            )
+            "and this is a named object with args"
+            source(
+                tson
+                """
+                    myObject(color:red){
+                        item1,
+                        item2
+                    }
+                """
             )
         }
     }

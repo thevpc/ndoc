@@ -2,11 +2,15 @@ package net.thevpc.halfa.engine.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.model.elem2d.HPoint2D;
+import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HItem;
+import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;
+import net.thevpc.halfa.engine.parser.styles.HStyleValueParser;
 import net.thevpc.halfa.spi.util.HParseHelper;
 import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
@@ -63,7 +67,34 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
         return false;
     }
 
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (e.type()) {
+            case PAIR: {
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
+                if (sp.isPresent()) {
+                    ObjEx.SimplePair spp = sp.get();
+                    if (HStyleParser.isCommonStyleProperty(spp.getNameId())) {
+                        //will be processed later
+                        node.setProperty(spp.getNameId(), spp.getValue().raw());
+                        return true;
+                    }
+                }
+                break;
+            }
+            case NAME: {
+                ObjEx h = ObjEx.of(e);
+                NOptional<String> u = h.asStringOrName();
+                if (u.isPresent()) {
+                    String pid = HUtils.uid(u.get());
+                    if (HStyleParser.isCommonStyleProperty(pid)) {
+                        //will be processed later
+                        node.setProperty(pid, Tson.of(true));
+                        return true;
+                    }
+                }
+                break;
+            }
+        }
         return false;
     }
 
@@ -159,30 +190,22 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                 processImplicitStyles(id, p, f, context2);
                 for (TsonElement e : ee.args()) {
                     if (!processArg(id, p, e, f, context2)) {
-                        NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context2);
-                        if (u.isPresent()) {
-                            for (HProp s : u.get()) {
-                                p.append(s);
-                            }
-                        } else {
+                        if (HStyleParser.isCommonStyleProperty(id)) {
                             ObjEx es = ObjEx.of(e);
                             if (es.isFunction()) {
-                                if (isAcceptableArgKeyPair(es.name())
-                                        || HStyleParser.acceptStyleName(es.name())) {
-                                    context2.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
-                                            context2.source(),
-                                            e,
-                                            es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
-                                    ), context2.source());
-                                    return NOptional.ofNamedError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
-                                            context2.source(),
-                                            e,
-                                            es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
-                                    ));
-                                }
+                                context2.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                                        context2.source(),
+                                        e,
+                                        es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
+                                ), context2.source());
+                                // empty result
+                                return NOptional.of(new HItemList());
                             }
                             context2.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement), context2.source());
-                            return NOptional.ofNamedError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement));
+                            return NOptional.of(new HItemList());
+                        } else {
+                            context2.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement), context2.source());
+                            return NOptional.of(new HItemList());
                         }
                     }
                 }
@@ -192,10 +215,8 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         p.append(u.get());
                     } else {
                         NOptional<HItem> finalU = u;
-                        context2.messages().addError(NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(context2.session())), context2.source());
-                        return NOptional.ofError(
-                                s -> NMsg.ofC("[%s] Error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(s))
-                        );
+                        context2.messages().addError(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(context2.session())), context2.source());
+                        return NOptional.of(new HItemList());
                     }
                 }
             }

@@ -7,7 +7,7 @@ import net.thevpc.tson.TsonElement;
 
 public class HAlignEnumParser {
     public static NOptional<HAlign> parseHAlign(TsonElement e) {
-        NOptional<String> k = ObjEx.of(e).asString();
+        NOptional<String> k = ObjEx.of(e).asStringOrName();
         if (k.isPresent()) {
             return HAlign.parse(k.get());
         }

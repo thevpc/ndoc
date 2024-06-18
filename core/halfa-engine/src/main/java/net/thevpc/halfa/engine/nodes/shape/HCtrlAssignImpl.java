@@ -37,7 +37,7 @@ public class HCtrlAssignImpl extends AbstractHNodeTypeFactory {
                 TsonElement k = p.getKey();
                 TsonElement v = p.getValue();
                 ObjEx kh = ObjEx.of(k);
-                NOptional<String> nn = kh.asString();
+                NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
                     if (nnn.length() > 1 && nnn.startsWith("$")) {

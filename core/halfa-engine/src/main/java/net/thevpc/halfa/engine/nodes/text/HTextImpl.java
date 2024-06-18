@@ -6,7 +6,6 @@ package net.thevpc.halfa.engine.nodes.text;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.*;
-import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
@@ -71,12 +70,12 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                             return true;
                         }
                         case "file": {
-                            NPath nPath = context.resolvePath(v.asString().get().trim());
+                            NPath nPath = context.resolvePath(v.asStringOrName().get().trim());
                             context.document().resources().add(nPath);
                             try {
                                 node.setProperty(HPropName.VALUE, nPath.readString().trim());
                             } catch (Exception ex) {
-                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asString().get().trim(), nPath));
+                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath));
                             }
                             return true;
                         }
@@ -89,7 +88,7 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                 break;
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
     @Override

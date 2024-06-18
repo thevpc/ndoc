@@ -8,6 +8,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
 
@@ -60,16 +61,15 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String[] getStyleClasses() {
-        NOptional<HProp> style = getProperty(HPropName.STYLE_CLASS);
+        NOptional<HProp> style = getProperty(HPropName.CLASS);
         if (style.isEmpty()) {
             return new String[0];
         }
-        Object v = style.get().getValue();
+        String[] v = ObjEx.of(style.get().getValue()).asStringArrayOrString().orNull();
         if (v == null) {
             return new String[0];
         }
-        String[] v1 = (String[]) v;
-        return Arrays.stream(v1).filter(x -> !NBlankable.isBlank(x))
+        return Arrays.stream(v).filter(x -> !NBlankable.isBlank(x))
                 .map(HUtils::uid)
                 .distinct()
                 .toArray(String[]::new)
@@ -105,6 +105,13 @@ public class DefaultHNode implements HNode {
         Object v = style.get().getValue();
         if (v == null) {
             return false;
+        }
+        ObjEx oo = ObjEx.of(v);
+        if (oo.isBoolean()) {
+            return oo.asBoolean().get();
+        }
+        if (oo.isStringOrName()) {
+            return true;
         }
         return true;
     }
@@ -185,7 +192,7 @@ public class DefaultHNode implements HNode {
 
 
     private Set<String> _oldClassNames() {
-        NOptional<HProp> y = properties.get(HPropName.STYLE_CLASS);
+        NOptional<HProp> y = properties.get(HPropName.CLASS);
         Set<String> classNames = new HashSet<>();
         if (y.isPresent()) {
             Object o = y.get().getValue();
@@ -590,28 +597,28 @@ public class DefaultHNode implements HNode {
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
             TsonObjectBuilder o = Tson.ofObj(nodeType);
-            if(a.length>0){
+            if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
-                    if(i==a.length-1){
-                        o.annotation(s,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
-                    }else{
+                    if (i == a.length - 1) {
+                        o.annotation(s, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                    } else {
                         o.annotation(s);
                     }
                 }
-            }else if(styleClasses.length>0){
-                o.annotation(null,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+            } else if (styleClasses.length > 0) {
+                o.annotation(null, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
             }
             if (source != null) {
                 o.add(Tson.ofPair("source", Tson.ofString(source.shortName())));
             }
             for (HProp p : properties.toList()) {
-                switch (p.getName()){
+                switch (p.getName()) {
                     case HPropName.ANCESTORS:
-                    case HPropName.STYLE_CLASS:{
+                    case HPropName.CLASS: {
                         break;
                     }
-                    default:{
+                    default: {
                         o.header().add(p.toTson());
                     }
                 }
@@ -629,28 +636,28 @@ public class DefaultHNode implements HNode {
             return o.build();
         } else {
             TsonFunctionBuilder o = Tson.ofFunction(nodeType);
-            if(a.length>0){
+            if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
-                    if(i==a.length-1){
-                        o.annotation(s,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
-                    }else{
+                    if (i == a.length - 1) {
+                        o.annotation(s, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                    } else {
                         o.annotation(s);
                     }
                 }
-            }else if(styleClasses.length>0){
-                o.annotation(null,Arrays.stream(styleClasses).map(x->Tson.ofString(x)).toArray(TsonElementBase[]::new));
+            } else if (styleClasses.length > 0) {
+                o.annotation(null, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
             }
             if (source != null) {
                 o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
             }
             for (HProp p : properties.toList()) {
-                switch (p.getName()){
+                switch (p.getName()) {
                     case HPropName.ANCESTORS:
-                    case HPropName.STYLE_CLASS:{
+                    case HPropName.CLASS: {
                         break;
                     }
-                    default:{
+                    default: {
                         o.add(p.toTson());
                     }
                 }
@@ -666,12 +673,21 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String getName() {
-        return (String) getPropertyValue(HPropName.NAME).orNull();
+        String n = ObjEx.of(getPropertyValue(HPropName.NAME).orNull()).asStringOrName().orNull();
+        if (n != null) {
+            return n;
+        }
+        //check if it is a template, and return template name
+        ObjEx template = ObjEx.of(getPropertyValue(HPropName.TEMPLATE).orNull());
+        if (template.isStringOrName()) {
+            return template.asStringOrName().get();
+        }
+        return null;
     }
 
     @Override
     public void setChildAt(int i, HNode c) {
-        NAssert.requireNonNull(c,"node");
-        children.set(i,c);
+        NAssert.requireNonNull(c, "node");
+        children.set(i, c);
     }
 }

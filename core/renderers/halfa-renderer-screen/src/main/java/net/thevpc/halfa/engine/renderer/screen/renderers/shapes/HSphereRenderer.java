@@ -5,6 +5,8 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
@@ -33,21 +35,21 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
             }
         }
         ctx=ctx.withDefaultStyles(p,defaultStyles);
-        Bounds2 b = selfBounds(p, null, null, ctx);
+        Bounds2 b = HPropValueByNameParser.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
         boolean someBG=false;
         if (!ctx.isDry()) {
-            if (someBG = applyBackgroundColor((HNode) p, g, ctx)) {
+            if (someBG = HNodeRendererUtils.applyBackgroundColor((HNode) p, g, ctx)) {
                 g.fillSphere((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), 45, 50f);
             }
-            if (applyLineColor((HNode) p, g, ctx, !someBG)) {
-                applyStroke(p, g, ctx);
+            if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                HNodeRendererUtils.applyStroke(p, g, ctx);
                 g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
         }
-        paintDebugBox(p, ctx, g, b);
+        HNodeRendererUtils.paintDebugBox(p, ctx, g, b,false);
     }
 
 }

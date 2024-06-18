@@ -17,13 +17,6 @@ import java.util.*;
 import java.util.List;
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.nuts.util.NMsg;
-import static net.thevpc.tson.TsonElementType.BIG_DECIMAL;
-import static net.thevpc.tson.TsonElementType.BYTE;
-import static net.thevpc.tson.TsonElementType.DOUBLE;
-import static net.thevpc.tson.TsonElementType.FLOAT;
-import static net.thevpc.tson.TsonElementType.INT;
-import static net.thevpc.tson.TsonElementType.LONG;
-import static net.thevpc.tson.TsonElementType.SHORT;
 
 public class ObjEx {
 
@@ -91,7 +84,7 @@ public class ObjEx {
             switch (te.type()) {
                 case PAIR: {
                     TsonElement key = te.toPair().getKey();
-                    NOptional<String> s = ObjEx.of(key).asString();
+                    NOptional<String> s = ObjEx.of(key).asStringOrName();
                     if (s.isPresent()) {
                         return NOptional.of(
                                 new SimplePair(
@@ -113,6 +106,12 @@ public class ObjEx {
         return name;
     }
 
+    public List<TsonElement> argsOrBody() {
+        List<TsonElement> a = new ArrayList<>();
+        a.addAll(args());
+        a.addAll(body());
+        return a;
+    }
     public Map<String, ObjEx> argsOrBodyMap() {
         Map<String, ObjEx> a = new HashMap<>();
         for (TsonElement arg : args()) {
@@ -149,6 +148,11 @@ public class ObjEx {
     public List<TsonElement> body() {
         _parsedChildren();
         return children;
+    }
+
+    public NOptional<Paint> asPaint() {
+        //TODO fix me later
+        return asColor().map(x->x);
     }
 
     public NOptional<Color> asColor() {
@@ -199,7 +203,7 @@ public class ObjEx {
                 case STRING:
                 case NAME: {
                     ObjEx h = ObjEx.of(element);
-                    String s = h.asString().get();
+                    String s = h.asStringOrName().get();
                     return ObjEx.of(s).asColor();
                 }
             }
@@ -414,7 +418,7 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("boolean from " + element);
     }
 
-    public NOptional<String> asString() {
+    public NOptional<String> asStringOrName() {
         if (element instanceof String) {
             return NOptional.of((String) element);
         }
@@ -559,7 +563,7 @@ public class ObjEx {
         if (a.isPresent()) {
             return a;
         }
-        NOptional<String> b = asString();
+        NOptional<String> b = asStringOrName();
         if (b.isPresent()) {
             return NOptional.of(new String[]{b.get()});
         }
@@ -624,7 +628,7 @@ public class ObjEx {
             TsonElement[] arr = (TsonElement[]) element;
             String[] aa = new String[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<String> d = ObjEx.of(arr[i]).asString();
+                NOptional<String> d = ObjEx.of(arr[i]).asStringOrName();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -706,7 +710,7 @@ public class ObjEx {
         if (element instanceof HAlign) {
             return ((HAlign) element).toPosition();
         }
-        NOptional<String> k = asString();
+        NOptional<String> k = asStringOrName();
         if (k.isPresent()) {
             return HAlign.parse(k.get()).flatMap(x -> x.toPosition());
         }
@@ -829,7 +833,7 @@ public class ObjEx {
         if (element instanceof HArrayHead) {
             return NOptional.of((HArrayHead) element);
         }
-        NOptional<String> s = asString();
+        NOptional<String> s = asStringOrName();
         if (s.isPresent()) {
             String v = s.get().trim();
             if (v.isEmpty()) {
@@ -862,7 +866,7 @@ public class ObjEx {
     public <T> NOptional<T> as(Class<T> type) {
         switch (type.getName()) {
             case "java.lang.String": {
-                return (NOptional<T>) asString();
+                return (NOptional<T>) asStringOrName();
             }
             case "boolean": {
                 return (NOptional<T>) asBoolean();
@@ -1002,6 +1006,13 @@ public class ObjEx {
         return !NBlankable.isBlank(name());
     }
 
+    public boolean isBoolean() {
+        if (element instanceof Boolean) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean isNumber() {
         if (element instanceof Number) {
             return true;
@@ -1018,6 +1029,51 @@ public class ObjEx {
         } catch (Exception e) {
             return NOptional.ofEmpty(NMsg.ofC("not tson : %s : %s", e, element));
         }
+    }
+
+    public NOptional<String> asName() {
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case NAME: {
+                    return NOptional.of(te.toName().getName());
+                }
+            }
+        }
+        return NOptional.ofNamedEmpty("name from " + element);
+    }
+
+    public boolean isStringOrName() {
+        if (element instanceof String) {
+            return true;
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case STRING: {
+                    return true;
+                }
+                case NAME: {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isString() {
+        if (element instanceof String) {
+            return true;
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case STRING: {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static class SimplePair {

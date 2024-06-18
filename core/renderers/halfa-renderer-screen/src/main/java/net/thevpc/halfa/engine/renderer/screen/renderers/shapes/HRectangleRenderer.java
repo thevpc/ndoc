@@ -5,6 +5,8 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -37,50 +39,50 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
-        Boolean threeD = get3D(p, ctx);
-        Boolean raised = getRaised(p, ctx);
+        Boolean threeD = HPropValueByNameParser.get3D(p, ctx);
+        Boolean raised = HPropValueByNameParser.getRaised(p, ctx);
         if (raised != null) {
             if (threeD == null) {
                 threeD = true;
             }
         }
-        Double2 roundCorners = roundCornerArcs(p, ctx);
+        Double2 roundCorners = HPropValueByNameParser.getRoundCornerArcs(p, ctx);
 
         boolean round = roundCorners != null;
         boolean d3 = threeD == null ? false : threeD;
         if (!ctx.isDry()) {
             if (!round && !d3) {
                 boolean someBG = false;
-                if (someBG = applyBackgroundColor(p, g, ctx)) {
+                if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
-                if (applyLineColor(p, g, ctx, !someBG)) {
-                    applyStroke(p, g, ctx);
+                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                    HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.drawRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
             } else if (round) {
                 double cx = HUtils.doubleOf(roundCorners.getX()) / 100 * PageView.REF_SIZE.width;
                 double cy = HUtils.doubleOf(roundCorners.getY()) / 100 * PageView.REF_SIZE.height;
                 boolean someBG = false;
-                if (someBG = applyBackgroundColor(p, g, ctx)) {
+                if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fillRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
-                if (applyLineColor(p, g, ctx, !someBG)) {
-                    applyStroke(p, g, ctx);
+                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                    HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.drawRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
             } else if (threeD) {
                 boolean someBG = false;
-                if (someBG = applyBackgroundColor(p, g, ctx)) {
+                if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fill3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
-                if (applyLineColor(p, g, ctx, !someBG)) {
-                    applyStroke(p, g, ctx);
+                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                    HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.draw3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
             }
         }
-        paintDebugBox(p, ctx, g, b);
+        HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
     }
 
 }

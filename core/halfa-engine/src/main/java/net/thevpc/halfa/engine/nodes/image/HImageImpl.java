@@ -27,14 +27,14 @@ public class HImageImpl extends AbstractHNodeTypeFactory {
     }
 
     @Override
-    protected boolean processArg(String id, HNode p, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case STRING: {
-                p.setProperty(HProp.ofString(HPropName.VALUE, e.toStr().raw()));
+                node.setProperty(HProp.ofString(HPropName.VALUE, e.toStr().raw()));
                 return true;
             }
         }
-        return false;
+        return super.processArg(id, node, e, f, context);
     }
 
 

@@ -5,7 +5,9 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -34,7 +36,7 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
 
     private Elems compute(HNode p, Bounds2 expectedBounds,HNodeRendererContext ctx) {
         List<HNode> texts = p.children()
-                .stream().filter(x-> resolveVisible(x, ctx.graphics(), ctx)).collect(Collectors.toList());
+                .stream().filter(x-> HPropValueByNameParser.isVisible(x, ctx)).collect(Collectors.toList());
         Elems e = new Elems();
         e.elems = new Elem[texts.size()];
         double allWidth = 0;
@@ -96,11 +98,11 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
 
         Bounds2 bg = selfBounds(p, ctx);
         Elems ee = compute(p, bg,ctx);
-        Bounds2 newExpectedBounds =selfBounds(p, ee.size,null, ctx);
+        Bounds2 newExpectedBounds = HPropValueByNameParser.selfBounds(p, ee.size,null, ctx);
 
 //        g.setColor(Color.BLUE);
 //        g.drawRect(newExpectedBounds);
-        if(getDebugLevel(p, ctx)>=10) {
+        if(HPropValueByNameParser.getDebugLevel(p, ctx)>=10) {
             g.debugString(
                     "Flow:\n"
                             + "expected=" + bg + "\n"
@@ -114,7 +116,7 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
 
         bg=bg.expand(newExpectedBounds);
         if (!ctx.isDry()) {
-            paintBackground(p, ctx, g, bg);
+            HNodeRendererUtils.paintBackground(p, ctx, g, bg);
         }
 
         for (Elem elem : ee.elems) {
@@ -123,6 +125,6 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         }
 
 
-        paintBorderLine(p, ctx, g, bg);
+        HNodeRendererUtils.paintBorderLine(p, ctx, g, bg);
     }
 }
