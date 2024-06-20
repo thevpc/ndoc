@@ -69,7 +69,35 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void setColor(Color c) {
         g.setColor(c);
+
     }
+
+    @Override
+    public AffineTransform getTransform(){
+        return g.getTransform();
+    }
+
+    @Override
+    public void setTransform(AffineTransform tx){
+        g.setTransform(tx);
+    }
+    @Override
+    public void transform(AffineTransform tx){
+        g.transform(tx);
+    }
+    @Override
+    public void scale(double sx,double sy){
+        g.scale(sx,sy);
+    }
+    @Override
+    public void rotate(double theta,double x,double y){
+        g.rotate(theta,x,y);
+    }
+    @Override
+    public void rotate(double theta){
+        g.rotate(theta);
+    }
+
 
     @Override
     public void setPaint(Paint c) {
@@ -338,6 +366,7 @@ public class HGraphicsImpl implements HGraphics {
                     }
                     break;
                 }
+
                 case POLYLINE: {
                     Element3DPolyline pr = (Element3DPolyline) primitive;
                     HPoint3D[] nodes = pr.getNodes();
@@ -550,6 +579,7 @@ public class HGraphicsImpl implements HGraphics {
         g.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
     }
 
+
     @Override
     public void fillPolygon(double[] xx, double[] yy, int length) {
         g.fillPolygon(
@@ -659,6 +689,10 @@ public class HGraphicsImpl implements HGraphics {
         }
     }
 
+
+
+
+
     public void transform3D(Matrix3D transform3D) {
         if (transform3D != null) {
             this.transform3D = this.transform3D.multiply(transform3D);
@@ -671,4 +705,10 @@ public class HGraphicsImpl implements HGraphics {
             this.projection3D = projection3D;
         }
     }
+
+    public void shear(double shx,double shy){
+        g.shear(shx,shy);
+    }
+
+
 }

@@ -8,6 +8,8 @@ net.thevpc.halfa.engine.renderer.screen.renderers.fillers.HVoidRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.images.HImageRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HEquationRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HPlainTextRenderer
+net.thevpc.halfa.engine.renderer.screen.renderers.shapes.HCylinderRenderer
+net.thevpc.halfa.engine.renderer.screen.renderers.shapes.HDonutRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HSourceRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.text.HTextRenderer
 net.thevpc.halfa.engine.renderer.screen.renderers.shapes.HSphereRenderer

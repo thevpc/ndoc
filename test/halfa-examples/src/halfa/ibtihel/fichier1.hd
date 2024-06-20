@@ -1,20 +1,22 @@
 {
-styles:{
+styles{
     .simple-page:{
-    background-color: $palette[1]
+    shadow:(color:gray,shift:(1,1))
+
     }
 
 }
 page{
     polygon(points:[(0,0),(100,0),(100,10),(0,20)],background-color:red)
-    @(simple-page) plain("demo",position:(50,50),origin:(50,50),font-bold)
+    plain("demo",position:(50,50),origin:(50,50),font-bold)
+    @(simple-page) text("hello")
 
 }
 include ("fichier2.hd")
 
 
 page{
-text("bye")
+text("bye!!")
 }
 
 }

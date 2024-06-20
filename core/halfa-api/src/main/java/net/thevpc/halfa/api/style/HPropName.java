@@ -57,5 +57,13 @@ public class HPropName {
 
     public static final String DEBUG = "debug";
     public static final String DEBUG_COLOR="debug-color";
-    
+    public static final String ELLIPSE_H = "ellipse-height" ;
+    public static final String SEGMENT_COUNT = "segment-count" ;
+    public static final String TOP_COLOR = "top-color" ;
+    public static final String INNER_RADIUS = "INNER-radius" ;
+    public static final String START_ANGLE = "start-angle" ;
+    public static final String EXTENT_ANGLE = "extent-angle" ;
+
+
+
 }

@@ -188,10 +188,21 @@ public class HPropValueByNameParser {
                 switch (e.getKey()) {
                     case "distance":
                     case "shift":
-                    case "origin": {
+                    case "origin":
+                    {
                         NOptional<HPoint2D> d = getStyleAsShadowDistance(e.getValue(), ctx);
                         if (d.isPresent()) {
                             shadow.setTranslation(d.get());
+                        } else {
+                            return (NOptional) d;
+                        }
+                        break;
+                    }
+                    case "shear":
+                    {
+                        NOptional<HPoint2D> d = getStyleAsShadowDistance(e.getValue(), ctx);
+                        if (d.isPresent()) {
+                            shadow.setShear(d.get());
                         } else {
                             return (NOptional) d;
                         }

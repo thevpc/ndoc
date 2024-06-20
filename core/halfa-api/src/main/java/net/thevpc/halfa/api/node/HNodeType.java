@@ -36,7 +36,10 @@ public class HNodeType {
     public static final String FILLER="filler";
     public static final String VOID="void";
     public static final String ASSIGN="assign";
+    public static final String CYLINDER="cylinder";
     public static final String SOURCE="source";
     public static final String UNNAMED="unnamed";
+    public static final String DONUT="donut";
+
 
 }
