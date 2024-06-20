@@ -12,9 +12,10 @@
         },
     },
     page(template,name:'course'){
+        circle(),
     },
     @course page{
-        text("My Title"),
+        text("My Title",at:top),
         rectangle(
             size:(50,50),
             background:$palette[3],
