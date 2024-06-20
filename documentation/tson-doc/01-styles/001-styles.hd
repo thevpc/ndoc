@@ -12,7 +12,7 @@ styles:{
         font-family : "monospaced",
         source-primary-color: $palette
         source-keyword-color: $palette[1]
-        source-separator-color: $palette[5]
+        source-separator-color: $palette[12]
         source-string-color: $palette[4]
         source-comments-color: $palette[12]
         source-keyword-font-bold,
