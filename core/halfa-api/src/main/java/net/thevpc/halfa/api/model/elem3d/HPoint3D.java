@@ -28,7 +28,7 @@ public class HPoint3D implements ToTson {
     }
 
     public HVector3D asVector() {
-        return new HVector3D(x,y,z);
+        return new HVector3D(x, y, z);
     }
 
     public HPoint3D minus(HPoint3D b) {

@@ -67,7 +67,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
     public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
         HRichTextHelper helper = createRichTextHelper(p, ctx);
         Bounds2 bounds2 = helper.computeBound(ctx);
-        return HPropValueByNameParser.selfBounds(p, new Double2(bounds2.getWidth(),bounds2.getHeight()), null, ctx);
+        return HPropValueByNameParser.selfBounds(p, new Double2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
     }
 
     protected abstract HRichTextHelper createRichTextHelper(HNode p, HNodeRendererContext ctx);
@@ -124,6 +124,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
 
         helper.computeBound(ctx);
         helper.render(p, ctx, bgBounds, this, selfBounds);
+        HNodeRendererUtils.paintDebugBox(p, ctx, g, selfBounds);
     }
 
     protected String specialTrimCode(String code) {
@@ -149,13 +150,16 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                 if (startingSpaces < 0 || startingSpaces > s) {
                     startingSpaces = s;
                 }
-                break;
             }
         }
         if (startingSpaces > 0) {
             for (int i = 0; i < rows.size(); i++) {
                 String r = rows.get(i);
-                rows.set(i, r.substring(startingSpaces));
+                if(startingSpaces>=r.length()){
+
+                }else {
+                    rows.set(i, r.substring(startingSpaces));
+                }
             }
         }
         StringBuilder sb = new StringBuilder();
@@ -184,12 +188,12 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
 
 
     protected List<NTextPlain> toNTextPlains(NText a) {
-        if(a instanceof NTextPlain){
+        if (a instanceof NTextPlain) {
             return Arrays.asList((NTextPlain) a);
         }
-        if(a instanceof NTextList){
+        if (a instanceof NTextList) {
             ArrayList<NTextPlain> objects = new ArrayList<>();
-            NTextList list=(NTextList) a;
+            NTextList list = (NTextList) a;
             for (NText nText : list) {
                 objects.addAll(toNTextPlains(nText));
             }
@@ -197,6 +201,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
         }
         return new ArrayList<>();
     }
+
     protected HRichTextHelper createRichTextHelper(String lang, String rawText, NText parsedText, HNode p, HNodeRendererContext ctx) {
         HRichTextHelper result = new HRichTextHelper();
         Map<String, TextPartStyle> cache = new HashMap<>();
@@ -233,7 +238,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                         result.rows.add(r);
                     }
                     for (NTextPlain t : toNTextPlains(s.getChild())) {
-                        if(t.getText().equals("\n")){
+                        if (t.getText().equals("\n")) {
                             result.nextLine();
                             continue;
                         }

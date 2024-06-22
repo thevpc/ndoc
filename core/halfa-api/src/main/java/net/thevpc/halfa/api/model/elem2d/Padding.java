@@ -74,6 +74,6 @@ public class Padding implements ToTson {
                 top * w,
                 bottom * h,
                 left * w
-                );
+        );
     }
 }

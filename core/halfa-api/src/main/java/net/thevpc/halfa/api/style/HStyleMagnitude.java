@@ -9,7 +9,7 @@ public class HStyleMagnitude implements Comparable<HStyleMagnitude> {
 
     public HStyleMagnitude(int distance, HStyleRuleSelector selector) {
         this.distance = distance;
-        this.selector = selector==null? DefaultHNodeSelector.ofAny():selector;
+        this.selector = selector == null ? DefaultHNodeSelector.ofAny() : selector;
     }
 
     public HStyleRuleSelector getSelector() {

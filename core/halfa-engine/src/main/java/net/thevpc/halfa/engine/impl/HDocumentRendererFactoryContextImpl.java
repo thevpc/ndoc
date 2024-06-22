@@ -12,7 +12,7 @@ public class HDocumentRendererFactoryContextImpl implements HDocumentRendererFac
     private final HEngineImpl hEngine;
     private final String type;
 
-    public HDocumentRendererFactoryContextImpl(HEngineImpl hEngine,String type) {
+    public HDocumentRendererFactoryContextImpl(HEngineImpl hEngine, String type) {
         this.hEngine = hEngine;
         this.type = NStringUtils.trim(type);
     }

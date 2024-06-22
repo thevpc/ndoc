@@ -30,8 +30,7 @@ public class HStackContainerRenderer extends AbstractHNodeRenderer {
         }
         HNodeRendererContext finalCtx = ctx;
         List<HNode> texts = p.children()
-                .stream().filter(x-> HPropValueByNameParser.isVisible(x, finalCtx)).collect(Collectors.toList())
-                ;
+                .stream().filter(x -> HPropValueByNameParser.isVisible(x, finalCtx)).collect(Collectors.toList());
         for (HNode text : texts) {
             ctx2.render(text);
         }

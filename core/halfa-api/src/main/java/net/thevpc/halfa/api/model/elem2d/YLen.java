@@ -74,9 +74,9 @@ public class YLen {
 
     @Override
     public String toString() {
-        if(root){
-            return "YLenOfParent(" +value+")";
+        if (root) {
+            return "YLenOfParent(" + value + ")";
         }
-        return "YLenOfRoot(" +value+")";
+        return "YLenOfRoot(" + value + ")";
     }
 }

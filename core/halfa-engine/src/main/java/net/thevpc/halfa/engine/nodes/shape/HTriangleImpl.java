@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HTriangleImpl extends AbstractHNodeTypeFactory {
 
     public HTriangleImpl() {
-        super(false, HNodeType.TRIANGLE );
+        super(false, HNodeType.TRIANGLE);
     }
 
 }

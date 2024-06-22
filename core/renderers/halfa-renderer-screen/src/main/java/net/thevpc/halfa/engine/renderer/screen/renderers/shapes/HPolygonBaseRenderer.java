@@ -23,13 +23,13 @@ public abstract class HPolygonBaseRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
             Paint bc = HPropValueByNameParser.resolveBackgroundColor(node, ctx);
-            Paint fc = HPropValueByNameParser.resolveLineColor(node, ctx, bc == null);
-            HPoint2D[] points2= Arrays.stream(points)
-                            .map(p->new HPoint2D(
-                                    p.x/100*b.getWidth()+b.getMinX(),
-                                    p.y/100*b.getHeight()+b.getMinY()
-                            ))
-                            .toArray(HPoint2D[]::new);
+            Paint fc = HPropValueByNameParser.resolveForegroundColor(node, ctx, bc == null);
+            HPoint2D[] points2 = Arrays.stream(points)
+                    .map(p -> new HPoint2D(
+                            p.x / 100 * b.getWidth() + b.getMinX(),
+                            p.y / 100 * b.getHeight() + b.getMinY()
+                    ))
+                    .toArray(HPoint2D[]::new);
             g.draw2D(HElement2DFactory.polygon(points2)
                     .setFill(bc != null)
                     .setContour(fc != null)

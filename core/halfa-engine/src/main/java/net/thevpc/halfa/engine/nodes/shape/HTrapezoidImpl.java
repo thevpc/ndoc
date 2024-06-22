@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HTrapezoidImpl extends AbstractHNodeTypeFactory {
 
     public HTrapezoidImpl() {
-        super(false, HNodeType.TRAPEZOID );
+        super(false, HNodeType.TRAPEZOID);
     }
 
 }

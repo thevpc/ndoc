@@ -7,7 +7,6 @@ package net.thevpc.halfa.spi.renderer;
 import net.thevpc.halfa.api.document.HMessageList;
 
 /**
- *
  * @author vpc
  */
 public interface HDocumentRendererContext {

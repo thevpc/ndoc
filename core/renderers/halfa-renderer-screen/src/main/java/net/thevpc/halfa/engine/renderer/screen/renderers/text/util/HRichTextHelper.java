@@ -46,7 +46,7 @@ public class HRichTextHelper {
     public Bounds2 computeBound(HNodeRendererContext ctx) {
         HGraphics g = ctx.graphics();
         bounds = new Rectangle2D.Double(0, 0, 0, 0);
-        double maxxY=0;
+        double maxxY = 0;
         for (int i = 0; i < rows.size(); i++) {
             HRichTextRow row = rows.get(i);
             double minX = 0;
@@ -75,17 +75,18 @@ public class HRichTextHelper {
                 row.yOffset = rows.get(i - 1).yOffset + rows.get(i - 1).textBounds.getHeight();//+ textBounds[i].getMinY();
             }
             Rectangle2D.Double.union(bounds, row.textBounds, bounds);
-            maxxY=row.yOffset+row.textBounds.getHeight();
+            maxxY = row.yOffset + row.textBounds.getHeight();
         }
-        return new Bounds2(bounds.getMinX(),bounds.getMinY(),bounds.getWidth(),maxxY);
+        return new Bounds2(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), maxxY);
     }
 
-    public interface ImagePainter{
-        void paint(HGraphics g,int x,int y);
+    public interface ImagePainter {
+        void paint(HGraphics g, int x, int y);
+
         Double2 size();
     }
 
-    public ImagePainter createLatex(String tex,double fontSize) {
+    public ImagePainter createLatex(String tex, double fontSize) {
         TeXFormula formula;
         boolean error = false;
         try {
@@ -100,7 +101,7 @@ public class HRichTextHelper {
 
         // insert a border
         icon.setInsets(new Insets(0, 0, 0, 0));
-        if(error){
+        if (error) {
             return null;
         }
         return new ImagePainter() {
@@ -109,8 +110,9 @@ public class HRichTextHelper {
                 icon.setForeground(g.getColor());
                 icon.paintIcon(null, g.context(), (int) x, (int) y /*- icon.getIconHeight()*/);
             }
-            public Double2 size(){
-                return new Double2(icon.getIconWidth(),icon.getIconHeight());
+
+            public Double2 size() {
+                return new Double2(icon.getIconWidth(), icon.getIconHeight());
             }
         };
     }
@@ -122,7 +124,7 @@ public class HRichTextHelper {
         HGraphics g = ctx.graphics();
         Font plainFont = HPropValueByNameParser.getFont(p, ctx);
         HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        Paint foreground = HPropValueByNameParser.resolveForegroundColor(p, ctx);
+        Paint foreground = HPropValueByNameParser.resolveForegroundColor(p, ctx,true);
         NOptional<Shadow> shadowOptional = HPropValueByNameParser.readStyleAsShadow(p, HPropName.SHADOW, ctx);
         if (shadowOptional.isPresent()) {
             Shadow shadow = shadowOptional.get();
@@ -144,20 +146,20 @@ public class HRichTextHelper {
                     int ascent = g.getFontMetrics(plainFont).getAscent();
                     switch (col.type) {
                         case PLAIN: {
-                            if(shadowColor!=null){
+                            if (shadowColor != null) {
                                 g.setPaint(shadowColor);
                             }
                             g.drawString(col.text
-                                    , x + col.xOffset+translation.getX()
-                                    , (y + row.yOffset) + ascent+translation.getY()
+                                    , x + col.xOffset + translation.getX()
+                                    , (y + row.yOffset) + ascent + translation.getY()
                             );
                             break;
                         }
                         case STYLED: {
                             col.attributedShadowString.addAttribute(TextAttribute.FOREGROUND, shadowColor);
                             g.drawString(col.attributedShadowString.getIterator()
-                                    , x + col.xOffset+translation.getX()
-                                    , (y + row.yOffset) + ascent+translation.getY()
+                                    , x + col.xOffset + translation.getX()
+                                    , (y + row.yOffset) + ascent + translation.getY()
                             );
                             break;
                         }

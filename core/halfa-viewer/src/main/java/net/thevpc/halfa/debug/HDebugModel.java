@@ -1,12 +1,14 @@
-package net.thevpc.halfa.engine.renderer.screen.debug;
+package net.thevpc.halfa.debug;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.node.HNode;
 
 public class HDebugModel {
     private HEngine engine;
     private HDocument rawDocument;
+    private HNode currentPage;
     private HDocument compiledDocument;
     private HMessageList messageList;
 
@@ -16,6 +18,15 @@ public class HDebugModel {
 
     public HDebugModel setEngine(HEngine engine) {
         this.engine = engine;
+        return this;
+    }
+
+    public HNode getCurrentPage() {
+        return currentPage;
+    }
+
+    public HDebugModel setCurrentPage(HNode currentPage) {
+        this.currentPage = currentPage;
         return this;
     }
 

@@ -15,7 +15,7 @@ public class HArcRenderer extends AbstractHNodeRenderer {
     HProperties defaultStyles = new HProperties();
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 b = HPropValueByNameParser.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
@@ -23,7 +23,7 @@ public class HArcRenderer extends AbstractHNodeRenderer {
         double endAngle = (double) p.getPropertyValue(HPropName.TO).orElse(0.0);
         HGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
-            HNodeRendererUtils.applyLineColor(p, g, ctx, true);
+            HNodeRendererUtils.applyForeground(p, g, ctx, true);
             HNodeRendererUtils.applyStroke(p, g, ctx);
             g.drawArc((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
                     (int) startAngle,

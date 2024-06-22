@@ -21,7 +21,6 @@ page(template:normal){
     ){
         styles:{
             "*" :{
-                color: $palette[4],
                 font-size:50,
                 font-bold,
             },
@@ -35,7 +34,7 @@ page(template:normal){
             background: $palette[1],
             position:(0,0),
             size:(100,100)
-            line-color: $palette[1],
+            color: $palette[1],
             draw-contour:true,
         )
         rectangle(
@@ -45,7 +44,7 @@ page(template:normal){
         )
         polygon(
             5, show,
-            line-color: $palette[2],
+            color: $palette[2],
             size:(14,70),
             at:center
             position:(10,50),
@@ -54,7 +53,7 @@ page(template:normal){
         )
         polygon(
             5, show,
-            line-color: $palette[3],
+            color: $palette[3],
             size:(14,70),
             at:center
             position:(10,50),
@@ -63,7 +62,7 @@ page(template:normal){
         )
         polygon(
             5, show,
-            line-color: $palette[4],
+            color: $palette[4],
             size:(14,70),
             at:center
             position:(10,50),
@@ -71,7 +70,7 @@ page(template:normal){
             stroke:basic(width:3)
         ),
         image("../images/vpc.png", origin:center, position:(90,50),size:(10,40),preserve-aspect-ratio)
-        image("../images/eniso.png", origin:center, position:(10,50),size:(10,40),preserve-aspect-ratio)
+        @Palette{}
     }
 
     stack(template:"HintError",
@@ -91,7 +90,7 @@ page(template:normal){
             background: $palette[3],
             position:(0,0),
             size:(100,100)
-            line-color: $palette[3],
+            color: $palette[3],
             draw-contour:true,
             /*stroke:basic(width:4,dash:[20])*/
             stroke:zigzag(amplitude:5,wavelength:5,basic(width:4))
@@ -116,7 +115,7 @@ page(template:normal){
 //            background: $palette[3],
 //            position:(0,0),
 //            size:(100,100)
-//            line-color: $palette[1],
+//            color: $palette[1],
 //            draw-contour:true,
 //            /*stroke:basic(width:4,dash:[20])*/
 //            stroke:sloppy(basic(width:2), width:4)
@@ -141,7 +140,7 @@ page(template:normal){
 //            background: $palette[3],
 //            position:(0,0),
 //            size:(100,100)
-//            line-color: $palette[1],
+//            color: $palette[1],
 //            draw-contour:true,
 //            /*stroke:basic(width:4,dash:[20])*/
 //            stroke:sloppy(basic(width:2), width:4)
@@ -154,7 +153,7 @@ page(template:normal){
             size     : (100,72),
             origin : top-left,
             font-size:20,
-            line-color: "#6b3a09",
+            color: "#6b3a09",
             font-bold
     ){
         styles:{
@@ -163,4 +162,6 @@ page(template:normal){
             }
         }
     }
+
+
 }

@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HNovagonImpl extends AbstractHNodeTypeFactory {
 
     public HNovagonImpl() {
-        super(false, HNodeType.NONAGON );
+        super(false, HNodeType.NONAGON);
     }
 
 }

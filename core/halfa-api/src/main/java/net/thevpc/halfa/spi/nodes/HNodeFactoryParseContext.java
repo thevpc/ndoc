@@ -13,6 +13,7 @@ import net.thevpc.tson.TsonElement;
 public interface HNodeFactoryParseContext {
 
     HMessageList messages();
+
     NSession session();
 
     HEngine engine();

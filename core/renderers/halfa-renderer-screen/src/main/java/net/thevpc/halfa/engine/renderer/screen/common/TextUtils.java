@@ -7,14 +7,14 @@ import java.io.PrintStream;
 
 public class TextUtils {
     public static void drawThrowable(Throwable str, Rectangle2D.Double bounds, Graphics2D g2d) {
-        if(str==null){
+        if (str == null) {
             return;
         }
-        ByteArrayOutputStream bos=new ByteArrayOutputStream();
-        PrintStream ps=new PrintStream(bos);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(bos);
         str.printStackTrace(ps);
         ps.flush();
-        drawString(bos.toString(),bounds, g2d);
+        drawString(bos.toString(), bounds, g2d);
     }
 
     public static void drawString(String str, Rectangle2D.Double bounds, Graphics2D g2d) {

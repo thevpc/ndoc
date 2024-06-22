@@ -22,6 +22,7 @@ import java.util.List;
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.spi.util.HNodeEval;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.TsonElementBase;
 
 public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
 
@@ -140,9 +141,11 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
         if (r.isPresent()) {
             Object y = r.get();
             HNodeEval ne = new HNodeEval(t);
-            Object u = ne.eval(TsonUtils.toTson(y));
-            if (u != null) {
-                return NOptional.of((T) u);
+            if (y instanceof TsonElementBase || y instanceof String) {
+                y = ne.eval(TsonUtils.toTson(y));
+            }
+            if (y != null) {
+                return NOptional.of((T) y);
             }
         }
         return (NOptional) r;

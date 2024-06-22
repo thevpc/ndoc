@@ -17,39 +17,39 @@ public class HSphereRenderer extends AbstractHNodeRenderer {
     HProperties ellipsoidDefaultStyles = new HProperties();
 
     public HSphereRenderer() {
-        super(HNodeType.SPHERE,HNodeType.ELLIPSOID);
-        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO,true);
-        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO,false);
+        super(HNodeType.SPHERE, HNodeType.ELLIPSOID);
+        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, true);
+        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, false);
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        HProperties defaultStyles=sphereDefaultStyles;
-        switch (p.type()){
-            case HNodeType.SPHERE:{
-                defaultStyles=sphereDefaultStyles;
+        HProperties defaultStyles = sphereDefaultStyles;
+        switch (p.type()) {
+            case HNodeType.SPHERE: {
+                defaultStyles = sphereDefaultStyles;
                 break;
             }
-            case HNodeType.ELLIPSOID:{
-                defaultStyles=ellipsoidDefaultStyles;
+            case HNodeType.ELLIPSOID: {
+                defaultStyles = ellipsoidDefaultStyles;
                 break;
             }
         }
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 b = HPropValueByNameParser.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
-        boolean someBG=false;
+        boolean someBG = false;
         if (!ctx.isDry()) {
             if (someBG = HNodeRendererUtils.applyBackgroundColor((HNode) p, g, ctx)) {
                 g.fillSphere((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), 45, 50f);
             }
-            if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+            if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                 HNodeRendererUtils.applyStroke(p, g, ctx);
                 g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
         }
-        HNodeRendererUtils.paintDebugBox(p, ctx, g, b,false);
+        HNodeRendererUtils.paintDebugBox(p, ctx, g, b, false);
     }
 
 }

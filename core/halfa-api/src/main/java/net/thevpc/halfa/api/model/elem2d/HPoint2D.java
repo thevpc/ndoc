@@ -23,7 +23,7 @@ public class HPoint2D implements ToTson {
     }
 
     public Vector2D asVector() {
-        return new Vector2D(x,y);
+        return new Vector2D(x, y);
     }
 
     public HPoint2D minus(HPoint2D b) {

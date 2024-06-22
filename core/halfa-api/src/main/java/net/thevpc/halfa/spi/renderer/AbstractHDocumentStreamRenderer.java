@@ -5,12 +5,12 @@
 package net.thevpc.halfa.spi.renderer;
 
 import java.io.OutputStream;
+
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 
 /**
- *
  * @author vpc
  */
 public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentRenderer implements HDocumentStreamRenderer {

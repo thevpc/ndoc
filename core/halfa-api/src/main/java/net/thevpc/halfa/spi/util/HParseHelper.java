@@ -65,7 +65,7 @@ public class HParseHelper {
     public static String toString(TsonElement e, ParseMode mode) {
         switch (e.type()) {
             case NAME: {
-                return e.toName().getName();
+                return e.toName().value();
             }
             case STRING: {
                 return e.toString();
@@ -260,7 +260,7 @@ public class HParseHelper {
 //    }
 
     public static boolean fillAnnotations(TsonElement e, HNode p) {
-        for (TsonAnnotation a : e.getAnnotations()) {
+        for (TsonAnnotation a : e.annotations()) {
             String nn = a.getName();
             if (!NBlankable.isBlank(nn)) {
                 HashSet<String> o = new HashSet<>(Arrays.asList(p.getAncestors()));

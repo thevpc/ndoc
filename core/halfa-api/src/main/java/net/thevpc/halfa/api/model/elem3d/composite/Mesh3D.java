@@ -32,23 +32,23 @@ public class Mesh3D {
                 vertices.get(t.p1),
                 vertices.get(t.p2),
                 vertices.get(t.p3)
-                ,true
-                ,true
+                , true
+                , true
         );
     }
 
     public void addTriangle(int a, int b, int c) {
-        triangles.add(new Mesh3DTriangleIndices(a,b,c));
+        triangles.add(new Mesh3DTriangleIndices(a, b, c));
     }
 
     public void addQuad(int a, int b, int c, int d) {
-        triangles.add(new Mesh3DTriangleIndices(a,b,c));
-        triangles.add(new Mesh3DTriangleIndices(a,c,d));
+        triangles.add(new Mesh3DTriangleIndices(a, b, c));
+        triangles.add(new Mesh3DTriangleIndices(a, c, d));
     }
 
     public void addQuadAlt(int a, int b, int c, int d) {
-        triangles.add(new Mesh3DTriangleIndices(a,b,d));
-        triangles.add(new Mesh3DTriangleIndices(b,c,d));
+        triangles.add(new Mesh3DTriangleIndices(a, b, d));
+        triangles.add(new Mesh3DTriangleIndices(b, c, d));
     }
 
     public void clear() {
@@ -152,14 +152,14 @@ public class Mesh3D {
         HPoint3D p1 = vertices.get(t.p1);
         HPoint3D p2 = vertices.get(t.p2);
         HPoint3D p3 = vertices.get(t.p3);
-        double x=(p1.x+p2.x+p3.x)/3;
-        double y=(p1.y+p2.y+p3.y)/3;
-        double z=(p1.z+p2.z+p3.z)/3;
-        return new HPoint3D(x,y,z);
+        double x = (p1.x + p2.x + p3.x) / 3;
+        double y = (p1.y + p2.y + p3.y) / 3;
+        double z = (p1.z + p2.z + p3.z) / 3;
+        return new HPoint3D(x, y, z);
     }
 
     public void sortByZ() {
-        triangles.sort((a,b)->{
+        triangles.sort((a, b) -> {
             HPoint3D aa = centerPoint(a);
             HPoint3D bb = centerPoint(b);
             return Double.compare(aa.z, bb.z);

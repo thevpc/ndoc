@@ -83,7 +83,7 @@ public class HEngineImpl implements HEngine {
         return NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        s -> NMsg.ofC("missing %s", "factory"))
+                        s -> NMsg.ofC("support for node '%s' ",element))
                 .toOptional();
     }
 
@@ -229,14 +229,14 @@ public class HEngineImpl implements HEngine {
                 HResource nPathResource = HResourceFactory.of(path);
                 NOptional<TsonDocument> f = loadTsonDocument(path);
                 if (!f.isPresent()) {
-                    messages1.addError(f.getMessage().apply(session),nPathResource);
+                    messages1.addError(f.getMessage().apply(session), nPathResource);
                 }
                 TsonDocument d = f.get();
                 NOptional<HDocument> dd = convertDocument(d, r);
                 if (dd.isPresent()) {
                     r.setDocument(dd.get());
                 } else if (r.isSuccessful()) {
-                    messages1.addError(dd.getMessage().apply(session),nPathResource);
+                    messages1.addError(dd.getMessage().apply(session), nPathResource);
                 }
                 return r;
             } else if (path.isDirectory()) {
@@ -408,7 +408,7 @@ public class HEngineImpl implements HEngine {
             return NOptional.of(docd);
         }
         result.messages().addError(NMsg.ofC("invalid %s", r.getMessage().apply(session)));
-        return NOptional.ofError(s -> NMsg.ofC("invalid %s", r.getMessage().apply(s)));
+        return NOptional.of(docd);
     }
 
 
@@ -443,6 +443,12 @@ public class HEngineImpl implements HEngine {
     public TsonElement toTson(HDocument doc) {
         HNode r = doc.root();
         return nodeTypeFactory(r.type()).get().toTson(r);
+    }
+
+
+    @Override
+    public TsonElement toTson(HNode node) {
+        return nodeTypeFactory(node.type()).get().toTson(node);
     }
 
 

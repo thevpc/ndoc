@@ -34,9 +34,9 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         Bounds2 bounds;
     }
 
-    private Elems compute(HNode p, Bounds2 expectedBounds,HNodeRendererContext ctx) {
+    private Elems compute(HNode p, Bounds2 expectedBounds, HNodeRendererContext ctx) {
         List<HNode> texts = p.children()
-                .stream().filter(x-> HPropValueByNameParser.isVisible(x, ctx)).collect(Collectors.toList());
+                .stream().filter(x -> HPropValueByNameParser.isVisible(x, ctx)).collect(Collectors.toList());
         Elems e = new Elems();
         e.elems = new Elem[texts.size()];
         double allWidth = 0;
@@ -46,7 +46,7 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         Double expectedHeight = expectedBounds.getHeight();
         double xRef = expectedBounds.getX();
         double yRef = expectedBounds.getY();
-        HNodeRendererContext ctx2 = ctx.withBounds(p, new Bounds2(0,0, expectedWidth, expectedHeight));
+        HNodeRendererContext ctx2 = ctx.withBounds(p, new Bounds2(0, 0, expectedWidth, expectedHeight));
         for (int i = 0; i < texts.size(); i++) {
             HNode text = texts.get(i);
             HSizeRequirements ee = ctx2.sizeRequirementsOf(text);
@@ -73,15 +73,15 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
             }
             xRef += w;
         }
-        double w=Math.max(expectedWidth,e.size==null?0:e.size.getX());
-        double h=Math.max(expectedHeight,e.size==null?0:e.size.getY());
-        e.fullSize=new Double2(w,h);
+        double w = Math.max(expectedWidth, e.size == null ? 0 : e.size.getX());
+        double h = Math.max(expectedHeight, e.size == null ? 0 : e.size.getY());
+        e.fullSize = new Double2(w, h);
         return e;
     }
 
     public HSizeRequirements sizeRequirements(HNode p, HNodeRendererContext ctx) {
         Bounds2 bg = selfBounds(p, ctx);
-        Elems ee = compute(p, bg,ctx);
+        Elems ee = compute(p, bg, ctx);
         return new HSizeRequirements(
                 ee.size.getX(),
                 ee.fullSize.getX(),
@@ -97,12 +97,12 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
 
         Bounds2 bg = selfBounds(p, ctx);
-        Elems ee = compute(p, bg,ctx);
-        Bounds2 newExpectedBounds = HPropValueByNameParser.selfBounds(p, ee.size,null, ctx);
+        Elems ee = compute(p, bg, ctx);
+        Bounds2 newExpectedBounds = HPropValueByNameParser.selfBounds(p, ee.size, null, ctx);
 
 //        g.setColor(Color.BLUE);
 //        g.drawRect(newExpectedBounds);
-        if(HPropValueByNameParser.getDebugLevel(p, ctx)>=10) {
+        if (HPropValueByNameParser.getDebugLevel(p, ctx) >= 10) {
             g.debugString(
                     "Flow:\n"
                             + "expected=" + bg + "\n"
@@ -112,9 +112,9 @@ public class HFlowContainerRenderer extends AbstractHNodeRenderer {
             );
         }
         HNodeRendererContext ctx2 = ctx.withBounds(p, newExpectedBounds);
-        ee = compute(p, newExpectedBounds,ctx2);
+        ee = compute(p, newExpectedBounds, ctx2);
 
-        bg=bg.expand(newExpectedBounds);
+        bg = bg.expand(newExpectedBounds);
         if (!ctx.isDry()) {
             HNodeRendererUtils.paintBackground(p, ctx, g, bg);
         }

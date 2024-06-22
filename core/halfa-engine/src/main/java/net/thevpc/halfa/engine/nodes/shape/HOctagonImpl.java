@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HOctagonImpl extends AbstractHNodeTypeFactory {
 
     public HOctagonImpl() {
-        super(false, HNodeType.OCTAGON );
+        super(false, HNodeType.OCTAGON);
     }
 
 }

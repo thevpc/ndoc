@@ -23,7 +23,6 @@ import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 
 /**
- *
  * @author vpc
  */
 public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implements HDocumentStreamRenderer {

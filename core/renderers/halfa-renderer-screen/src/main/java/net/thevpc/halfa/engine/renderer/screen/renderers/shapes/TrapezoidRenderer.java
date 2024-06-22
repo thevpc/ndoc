@@ -14,7 +14,7 @@ public class TrapezoidRenderer extends HPolygonBaseRenderer {
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         double x1 = 20;
         double x2 = 20;
         HPoint2D[] points = new HPoint2D[]{

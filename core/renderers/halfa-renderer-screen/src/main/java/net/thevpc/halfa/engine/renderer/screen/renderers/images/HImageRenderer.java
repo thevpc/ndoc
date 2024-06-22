@@ -67,7 +67,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                 HResource src = ctx.engine().computeSource(p);
                 ctx.messages().addError(NMsg.ofC("[%s] [ERROR] image not found : %s (%s)",
                         src == null ? null : src.shortName(),
-                        img, e),src);
+                        img, e), src);
                 for (Object key : keys) {
                     imageCache.put(key, null);
                 }
@@ -96,7 +96,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                 HResource src = ctx.engine().computeSource(p);
                 ctx.messages().addError(NMsg.ofC("[%s] [ERROR] image not found : %s as %s (%s)",
                         src == null ? null : src.shortName()
-                        , img, nPath, e),src);
+                        , img, nPath, e), src);
                 for (Object key : keys) {
                     imageCache.put(key, null);
                 }
@@ -121,7 +121,7 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                 g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
 
-            HNodeRendererUtils.applyForeground(p, g, ctx);
+            HNodeRendererUtils.applyForeground(p, g, ctx,false);
             if (image != null) {
                 // would resize?
                 BufferedImage resized = resize(image, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));

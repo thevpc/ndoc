@@ -14,7 +14,7 @@ public class HVoidRenderer extends AbstractHNodeRenderer {
         super(
                 HNodeType.VOID,
                 HNodeType.ASSIGN
-                );
+        );
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {

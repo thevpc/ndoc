@@ -211,8 +211,8 @@ public class StrokeFactory {
                                 break;
                             }
                             case "dash": {
-                                if(dash==null){
-                                    dash=new float[]{8};
+                                if (dash == null) {
+                                    dash = new float[]{8};
                                 }
                                 break;
                             }

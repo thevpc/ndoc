@@ -24,8 +24,8 @@ net.thevpc.halfa.engine.nodes.shape.HShpereImpl
 net.thevpc.halfa.engine.nodes.shape.HSquareImpl
 net.thevpc.halfa.engine.nodes.shape.HTrapezoidImpl
 net.thevpc.halfa.engine.nodes.shape.HTriangleImpl
-net.thevpc.halfa.engine.nodes.shape.HCylinderImpl
-net.thevpc.halfa.engine.nodes.shape.HDonutImpl
+#net.thevpc.halfa.engine.nodes.shape.HCylinderImpl
+#net.thevpc.halfa.engine.nodes.shape.HDonutImpl
 net.thevpc.halfa.engine.nodes.image.HImageImpl
 net.thevpc.halfa.engine.nodes.filler.HFillerImpl
 net.thevpc.halfa.engine.nodes.filler.HVoidImpl

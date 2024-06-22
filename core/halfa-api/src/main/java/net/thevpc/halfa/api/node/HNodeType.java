@@ -41,5 +41,4 @@ public class HNodeType {
     public static final String UNNAMED="unnamed";
     public static final String DONUT="donut";
 
-
 }

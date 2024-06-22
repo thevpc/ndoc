@@ -110,11 +110,13 @@ public interface HNode extends HItem {
 
     HNode setFontUnderlined(Boolean w);
 
+    HNode setFontStrike(Boolean w);
+
     HNode setForegroundColor(String w);
 
     HNode setBackgroundColor(String w);
 
-    HNode setLineColor(String w);
+//    HNode setLineColor(String w);
 
     HNode setGridColor(String w);
 

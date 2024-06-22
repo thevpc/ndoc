@@ -24,20 +24,20 @@ import net.thevpc.tson.TsonPair;
 public class HGridContainerImpl extends AbstractHNodeTypeFactory {
 
     public HGridContainerImpl() {
-        super(true, HNodeType.GRID,"vgrid","hgrid");
+        super(true, HNodeType.GRID, "vgrid", "hgrid");
     }
 
     @Override
     protected void processImplicitStyles(String id, HNode p, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (id){
-            case "vgrid":{
-                p.setProperty(HPropName.COLUMNS,1);
-                p.setProperty(HPropName.ROWS,-1);
+        switch (id) {
+            case "vgrid": {
+                p.setProperty(HPropName.COLUMNS, 1);
+                p.setProperty(HPropName.ROWS, -1);
                 break;
             }
-            case "hgrid":{
-                p.setProperty(HPropName.COLUMNS,-1);
-                p.setProperty(HPropName.ROWS,1);
+            case "hgrid": {
+                p.setProperty(HPropName.COLUMNS, -1);
+                p.setProperty(HPropName.ROWS, 1);
                 break;
             }
         }
@@ -45,10 +45,10 @@ public class HGridContainerImpl extends AbstractHNodeTypeFactory {
 
     @Override
     protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()){
-            case UPLET:{
+        switch (e.type()) {
+            case UPLET: {
                 NOptional<Int2> d = ObjEx.of(e).asInt2();
-                if(d.isPresent()){
+                if (d.isPresent()) {
                     Int2 dd = d.get();
                     node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(dd.getX()).asInt().get()));
                     node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(dd.getY()).asInt().get()));
@@ -56,19 +56,19 @@ public class HGridContainerImpl extends AbstractHNodeTypeFactory {
                 }
                 return false;
             }
-            case PAIR:{
+            case PAIR: {
                 TsonPair pp = e.toPair();
                 TsonElement k = pp.getKey();
                 TsonElement v = pp.getValue();
-                ObjEx ph=ObjEx.of(k);
+                ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
-                if(n.isPresent()){
-                    switch (HUtils.uid(n.get())){
-                        case "columns":{
+                if (n.isPresent()) {
+                    switch (HUtils.uid(n.get())) {
+                        case "columns": {
                             node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
                             return true;
                         }
-                        case "rows":{
+                        case "rows": {
                             node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
                             return true;
                         }

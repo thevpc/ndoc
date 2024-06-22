@@ -5,10 +5,9 @@
 package net.thevpc.halfa.spi.util;
 
 /**
- *
  * @author vpc
  */
 public enum ParseMode {
     NULL, BEST_ERROR, ERROR
-    
+
 }

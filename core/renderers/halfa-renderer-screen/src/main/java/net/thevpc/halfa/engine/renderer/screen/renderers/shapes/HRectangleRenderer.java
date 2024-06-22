@@ -22,18 +22,18 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        HProperties defaultStyles=rectangleStyles;
-        switch (p.type()){
-            case HNodeType.RECTANGLE:{
-                defaultStyles=rectangleStyles;
+        HProperties defaultStyles = rectangleStyles;
+        switch (p.type()) {
+            case HNodeType.RECTANGLE: {
+                defaultStyles = rectangleStyles;
                 break;
             }
-            case HNodeType.SQUARE:{
-                defaultStyles=squareDefaultStyles;
+            case HNodeType.SQUARE: {
+                defaultStyles = squareDefaultStyles;
                 break;
             }
         }
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
 
         Bounds2 b = selfBounds(p, ctx);
         double x = b.getX();
@@ -56,7 +56,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                 if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
-                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.drawRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
@@ -67,7 +67,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                 if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fillRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
-                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.drawRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
@@ -76,7 +76,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
                 if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fill3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
-                if (HNodeRendererUtils.applyLineColor(p, g, ctx, !someBG)) {
+                if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     HNodeRendererUtils.applyStroke(p, g, ctx);
                     g.draw3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }

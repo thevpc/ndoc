@@ -7,7 +7,6 @@ package net.thevpc.halfa.spi.util;
 import net.thevpc.tson.TsonElement;
 
 /**
- *
  * @author vpc
  */
 public interface ObjectEvalContext {

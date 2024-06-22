@@ -4,8 +4,10 @@ import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
@@ -22,23 +24,29 @@ public class HPropValueByNameParser {
         return b == null ? false : b;
     }
 
-    protected static Double2 getSize(HNode t, Double2 minSize, HNodeRendererContext ctx) {
-        Double2 size = HValueTypeParser.getDouble2OrHAlign(t, ctx, HPropName.SIZE).orElse(new Double2(100, 100));
+    private static Double2 getSize(HNode t, Double2 minSize, HNodeRendererContext ctx) {
+        TsonNumber2 double2OrHAlign = HValueTypeParser.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
+                new TsonNumber2(Tson.of(100.0).toNumber(), Tson.of(100.0).toNumber())
+        );
+
+        Double2 size = new Double2(
+                ctx.sizeRef().x(double2OrHAlign.getX()).get(),
+                ctx.sizeRef().y(double2OrHAlign.getY()).get()
+        );
+
         boolean shapeRatio = isPreserveShapeRatio(t, ctx);
-        double ww = ctx.getBounds().getWidth();
-        double hh = ctx.getBounds().getHeight();
         //ratio depends on the smallest
-        double sx = size.getX() / 100 * ww;
-        double sy = size.getY() / 100 * hh;
+        double sx = size.getX();
+        double sy = size.getY();
         if (minSize != null) {
             sx = Math.max(minSize.getX(), sx);
             sy = Math.max(minSize.getY(), sy);
         }
         if (shapeRatio) {
-            if (sx < sy) {
+            if (sx > sy) {
                 sx = sy;
             }
-            if (sy < sx) {
+            if (sy > sx) {
                 sy = sx;
             }
             return new Double2(
@@ -52,16 +60,26 @@ public class HPropValueByNameParser {
         );
     }
 
-    public static Double2 getOrigin(HNode t, HNodeRendererContext ctx) {
-        return HValueTypeParser.getDouble2OrHAlign(t, ctx, HPropName.ORIGIN)
-                .orElseUse(()->HValueTypeParser.getDouble2OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new Double2(0, 0));
+    public static Double2 getOrigin(HNode t, HNodeRendererContext ctx, Double2 a) {
+        TsonNumber2 double2OrHAlign = HValueTypeParser.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
+                .orElseUse(() -> HValueTypeParser.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
+                .orElse(new TsonNumber2(Tson.of(0).toNumber(), Tson.of(0).toNumber()));
+        HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
+        return new Double2(
+                sr.x(double2OrHAlign.getX()).get(),
+                sr.y(double2OrHAlign.getY()).get()
+        );
     }
 
-    public static Double2 getPosition(HNode t, HNodeRendererContext ctx) {
-        return HValueTypeParser.getDouble2OrHAlign(t, ctx, HPropName.POSITION)
-                .orElseUse(()->HValueTypeParser.getDouble2OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new Double2(0, 0));
+    public static Double2 getPosition(HNode t, HNodeRendererContext ctx, Double2 a) {
+        TsonNumber2 double2OrHAlign = HValueTypeParser.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.POSITION)
+                .orElseUse(() -> HValueTypeParser.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
+                .orElse(new TsonNumber2(Tson.of(0).toNumber(), Tson.of(0).toNumber()));
+        HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
+        return new Double2(
+                sr.x(double2OrHAlign.getX()).get(),
+                sr.y(double2OrHAlign.getY()).get()
+        );
     }
 
     public static TsonElement getStroke(HNode t, HNodeRendererContext ctx) {
@@ -76,11 +94,9 @@ public class HPropValueByNameParser {
         double pw = parentBounds.getWidth();
         double ph = parentBounds.getHeight();
 
-        Double2 pos = getPosition(t, ctx).mul(pw / 100, ph / 100);
+        Double2 pos = getPosition(t, ctx, new Double2(pw, ph));
 
-        double sw = selfSize.getX();
-        double sh = selfSize.getY();
-        Double2 origin = getOrigin(t, ctx).mul(sw / 100, sh / 100);
+        Double2 origin = getOrigin(t, ctx, selfSize);
 
         double x = pos.getX() - origin.getX() + parentBounds.getX();
         double y = pos.getY() - origin.getY() + parentBounds.getY();
@@ -115,12 +131,17 @@ public class HPropValueByNameParser {
     public static double getFontSize(HNode t, HNodeRendererContext ctx) {
         return HValueTypeParser.getDouble(t, ctx, HPropName.FONT_SIZE).orElse(40.0);
     }
+
     public static String getFontFamily(HNode t, HNodeRendererContext ctx) {
         return HValueTypeParser.getStringOrName(t, ctx, HPropName.FONT_FAMILY).orElse("Serif");
     }
 
     public static boolean isFontUnderlined(HNode t, HNodeRendererContext ctx) {
         return HValueTypeParser.getBoolean(t, ctx, HPropName.FONT_UNDERLINED, "underlined").orElse(false);
+    }
+
+    public static boolean isFontStrike(HNode t, HNodeRendererContext ctx) {
+        return HValueTypeParser.getBoolean(t, ctx, HPropName.FONT_STRIKE, "strike").orElse(false);
     }
 
     public static boolean isFontBold(HNode t, HNodeRendererContext ctx) {
@@ -188,8 +209,7 @@ public class HPropValueByNameParser {
                 switch (e.getKey()) {
                     case "distance":
                     case "shift":
-                    case "origin":
-                    {
+                    case "origin": {
                         NOptional<HPoint2D> d = getStyleAsShadowDistance(e.getValue(), ctx);
                         if (d.isPresent()) {
                             shadow.setTranslation(d.get());
@@ -198,8 +218,7 @@ public class HPropValueByNameParser {
                         }
                         break;
                     }
-                    case "shear":
-                    {
+                    case "shear": {
                         NOptional<HPoint2D> d = getStyleAsShadowDistance(e.getValue(), ctx);
                         if (d.isPresent()) {
                             shadow.setShear(d.get());
@@ -227,11 +246,11 @@ public class HPropValueByNameParser {
         return NOptional.ofNamedEmpty("shadow");
     }
 
-    public static Paint resolveForegroundColor(HNode t, HNodeRendererContext ctx) {
+    public static Paint resolveForegroundColor(HNode t, HNodeRendererContext ctx, boolean force) {
         if (ctx.isDry()) {
             return null;
         }
-        return HValueTypeParser.getPaint(t, ctx, HPropName.FOREGROUND_COLOR, "foreground", "color", "fg").orElse(Color.BLACK);
+        return HValueTypeParser.getPaint(t, ctx, HPropName.FOREGROUND_COLOR, "foreground", "color", "fg").orElse(force ? Color.BLACK : null);
     }
 
     public static Paint resolveGridColor(HNode t, HNodeRendererContext ctx) {
@@ -241,12 +260,12 @@ public class HPropValueByNameParser {
         return HValueTypeParser.getPaint(t, ctx, HPropName.GRID_COLOR).orElse(Color.BLACK);
     }
 
-    public static Paint resolveLineColor(HNode t, HNodeRendererContext ctx) {
-        if (ctx.isDry()) {
-            return null;
-        }
-        return HValueTypeParser.getPaint(t, ctx, HPropName.LINE_COLOR).orNull();
-    }
+//    public static Paint resolveLineColor(HNode t, HNodeRendererContext ctx) {
+//        if (ctx.isDry()) {
+//            return null;
+//        }
+//        return HValueTypeParser.getPaint(t, ctx, HPropName.LINE_COLOR).orNull();
+//    }
 
     public static Paint resolveBackgroundColor(HNode t, HNodeRendererContext ctx) {
         if (ctx.isDry()) {
@@ -268,24 +287,24 @@ public class HPropValueByNameParser {
         return HValueTypeParser.getBoolean(t, ctx, HPropName.FILL_BACKGROUND, "fill").orElse(false);
     }
 
-    public static Paint resolveLineColor(HNode t, HNodeRendererContext ctx, boolean force) {
-        if (ctx.isDry()) {
-            return null;
-        }
-        Paint color = HValueTypeParser.getPaint(t, ctx, HPropName.LINE_COLOR).orNull();
-        if (color != null) {
-            return color;
-        }
-        if (force) {
-            //would resolve default color instead ?
-            Color cc = ctx.graphics().getColor();
-            if (cc == null) {
-                return Color.BLACK;
-            }
-            return cc;
-        }
-        return null;
-    }
+//    public static Paint resolveLineColor(HNode t, HNodeRendererContext ctx, boolean force) {
+//        if (ctx.isDry()) {
+//            return null;
+//        }
+//        Paint color = HValueTypeParser.getPaint(t, ctx, HPropName.LINE_COLOR).orNull();
+//        if (color != null) {
+//            return color;
+//        }
+//        if (force) {
+//            //would resolve default color instead ?
+//            Color cc = ctx.graphics().getColor();
+//            if (cc == null) {
+//                return Color.BLACK;
+//            }
+//            return cc;
+//        }
+//        return null;
+//    }
 
     public static int getColumns(HNode node, HNodeRendererContext ctx) {
         return HValueTypeParser.getInt(node, ctx, HPropName.COLUMNS, "cols").orElse(-1);
@@ -296,11 +315,11 @@ public class HPropValueByNameParser {
     }
 
     public static boolean isDebug(HNode p, HNodeRendererContext ctx) {
-        return getDebugLevel(p, ctx)>0;
+        return getDebugLevel(p, ctx) > 0;
     }
 
     public static int getDebugLevel(HNode p, HNodeRendererContext ctx) {
-        return HValueTypeParser.getInt(p, ctx, HPropName.DEBUG).orElse(0);
+        return HValueTypeParser.getIntOrBoolean(p, ctx, HPropName.DEBUG).orElse(0);
     }
 
     public static Color getDebugColor(HNode t, HNodeRendererContext ctx) {

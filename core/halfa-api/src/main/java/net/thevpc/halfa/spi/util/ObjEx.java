@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.List;
+
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.nuts.util.NMsg;
 
@@ -112,6 +113,7 @@ public class ObjEx {
         a.addAll(body());
         return a;
     }
+
     public Map<String, ObjEx> argsOrBodyMap() {
         Map<String, ObjEx> a = new HashMap<>();
         for (TsonElement arg : args()) {
@@ -152,7 +154,7 @@ public class ObjEx {
 
     public NOptional<Paint> asPaint() {
         //TODO fix me later
-        return asColor().map(x->x);
+        return asColor().map(x -> x);
     }
 
     public NOptional<Color> asColor() {
@@ -167,7 +169,7 @@ public class ObjEx {
                 case SHORT:
                 case LONG:
                 case INT: {
-                    return ObjEx.of(te.toInt().getInt()).asColor();
+                    return ObjEx.of(te.toInt().intValue()).asColor();
                 }
                 case UPLET: {
                     NOptional<int[]> ri = asIntArray();
@@ -218,7 +220,12 @@ public class ObjEx {
             if (element instanceof String) {
                 String s = (String) element;
                 if (s.startsWith("#")) {
-                    return NOptional.of(new Color(Integer.parseInt(s.substring(1), 16)));
+                    try {
+                        Color value = new Color(Integer.parseInt(s.substring(1), 16));
+                        return NOptional.of(value);
+                    } catch (Exception ex) {
+                        return NOptional.ofNamedError(NMsg.ofC("invalid color %s", s));
+                    }
                 }
                 if (s.indexOf(",") >= 0) {
                     String[] a = s.split(",");
@@ -324,7 +331,7 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             if (te.type().isNumber()) {
-                return NOptional.of(te.toNumber().getNumber());
+                return NOptional.of(te.toNumber().numberValue());
             }
         }
         return NOptional.ofNamedEmpty("number from " + element);
@@ -350,7 +357,7 @@ public class ObjEx {
                     case FLOAT:
                     case DOUBLE:
                     case BIG_DECIMAL: {
-                        return NOptional.of(te.toNumber().getDouble());
+                        return NOptional.of(te.toNumber().doubleValue());
                     }
                 }
                 return NOptional.of(te.toDouble().getValue());
@@ -361,6 +368,10 @@ public class ObjEx {
             }
         }
         return NOptional.ofNamedEmpty("double from " + element);
+    }
+
+    public NOptional<Integer> asIntOrBoolean() {
+        return asInt().orElseUse(()->asBoolean().map(x->x?1:0));
     }
 
     public NOptional<Integer> asInt() {
@@ -382,7 +393,7 @@ public class ObjEx {
                     case SHORT:
                     case INT:
                     case LONG: {
-                        return NOptional.of(te.toNumber().getInt());
+                        return NOptional.of(te.toNumber().intValue());
                     }
                 }
             } else if (te.type() == TsonElementType.STRING) {
@@ -405,13 +416,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case BOOLEAN: {
-                    return NOptional.of(te.toBoolean().getBoolean());
+                    return NOptional.of(te.toBoolean().booleanValue());
                 }
                 case STRING: {
                     return NLiteral.of(te.toStr().raw()).asBoolean();
                 }
                 case NAME: {
-                    return NLiteral.of(te.toName().getName()).asBoolean();
+                    return NLiteral.of(te.toName().value()).asBoolean();
                 }
             }
         }
@@ -429,7 +440,7 @@ public class ObjEx {
                     return NOptional.of(te.toStr().raw());
                 }
                 case NAME: {
-                    return NOptional.of(te.toName().getName());
+                    return NOptional.of(te.toName().value());
                 }
             }
         }
@@ -507,6 +518,56 @@ public class ObjEx {
         });
     }
 
+    public NOptional<TsonElement[]> asTsonArray() {
+        if (element instanceof TsonElement[]) {
+            return NOptional.of(((TsonElement[])element));
+        }
+        if (element instanceof double[]) {
+            return NOptional.of(
+                    Arrays.stream((double[])element).mapToObj(x->Tson.of(x)).toArray(TsonElement[]::new)
+            );
+        }
+        if (element instanceof TsonElement) {
+            TsonElement te = (TsonElement) element;
+            switch (te.type()) {
+                case ARRAY:{
+                    if(te.toArray().header()!=null){
+                        return NOptional.of(new TsonElement[]{te});
+                    }
+                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                }
+                case OBJECT:{
+                    if(te.toObject().header()!=null){
+                        return NOptional.of(new TsonElement[]{te});
+                    }
+                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                }
+                case UPLET:
+                {
+                    return NOptional.of(te.toUplet().all().toArray(new TsonElement[0]));
+                }
+            }
+        }
+        if (element instanceof Double2) {
+            return ObjEx.of(new double[]{((Double2) element).getX(), ((Double2) element).getY()}).asTsonArray();
+        }
+        if (element instanceof HPoint2D) {
+            return ObjEx.of(new double[]{((HPoint2D) element).getX(), ((HPoint2D) element).getY()}).asTsonArray();
+        }
+        if (element instanceof HPoint3D) {
+            return ObjEx.of(new double[]{((HPoint3D) element).getX(), ((HPoint3D) element).getY(),((HPoint3D) element).getZ()}).asTsonArray();
+        }
+        if (element instanceof Double4) {
+            return ObjEx.of(new double[]{
+                    ((Double4) element).getX1(),
+                    ((Double4) element).getX2()
+                    ,((Double4) element).getX3()
+                    ,((Double4) element).getX4()
+            }).asTsonArray();
+        }
+        return NOptional.ofNamedEmpty("TsonElement[] from " + element);
+    }
+
     public NOptional<double[]> asDoubleArray() {
         if (element instanceof double[]) {
             return NOptional.of((double[]) element);
@@ -550,10 +611,10 @@ public class ObjEx {
         if (element instanceof Double4) {
             Double4 d = (Double4) element;
             return NOptional.of(new double[]{
-                d.getX1(),
-                d.getX2(),
-                d.getX3(),
-                d.getX4(),});
+                    d.getX1(),
+                    d.getX2(),
+                    d.getX3(),
+                    d.getX4(),});
         }
         return NOptional.ofNamedEmpty("double[] from " + element);
     }
@@ -717,6 +778,65 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("Double from " + element);
     }
 
+    public NOptional<TsonNumber2> asTsonNumber2Or1OrHAlign() {
+        NOptional<TsonElement[]> ta = asTsonArray();
+        if(ta.isPresent()) {
+            TsonElement[] taa = ta.get();
+            switch (taa.length) {
+                case 1: {
+                    if (taa[0].isNumber()) {
+                        return NOptional.of(new TsonNumber2((TsonNumber) taa[0], (TsonNumber) taa[0]));
+                    } else if (taa[0].type() == TsonElementType.STRING || taa[0].type() == TsonElementType.NAME) {
+                        Double2 size = HAlign.parse(ObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                        return NOptional.of(
+                                new TsonNumber2(
+                                        Tson.of(size.getX()).toNumber(),
+                                        Tson.of(size.getY()).toNumber()
+                                )
+                        );
+                    }
+                    break;
+                }
+                case 2: {
+                    TsonNumber xx;
+                    TsonNumber yy;
+                    if (taa[0].isNumber()) {
+                        xx = taa[0].toNumber();
+                    } else if (taa[0].type() == TsonElementType.STRING || taa[0].type() == TsonElementType.NAME) {
+                        xx = Tson.of(HAlign.parse(ObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).toNumber();
+                    } else {
+                        return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
+                    }
+                    if (taa[1].isNumber()) {
+                        yy = taa[1].toNumber();
+                    } else if (taa[1].type() == TsonElementType.STRING || taa[1].type() == TsonElementType.NAME) {
+                        yy = Tson.of(HAlign.parse(ObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).toNumber();
+                    } else {
+                        return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
+                    }
+                    return NOptional.of(new TsonNumber2(xx, yy));
+                }
+            }
+        }
+        NOptional<TsonElement> te = asTson();
+        if(te.isPresent()) {
+            TsonElement taa = te.get();
+            if (taa.isNumber()) {
+                return NOptional.of(new TsonNumber2((TsonNumber) taa, (TsonNumber) taa));
+            } else if (taa.type() == TsonElementType.STRING || taa.type() == TsonElementType.NAME) {
+                Double2 size = HAlign.parse(ObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                return NOptional.of(
+                        new TsonNumber2(
+                                Tson.of(size.getX()).toNumber(),
+                                Tson.of(size.getY()).toNumber()
+                        )
+                );
+            }
+        }
+        return NOptional.ofNamedEmpty("TsonNumber2Or1OrHAlign from " + element);
+    }
+
+
     public NOptional<Padding> asPadding() {
         if (element instanceof Padding) {
             return NOptional.of((Padding) element);
@@ -751,16 +871,28 @@ public class ObjEx {
             double[] dd = d.get();
             switch (dd.length) {
                 case 1: {
-                    return NOptional.of(new Rotation(dd[0], 50, 50));
+                    return NOptional.of(new Rotation(
+                            Tson.of(dd[0]),
+                            Tson.of(50),
+                            Tson.of(50)
+                    ));
                 }
                 case 3: {
-                    return NOptional.of(new Rotation(dd[0], dd[1], dd[2]));
+                    return NOptional.of(new Rotation(
+                            Tson.of(dd[0]),
+                            Tson.of(50),
+                            Tson.of(50)
+                    ));
                 }
             }
         }
-        NOptional<Double> dd = asDouble();
+        NOptional<TsonElement> dd = asTson();
         if (dd.isPresent()) {
-            return NOptional.of(new Rotation(dd.get(), 50, 50));
+            return NOptional.of(new Rotation(
+                    dd.get(),
+                    Tson.of(50),
+                    Tson.of(50)
+            ));
         }
         return NOptional.ofNamedEmpty("Rotation from " + element);
     }
@@ -1036,7 +1168,7 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case NAME: {
-                    return NOptional.of(te.toName().getName());
+                    return NOptional.of(te.toName().value());
                 }
             }
         }

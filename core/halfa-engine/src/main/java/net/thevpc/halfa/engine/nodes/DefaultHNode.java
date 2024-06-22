@@ -458,6 +458,12 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
+    public HNode setFontStrike(Boolean w) {
+        setProperty(HPropName.FONT_STRIKE, w);
+        return this;
+    }
+
+    @Override
     public HNode setForegroundColor(String w) {
         setProperty(HPropName.FOREGROUND_COLOR, w);
         return this;
@@ -469,11 +475,11 @@ public class DefaultHNode implements HNode {
         return this;
     }
 
-    @Override
-    public HNode setLineColor(String w) {
-        setProperty(HPropName.LINE_COLOR, w);
-        return this;
-    }
+//    @Override
+//    public HNode setLineColor(String w) {
+//        setProperty(HPropName.LINE_COLOR, w);
+//        return this;
+//    }
 
     @Override
     public HNode setGridColor(String w) {

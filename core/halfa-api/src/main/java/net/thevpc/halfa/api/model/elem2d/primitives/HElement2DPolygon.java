@@ -10,8 +10,8 @@ public class HElement2DPolygon extends AbstractElement2DPrimitive {
 
     public HElement2DPolygon(HPoint2D[] nodes, boolean fill, boolean contour) {
         this.nodes = nodes;
-        this.fill=fill;
-        this.contour=contour;
+        this.fill = fill;
+        this.contour = contour;
     }
 
     public HElement2DPolygon setFill(boolean fill) {

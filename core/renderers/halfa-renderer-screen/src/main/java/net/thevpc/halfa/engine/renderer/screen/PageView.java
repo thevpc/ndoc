@@ -10,31 +10,42 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
+import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.nuts.NSession;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.UUID;
 
 public class PageView extends JComponent {
     public static Dimension REF_SIZE = new Dimension(1000, 1000);
     private HNode page;
     private int index;
     private String uuid;
-    private DocumentView documentView;
+    private HNodeRendererManager rendererManager;
+    private HEngine engine;
+    private NSession session;
+    private HMessageList messages;
 
-    public PageView(HNode page, String uuid, int index, DocumentView documentView) {
+    public PageView(HNode page, int index,
+                    HEngine engine,
+                    HNodeRendererManager rendererManager,
+                    HMessageList messages,
+                    NSession session
+    ) {
         this.page = page;
         this.index = index;
-        this.uuid = uuid;
-        this.documentView = documentView;
+        this.uuid = UUID.randomUUID().toString();
+        this.rendererManager = rendererManager;
+        this.engine = engine;
+        this.messages = messages;
+        this.session = session;
     }
 
     public JComponent component() {
         return this;
-    }
-
-    public void showPage() {
-        documentView.showPage(this);
     }
 
     public String id() {
@@ -69,10 +80,10 @@ public class PageView extends JComponent {
         HGraphics hg = new HGraphicsImpl(g2d);
 
         drawBackground(hg);
-        if(false) {
+        if (false) {
             drawGrid(hg);
         }
-        HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size, this.documentView.session(),documentView.messages());
+        HNodeRendererContext ctx = new MyHPartRendererContextImpl(g2d, size, session, messages);
         for (HNode child : page.children()) {
             render(child, ctx);
         }
@@ -93,8 +104,8 @@ public class PageView extends JComponent {
         Dimension size = getSize();
         Color color = Color.gray;
         g.setColor(color);
-        double rowsSize = 10;
-        double columnsSize = 10;
+        TsonElement rowsSize = Tson.ofDouble(10,"%");
+        TsonElement columnsSize = Tson.ofDouble(10,"%");
 
         Stroke os = g.getStroke();
         Stroke dashed = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
@@ -102,8 +113,9 @@ public class PageView extends JComponent {
 
         g.setStroke(dashed);
 
-        double rowsSizeEff = rowsSize / 100.0 * size.height;
-        double columnsSizeEff = columnsSize / 100.0 * size.width;
+        HSizeRef sizeRef = new HSizeRef(size.getWidth(),size.getHeight(),size.getWidth(),size.getHeight());
+        double rowsSizeEff = sizeRef.x(rowsSize).get();
+        double columnsSizeEff = sizeRef.y(columnsSize).get();
 
         int rowsCount = (int) (size.height * 100 / rowsSizeEff + 0.5);
         int columnsCount = (int) (size.width * 100 / columnsSizeEff + 0.5);
@@ -121,29 +133,24 @@ public class PageView extends JComponent {
         g.setStroke(os);
     }
 
-//    public HNode computeParts() {
-//        List<HNode> parts = page.children();
-//
-//        return documentView.engine().documentFactory().stack(0, 0, parts.toArray(new HNode[0]));
-//    }
 
     public void render(HNode p, HNodeRendererContext ctx) {
-        if(p.isTemplate()){
+        if (p.isTemplate()) {
             return;
         }
-        HNodeRenderer r = documentView.getRendererManager().getRenderer(p.type()).get();
+        HNodeRenderer r = rendererManager.getRenderer(p.type()).get();
         r.render(p, ctx);
     }
 
 
     private class MyHPartRendererContextImpl extends HPartRendererContextImpl {
         public MyHPartRendererContextImpl(Graphics2D g2d, Dimension size, NSession session, HMessageList messages) {
-            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()), session,messages);
+            super(g2d, size, new Bounds2(0, 0, size.getWidth(), size.getHeight()), session, messages);
         }
 
         @Override
         public HNodeRendererManager manager() {
-            return documentView.getRendererManager();
+            return rendererManager;
         }
 
         @Override
@@ -153,7 +160,7 @@ public class PageView extends JComponent {
 
         @Override
         public HEngine engine() {
-            return documentView.engine();
+            return engine;
         }
     }
 

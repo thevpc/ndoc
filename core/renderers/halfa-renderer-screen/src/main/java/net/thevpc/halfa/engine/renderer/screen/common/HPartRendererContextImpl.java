@@ -26,7 +26,7 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
     private NSession session;
     private HMessageList messages;
 
-    public HPartRendererContextImpl(Graphics2D g, Dimension bound, Bounds2 globalBound, NSession session,HMessageList messages) {
+    public HPartRendererContextImpl(Graphics2D g, Dimension bound, Bounds2 globalBound, NSession session, HMessageList messages) {
         this.bound = new Bounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.session = session;

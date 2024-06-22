@@ -7,7 +7,7 @@ import net.thevpc.nuts.util.NMsg;
 
 import java.time.Instant;
 
-public class HMessageListImpl implements HMessageList{
+public class HMessageListImpl implements HMessageList {
     private NSession session;
     private HResource defaultSource;
 
@@ -18,12 +18,12 @@ public class HMessageListImpl implements HMessageList{
 
     @Override
     public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
-        Instant time=Instant.now();
-        if(type==null){
-            type=HMessageType.INFO;
+        Instant time = Instant.now();
+        if (type == null) {
+            type = HMessageType.INFO;
         }
-        if(source==null){
-            source=defaultSource;
+        if (source == null) {
+            source = defaultSource;
         }
         session.out().println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
                 source == null ? null : source.shortName(),

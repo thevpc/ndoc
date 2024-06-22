@@ -36,15 +36,15 @@ public class Bounds2 {
     }
 
     public Double getCenterX() {
-        if(x!=null && w!=null){
-            return x+w/2;
+        if (x != null && w != null) {
+            return x + w / 2;
         }
         return null;
     }
 
     public Double getCenterY() {
-        if(y!=null && h!=null){
-            return y+h/2;
+        if (y != null && h != null) {
+            return y + h / 2;
         }
         return null;
     }
@@ -73,8 +73,8 @@ public class Bounds2 {
     }
 
     public Bounds2 expand(Bounds2 s) {
-        if(s==null){
-            return new Bounds2(x,y,w,h);
+        if (s == null) {
+            return new Bounds2(x, y, w, h);
         }
 
         Double xx1 = HUtils.min(getMinX(), s.getMinX());
@@ -84,8 +84,8 @@ public class Bounds2 {
         return new Bounds2(
                 xx1,
                 yy1,
-                HUtils.doubleOf(xx2)-HUtils.doubleOf(xx1),
-                HUtils.doubleOf(yy2)-HUtils.doubleOf(yy1)
+                HUtils.doubleOf(xx2) - HUtils.doubleOf(xx1),
+                HUtils.doubleOf(yy2) - HUtils.doubleOf(yy1)
         );
     }
 

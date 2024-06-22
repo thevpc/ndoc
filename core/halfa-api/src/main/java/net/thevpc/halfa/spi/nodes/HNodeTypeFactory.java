@@ -8,6 +8,7 @@ import net.thevpc.tson.TsonElement;
 
 public interface HNodeTypeFactory {
     void init(HEngine engine);
+
     String id();
 
     boolean isContainer();
@@ -20,7 +21,7 @@ public interface HNodeTypeFactory {
 
     HNode newNode();
 
-    default boolean validateNode(HNode node){
+    default boolean validateNode(HNode node) {
         return false;
     }
 }

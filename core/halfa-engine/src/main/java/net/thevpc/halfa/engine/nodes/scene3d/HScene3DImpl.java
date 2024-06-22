@@ -25,8 +25,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "camera-orientation":
-                        case "light-orientation":
-                        {
+                        case "light-orientation": {
                             NOptional<HPoint3D> p2d = v.asHPoint3D();
                             if (p2d.isPresent()) {
                                 node.setProperty(spp.getNameId(), p2d.get());

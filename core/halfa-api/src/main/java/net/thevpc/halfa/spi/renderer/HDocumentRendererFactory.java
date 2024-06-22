@@ -7,7 +7,6 @@ package net.thevpc.halfa.spi.renderer;
 import net.thevpc.nuts.NCallableSupport;
 
 /**
- *
  * @author vpc
  */
 public interface HDocumentRendererFactory {

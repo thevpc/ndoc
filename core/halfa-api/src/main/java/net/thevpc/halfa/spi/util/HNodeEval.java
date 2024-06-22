@@ -18,12 +18,11 @@ import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonArray;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementHeader;
-import static net.thevpc.tson.TsonElementType.NAME;
+
 import net.thevpc.tson.TsonFunction;
 import net.thevpc.tson.TsonName;
 
 /**
- *
  * @author vpc
  */
 public class HNodeEval implements ObjectEvalContext {
@@ -112,7 +111,7 @@ public class HNodeEval implements ObjectEvalContext {
             switch (ee.type()) {
                 case NAME: {
                     TsonName r = ee.toName();
-                    String u = r.getName();
+                    String u = r.value();
                     if (u.startsWith("$")) {
                         String varName = u.substring(1);
                         return evalVar(varName);

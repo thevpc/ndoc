@@ -6,5 +6,5 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import java.awt.*;
 
 public interface HDocumentLayer {
-    void draw(DocumentView doc, Dimension size, HGraphics g) ;
+    void draw(DocumentView doc, Dimension size, HGraphics g);
 }

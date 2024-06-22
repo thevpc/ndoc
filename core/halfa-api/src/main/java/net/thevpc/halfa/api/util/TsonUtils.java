@@ -6,13 +6,13 @@ package net.thevpc.halfa.api.util;
 
 import java.awt.Color;
 import java.util.Arrays;
+
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementBase;
 
 /**
- *
  * @author vpc
  */
 public class TsonUtils {
@@ -51,6 +51,9 @@ public class TsonUtils {
     }
 
     public static TsonElement toTson(Color color) {
-        return Tson.ofString("#" + Integer.toHexString(color.getRGB()));
+        final String PATTERN = "#%02x%02x%02x";
+        return Tson.ofString(
+                String.format(PATTERN, color.getRed(), color.getGreen(), color.getBlue()).toUpperCase()
+        );
     }
 }

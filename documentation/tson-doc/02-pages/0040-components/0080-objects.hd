@@ -4,13 +4,25 @@
     }
     @OneColumn{
         ul{
-            "this is an example"
+            "Objects can key value pairs"
             source(
                 tson
                 """
                     {
-                        name:"myObject",
-                        enabled,
+                        name:"myObject"
+                        count:12
+                        enabled:true
+                    }
+                """
+            )
+            "Or any other constructs"
+            source(
+                tson
+                """
+                    {
+                        name:"myObject"
+                        enabled
+                        max(12,13)
                     }
                 """
             )

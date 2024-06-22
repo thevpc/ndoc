@@ -10,6 +10,8 @@ import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.util.HSizeRef;
+import net.thevpc.halfa.spi.util.ObjEx;
 
 import java.awt.*;
 
@@ -50,14 +52,15 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
             if (!ctx.isDry()) {
                 Rotation rotation = HValueTypeParser.getRotation(p, ctx, HPropName.ROTATE).orElse(null);
                 if (rotation != null) {
-                    Double angle = rotation.getAngle();
+                    double angle = ObjEx.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
                         angle = angle / 180.0 * Math.PI;
                         if (angle != 0) {
                             HGraphics g = ctx.graphics();
                             nv = (Graphics2D) g.context().create();
-                            double rotX = rotation.getX() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
-                            double rotY = rotation.getY() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
+                            ///HSizeRef sr=new HSizeRef();
+                            double rotX = ObjEx.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
+                            double rotY = ObjEx.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
                             if (HPropValueByNameParser.isDebug(p, ctx)) {
                                 g.setColor(HPropValueByNameParser.getDebugColor(p, ctx));
                                 g.drawRect(selfBounds);

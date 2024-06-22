@@ -12,7 +12,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
  */
 public class HOrderedListImpl extends AbstractHNodeTypeFactory {
     public HOrderedListImpl() {
-        super(true, HNodeType.ORDERED_LIST,"ol");
+        super(true, HNodeType.ORDERED_LIST, "ol");
     }
 
 }

@@ -9,7 +9,7 @@ public class Double3 implements ToTson {
     private Double y;
     private Double z;
 
-    public Double3(Number x, Number y,Number z) {
+    public Double3(Number x, Number y, Number z) {
         this.x = x == null ? null : x.doubleValue();
         this.y = y == null ? null : y.doubleValue();
         this.z = z == null ? null : z.doubleValue();
@@ -29,7 +29,7 @@ public class Double3 implements ToTson {
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y+ ", " + z + ')';
+        return "(" + x + ", " + y + ", " + z + ')';
     }
 
     public Double3 mul(double wx, double wy, double wz) {

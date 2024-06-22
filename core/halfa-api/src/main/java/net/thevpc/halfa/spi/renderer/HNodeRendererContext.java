@@ -8,6 +8,8 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.util.HSizeRef;
+import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
@@ -57,4 +59,7 @@ public interface HNodeRendererContext {
     HNodeRendererContext withBounds(HNode t, Bounds2 bounds2);
 
     HNodeRendererContext withGraphics(HGraphics graphics);
+
+    HSizeRef sizeRef();
+
 }

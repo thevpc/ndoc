@@ -15,6 +15,7 @@
         <module>core/renderers/halfa-renderer-html</module>
         <module>core/renderers/halfa-renderer-screen</module>
         <module>test/halfa-examples</module>
+        <module>core/halfa-viewer</module>
     </modules>
     <properties>
     </properties>

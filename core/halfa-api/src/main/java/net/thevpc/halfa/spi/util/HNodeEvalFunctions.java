@@ -8,11 +8,10 @@ import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
 /**
- *
  * @author vpc
  */
-public interface HNodeEvalFunctions  {
+public interface HNodeEvalFunctions {
 
-    public NOptional<TsonElement> evalFunction(String varName,TsonElement[] vars) ;
+    public NOptional<TsonElement> evalFunction(String varName, TsonElement[] vars);
 
 }

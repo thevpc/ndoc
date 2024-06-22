@@ -43,8 +43,7 @@ public class ZigzagStroke implements Stroke {
                     ObjEx.SimplePair ke = sp.get();
                     switch (HUtils.uid(ke.getName())) {
                         case "amp":
-                        case "amplitude":
-                        {
+                        case "amplitude": {
                             amplitude = ke.getValue().asDouble().orElse(amplitude);
                             break;
                         }

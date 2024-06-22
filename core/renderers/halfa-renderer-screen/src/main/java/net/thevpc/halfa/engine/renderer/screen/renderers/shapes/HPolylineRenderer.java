@@ -24,12 +24,12 @@ public class HPolylineRenderer extends AbstractHNodeRenderer {
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 b = selfBounds(p, ctx);
         HGraphics g = ctx.graphics();
-        HPoint2D[] points =  ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().get();
+        HPoint2D[] points = ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().get();
         if (!ctx.isDry()) {
-            Paint fc = HPropValueByNameParser.resolveLineColor(p, ctx, true);
+            Paint fc = HPropValueByNameParser.resolveForegroundColor(p, ctx, true);
             g.draw2D(HElement2DFactory.polyline(points)
                     .setLineStroke(HNodeRendererUtils.resolveStroke(p, g, ctx))
                     .setLinePaint(fc));

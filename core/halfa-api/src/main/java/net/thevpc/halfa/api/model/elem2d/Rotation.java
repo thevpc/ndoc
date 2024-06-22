@@ -4,27 +4,28 @@ import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonNumber;
 
 public class Rotation implements ToTson {
-    private Double angle;
-    private Double x;
-    private Double y;
+    private TsonElement angle;
+    private TsonElement x;
+    private TsonElement y;
 
-    public Rotation(Number angle, Number x,Number y) {
-        this.angle = HUtils.doubleOf(angle);
-        this.x = HUtils.doubleOf(x);
-        this.y = HUtils.doubleOf(y);
+    public Rotation(TsonElement angle, TsonElement x, TsonElement y) {
+        this.angle = angle;
+        this.x = x;
+        this.y = y;
     }
 
-    public Double getAngle() {
+    public TsonElement getAngle() {
         return angle;
     }
 
-    public Double getX() {
+    public TsonElement getX() {
         return x;
     }
 
-    public Double getY() {
+    public TsonElement getY() {
         return y;
     }
 
@@ -39,9 +40,9 @@ public class Rotation implements ToTson {
     @Override
     public TsonElement toTson() {
         return Tson.ofUplet(
-                Tson.ofDouble(angle),
-                Tson.ofDouble(x),
-                Tson.ofDouble(y)
+                angle,
+                x,
+                y
         ).build();
     }
 

@@ -39,7 +39,7 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
 
     @Override
     public HNode ofPageGroup() {
-        return  of(HNodeType.PAGE_GROUP);
+        return of(HNodeType.PAGE_GROUP);
     }
 
 
@@ -121,34 +121,34 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
 
     @Override
     public HNode ofFlow() {
-        return  of(HNodeType.FLOW);
+        return of(HNodeType.FLOW);
     }
 
     @Override
     public HNode ofStack() {
-        return  of(HNodeType.STACK);
+        return of(HNodeType.STACK);
     }
 
     @Override
     public HNode ofUnorderedList() {
-        return  of(HNodeType.UNORDERED_LIST);
+        return of(HNodeType.UNORDERED_LIST);
     }
 
     @Override
     public HNode ofOrderedList() {
-        return  of(HNodeType.ORDERED_LIST);
+        return of(HNodeType.ORDERED_LIST);
     }
 
     @Override
     public HNode ofGrid(int cols, int rows) {
-        return  ofGrid()
+        return ofGrid()
                 .setProperty(HPropName.COLUMNS, cols)
                 .setProperty(HPropName.ROWS, rows)
                 ;
     }
 
     public HNode ofGrid() {
-        return  of(HNodeType.GRID);
+        return of(HNodeType.GRID);
     }
 
     @Override

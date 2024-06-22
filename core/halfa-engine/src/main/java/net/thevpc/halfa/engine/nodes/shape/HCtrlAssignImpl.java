@@ -42,9 +42,9 @@ public class HCtrlAssignImpl extends AbstractHNodeTypeFactory {
                     String nnn = NStringUtils.trim(nn.get());
                     if (nnn.length() > 1 && nnn.startsWith("$")) {
                         return NCallableSupport.of(10, () -> f.ofAssign(
-                                        nnn.substring(1),
-                                        v
-                                ));
+                                nnn.substring(1),
+                                v
+                        ));
                     }
                 }
                 break;

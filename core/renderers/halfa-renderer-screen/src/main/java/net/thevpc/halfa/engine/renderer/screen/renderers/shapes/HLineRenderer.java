@@ -22,14 +22,14 @@ public class HLineRenderer extends AbstractHNodeRenderer {
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 b = selfBounds(p, ctx);
         HPoint2D from = HPoint.ofParent(ObjEx.ofProp(p, HPropName.FROM).asHPoint2D().get()).valueHPoint2D(b, ctx.getGlobalBounds());
         HPoint2D to = HPoint.ofParent(ObjEx.ofProp(p, HPropName.TO).asHPoint2D().get()).valueHPoint2D(b, ctx.getGlobalBounds());
         HGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
-            Paint fc = HPropValueByNameParser.resolveLineColor(p, ctx, true);
-            g.draw2D(HElement2DFactory.line(from,to)
+            Paint fc = HPropValueByNameParser.resolveForegroundColor(p, ctx, true);
+            g.draw2D(HElement2DFactory.line(from, to)
                     .setLineStroke(HNodeRendererUtils.resolveStroke(p, g, ctx))
                     .setLinePaint(fc));
         }

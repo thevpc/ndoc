@@ -29,18 +29,16 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
 //        HGraphics g = ctx.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
-        HGridRendererHelper h=new HGridRendererHelper(p.children());
-        return h.computeBound(p,ctx,expectedBounds);
+        HGridRendererHelper h = new HGridRendererHelper(p.children());
+        return h.computeBound(p, ctx, expectedBounds);
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 expectedBounds = selfBounds(p, ctx);
-        HGridRendererHelper h=new HGridRendererHelper(p.children());
+        HGridRendererHelper h = new HGridRendererHelper(p.children());
         h.render(p, ctx, expectedBounds);
     }
-
-
 
 
 }

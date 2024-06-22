@@ -20,7 +20,7 @@
             size:(50,50),
             background:$palette[3],
             rotate:45,
-            line-color:$palette[1],
+            color:$palette[1],
 //            stroke:basic(dash:[30],width:5)
             stroke:sloppy
         )

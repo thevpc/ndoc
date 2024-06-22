@@ -41,7 +41,7 @@ public class HImageImpl extends AbstractHNodeTypeFactory {
     @Override
     public TsonElement toTson(HNode item) {
         return ToTsonHelper
-                .of(item,engine())
+                .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();
     }

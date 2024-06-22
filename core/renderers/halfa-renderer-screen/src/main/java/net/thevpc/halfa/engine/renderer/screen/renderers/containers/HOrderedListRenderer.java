@@ -20,8 +20,8 @@ public class HOrderedListRenderer extends ConvertedHPartRenderer {
         super(HNodeType.ORDERED_LIST);
     }
 
-    public HNode convert(HNode p, HNodeRendererContext ctx){
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
+    public HNode convert(HNode p, HNodeRendererContext ctx) {
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
         HDocumentFactory f = ctx.documentFactory();
         List<HNode> all = new ArrayList<>();
         for (HNode child : p.children()) {
@@ -29,8 +29,8 @@ public class HOrderedListRenderer extends ConvertedHPartRenderer {
             all.add(child.addStyleClasses("ol-item"));
         }
         return f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HProp.ofInt(HPropName.COLUMNS,2))
-                .setProperty(HProp.ofInt(HPropName.ROWS,2))
+                .setProperty(HProp.ofInt(HPropName.COLUMNS, 2))
+                .setProperty(HProp.ofInt(HPropName.ROWS, 2))
                 .setProperty(HProps.columnsWeight(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]))
                 ;

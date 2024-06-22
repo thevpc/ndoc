@@ -24,8 +24,8 @@ public interface HGraphics {
     Light3D setLight3D(Light3D light3D);
 
     void drawArrayHead(HPoint2D origin, Vector2D direction,
-            double arrowWidth, double arrowHeight,
-            HArrayHead head
+                       double arrowWidth, double arrowHeight,
+                       HArrayHead head
     );
 
     AffineTransform getTransform();
@@ -53,7 +53,9 @@ public interface HGraphics {
     Rectangle2D getStringBounds(AttributedCharacterIterator iterator);
 
     FontMetrics getFontMetrics();
+
     FontMetrics getFontMetrics(Font f);
+
     FontRenderContext getFontRenderContext();
 
     Font getFont();

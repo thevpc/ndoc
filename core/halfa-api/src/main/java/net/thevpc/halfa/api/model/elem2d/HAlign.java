@@ -18,21 +18,30 @@ public enum HAlign {
     NONE;
 
     public NOptional<Double2> toPosition() {
-        switch (this){
-            case TOP:return NOptional.of(new Double2(50,0));
-            case BOTTOM:return NOptional.of(new Double2(50,100));
-            case LEFT:return NOptional.of(new Double2(0,50));
-            case RIGHT:return NOptional.of(new Double2(100,50));
-            case TOP_LEFT:return NOptional.of(new Double2(0,0));
-            case CENTER:return NOptional.of(new Double2(50,50));
-            case TOP_RIGHT:return NOptional.of(new Double2(100,0));
-            case BOTTOM_RIGHT:return NOptional.of(new Double2(100,100));
-            case BOTTOM_LEFT:return NOptional.of(new Double2(0,100));
-            case NONE:{
+        switch (this) {
+            case TOP:
+                return NOptional.of(new Double2(50, 0));
+            case BOTTOM:
+                return NOptional.of(new Double2(50, 100));
+            case LEFT:
+                return NOptional.of(new Double2(0, 50));
+            case RIGHT:
+                return NOptional.of(new Double2(100, 50));
+            case TOP_LEFT:
+                return NOptional.of(new Double2(0, 0));
+            case CENTER:
+                return NOptional.of(new Double2(50, 50));
+            case TOP_RIGHT:
+                return NOptional.of(new Double2(100, 0));
+            case BOTTOM_RIGHT:
+                return NOptional.of(new Double2(100, 100));
+            case BOTTOM_LEFT:
+                return NOptional.of(new Double2(0, 100));
+            case NONE: {
                 break;
             }
         }
-        return NOptional.ofEmpty(NMsg.ofC("invalid Double2 from %s",this));
+        return NOptional.ofEmpty(NMsg.ofC("invalid Double2 from %s", this));
     }
 
     public static NOptional<HAlign> parse(String e) {

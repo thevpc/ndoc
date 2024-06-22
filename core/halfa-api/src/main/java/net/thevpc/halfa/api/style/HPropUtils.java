@@ -26,6 +26,7 @@ public class HPropUtils {
         }
         return false;
     }
+
     public static boolean addPoint(HNode line, HPoint3D point) {
         if (point != null) {
             ObjEx o = ObjEx.of(line.getPropertyValue(HPropName.POINTS).orNull());

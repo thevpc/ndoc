@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.renderer.screen.debug;
+package net.thevpc.halfa.debug;
 
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageType;
@@ -20,9 +20,9 @@ public class JTextAreaHMessageList extends JPanel implements HMessageList {
 
     @Override
     public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
-        Instant time=Instant.now();
-        NMsg mm=NMsg.ofC("[%s] [%s] [%s] %s", 
-                time, 
+        Instant time = Instant.now();
+        NMsg mm = NMsg.ofC("[%s] [%s] [%s] %s",
+                time,
                 type,
                 source == null ? null : source.shortName(),
                 message

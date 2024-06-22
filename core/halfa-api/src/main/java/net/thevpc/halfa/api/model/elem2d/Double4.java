@@ -20,12 +20,15 @@ public class Double4 implements ToTson {
     public Double getX1() {
         return x1;
     }
+
     public Double getX2() {
         return x2;
     }
+
     public Double getX3() {
         return x3;
     }
+
     public Double getX4() {
         return x4;
     }

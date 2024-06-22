@@ -14,15 +14,15 @@ public class ParallelogramRenderer extends HPolygonBaseRenderer {
     }
 
     public void render0(HNode p, HNodeRendererContext ctx) {
-        ctx=ctx.withDefaultStyles(p,defaultStyles);
-        double w=20;
-        HPoint2D[] points =new HPoint2D[]{
-                new HPoint2D(0,100),
-                new HPoint2D(100-w,100),
-                new HPoint2D(100,0),
-                new HPoint2D(w,0),
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
+        double w = 20;
+        HPoint2D[] points = new HPoint2D[]{
+                new HPoint2D(0, 100),
+                new HPoint2D(100 - w, 100),
+                new HPoint2D(100, 0),
+                new HPoint2D(w, 0),
         };
-        render(p,points,ctx);
+        render(p, points, ctx);
     }
 
 }

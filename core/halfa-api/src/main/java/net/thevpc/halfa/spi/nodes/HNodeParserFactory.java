@@ -4,7 +4,6 @@ import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.nuts.NCallableSupport;
 
 /**
- *
  * @author vpc
  */
 public interface HNodeParserFactory {

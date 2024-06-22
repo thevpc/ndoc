@@ -64,6 +64,7 @@ public class HProp implements HItem, ToTson {
     public static HProp ofHPoint2D(String name, HPoint2D d) {
         return new HProp(name, d);
     }
+
     public static HProp ofHPoint3D(String name, HPoint3D d) {
         return new HProp(name, d);
     }

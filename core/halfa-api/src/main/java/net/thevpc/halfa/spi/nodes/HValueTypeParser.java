@@ -10,20 +10,24 @@ import net.thevpc.tson.TsonElement;
 import java.awt.*;
 
 public class HValueTypeParser {
-    public static NOptional<Boolean> getBoolean(HNode t, HNodeRendererContext ctx, String propName, String ...propNames) {
-        return  ObjEx.of(ctx.computePropertyValue(t, propName,propNames).orNull()).asBoolean();
+    public static NOptional<Boolean> getBoolean(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asBoolean();
     }
 
-    public static NOptional<Integer> getInt(HNode t, HNodeRendererContext ctx, String propName, String ...propNames) {
-        return  ObjEx.of(ctx.computePropertyValue(t, propName,propNames).orNull()).asInt();
+    public static NOptional<Integer> getIntOrBoolean(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asIntOrBoolean();
+    }
+
+    public static NOptional<Integer> getInt(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asInt();
     }
 
     public static NOptional<String> getStringOrName(HNode t, HNodeRendererContext ctx, String propName) {
-        return  ObjEx.of(ctx.computePropertyValue(t, propName).orNull()).asStringOrName();
+        return ObjEx.of(ctx.computePropertyValue(t, propName).orNull()).asStringOrName();
     }
 
-    public static NOptional<Paint> getPaint(HNode t, HNodeRendererContext ctx, String propName, String ...propNames) {
-        ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName,propNames).orElse(null));
+    public static NOptional<Paint> getPaint(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orElse(null));
         return NOptional.of(r.asColor().orElse(null));
     }
 
@@ -41,6 +45,10 @@ public class HValueTypeParser {
 
     public static NOptional<Double2> getDouble2OrHAlign(HNode t, HNodeRendererContext ctx, String s) {
         return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
+    }
+
+    public static NOptional<TsonNumber2> getTsonNumber2Or1OrHAlign(HNode t, HNodeRendererContext ctx, String s) {
+        return ObjEx.of(ctx.computePropertyValue(t, s).orNull()).asTsonNumber2Or1OrHAlign();
     }
 
     public static NOptional<Double4> getDouble4(HNode t, HNodeRendererContext ctx, String s) {
