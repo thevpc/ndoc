@@ -2,7 +2,7 @@ package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
 import net.thevpc.halfa.engine.renderer.screen.common.shapes.ShapeFactory;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementType;

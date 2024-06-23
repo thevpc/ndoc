@@ -3,7 +3,7 @@ package net.thevpc.halfa.engine.parser.nodes;
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;

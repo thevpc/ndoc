@@ -1,10 +1,9 @@
 package net.thevpc.halfa.api.style;
 
-import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.ArrayList;

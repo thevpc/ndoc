@@ -8,7 +8,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.util.NOptional;
@@ -57,16 +57,16 @@ public class HRichTextHelper {
                 HRichTextToken c = row.tokens.get(j);
                 c.xOffset = maxX;
                 g.setFont(c.font);
-                if (c.attributedString == null) {
-                    c.textBounds = g.getStringBounds(c.text);
-                } else {
-                    c.textBounds = g.getStringBounds(c.text);
-                    //TextLayout textLayout=new TextLayout(          c.attributedString.getIterator(),g.getFontRenderContext());
-                    //c.textBounds=textLayout.getBounds();
-                    //c.textBounds = g.getStringBounds(c.attributedString.getIterator());
-                }
-                maxX += c.textBounds.getWidth();
-                maxY = Math.max(maxY, c.textBounds.getHeight());
+//                if (c.attributedString == null) {
+//                    c.bounds = g.getStringBounds(c.text);
+//                } else {
+//                    c.bounds = g.getStringBounds(c.text);
+//                    //TextLayout textLayout=new TextLayout(          c.attributedString.getIterator(),g.getFontRenderContext());
+//                    //c.textBounds=textLayout.getBounds();
+//                    //c.textBounds = g.getStringBounds(c.attributedString.getIterator());
+//                }
+                maxX += c.bounds.getWidth();
+                maxY = Math.max(maxY, c.bounds.getHeight());
             }
             row.textBounds = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
             if (i == 0) {
@@ -81,7 +81,7 @@ public class HRichTextHelper {
     }
 
     public interface ImagePainter {
-        void paint(HGraphics g, int x, int y);
+        void paint(HGraphics g, double x, double y);
 
         Double2 size();
     }
@@ -96,7 +96,7 @@ public class HRichTextHelper {
             formula = new TeXFormula("?error?");
             ex.printStackTrace();
         }
-        float size = (float) (fontSize * 1.188);
+        float size = (float) (fontSize / 2.0);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
         // insert a border
@@ -106,9 +106,15 @@ public class HRichTextHelper {
         }
         return new ImagePainter() {
             @Override
-            public void paint(HGraphics g, int x, int y) {
+            public void paint(HGraphics g, double x, double y) {
+                Font plainFont = g.getFont().deriveFont(g.getFont().getSize()/2f);
+                g.setFont(plainFont);
+                FontMetrics fontMetrics = g.getFontMetrics(plainFont);
+                double xx=x;
+                double yy=y;//+ascent-descent;
                 icon.setForeground(g.getColor());
                 icon.paintIcon(null, g.context(), (int) x, (int) y /*- icon.getIconHeight()*/);
+                g.drawRect(xx,yy,icon.getIconWidth(), icon.getIconHeight());
             }
 
             public Double2 size() {
@@ -118,14 +124,14 @@ public class HRichTextHelper {
     }
 
     public void render(HNode p, HNodeRendererContext ctx, Bounds2 bgBounds, AbstractHNodeRenderer rr, Bounds2 selfBounds) {
-        boolean debug = false;
+        boolean debug = HValueByName.isDebug(p, ctx);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
         HGraphics g = ctx.graphics();
-        Font plainFont = HPropValueByNameParser.getFont(p, ctx);
+        Font plainFont = HValueByName.getFont(p, ctx);
         HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        Paint foreground = HPropValueByNameParser.resolveForegroundColor(p, ctx,true);
-        NOptional<Shadow> shadowOptional = HPropValueByNameParser.readStyleAsShadow(p, HPropName.SHADOW, ctx);
+        Paint foreground = HValueByName.resolveForegroundColor(p, ctx,true);
+        NOptional<Shadow> shadowOptional = HValueByName.readStyleAsShadow(p, HPropName.SHADOW, ctx);
         if (shadowOptional.isPresent()) {
             Shadow shadow = shadowOptional.get();
             HPoint2D translation = shadow.getTranslation();
@@ -135,7 +141,7 @@ public class HRichTextHelper {
             Paint shadowColor = shadow.getColor();
             if (shadowColor == null) {
                 if (foreground instanceof Color) {
-                    shadowColor = ((Color) foreground).brighter();
+                    shadowColor = ((Color) foreground).darker();
                 } else {
                     shadowColor = foreground;
                 }
@@ -172,6 +178,7 @@ public class HRichTextHelper {
         for (HRichTextRow row : this.rows) {
             for (HRichTextToken col : row.tokens) {
                 g.setPaint(foreground);
+                g.setFont(plainFont);
                 switch (col.type) {
                     case PLAIN: {
                         int ascent = g.getFontMetrics(plainFont).getAscent();
@@ -182,8 +189,8 @@ public class HRichTextHelper {
                             g.drawRect(
                                     x + col.xOffset,
                                     y + row.yOffset,
-                                    col.textBounds.getWidth(),
-                                    col.textBounds.getHeight()
+                                    col.bounds.getWidth(),
+                                    col.bounds.getHeight()
                             );
                         }
                         break;
@@ -197,11 +204,24 @@ public class HRichTextHelper {
                             g.drawRect(
                                     x + col.xOffset,
                                     y + row.yOffset,
-                                    col.textBounds.getWidth(),
-                                    col.textBounds.getHeight()
+                                    col.bounds.getWidth(),
+                                    col.bounds.getHeight()
                             );
                         }
                         break;
+                    }
+                    case IMAGE_PAINTER:{
+                        Rectangle2D b1 = col.bounds;
+                        Double2 b2 = col.imagePainter.size();
+                        col.imagePainter.paint(g,(x + col.xOffset),y + row.yOffset);
+                        if (debug) {
+                            g.drawRect(
+                                    x + col.xOffset,
+                                    y + row.yOffset,
+                                    col.bounds.getWidth(),
+                                    col.bounds.getHeight()
+                            );
+                        }
                     }
                 }
             }

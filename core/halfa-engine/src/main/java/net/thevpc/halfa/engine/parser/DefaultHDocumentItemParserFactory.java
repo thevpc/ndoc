@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.parser.nodes.*;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;

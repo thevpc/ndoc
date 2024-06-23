@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -39,14 +39,14 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
         double x = b.getX();
         double y = b.getY();
         HGraphics g = ctx.graphics();
-        Boolean threeD = HPropValueByNameParser.get3D(p, ctx);
-        Boolean raised = HPropValueByNameParser.getRaised(p, ctx);
+        Boolean threeD = HValueByName.get3D(p, ctx);
+        Boolean raised = HValueByName.getRaised(p, ctx);
         if (raised != null) {
             if (threeD == null) {
                 threeD = true;
             }
         }
-        Double2 roundCorners = HPropValueByNameParser.getRoundCornerArcs(p, ctx);
+        Double2 roundCorners = HValueByName.getRoundCornerArcs(p, ctx);
 
         boolean round = roundCorners != null;
         boolean d3 = threeD == null ? false : threeD;

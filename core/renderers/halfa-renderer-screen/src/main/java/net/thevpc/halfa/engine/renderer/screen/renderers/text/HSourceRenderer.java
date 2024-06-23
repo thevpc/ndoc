@@ -7,7 +7,7 @@ import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.*;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.util.NStringUtils;
 
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.text.NTextCode;
 import net.thevpc.nuts.text.NTexts;
 

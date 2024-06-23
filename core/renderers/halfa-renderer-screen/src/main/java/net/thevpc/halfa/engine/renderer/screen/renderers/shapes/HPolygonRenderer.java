@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 
 public class HPolygonRenderer extends HPolygonBaseRenderer {
     HProperties defaultStyles = new HProperties();

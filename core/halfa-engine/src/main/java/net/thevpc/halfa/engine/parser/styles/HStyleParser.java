@@ -2,7 +2,7 @@ package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.style.*;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.*;

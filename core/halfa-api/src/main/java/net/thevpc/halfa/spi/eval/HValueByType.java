@@ -1,15 +1,14 @@
-package net.thevpc.halfa.spi.nodes;
+package net.thevpc.halfa.spi.eval;
 
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 
-public class HValueTypeParser {
+public class HValueByType {
     public static NOptional<Boolean> getBoolean(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
         return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asBoolean();
     }

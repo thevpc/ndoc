@@ -6,11 +6,11 @@ import net.thevpc.halfa.api.model.elem2d.SizeD;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.strokes.StrokeFactory;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
@@ -26,7 +26,7 @@ public class HNodeRendererUtils {
     }
 
     public static Stroke resolveStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        TsonElement strokeElem = HPropValueByNameParser.getStroke(t, ctx);
+        TsonElement strokeElem = HValueByName.getStroke(t, ctx);
         if (strokeElem != null) {
             return StrokeFactory.createStroke(strokeElem);
         }
@@ -43,7 +43,7 @@ public class HNodeRendererUtils {
     }
 
     public static void applyFont(HNode t, HGraphics g, HNodeRendererContext ctx) {
-        g.setFont(HPropValueByNameParser.getFont(t, ctx));
+        g.setFont(HValueByName.getFont(t, ctx));
     }
 
     public static SizeD mapDim(double w, double h, HNodeRendererContext ctx) {
@@ -89,7 +89,7 @@ public class HNodeRendererUtils {
         if (ctx.isDry()) {
             return false;
         }
-        Paint fg = HPropValueByNameParser.resolveForegroundColor(t, ctx,force);
+        Paint fg = HValueByName.resolveForegroundColor(t, ctx,force);
         if (fg != null) {
             g.setPaint(fg);
             return true;
@@ -101,7 +101,7 @@ public class HNodeRendererUtils {
         if (ctx.isDry()) {
             return false;
         }
-        Paint bg = HPropValueByNameParser.resolveBackgroundColor(t, ctx);
+        Paint bg = HValueByName.resolveBackgroundColor(t, ctx);
         if (bg != null) {
             g.setPaint(bg);
             return true;
@@ -113,7 +113,7 @@ public class HNodeRendererUtils {
         if (ctx.isDry()) {
             return false;
         }
-        Paint color = HPropValueByNameParser.resolveGridColor(t, ctx);
+        Paint color = HValueByName.resolveGridColor(t, ctx);
         if (color != null) {
             g.setPaint(color);
             return true;
@@ -146,16 +146,16 @@ public class HNodeRendererUtils {
         if (ctx.isDry()) {
             return;
         }
-        if (force || HPropValueByNameParser.isDebug(t, ctx)) {
-            g.setColor(HPropValueByNameParser.getDebugColor(t, ctx));
+        if (force || HValueByName.isDebug(t, ctx)) {
+            g.setColor(HValueByName.getDebugColor(t, ctx));
             g.drawRect(
                     HUtils.doubleOf(a.getMinX()), HUtils.doubleOf(a.getMinY()),
                     HUtils.doubleOf(a.getWidth()), HUtils.doubleOf(a.getHeight())
             );
-            Double2 origin = HPropValueByNameParser.getOrigin(t, ctx,new Double2(a.getWidth(),a.getHeight()));
+            Double2 origin = HValueByName.getOrigin(t, ctx,new Double2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
             double y = origin.getY() + a.getY();
-            g.setColor(HPropValueByNameParser.getDebugColor(t, ctx));
+            g.setColor(HValueByName.getDebugColor(t, ctx));
             int originSize = 6;
             g.fillOval(
                     x - originSize / 2, y - originSize / 2,
@@ -173,7 +173,7 @@ public class HNodeRendererUtils {
             return;
         }
         paintDebugBox(t, ctx, g, a);
-        if (HPropValueByNameParser.requireDrawContour(t, ctx)) {
+        if (HValueByName.requireDrawContour(t, ctx)) {
             if (applyForeground(t, g, ctx, true)) {
                 Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);

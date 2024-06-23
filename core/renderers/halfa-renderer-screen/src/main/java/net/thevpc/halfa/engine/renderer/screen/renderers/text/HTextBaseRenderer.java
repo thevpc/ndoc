@@ -10,15 +10,16 @@ import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.*;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.awt.geom.Rectangle2D;
 import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
@@ -61,13 +62,13 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
     }
 
     public Bounds2 bgBounds(HNode p, HNodeRendererContext ctx) {
-        return HPropValueByNameParser.selfBounds(p, null, null, ctx);
+        return HValueByName.selfBounds(p, null, null, ctx);
     }
 
     public Bounds2 selfBounds(HNode p, HNodeRendererContext ctx) {
         HRichTextHelper helper = createRichTextHelper(p, ctx);
         Bounds2 bounds2 = helper.computeBound(ctx);
-        return HPropValueByNameParser.selfBounds(p, new Double2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+        return HValueByName.selfBounds(p, new Double2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
     }
 
     protected abstract HRichTextHelper createRichTextHelper(HNode p, HNodeRendererContext ctx);
@@ -86,7 +87,7 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
         bgBounds = bgBounds.expand(selfBounds);
 
         HNodeRendererContext finalCtx = ctx;
-        if (HPropValueByNameParser.getDebugLevel(p, ctx) >= 10) {
+        if (HValueByName.getDebugLevel(p, ctx) >= 10) {
             g.debugString(
                     "Plain:\n"
                             + "expected=" + bgBounds0 + "\n"
@@ -226,6 +227,8 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                         result.currRow();
                         HRichTextToken col = new HRichTextToken(HRichTextTokenType.PLAIN, np.getText());
                         col.tok = nText;
+                        g.setFont(col.font);
+                        col.bounds = g.getStringBounds(col.text);
                         result.rows.get(result.rows.size() - 1).tokens.add(col);
                     }
                     break;
@@ -246,6 +249,8 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                         col.tok = nText;
                         col.attributedString = new AttributedString(col.text);
                         col.attributedShadowString = new AttributedString(col.text);
+                        g.setFont(col.font);
+                        col.bounds = g.getStringBounds(col.text);
                         result.rows.get(result.rows.size() - 1).tokens.add(col);
                         // Set attributes
                         NTextStyles styles = s.getStyles();
@@ -437,12 +442,16 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
 
     protected void fillPlain(String text, HRichTextHelper richTextHelper, HNode p, HNodeRendererContext ctx) {
         String[] a = text.split("\n");
+        HGraphics g = ctx.graphics();
         for (int j = 0; j < a.length; j++) {
             if (j > 0) {
                 richTextHelper.nextLine();
             }
+            HRichTextToken c = new HRichTextToken(HRichTextTokenType.PLAIN, a[j]);
+            g.setFont(c.font);
+            c.bounds = g.getStringBounds(c.text);
             richTextHelper.currRow().addToken(
-                    new HRichTextToken(HRichTextTokenType.PLAIN, a[j])
+                    c
             );
         }
     }
@@ -453,8 +462,10 @@ public abstract class HTextBaseRenderer extends AbstractHNodeRenderer {
                     HRichTextTokenType.IMAGE_PAINTER,
                     text.toString()
             );
-            double fontSize = HPropValueByNameParser.getFontSize(p, ctx);
+            double fontSize = HValueByName.getFontSize(p, ctx);
             r.imagePainter = richTextHelper.createLatex(text, fontSize);
+            Double2 size = r.imagePainter.size();
+            r.bounds = new Rectangle2D.Double(0,0, size.getX(), size.getX());
             richTextHelper.currRow().addToken(r);
         }
     }

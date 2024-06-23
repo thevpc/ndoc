@@ -8,12 +8,10 @@ import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.ConvertedHPartRenderer;
-import net.thevpc.tson.Tson;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +77,7 @@ public class HUnorderedListRenderer extends ConvertedHPartRenderer {
                 newNode.setProperty(s, v);
             }
         }
-        if(HPropValueByNameParser.isDebug(p, ctx)){
+        if(HValueByName.isDebug(p, ctx)){
             Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
             if(v==null){
                 newNode.setProperty(HPropName.DRAW_GRID, true);

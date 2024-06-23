@@ -7,14 +7,14 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.Gx;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -86,7 +86,7 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (HPropValueByNameParser.getFontSize(p, ctx) * 1.188);
+            float size = (float) (HValueByName.getFontSize(p, ctx) * 1.0);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
@@ -124,13 +124,13 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (HPropValueByNameParser.getFontSize(p, ctx) * 1.188);
+            float size = (float) (HValueByName.getFontSize(p, ctx) * 0.43);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            Bounds2 selfBounds = HPropValueByNameParser.selfBounds((HNode) p
+            Bounds2 selfBounds = HValueByName.selfBounds((HNode) p
                     , new Double2(icon.getIconWidth(), icon.getIconHeight())
                     , null
                     , ctx);

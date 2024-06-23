@@ -1,12 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.common.shapes;
 
-import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
-import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
-
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 
 public class ShapeHelper {

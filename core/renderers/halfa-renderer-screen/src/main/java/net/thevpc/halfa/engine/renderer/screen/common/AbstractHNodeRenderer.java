@@ -3,15 +3,14 @@ package net.thevpc.halfa.engine.renderer.screen.common;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
-import net.thevpc.halfa.spi.nodes.HValueTypeParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
+import net.thevpc.halfa.spi.eval.HValueByType;
 import net.thevpc.halfa.spi.renderer.HNodeRenderer;
 import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
-import net.thevpc.halfa.spi.util.HSizeRef;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 
 import java.awt.*;
 
@@ -42,7 +41,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     }
 
     public void render(HNode p, HNodeRendererContext ctx) {
-        boolean v = HPropValueByNameParser.isVisible(p, ctx);
+        boolean v = HValueByName.isVisible(p, ctx);
         if (!v) {
             return;
         }
@@ -50,7 +49,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         Graphics2D nv = null;
         try {
             if (!ctx.isDry()) {
-                Rotation rotation = HValueTypeParser.getRotation(p, ctx, HPropName.ROTATE).orElse(null);
+                Rotation rotation = HValueByType.getRotation(p, ctx, HPropName.ROTATE).orElse(null);
                 if (rotation != null) {
                     double angle = ObjEx.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
@@ -61,8 +60,8 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
                             ///HSizeRef sr=new HSizeRef();
                             double rotX = ObjEx.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
                             double rotY = ObjEx.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
-                            if (HPropValueByNameParser.isDebug(p, ctx)) {
-                                g.setColor(HPropValueByNameParser.getDebugColor(p, ctx));
+                            if (HValueByName.isDebug(p, ctx)) {
+                                g.setColor(HValueByName.getDebugColor(p, ctx));
                                 g.drawRect(selfBounds);
                                 g.fillRect(rotX - 3, rotY - 3, 6, 6);
 //                            g.drawString(rotX + "," + rotY+" : "+p, 100, 100);
@@ -88,11 +87,11 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
     public abstract void render0(HNode p, HNodeRendererContext ctx);
 
     public Bounds2 bgBounds(HNode p, HNodeRendererContext ctx) {
-        return HPropValueByNameParser.selfBounds(p, null, null, ctx);
+        return HValueByName.selfBounds(p, null, null, ctx);
     }
 
     public Bounds2 selfBounds(HNode t, HNodeRendererContext ctx) {
-        return HPropValueByNameParser.selfBounds(t, null, null, ctx);
+        return HValueByName.selfBounds(t, null, null, ctx);
     }
 
 }

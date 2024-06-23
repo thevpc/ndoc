@@ -11,7 +11,7 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -121,11 +121,15 @@ public class HImageRenderer extends AbstractHNodeRenderer {
                 g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
 
-            HNodeRendererUtils.applyForeground(p, g, ctx,false);
+            HNodeRendererUtils.applyForeground(p, g, ctx, false);
             if (image != null) {
                 // would resize?
-                BufferedImage resized = resize(image, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
-                g.drawImage(resized, (int) x, (int) y, null);
+                int w = HUtils.intOf(b.getWidth());
+                int h = HUtils.intOf(b.getHeight());
+                if (w > 0 && h > 0) {
+                    BufferedImage resized = resize(image, w, h);
+                    g.drawImage(resized, (int) x, (int) y, null);
+                }
             }
         }
         HNodeRendererUtils.paintDebugBox(p, ctx, g, b);

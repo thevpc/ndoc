@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.thevpc.halfa.api.util.TsonUtils;
-import net.thevpc.halfa.spi.util.HNodeEval;
+import net.thevpc.halfa.spi.eval.HNodeEval;
 
 public abstract class HPartRendererContextImpl extends AbstractHNodeRendererContext {
 

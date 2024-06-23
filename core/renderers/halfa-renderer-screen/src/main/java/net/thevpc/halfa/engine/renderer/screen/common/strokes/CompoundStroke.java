@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementType;
 

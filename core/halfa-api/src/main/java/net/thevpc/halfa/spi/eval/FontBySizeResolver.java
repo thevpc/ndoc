@@ -1,0 +1,61 @@
+package net.thevpc.halfa.spi.eval;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
+public class FontBySizeResolver {
+    public static final FontBySizeResolver INSTANCE=new FontBySizeResolver();
+
+    private Map<Key, Font> cache = new HashMap<>();
+
+    private static class Key {
+        String name;
+        int sizeMul100;
+
+        public Key(String name, int sizeMul100) {
+            this.name = name;
+            this.sizeMul100 = sizeMul100;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Key key = (Key) o;
+            return sizeMul100 == key.sizeMul100 && Objects.equals(name, key.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, sizeMul100);
+        }
+    }
+
+    public Font getFont(String name, int style, double height, Function<Font, FontMetrics> fontMetricsFunction) {
+        Key k = new Key(name, (int) (height * 100));
+        return cache.computeIfAbsent(k, r -> getFont0(name, style, height, fontMetricsFunction));
+    }
+
+    public Font getFont0(String name, int style, double dheight, Function<Font, FontMetrics> fontMetricsFunction) {
+        int height = (int) dheight;
+        int size = height;
+        Boolean up = null;
+        while (true) {
+            Font font = new Font(name, style, size);
+            FontMetrics fm = fontMetricsFunction.apply(font);
+            int testHeight = fm.getHeight() + fm.getAscent() + fm.getDescent();
+            if (testHeight < height && up != Boolean.FALSE) {
+                size++;
+                up = Boolean.TRUE;
+            } else if (testHeight > height && up != Boolean.TRUE) {
+                size--;
+                up = Boolean.FALSE;
+            } else {
+                return font;
+            }
+        }
+    }
+}

@@ -8,7 +8,6 @@ import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HSizeRef;
-import net.thevpc.halfa.spi.util.ObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 
