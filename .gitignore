@@ -4,8 +4,8 @@
 /core/renderers/pdf-renderer/target/
 /core/renderers/halfa-renderer-pdf/target/
 /core/renderers/halfa-renderer-html/target/
+/core/renderers/halfa-renderer-screen/target/
 /test/halfa-api/target/
 /test/halfa-examples/target/
 /core/halfa-engine/target/
-/core/halfa-spi-utils/target
-/core/renderers/halfa-renderer-screen/target
+/core/halfa-viewer/target
