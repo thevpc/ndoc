@@ -1,9 +1,8 @@
 package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.style.*;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.*;
@@ -32,7 +31,7 @@ public class HStyleParser {
                 HPropName.COLSPAN,
                 HPropName.ROWSPAN,
                 HPropName.GRID_COLOR,
-                HPropName.LINE_COLOR,
+//                HPropName.LINE_COLOR,
                 HPropName.ROTATE,
                 HPropName.PADDING,
                 HPropName.FONT_SIZE,
@@ -43,6 +42,7 @@ public class HStyleParser {
                 HPropName.FONT_BOLD,
                 HPropName.FONT_ITALIC,
                 HPropName.FONT_UNDERLINED,
+                HPropName.FONT_STRIKE,
                 HPropName.BACKGROUND_COLOR,
                 HPropName.FOREGROUND_COLOR,
                 HPropName.FILL_BACKGROUND,
@@ -105,7 +105,7 @@ public class HStyleParser {
                 return NOptional.of(DefaultHNodeSelector.ofName(s));
             }
             case NAME: {
-                String n = e.toName().getName();
+                String n = e.toName().value();
                 if (n.startsWith(".")) {
                     return NOptional.of(DefaultHNodeSelector.ofClasses(n.substring(1)));
                 }

@@ -57,6 +57,8 @@ public interface HEngine {
 
     TsonElement toTson(HDocument doc);
 
+    TsonElement toTson(HNode node);
+
     NOptional<HProp> computeProperty(HNode node, String propertyName);
 
     List<HProp> computeInheritedProperties(HNode node);

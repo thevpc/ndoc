@@ -43,17 +43,17 @@ public class HProps {
         return new HProp(HPropName.BACKGROUND_COLOR, color);
     }
 
-    public static HProp lineColor(Paint color) {
-        return new HProp(HPropName.LINE_COLOR, color);
-    }
+//    public static HProp lineColor(Paint color) {
+//        return new HProp(HPropName.LINE_COLOR, color);
+//    }
 
     public static HProp gridColor(Paint color) {
         return new HProp(HPropName.GRID_COLOR, color);
     }
 
-    public static HProp lineColor(int color) {
-        return new HProp(HPropName.LINE_COLOR, new Color(color));
-    }
+//    public static HProp lineColor(int color) {
+//        return new HProp(HPropName.LINE_COLOR, new Color(color));
+//    }
 
     public static HProp fontBold() {
         return fontBold(true);
@@ -89,6 +89,10 @@ public class HProps {
 
     public static HProp fontUnderlined(boolean value) {
         return new HProp(HPropName.FONT_UNDERLINED, value);
+    }
+
+    public static HProp fontStrike(boolean value) {
+        return new HProp(HPropName.FONT_STRIKE, value);
     }
 
     public static HProp position(Double2 p) {

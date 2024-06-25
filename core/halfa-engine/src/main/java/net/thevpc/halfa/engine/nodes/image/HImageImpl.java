@@ -11,10 +11,7 @@ import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.ObjEx;
-import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonStringLayout;
 
 
 /**
@@ -41,7 +38,7 @@ public class HImageImpl extends AbstractHNodeTypeFactory {
     @Override
     public TsonElement toTson(HNode item) {
         return ToTsonHelper
-                .of(item,engine())
+                .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();
     }

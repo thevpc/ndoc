@@ -3,6 +3,7 @@ package net.thevpc.halfa.api.util;
 import net.thevpc.halfa.api.resources.HResource;
 
 import java.util.Objects;
+
 public abstract class DefaultHResource implements HResource {
     private Object state;
 

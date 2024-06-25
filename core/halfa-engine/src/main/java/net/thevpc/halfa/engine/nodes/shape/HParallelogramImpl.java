@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HParallelogramImpl extends AbstractHNodeTypeFactory {
 
     public HParallelogramImpl() {
-        super(false, HNodeType.PARALLELOGRAM );
+        super(false, HNodeType.PARALLELOGRAM);
     }
 
 }

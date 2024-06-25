@@ -23,26 +23,26 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return ANY;
     }
 
-    public static DefaultHNodeSelector of(String[] names,String[] types,String[] classes) {
-        if(
-                (names==null || names.length==0)
-                && (types==null || types.length==0)
-                && (classes==null || classes.length==0)
-        ){
+    public static DefaultHNodeSelector of(String[] names, String[] types, String[] classes) {
+        if (
+                (names == null || names.length == 0)
+                        && (types == null || types.length == 0)
+                        && (classes == null || classes.length == 0)
+        ) {
             return ofAny();
         }
         return new DefaultHNodeSelector(names, types, classes, false);
     }
 
-    public static DefaultHNodeSelector ofClasses(String ... cls) {
+    public static DefaultHNodeSelector ofClasses(String... cls) {
         return ANY.andClass(cls);
     }
 
-    public static DefaultHNodeSelector ofName(String ... names) {
+    public static DefaultHNodeSelector ofName(String... names) {
         return ANY.andName(names);
     }
 
-    public static DefaultHNodeSelector ofType(String ...types) {
+    public static DefaultHNodeSelector ofType(String... types) {
         return ANY.andType(types);
     }
 
@@ -52,7 +52,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             for (String i : names) {
                 String n = NStringUtils.trimToNull(i);
                 if (n != null) {
-                    if(!n.equals("*")) {
+                    if (!n.equals("*")) {
                         this.names.add(n);
                     }
                 }
@@ -62,7 +62,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
             for (String i : classes) {
                 String n = NStringUtils.trimToNull(i);
                 if (n != null) {
-                    if(!n.equals("*")) {
+                    if (!n.equals("*")) {
                         this.classes.add(NNameFormat.LOWER_SNAKE_CASE.format(n));
                     }
                 }
@@ -137,11 +137,11 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return c;
     }
 
-    private Set<String> computeClasses(HNode n){
-        Set<String> all=new HashSet<>();
-        while(n!=null){
+    private Set<String> computeClasses(HNode n) {
+        Set<String> all = new HashSet<>();
+        while (n != null) {
             all.addAll(n.styleClasses());
-            n=n.parent();
+            n = n.parent();
         }
         return all;
     }
@@ -221,13 +221,13 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         }
         if (!classes.isEmpty()) {
             for (String name : names) {
-                c.add(Tson.name("."+name));
+                c.add(Tson.name("." + name));
             }
         }
-        if(c.isEmpty()){
+        if (c.isEmpty()) {
             return Tson.ofString("*");
         }
-        if(c.size()==1){
+        if (c.size() == 1) {
             return c.get(0);
         }
         return Tson.ofUplet(c.toArray(new TsonElementBase[0])).build();

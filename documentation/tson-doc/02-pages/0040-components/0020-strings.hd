@@ -8,8 +8,10 @@
             source(
                 tson
                 """
-                    "a" 'b' `c`
-                    \"\"\"a\"\"\"
+                    "a" 'b' `c` simple strings
+                    \"""
+                        block string
+                    \"""
                     '''b'''
                     ```c```
                 """

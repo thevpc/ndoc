@@ -58,10 +58,10 @@ public class Element3DFactory {
     }
 
     public static Element3DSurface surface(double[] x, double[] y, HFunctionXY f) {
-        List<HPoint3D> all=new ArrayList<>();
+        List<HPoint3D> all = new ArrayList<>();
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < y.length; j++) {
-                all.add(new HPoint3D(x[i],y[j],f.apply(x[i],y[j])));
+                all.add(new HPoint3D(x[i], y[j], f.apply(x[i], y[j])));
             }
         }
         return new Element3DSurface(all.toArray(new HPoint3D[0]));

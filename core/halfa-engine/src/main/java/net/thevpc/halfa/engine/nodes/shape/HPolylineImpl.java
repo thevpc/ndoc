@@ -1,7 +1,6 @@
 package net.thevpc.halfa.engine.nodes.shape;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.*;
@@ -10,7 +9,7 @@ import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;

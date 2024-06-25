@@ -13,10 +13,11 @@ import java.awt.event.ActionListener;
 
 public class Example extends Canvas {
     private Projection3D projection;
-    int rotating=0;
-    int rotatingX=45;
-    int rotatingY=-0;
-    int rotatingZ=0;
+    int rotating = 0;
+    int rotatingX = 45;
+    int rotatingY = -0;
+    int rotatingZ = 0;
+
     public Example() {
         projection = new Projection3D(1000);
         // Focal length for projection

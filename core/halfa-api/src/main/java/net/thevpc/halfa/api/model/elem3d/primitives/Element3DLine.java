@@ -10,8 +10,8 @@ import java.util.Objects;
 public class Element3DLine extends AbstractElement3DPrimitive {
     private HPoint3D from;
     private HPoint3D to;
-    private HArrayHead startType= HArrayHead.NONE;
-    private HArrayHead endType= HArrayHead.NONE;
+    private HArrayHead startType = HArrayHead.NONE;
+    private HArrayHead endType = HArrayHead.NONE;
 
     public Element3DLine(HPoint3D from, HPoint3D to) {
         this.from = from;

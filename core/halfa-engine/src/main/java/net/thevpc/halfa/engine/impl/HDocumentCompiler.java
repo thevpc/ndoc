@@ -66,7 +66,7 @@ public class HDocumentCompiler {
                                     || Objects.equals(c.type(), HNodeType.PAGE)
                                     //assign are retained in the same level!
                                     || Objects.equals(c.type(), HNodeType.ASSIGN)
-                                    ) {
+                            ) {
                                 if (pending != null && !pending.isEmpty()) {
                                     HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
                                     newChildren.add(newPage);
@@ -123,12 +123,12 @@ public class HDocumentCompiler {
         return node;
     }
 
-    protected void prepareInheritanceSingle(String a,HNode node, HDocumentLoadingResultImpl result,
-                                             Set<String> newAncestors,
-                                             List<HNode> ancestorsList,
-                                             List<HNode> inheritedChildren,
-                                             HProperties inheritedProps,
-                                             List<HStyleRule> inheritedRules
+    protected void prepareInheritanceSingle(String a, HNode node, HDocumentLoadingResultImpl result,
+                                            Set<String> newAncestors,
+                                            List<HNode> ancestorsList,
+                                            List<HNode> inheritedChildren,
+                                            HProperties inheritedProps,
+                                            List<HStyleRule> inheritedRules
     ) {
         HNode aa = null;
         try {
@@ -170,6 +170,7 @@ public class HDocumentCompiler {
             //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
         }
     }
+
     protected HNode processInheritance(HNode node, HDocumentLoadingResultImpl result) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
@@ -179,7 +180,7 @@ public class HDocumentCompiler {
             List<HStyleRule> inheritedRules = new ArrayList<>();
             List<HNode> ancestorsList = new ArrayList<>();
             for (String a : t) {
-                prepareInheritanceSingle(a,node, result,newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
+                prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
             node.setProperty(HPropName.ANCESTORS, newAncestors.toArray(new String[0]));
             for (HProp p : inheritedProps.toList()) {
@@ -220,9 +221,14 @@ public class HDocumentCompiler {
         HNode parent = node.parent();
         String finalName = HUtils.uid(name);
         while (parent != null) {
-            List<HNode> r = parent.children().stream().filter(x -> x.isTemplate()
-                    && Objects.equals(HUtils.uid(x.getName()), finalName)
-            ).collect(Collectors.toList());
+            List<HNode> r = new ArrayList<>();
+            for (HNode x : parent.children()) {
+                if(x.isTemplate()) {
+                    if (Objects.equals(HUtils.uid(x.getName()), finalName)) {
+                        r.add(x);
+                    }
+                }
+            }
             if (r.size() > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("too many templates : ").append(finalName);

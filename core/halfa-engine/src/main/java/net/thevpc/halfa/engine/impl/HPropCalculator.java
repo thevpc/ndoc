@@ -116,10 +116,10 @@ public class HPropCalculator {
         while (p != null) {
             HStyleRuleResult2[] validRules = _HStyleRuleResult2s(node, p);
             for (HStyleRuleResult2 rule : validRules) {
-                HStyleAndMagnitude m2 = new HStyleAndMagnitude(rule.property,new HStyleMagnitude(distance, rule.rule.selector()));
+                HStyleAndMagnitude m2 = new HStyleAndMagnitude(rule.property, new HStyleMagnitude(distance, rule.rule.selector()));
                 HStyleAndMagnitude hStyleAndMagnitude = found.get(rule.property.getName());
                 if (hStyleAndMagnitude == null || m2.getMagnetude().compareTo(hStyleAndMagnitude.getMagnetude()) <= 0) {
-                    found.put(rule.property.getName(),m2);
+                    found.put(rule.property.getName(), m2);
                 }
             }
             distance++;
@@ -129,24 +129,24 @@ public class HPropCalculator {
     }
 
     public List<HProp> computeProperties(HNode node) {
-        return computePropertiesMagnetude(node).stream().map(x->x.getStyle()).collect(Collectors.toList());
+        return computePropertiesMagnetude(node).stream().map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
     public List<HProp> computeInheritedProperties(HNode node) {
         return computePropertiesMagnetude(node).stream()
-                .filter(x->x.getMagnetude().getDistance()>0)
-                .map(x->x.getStyle()).collect(Collectors.toList());
+                .filter(x -> x.getMagnetude().getDistance() > 0)
+                .map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
     public <T> NOptional<T> computePropertyValue(HNode t, String s) {
         if (t != null) {
-            return computeProperty(t,s).map(HProp::getValue).map(x->{
+            return computeProperty(t, s).map(HProp::getValue).map(x -> {
                 try {
                     return (T) x;
-                }catch (ClassCastException e){
+                } catch (ClassCastException e) {
                     return null;
                 }
-            }).filter(x->x!=null);
+            }).filter(x -> x != null);
         }
         return NOptional.ofNamedEmpty("style " + s);
     }

@@ -9,7 +9,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 /**
- *
  * @author vpc
  */
 public class ImageUtils {

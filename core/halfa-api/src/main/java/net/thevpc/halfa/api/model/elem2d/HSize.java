@@ -5,7 +5,6 @@
 package net.thevpc.halfa.api.model.elem2d;
 
 /**
- *
  * @author vpc
  */
 public class HSize {

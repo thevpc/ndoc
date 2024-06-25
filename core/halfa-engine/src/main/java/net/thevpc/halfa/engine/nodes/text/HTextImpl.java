@@ -9,8 +9,9 @@ import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.engine.nodes.ToTsonHelper;
+import net.thevpc.halfa.engine.parser.styles.HStyleParser;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -55,8 +56,11 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                 return true;
             }
             case NAME: {
-                node.setProperty(HPropName.LANG, e);
-                return true;
+                if (!HStyleParser.isCommonStyleProperty(e.toName().value())) {
+                    node.setProperty(HPropName.LANG,e.toName().value());
+                    return true;
+                }
+                break;
             }
             case PAIR: {
                 NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
@@ -64,12 +68,12 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
-                        case "value":
+                        case HPropName.VALUE:
                         case "content": {
                             node.setProperty(HPropName.VALUE, v.raw());
                             return true;
                         }
-                        case "file": {
+                        case HPropName.FILE: {
                             NPath nPath = context.resolvePath(v.asStringOrName().get().trim());
                             context.document().resources().add(nPath);
                             try {
@@ -79,7 +83,7 @@ public class HTextImpl extends AbstractHNodeTypeFactory {
                             }
                             return true;
                         }
-                        case "lang": {
+                        case HPropName.LANG: {
                             node.setProperty(HPropName.LANG, v.raw());
                             return true;
                         }

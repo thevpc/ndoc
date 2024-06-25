@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.HRichTextHelper;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTexts;
 import net.thevpc.nuts.util.NStringUtils;
@@ -50,7 +50,7 @@ public class HTextRenderer extends HTextBaseRenderer {
         String mode = "plain";
         StringBuilder sb = new StringBuilder();
         char[] charArray = specialTrimCode(text).toCharArray();
-        HDocumentFactory f = ctx.documentFactory();
+//        HDocumentFactory f = ctx.documentFactory();
         HRichTextHelper richTextHelper = new HRichTextHelper();
         for (int i = 0; i < charArray.length; i++) {
             char c = charArray[i];

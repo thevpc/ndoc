@@ -59,7 +59,7 @@ public class WeightCalculator {
         if (maxAlphaSum == 0) {
             double[] ret = new double[count];
             for (int i = 0; i < count; i++) {
-                ret[i] = weights[i] * all/weightSum;
+                ret[i] = weights[i] * all / weightSum;
             }
             return ret;
         }

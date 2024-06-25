@@ -19,19 +19,19 @@ public class RendererManagerImpl implements HNodeRendererManager {
     }
 
     public Map<String, HNodeRenderer> getRenderers() {
-        if(renderers==null){
+        if (renderers == null) {
             renderers = new HashMap<>();
             for (HNodeRenderer renderer : ServiceLoader.load(HNodeRenderer.class)) {
                 for (String type : renderer.types()) {
-                    NOptional<HNodeTypeFactory> f=engine.nodeTypeFactory(type);
-                    if(f.isPresent()){
+                    NOptional<HNodeTypeFactory> f = engine.nodeTypeFactory(type);
+                    if (f.isPresent()) {
                         HNodeTypeFactory ntf = f.get();
-                        this.renderers.put(HUtils.uid(ntf.id()),renderer);
+                        this.renderers.put(HUtils.uid(ntf.id()), renderer);
                         String[] aliases = ntf.aliases();
-                        if(aliases!=null){
+                        if (aliases != null) {
                             for (String alias : aliases) {
-                                if(!NBlankable.isBlank(alias)){
-                                    this.renderers.put(HUtils.uid(alias),renderer);
+                                if (!NBlankable.isBlank(alias)) {
+                                    this.renderers.put(HUtils.uid(alias), renderer);
                                 }
                             }
                         }
@@ -42,10 +42,10 @@ public class RendererManagerImpl implements HNodeRendererManager {
         return renderers;
     }
 
-    public NOptional<HNodeRenderer> getRenderer(String type){
+    public NOptional<HNodeRenderer> getRenderer(String type) {
         HNodeRenderer r = getRenderers().get(type);
         if (r == null) {
-            return NOptional.ofNamedEmpty("renderer for "+type);
+            return NOptional.ofNamedEmpty("renderer for " + type);
         }
         return NOptional.of(r);
     }

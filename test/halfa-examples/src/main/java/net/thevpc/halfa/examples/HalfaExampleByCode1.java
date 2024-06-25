@@ -54,7 +54,6 @@ public class HalfaExampleByCode1 {
                                                         .setSize(20)
                                                         .setForegroundColor("yellow")
                                                         .setBackgroundColor("#ffaa00")
-                                                        .setLineColor("red")
                                                         .setOrigin(HAlign.CENTER)
                                         )
                                         .add(
@@ -64,7 +63,6 @@ public class HalfaExampleByCode1 {
                                                         .setProperty(HProps.preserveShapeRatio())
                                                         .setForegroundColor("green")
                                                         .setBackgroundColor("#555500")
-                                                        .setLineColor("red")
                                                         .setOrigin(HAlign.CENTER)
                                         )
                                         .add(

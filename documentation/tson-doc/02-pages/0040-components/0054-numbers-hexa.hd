@@ -1,6 +1,6 @@
 @normal page{
     @Header {
-        text("Octal Numbers"),
+        text("Hexadecimal Numbers"),
     }
     @OneColumn{
         ul{
@@ -13,9 +13,9 @@
                     0u2x71 (short)
                     0u4x71 (int)
                     0u8x71 (long)
-                    0x71LL (bit integer)
-                    0x71LL_amp (bit integer with unit 'amp')
-                    0x71% (bit integer with unit '%')
+                    0x71LL (big integer)
+                    0x71LL_amp (big integer with unit 'amp')
+                    0x71% (big integer with unit '%')
                 """
             )
         }

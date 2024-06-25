@@ -28,7 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.function.Supplier;
+
 import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
@@ -56,7 +56,7 @@ public class DocumentView {
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
     public DocumentView(HDocumentRendererSupplier documentSupplier, HEngine halfaEngine, HDocumentRendererListener listener, HMessageList messages,
-            NSession session) {
+                        NSession session) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.halfaEngine = halfaEngine;
@@ -114,7 +114,7 @@ public class DocumentView {
         return session;
     }
 
-    public HNodeRendererManager getRendererManager() {
+    public HNodeRendererManager rendererManager() {
         return rendererManager;
     }
 
@@ -278,15 +278,12 @@ public class DocumentView {
             pagesMapByIndex.clear();
             for (int i = 0; i < pages.size(); i++) {
                 HNode page = pages.get(i);
-                pageViews.add(new PageView(
-                        page,
-                        UUID.randomUUID().toString(), i, this
-                ));
+                pageViews.add(createPageView(page, i));
             }
             if (pageViews.isEmpty()) {
-                pageViews.add(new PageView(
+                pageViews.add(createPageView(
                         halfaEngine.documentFactory().ofPage(),
-                        UUID.randomUUID().toString(), 0, this
+                        0
                 ));
             }
             for (PageView pageView : pageViews) {
@@ -323,16 +320,27 @@ public class DocumentView {
         showPage(0);
     }
 
+    public PageView createPageView(HNode node, int index) {
+        return new PageView(
+                node, index,
+                engine(),
+                rendererManager(),
+                messages(),
+                session()
+        );
+    }
+
     public void showPage(PageView pv) {
         if (currentShowingPage != null) {
             currentShowingPage.onHide();
         }
         this.currentShowingPage = pv;
         if (pv != null) {
+            listener.onChangedPage(pv.getPage());
             this.currentShowingPage.onShow();
             contentPane.doShow(pv.id());
         } else {
-            //????
+            listener.onChangedPage(null);
         }
         frame.setVisible(true);
     }
@@ -346,7 +354,8 @@ public class DocumentView {
     }
 
     public void showPage(int index) {
-        pageViews.get(index).showPage();
+        PageView pageView = pageViews.get(index);
+        this.showPage(pageView);
     }
 
     public HEngine engine() {

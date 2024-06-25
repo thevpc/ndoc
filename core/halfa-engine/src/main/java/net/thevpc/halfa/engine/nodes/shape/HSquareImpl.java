@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HSquareImpl extends AbstractHNodeTypeFactory {
 
     public HSquareImpl() {
-        super(false, HNodeType.SQUARE );
+        super(false, HNodeType.SQUARE);
     }
 
 }

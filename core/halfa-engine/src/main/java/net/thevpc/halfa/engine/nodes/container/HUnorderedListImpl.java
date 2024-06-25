@@ -12,7 +12,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
  */
 public class HUnorderedListImpl extends AbstractHNodeTypeFactory {
     public HUnorderedListImpl() {
-        super(true, HNodeType.UNORDERED_LIST,"ul");
+        super(true, HNodeType.UNORDERED_LIST, "ul");
     }
 
 

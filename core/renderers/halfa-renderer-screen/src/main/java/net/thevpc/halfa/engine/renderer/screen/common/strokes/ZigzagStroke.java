@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementType;
@@ -43,8 +43,7 @@ public class ZigzagStroke implements Stroke {
                     ObjEx.SimplePair ke = sp.get();
                     switch (HUtils.uid(ke.getName())) {
                         case "amp":
-                        case "amplitude":
-                        {
+                        case "amplitude": {
                             amplitude = ke.getValue().asDouble().orElse(amplitude);
                             break;
                         }

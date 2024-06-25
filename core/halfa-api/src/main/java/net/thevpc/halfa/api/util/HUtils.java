@@ -4,13 +4,14 @@ import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 
 public class HUtils {
     public static final MinMax minMaxZ(HPoint3D[] points) {
-        MinMax m=new MinMax();
+        MinMax m = new MinMax();
         for (HPoint3D point : points) {
             m.registerValue(point.z);
         }
         return m;
     }
-    public static final double[] dtimes(double min,double max,int times) {
+
+    public static final double[] dtimes(double min, double max, int times) {
         double[] d = new double[times];
         if (times == 1) {
             d[0] = min;

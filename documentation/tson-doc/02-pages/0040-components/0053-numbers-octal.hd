@@ -9,12 +9,12 @@
                 tson
                 """
                     04556 (int)
-                    0u1_71 (byte)
-                    0u2_71 (short)
-                    0u4_71 (int)
-                    0u8_71 (long)
-                    071LL (bit integer)
-                    071LL_amp (bit integer with unit 'amp')
+                    0u1o71 (byte)
+                    0u2o71 (short)
+                    0u4o71 (int)
+                    0u8o71 (long)
+                    071LL (big integer)
+                    071LL_amp (big integer with unit 'amp')
                     071% (int with unit '%')
                 """
             )

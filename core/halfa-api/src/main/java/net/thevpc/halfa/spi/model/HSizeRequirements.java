@@ -26,7 +26,7 @@ public class HSizeRequirements {
     public Bounds2 toBounds2() {
         return new Bounds2(
                 minX, minY,
-                maxX,maxY
+                maxX, maxY
         );
     }
 

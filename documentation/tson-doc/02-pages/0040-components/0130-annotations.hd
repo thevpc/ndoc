@@ -4,12 +4,14 @@
     }
     @OneColumn{
         ul{
-            "In this example, the pair is annotated with const"
+            "Annotations are metadata that can prefix any TSON element"
             source(
                 tson
                 """
-                    @annotation-name(args)
-                    any-tson-element
+                    @unsigned int:12
+                    @Entity object{
+                        @Id column:string
+                    }
                 """
             )
         }

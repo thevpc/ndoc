@@ -6,11 +6,11 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
-import net.thevpc.halfa.spi.nodes.HValueTypeParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
+import net.thevpc.halfa.spi.eval.HValueByType;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public class HGridRendererHelper {
             if (ee.colRow != null) {
                 HNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
                 if (!ctx.isDry()) {
-                    if (HPropValueByNameParser.isDebug(p, ctx)) {
-                        g.setColor(HPropValueByNameParser.getDebugColor(p, ctx));
+                    if (HValueByName.isDebug(p, ctx)) {
+                        g.setColor(HValueByName.getDebugColor(p, ctx));
                         g.setFont(new Font("Verdana", Font.PLAIN, 8));
                         g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
                     }
@@ -81,8 +81,8 @@ public class HGridRendererHelper {
             HNode cc = children.get(i);
             HPagePartExtInfo e = new HPagePartExtInfo();
             e.node = cc;
-            e.colspan = HPropValueByNameParser.getColSpan(cc, ctx);
-            e.rowspan = HPropValueByNameParser.getRowSpan(cc, ctx);
+            e.colspan = HValueByName.getColSpan(cc, ctx);
+            e.rowspan = HValueByName.getRowSpan(cc, ctx);
             if (e.colspan > minColumns) {
                 minColumns = e.colspan;
             }
@@ -94,8 +94,8 @@ public class HGridRendererHelper {
             effPositions.add(e);
         }
 
-        int cols = HPropValueByNameParser.getColumns(t, ctx);
-        int rows = HPropValueByNameParser.getRows(t, ctx);
+        int cols = HValueByName.getColumns(t, ctx);
+        int rows = HValueByName.getRows(t, ctx);
         if (cols < 0) {
             cols = -1;
         }
@@ -315,7 +315,7 @@ public class HGridRendererHelper {
             return;
         }
         HGraphics g = ctx.graphics();
-        if (HPropValueByNameParser.requireDrawGrid(p, ctx)) {
+        if (HValueByName.requireDrawGrid(p, ctx)) {
             if (HNodeRendererUtils.applyGridColor(p, g, ctx, true)) {
                 for (int i = 0; i < r.wi.colsWeight.length; i++) {
                     g.drawLine(
@@ -365,8 +365,8 @@ public class HGridRendererHelper {
 
     private HGridRendererHelper.WeightInfo loadWeightInfo(int cols, int rows, HNode t, HNodeRendererContext ctx) {
         HGridRendererHelper.WeightInfo ii = new HGridRendererHelper.WeightInfo();
-        ii.colsWeight = HValueTypeParser.getDoubleArray(t, ctx, HPropName.COLUMNS_WEIGHT).orNull();
-        ii.rowsWeight = HValueTypeParser.getDoubleArray(t, ctx, HPropName.ROWS_WEIGHT).orNull();
+        ii.colsWeight = HValueByType.getDoubleArray(t, ctx, HPropName.COLUMNS_WEIGHT).orNull();
+        ii.rowsWeight = HValueByType.getDoubleArray(t, ctx, HPropName.ROWS_WEIGHT).orNull();
         revalidateWeightInfo(cols, rows, ii);
         return ii;
     }

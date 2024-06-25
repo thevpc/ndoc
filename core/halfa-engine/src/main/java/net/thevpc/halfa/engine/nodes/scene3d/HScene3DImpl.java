@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 
@@ -25,8 +25,7 @@ public class HScene3DImpl extends AbstractHNodeTypeFactory {
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "camera-orientation":
-                        case "light-orientation":
-                        {
+                        case "light-orientation": {
                             NOptional<HPoint3D> p2d = v.asHPoint3D();
                             if (p2d.isPresent()) {
                                 node.setProperty(spp.getNameId(), p2d.get());

@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HPentagonImpl extends AbstractHNodeTypeFactory {
 
     public HPentagonImpl() {
-        super(false, HNodeType.PENTAGON );
+        super(false, HNodeType.PENTAGON);
     }
 
 }

@@ -11,7 +11,7 @@ public class HRichTextToken {
     public HRichTextTokenType type;
     public double xOffset;
     public NText tok;
-    public Rectangle2D textBounds;
+    public Rectangle2D bounds;
     public String text;
     public AttributedString attributedString;
     public AttributedString attributedShadowString;

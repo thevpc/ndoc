@@ -26,20 +26,20 @@ public class HalfaExampleTestGrid {
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
-                                .add(
-                                        f.ofGrid(3,2)
-                                                .setProperty(HProps.columnsWeight(1,2,3,4,5,6))
-                                                .add(f.ofRectangle()
-                                                        .setProperty(HProps.backgroundColor(Color.BLUE))
-                                                        .setProperty(HProps.colspan(4))
-                                                )
-                                                .add(
-                                                        f.ofRectangle().setProperty(HProps.backgroundColor(Color.RED))
-                                                                .setProperty(HProps.rowspan(4))
-                                                )
-                                                .add(f.ofGrid(4,4)
-                                                        .setProperty(HProps.colspan(3))
-                                                        .setProperty(HProps.rowspan(2))
+                        .add(
+                                f.ofGrid(3, 2)
+                                        .setProperty(HProps.columnsWeight(1, 2, 3, 4, 5, 6))
+                                        .add(f.ofRectangle()
+                                                .setProperty(HProps.backgroundColor(Color.BLUE))
+                                                .setProperty(HProps.colspan(4))
+                                        )
+                                        .add(
+                                                f.ofRectangle().setProperty(HProps.backgroundColor(Color.RED))
+                                                        .setProperty(HProps.rowspan(4))
+                                        )
+                                        .add(f.ofGrid(4, 4)
+                                                .setProperty(HProps.colspan(3))
+                                                .setProperty(HProps.rowspan(2))
                                                 .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.BLUE))
                                                         .setProperty(HProps.colspan(5))
                                                         .setProperty(HProps.rowspan(2))
@@ -47,7 +47,7 @@ public class HalfaExampleTestGrid {
                                                 .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.RED)))
                                                 .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.GREEN)))
                                                 .add(f.ofRectangle().setProperty(HProps.backgroundColor(Color.YELLOW))))
-                                )
+                        )
                 )
 //                .add(f.page()
 //                                .add(

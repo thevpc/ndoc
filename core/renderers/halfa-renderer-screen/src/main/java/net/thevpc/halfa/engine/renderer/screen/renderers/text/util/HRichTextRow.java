@@ -11,7 +11,7 @@ public class HRichTextRow {
     public Rectangle2D textBounds;
 
     public void addToken(HRichTextToken r) {
-        if(r!=null){
+        if (r != null) {
             tokens.add(r);
         }
     }

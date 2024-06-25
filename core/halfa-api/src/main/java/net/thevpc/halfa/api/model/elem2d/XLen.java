@@ -74,9 +74,9 @@ public class XLen {
 
     @Override
     public String toString() {
-        if(root){
-            return "XLenOfParent(" +value+")";
+        if (root) {
+            return "XLenOfParent(" + value + ")";
         }
-        return "XLenOfRoot(" +value+")";
+        return "XLenOfRoot(" + value + ")";
     }
 }

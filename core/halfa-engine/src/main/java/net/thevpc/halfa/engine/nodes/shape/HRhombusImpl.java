@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HRhombusImpl extends AbstractHNodeTypeFactory {
 
     public HRhombusImpl() {
-        super(false, HNodeType.RHOMBUS );
+        super(false, HNodeType.RHOMBUS);
     }
 
 }

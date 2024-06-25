@@ -9,7 +9,7 @@ public abstract class AbstracStyleValueParser implements HStyleValueParser {
     private Set<String> ids;
 
     public AbstracStyleValueParser(String type, String... ids) {
-        this.type=type;
+        this.type = type;
         this.ids = new HashSet<>(new HashSet<>(Arrays.asList(ids)));
     }
 
@@ -24,6 +24,6 @@ public abstract class AbstracStyleValueParser implements HStyleValueParser {
 
     @Override
     public String toString() {
-        return "StyleValueParser("+type+")"+Arrays.asList(ids);
+        return "StyleValueParser(" + type + ")" + Arrays.asList(ids);
     }
 }

@@ -7,14 +7,14 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
-import net.thevpc.halfa.spi.nodes.HPropValueByNameParser;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.common.Gx;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -77,7 +77,7 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
         HGraphics g = ctx.graphics();
         String msg = NStringUtils.trim(message);
         if (msg.isEmpty()) {
-            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(),0.0,0.0);
+            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
         } else {
             TeXFormula formula;
             try {
@@ -86,12 +86,12 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (HPropValueByNameParser.getFontSize(p, ctx) * 1.188);
+            float size = (float) (HValueByName.getFontSize(p, ctx) * 1.0);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
-            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(),icon.getIconWidth(), icon.getIconHeight());
+            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
         }
     }
 
@@ -124,15 +124,15 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (HPropValueByNameParser.getFontSize(p, ctx) * 1.188);
+            float size = (float) (HValueByName.getFontSize(p, ctx) * 0.43);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            Bounds2 selfBounds = HPropValueByNameParser.selfBounds((HNode) p
+            Bounds2 selfBounds = HValueByName.selfBounds((HNode) p
                     , new Double2(icon.getIconWidth(), icon.getIconHeight())
-                    ,null
+                    , null
                     , ctx);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
@@ -142,7 +142,7 @@ public class HEquationRenderer extends AbstractHNodeRenderer {
                 if (error) {
                     Gx.paintBackground(g, selfBounds, Color.RED);
                 }
-                HNodeRendererUtils.applyForeground((HNode) p, g, ctx);
+                HNodeRendererUtils.applyForeground((HNode) p, g, ctx,false);
                 icon.setForeground(g.getColor());
                 icon.paintIcon(null, g.context(), (int) x, (int) y /*- icon.getIconHeight()*/);
 

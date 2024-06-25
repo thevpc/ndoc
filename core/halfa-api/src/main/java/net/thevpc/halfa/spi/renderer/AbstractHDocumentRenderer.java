@@ -3,10 +3,12 @@ package net.thevpc.halfa.spi.renderer;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.nuts.NSession;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.thevpc.nuts.io.NPath;
 
 public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
@@ -24,6 +26,20 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
         public void onChangedRawDocument(HDocument rawDocument) {
             for (HDocumentRendererListener eventListener : eventListeners) {
                 eventListener.onChangedRawDocument(rawDocument);
+            }
+        }
+
+        @Override
+        public void onChangedPage(HNode page) {
+            for (HDocumentRendererListener eventListener : eventListeners) {
+                eventListener.onChangedPage(page);
+            }
+        }
+
+        @Override
+        public void onCloseView() {
+            for (HDocumentRendererListener eventListener : eventListeners) {
+                eventListener.onCloseView();
             }
         }
     };

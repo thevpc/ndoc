@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class Gx {
     public static void paintBackground(HGraphics g, Bounds2 a, Color color) {
-        if(color!=null) {
+        if (color != null) {
             g.fillRect(a);
         }
     }

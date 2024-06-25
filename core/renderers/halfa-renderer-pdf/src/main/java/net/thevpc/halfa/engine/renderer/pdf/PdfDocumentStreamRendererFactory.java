@@ -9,7 +9,6 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
 /**
- *
  * @author vpc
  */
 public class PdfDocumentStreamRendererFactory implements HDocumentRendererFactory {

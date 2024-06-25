@@ -1,8 +1,8 @@
 $palette:["#26355D","#AF47D2","#DE3163","#2ECC71","#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED"]
-//$palette:["#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED","#26355D","#AF47D2","#DE3163","#2ECC71"]
+//palette:["#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED","#26355D","#AF47D2","#DE3163","#2ECC71"]
 styles:{
     "*" : {
-        font-size : 30
+        font-size : 50
         debug-color: red,
         font-family : "Serif",
     }
@@ -12,9 +12,10 @@ styles:{
         font-family : "monospaced",
         source-primary-color: $palette
         source-keyword-color: $palette[1]
-        source-separator-color: $palette[12]
+        source-separator-color: $palette[6]
         source-string-color: $palette[4]
         source-comments-color: $palette[12]
+        source-number-color: $palette[3]
         source-keyword-font-bold,
         //draw-contour,
 
@@ -22,8 +23,9 @@ styles:{
 
     .ul-bullet:{
         background: $palette[1]
-        position:(50,10),
+        position:(50,0.75%g),
         origin:top,
+        size:3%g
     }
     .ol-bullet:{
         background: $palette[2]
@@ -35,5 +37,118 @@ styles:{
     arc:{
         at:center,
     }
+}
+
+stack(template:Palette,size:100%g){
+//palette
+
+   rectangle(
+       origin : top-left,
+       position : (0.5,1),
+       size : (1,2),
+       background: $palette[1],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,3),
+       size : (1,2),
+       background: $palette[2],
+       color:gray
+       rotate:0
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,5),
+       size : (1,2),
+       background: $palette[3],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,7),
+       size : (1,2),
+       background: $palette[4],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,9),
+       size : (1,2),
+       background: $palette[5],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (0.5,11),
+       size : (1,2),
+       background: $palette[6],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,1.5),
+       size : (1,2),
+       background: $palette[7],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,3.5),
+       size : (1,2),
+       background: $palette[8],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,5.5),
+       size : (1,2),
+       background: $palette[9],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,7.5),
+       size : (1,2),
+       background: $palette[10],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,9.5),
+       size : (1,2),
+       background: $palette[11],
+       rotate:0
+       color:gray
+       draw-contour
+   )
+   rectangle(
+       origin : top-left,
+       position : (1.5,11.5),
+       size : (1,2),
+       background: $palette[12],
+       rotate:0
+       color:gray
+       draw-contour
+   )
 }
 

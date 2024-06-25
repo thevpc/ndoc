@@ -6,7 +6,7 @@ import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
 public class HCircleImpl extends AbstractHNodeTypeFactory {
 
     public HCircleImpl() {
-        super(false, HNodeType.CIRCLE );
+        super(false, HNodeType.CIRCLE);
     }
 
 }

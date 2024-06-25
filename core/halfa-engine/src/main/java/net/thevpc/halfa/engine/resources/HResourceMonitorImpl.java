@@ -19,10 +19,10 @@ public class HResourceMonitorImpl extends DefaultHResource implements HResourceM
 
     @Override
     public Object state() {
-        return new HResourceMonitorImplState(resources.stream().map(x->x.state()).collect(Collectors.toSet()));
+        return new HResourceMonitorImplState(resources.stream().map(x -> x.state()).collect(Collectors.toSet()));
     }
 
-    private static class HResourceMonitorImplState{
+    private static class HResourceMonitorImplState {
         private Set<Object> values;
 
         public HResourceMonitorImplState(Set<Object> values) {

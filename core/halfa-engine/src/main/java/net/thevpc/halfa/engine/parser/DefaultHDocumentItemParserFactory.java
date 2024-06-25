@@ -6,7 +6,7 @@ import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.*;
 import net.thevpc.halfa.engine.parser.nodes.*;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
@@ -81,7 +81,7 @@ public class DefaultHDocumentItemParserFactory
                 break;
             }
             case NAME: {
-                String name = c.toName().getName();
+                String name = c.toName().value();
                 String uid = HUtils.uid(name);
                 HNodeTypeFactory p = engine.nodeTypeFactory(uid).orNull();
                 if (p != null) {
@@ -125,7 +125,7 @@ public class DefaultHDocumentItemParserFactory
                     return NCallableSupport.of(10, new Supplier<HItem>() {
                         @Override
                         public HItem get() {
-                            return parsNoNameBloc(context);
+                            return parseNoNameBloc(context);
                         }
                     });
                 } else {
@@ -148,67 +148,67 @@ public class DefaultHDocumentItemParserFactory
                 break;
             }
         }
-        context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c),context.source());
+        context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
         throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
-    private boolean isRootBloc(HNodeFactoryParseContext context){
+    private boolean isRootBloc(HNodeFactoryParseContext context) {
         HNode[] nodes = context.nodePath();
-        if(nodes.length==0){
+        if (nodes.length == 0) {
             return true;
         }
-        if(nodes.length>1){
+        if (nodes.length > 1) {
             return false;
         }
-        if(nodes.length==1){
-            if(!Objects.equals(nodes[0].type(),HNodeType.PAGE_GROUP)){
+        if (nodes.length == 1) {
+            if (!Objects.equals(nodes[0].type(), HNodeType.PAGE_GROUP)) {
                 return false;
             }
         }
         TsonElement c = context.element();
 //        HEngine engine = context.engine();
-        for (TsonAnnotation a : c.getAnnotations()) {
+        for (TsonAnnotation a : c.annotations()) {
             String nn = a.getName();
             if (!NBlankable.isBlank(nn)) {
                 return false;
             }
-            boolean foundHalfa=false;
-            boolean foundVersion=false;
-            boolean foundOther=false;
+            boolean foundHalfa = false;
+            boolean foundVersion = false;
+            boolean foundOther = false;
             for (TsonElement cls : a.all()) {
-                switch (cls.type()){
-                    case STRING:{
-                        if(cls.toStr().getValue().equalsIgnoreCase("halfa")){
-                            foundHalfa=true;
-                        }else if(isVersionString(cls.toStr().getValue())){
-                            foundVersion=true;
-                        }else{
-                            foundOther=true;
+                switch (cls.type()) {
+                    case STRING: {
+                        if (cls.toStr().getValue().equalsIgnoreCase("halfa")) {
+                            foundHalfa = true;
+                        } else if (isVersionString(cls.toStr().getValue())) {
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
                         }
                         break;
                     }
-                    case NAME:{
-                        if(cls.toName().getName().equalsIgnoreCase("halfa")){
-                            foundHalfa=true;
-                        }else if(isVersionString(cls.toStr().getValue())){
-                            foundVersion=true;
-                        }else{
-                            foundOther=true;
+                    case NAME: {
+                        if (cls.toName().value().equalsIgnoreCase("halfa")) {
+                            foundHalfa = true;
+                        } else if (isVersionString(cls.toStr().getValue())) {
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
                         }
                         break;
                     }
-                    default:{
-                        if(cls.type().isNumber()){
+                    default: {
+                        if (cls.type().isNumber()) {
                             BigDecimal bi = cls.toNumber().getBigDecimal();
-                            foundVersion=true;
-                        }else{
-                            foundOther=true;
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
                         }
                         break;
                     }
                 }
             }
-            if(foundHalfa){
+            if (foundHalfa) {
                 return true;
             }
         }
@@ -216,15 +216,15 @@ public class DefaultHDocumentItemParserFactory
     }
 
     private boolean isVersionString(String value) {
-        if(value!=null){
-            value=value.trim();
-            if(value.length()>0){
-                if(value.charAt(0)>='0' && value.charAt(0)>='9'){
+        if (value != null) {
+            value = value.trim();
+            if (value.length() > 0) {
+                if (value.charAt(0) >= '0' && value.charAt(0) >= '9') {
                     for (char c : value.toCharArray()) {
-                        if(!Character.isAlphabetic(c) && !Character.isDigit(c)
-                                && c!='.' && c!='_' && c!='-'
+                        if (!Character.isAlphabetic(c) && !Character.isDigit(c)
+                                && c != '.' && c != '_' && c != '-'
 
-                        ){
+                        ) {
                             return false;
                         }
                     }
@@ -235,14 +235,14 @@ public class DefaultHDocumentItemParserFactory
         return false;
     }
 
-    private HItem parsNoNameBloc(HNodeFactoryParseContext context){
+    private HItem parseNoNameBloc(HNodeFactoryParseContext context) {
         TsonElement c = context.element();
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
         HashSet<String> allAncestors = null;
         HashSet<String> allStyles = null;
         ObjEx ee = ObjEx.of(c);
-        for (TsonAnnotation a : c.getAnnotations()) {
+        for (TsonAnnotation a : c.annotations()) {
             String nn = a.getName();
             if (!NBlankable.isBlank(nn)) {
                 if (allAncestors == null) {
@@ -263,10 +263,10 @@ public class DefaultHDocumentItemParserFactory
             }
         }
         HNode node = context.node();
-        if ((allStyles != null || allAncestors != null) && ! isRootBloc(context)) {
+        if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
             HNode pg = f.ofStack();
-            pg.setAncestors(allAncestors==null?null:allAncestors.toArray(new String[0]));
-            pg.setStyleClasses(allStyles==null?null:allStyles.toArray(new String[0]));
+            pg.setAncestors(allAncestors == null ? null : allAncestors.toArray(new String[0]));
+            pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
             for (TsonElement child : ee.body()) {
                 NOptional<HItem> u = context.engine().newNode(child, context);
                 if (u.isPresent()) {
@@ -285,8 +285,9 @@ public class DefaultHDocumentItemParserFactory
                 if (u.isPresent()) {
                     pg.add(u.get());
                 } else {
-                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s", child,
-                            node == null ? "document" : node.type()
+                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s : %s", child,
+                            node == null ? "document" : node.type(),
+                            u.getMessage().apply(null)
                     ).toString());
                 }
             }

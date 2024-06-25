@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.HRichTextHelper;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.HRichTextToken;
 import net.thevpc.halfa.engine.renderer.screen.renderers.text.util.HRichTextTokenType;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.util.NStringUtils;
 
@@ -21,7 +22,11 @@ public class HPlainTextRenderer extends HTextBaseRenderer {
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {
             allLines[i] = allLines[i].trim();
-            helper.nextLine().addToken(new HRichTextToken(HRichTextTokenType.PLAIN, allLines[i]));
+            HRichTextToken c = new HRichTextToken(HRichTextTokenType.PLAIN, allLines[i]);
+            HGraphics g = ctx.graphics();
+            g.setFont(c.font);
+            c.bounds = g.getStringBounds(c.text);
+            helper.nextLine().addToken(c);
         }
         return helper;
     }

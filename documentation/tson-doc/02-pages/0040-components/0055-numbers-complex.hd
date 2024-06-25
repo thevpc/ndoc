@@ -1,6 +1,6 @@
 @normal page{
     @Header {
-        text("Octal Numbers"),
+        text("Complex Numbers"),
     }
     @OneColumn{
         ul{

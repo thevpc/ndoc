@@ -45,7 +45,7 @@ public class DefaultHStyleRule implements HStyleRule {
     }
 
     public TsonElement toTson() {
-        if(selector==null){
+        if (selector == null) {
             return Tson.ofPair(
                     Tson.ofString("*"),
                     styles.toTson()
@@ -125,8 +125,8 @@ public class DefaultHStyleRule implements HStyleRule {
     @Override
     public String toString() {
         return "DefaultHStyleRule{" +
-                selector +" : "
-                +styles
-                +'}';
+                selector + " : "
+                + styles
+                + '}';
     }
 }

@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
 import net.thevpc.halfa.spi.util.HUtils;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.*;
 
@@ -35,8 +35,8 @@ public class SloppyStroke implements Stroke {
                 } else {
                     base = CompositeStroke.of(base, StrokeFactory.createStroke(arg));
                 }
-            } else if(arg.type().isNumber()){
-                sloppyness=ObjEx.of(arg).asDouble().orElse(sloppyness);
+            } else if (arg.type().isNumber()) {
+                sloppyness = ObjEx.of(arg).asDouble().orElse(sloppyness);
             } else {
                 NOptional<ObjEx.SimplePair> sp = ObjEx.of(arg).asSimplePair();
                 if (sp.isPresent()) {
@@ -47,12 +47,11 @@ public class SloppyStroke implements Stroke {
                         case "miter-limit":
                         case "dash":
                         case "cap":
-                        case "join":
-                        {
+                        case "join": {
                             if (basic == null) {
                                 basic = Tson.ofObj();
                             }
-                            basic.set(HUtils.uid(ke.getName()), (TsonElement)ke.getValue().raw());
+                            basic.set(HUtils.uid(ke.getName()), (TsonElement) ke.getValue().raw());
                             break;
                         }
                         case "sloppyness":

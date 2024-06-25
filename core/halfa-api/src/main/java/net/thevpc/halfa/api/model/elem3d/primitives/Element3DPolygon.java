@@ -11,8 +11,8 @@ public class Element3DPolygon extends AbstractElement3DPrimitive {
 
     public Element3DPolygon(HPoint3D[] nodes, boolean fill, boolean contour) {
         this.nodes = nodes;
-        this.fill=fill;
-        this.contour=contour;
+        this.fill = fill;
+        this.contour = contour;
     }
 
     public boolean isFill() {

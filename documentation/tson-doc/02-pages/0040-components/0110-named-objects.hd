@@ -13,7 +13,6 @@
                         item2
                     }
                 """
-                background:blue
             )
             "and this is a named object with args"
             source(

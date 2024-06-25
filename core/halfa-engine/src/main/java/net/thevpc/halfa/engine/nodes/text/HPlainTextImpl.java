@@ -23,8 +23,8 @@ public class HPlainTextImpl extends AbstractHNodeTypeFactory {
     }
 
     protected String acceptTypeName(TsonElement e) {
-        switch (e.type()){
-            case STRING:{
+        switch (e.type()) {
+            case STRING: {
                 return id();
             }
         }
@@ -45,7 +45,7 @@ public class HPlainTextImpl extends AbstractHNodeTypeFactory {
     @Override
     public TsonElement toTson(HNode item) {
         return ToTsonHelper
-                .of(item,engine())
+                .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();
     }

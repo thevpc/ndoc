@@ -34,6 +34,7 @@ public class HPoint {
                 (root ? YLen.ofRoot(y) : YLen.ofParent(y)).value(parentBounds, screenBounds)
         );
     }
+
     public HPoint2D valueHPoint2D(Bounds2 parentBounds, Bounds2 screenBounds) {
         return new HPoint2D(
                 (root ? XLen.ofRoot(x) : XLen.ofParent(x)).value(parentBounds, screenBounds),

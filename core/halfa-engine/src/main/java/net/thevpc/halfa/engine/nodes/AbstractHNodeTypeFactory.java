@@ -2,17 +2,13 @@ package net.thevpc.halfa.engine.nodes;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.model.elem2d.HPoint2D;
-import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;
-import net.thevpc.halfa.engine.parser.styles.HStyleValueParser;
-import net.thevpc.halfa.spi.util.HParseHelper;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.HParseHelper;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
@@ -111,8 +107,8 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
     protected String acceptTypeName(TsonElement e) {
         switch (e.type()) {
             case NAME: {
-                if (acceptTypeName(e.toName().getName())) {
-                    return e.toName().getName();
+                if (acceptTypeName(e.toName().value())) {
+                    return e.toName().value();
                 }
                 break;
             }
@@ -123,7 +119,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                 break;
             }
             case OBJECT: {
-                TsonElementHeader h = e.toObject().getHeader();
+                TsonElementHeader h = e.toObject().header();
                 if (h != null) {
                     if (acceptTypeName(h.name())) {
                         return h.name();
@@ -219,6 +215,7 @@ public abstract class AbstractHNodeTypeFactory implements HNodeTypeFactory {
                         return NOptional.of(new HItemList());
                     }
                 }
+                break;
             }
         }
         return NOptional.of(p);

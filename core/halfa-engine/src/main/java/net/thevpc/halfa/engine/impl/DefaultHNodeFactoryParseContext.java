@@ -25,7 +25,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
     private final HResource source;
 
     public DefaultHNodeFactoryParseContext(
-              HDocument document
+            HDocument document
             , TsonElement element
             , HEngine engine
             , NSession session

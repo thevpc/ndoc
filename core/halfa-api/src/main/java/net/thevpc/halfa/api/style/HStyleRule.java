@@ -9,7 +9,6 @@ import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.tson.TsonElement;
 
 /**
- *
  * @author vpc
  */
 public interface HStyleRule extends HItem {
@@ -18,6 +17,7 @@ public interface HStyleRule extends HItem {
     HStyleRuleSelector selector();
 
     HProperties styles();
+
     HStyleRuleResult styles(HNode node);
 
     TsonElement toTson();

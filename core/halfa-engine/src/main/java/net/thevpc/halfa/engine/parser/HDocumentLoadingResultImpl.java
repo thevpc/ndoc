@@ -15,8 +15,8 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
     public HDocumentLoadingResultImpl(HResource source, HMessageList messageList, NSession session) {
         this.source = source;
         this.session = session;
-        if(messageList==null){
-            messageList=new HMessageListImpl(session, source);
+        if (messageList == null) {
+            messageList = new HMessageListImpl(session, source);
         }
         this.messageList = new HMessageListDelegateImpl(session, source, messageList);
     }
@@ -40,7 +40,7 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
         if (/*isSuccessful() && */document != null) {
             return NOptional.of(document);
         } else {
-            if(isSuccessful()){
+            if (isSuccessful()) {
                 return NOptional.ofEmpty(NMsg.ofC("compilation is successful but document could not be compiled"));
             }
             return NOptional.ofEmpty(NMsg.ofC("Compilation failed and partial document could not resolved"));

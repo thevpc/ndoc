@@ -5,7 +5,7 @@ import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.engine.parser.styles.HStyleParser;
-import net.thevpc.halfa.spi.util.ObjEx;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;

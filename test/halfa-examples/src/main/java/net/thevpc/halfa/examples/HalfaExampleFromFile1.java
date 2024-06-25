@@ -13,7 +13,6 @@ import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
 /**
- *
  * @author vpc
  */
 public class HalfaExampleFromFile1 {

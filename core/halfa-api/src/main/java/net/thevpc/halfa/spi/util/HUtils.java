@@ -19,59 +19,61 @@ import java.util.List;
 public class HUtils {
 
     public static String shortName(HResource a) {
-        if(a==null){
+        if (a == null) {
             return null;
         }
         return a.shortName();
     }
+
     public static String strSnapshot(Object a) {
-        if(a==null) {
+        if (a == null) {
             return "null";
-        };
+        }
+        ;
         for (String s : a.toString().split("\n")) {
-            s=s.trim();
-            if(!s.isEmpty()){
-                return s+"...";
+            s = s.trim();
+            if (!s.isEmpty()) {
+                return s + "...";
             }
         }
         return "";
     }
 
     public static Double min(Double a, Double b) {
-        if(a==null){
+        if (a == null) {
             return b;
         }
-        if(b==null){
+        if (b == null) {
             return a;
         }
-        if(a<b){
+        if (a < b) {
             return a;
         }
         return b;
     }
 
     public static Double max(Double a, Double b) {
-        if(a==null){
+        if (a == null) {
             return b;
         }
-        if(b==null){
+        if (b == null) {
             return a;
         }
-        if(a<b){
+        if (a < b) {
             return b;
         }
         return a;
     }
 
-    public static double doubleOf(Number n){
-        if(n==null){
+    public static double doubleOf(Number n) {
+        if (n == null) {
             return 0;
         }
         return n.doubleValue();
     }
 
-    public static int intOf(Number n){
-        if(n==null){
+    public static int intOf(Number n) {
+        if (n == null) {
             return 0;
         }
         return n.intValue();
@@ -154,13 +156,13 @@ public class HUtils {
     }
 
     public static String[] uids(String[]... ids) {
-        LinkedHashSet<String> all=new LinkedHashSet<>();
-        if(ids!=null){
+        LinkedHashSet<String> all = new LinkedHashSet<>();
+        if (ids != null) {
             for (String[] ids1 : ids) {
-                if(ids1!=null){
+                if (ids1 != null) {
                     for (String s : ids1) {
-                        s=NStringUtils.trimToNull(s);
-                        if(s!=null){
+                        s = NStringUtils.trimToNull(s);
+                        if (s != null) {
                             all.add(uid(s));
                         }
                     }
