@@ -4,6 +4,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.node.HItem;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.engin.spibase.parser.HStyleParser;
 import net.thevpc.halfa.engine.parser.nodes.AbstractHITemNamedObjectParser;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.util.HUtils;

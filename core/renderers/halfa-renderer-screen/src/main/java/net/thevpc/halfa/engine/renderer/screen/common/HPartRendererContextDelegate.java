@@ -14,6 +14,7 @@ import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
 
+import java.awt.image.ImageObserver;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +44,11 @@ public class HPartRendererContextDelegate extends AbstractHNodeRendererContext {
         this.defaultStyles = defaultStyles;
         this.dry = dry;
         this.graphics = graphics;
+    }
+
+    @Override
+    public ImageObserver imageObserver() {
+        return base.imageObserver();
     }
 
     @Override

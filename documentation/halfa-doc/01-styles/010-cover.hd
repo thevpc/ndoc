@@ -1,0 +1,61 @@
+page(template:cover){
+    styles{
+       .title:{
+           color: "#dddddd",
+           origin : center,
+           position : (50,27),
+           font-size:200,
+           font-family:Monospaced,
+           font-bold,
+           shadow:(color:gray,shift:(1,1))
+       }
+       .subtitle:{
+           color: $palette[2]
+           origin : center,
+           position : (50,40),
+           font-size:50,
+           font-bold,
+           font-family:Serif,
+       }
+       .author:{
+           color: $palette[1],
+           origin : center,
+           position : (50,60),
+           font-size:30,
+           font-bold,
+       }
+       .date:{
+           color: $palette[1],
+           origin : center,
+           position : (50,65),
+           font-size:20,
+           font-bold,
+       }
+       .version:{
+           color: $palette[1],
+           origin : center,
+           position : (50,69),
+           font-size:20,
+           font-bold,
+       },
+    }
+   rectangle(
+       origin : center,
+       position : (50,32),
+       size : (150,40),
+       background: $palette[2],
+       rotate:-5
+       draw-contour
+       stroke:{width:5}
+   )
+   rectangle(
+       origin : center,
+       position : (50,30),
+       size : (150,40),
+       background: $palette[1],
+       rotate:-5
+       draw-contour
+       stroke:{width:5}
+   )
+   @Palette{}
+}

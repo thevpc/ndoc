@@ -59,6 +59,11 @@
             <artifactId>halfa-api</artifactId>
             <version>0.8.4</version>
         </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-spi-base</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

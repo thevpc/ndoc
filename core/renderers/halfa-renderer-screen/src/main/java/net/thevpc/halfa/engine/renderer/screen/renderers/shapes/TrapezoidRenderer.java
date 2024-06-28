@@ -13,7 +13,7 @@ public class TrapezoidRenderer extends HPolygonBaseRenderer {
         super(HNodeType.TRAPEZOID);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         double x1 = 20;
         double x2 = 20;

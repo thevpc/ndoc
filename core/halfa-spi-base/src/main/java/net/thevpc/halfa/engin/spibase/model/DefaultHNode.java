@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.nodes;
+package net.thevpc.halfa.engin.spibase.model;
 
 import net.thevpc.halfa.api.node.HItemList;
 import net.thevpc.halfa.api.model.elem2d.Double2;

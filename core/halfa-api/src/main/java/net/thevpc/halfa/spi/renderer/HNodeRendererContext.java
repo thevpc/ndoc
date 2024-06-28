@@ -5,6 +5,7 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
@@ -13,6 +14,7 @@ import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
 
+import java.awt.image.ImageObserver;
 import java.util.List;
 
 public interface HNodeRendererContext {
@@ -26,6 +28,8 @@ public interface HNodeRendererContext {
     HMessageList messages();
 
     HNodeRendererContext dryMode();
+
+    ImageObserver imageObserver();
 
     boolean isDry();
 

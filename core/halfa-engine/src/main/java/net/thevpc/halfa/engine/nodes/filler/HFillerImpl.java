@@ -5,7 +5,7 @@
 package net.thevpc.halfa.engine.nodes.filler;
 
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
+import net.thevpc.halfa.engin.spibase.parser.AbstractHNodeTypeFactory;
 
 /**
  * @author vpc

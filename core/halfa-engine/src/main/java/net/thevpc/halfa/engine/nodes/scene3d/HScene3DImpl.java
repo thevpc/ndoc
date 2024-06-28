@@ -4,7 +4,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.engine.nodes.AbstractHNodeTypeFactory;
+import net.thevpc.halfa.engin.spibase.parser.AbstractHNodeTypeFactory;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;

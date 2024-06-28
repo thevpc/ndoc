@@ -1,0 +1,7 @@
+@cover page{
+    @(title)    text("Halfa Document")
+    @(subtitle) text("Text Based Presentation")
+    @(author)   text("https://github.com/thevpc/halfa")
+    @(date)     text("2024-06-15")
+    @(version)  text("v1.0")
+}

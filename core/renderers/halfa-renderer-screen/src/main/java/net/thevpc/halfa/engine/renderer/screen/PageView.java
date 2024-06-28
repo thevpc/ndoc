@@ -17,6 +17,7 @@ import net.thevpc.tson.TsonElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.util.UUID;
 
 public class PageView extends JComponent {
@@ -156,6 +157,11 @@ public class PageView extends JComponent {
         @Override
         public void render(HNode p, HNodeRendererContext ctx) {
             PageView.this.render(p, ctx);
+        }
+
+        @Override
+        public ImageObserver imageObserver() {
+            return PageView.this;
         }
 
         @Override

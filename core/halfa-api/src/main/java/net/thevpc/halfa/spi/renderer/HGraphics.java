@@ -9,6 +9,7 @@ import net.thevpc.halfa.api.model.elem3d.HElement3D;
 import net.thevpc.halfa.api.model.elem3d.Light3D;
 import net.thevpc.halfa.api.model.elem3d.Matrix3D;
 import net.thevpc.halfa.api.model.elem3d.Projection3D;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -18,6 +19,8 @@ import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
 
 public interface HGraphics {
+
+    HGraphics copy();
 
     Light3D getLight3D();
 
@@ -113,9 +116,20 @@ public interface HGraphics {
     void transform3D(Matrix3D transform3D);
 
     void project3D(Projection3D projection3D);
-    void shear(double shx,double shy);
-    void transform (AffineTransform tx);
-    void scale(double sx,double sy);
-    void rotate(double theta,double x,double y);
+
+    void shear(double shx, double shy);
+
+    void transform(AffineTransform tx);
+
+    void scale(double sx, double sy);
+
+    void rotate(double theta, double x, double y);
+
     void rotate(double theta);
+
+    void dispose();
+
+    Shape createShape(TsonElement e);
+
+    Stroke createStroke(TsonElement strokeElem);
 }

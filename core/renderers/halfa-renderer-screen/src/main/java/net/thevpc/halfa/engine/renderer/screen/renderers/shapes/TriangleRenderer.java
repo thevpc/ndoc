@@ -13,7 +13,7 @@ public class TriangleRenderer extends HPolygonBaseRenderer {
         super(HNodeType.TRIANGLE);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         HPoint2D[] points = new HPoint2D[]{
                 new HPoint2D(0, 100),

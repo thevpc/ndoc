@@ -10,7 +10,7 @@ import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.engine.renderer.screen.common.ConvertedHPartRenderer;
+import net.thevpc.halfa.engin.spibase.renderer.ConvertedHPartRenderer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
@@ -21,7 +22,7 @@ public class ZigzagStroke implements Stroke {
     private Stroke stroke;
     private float flatness = 1;
 
-    public static Stroke of(TsonElement e) {
+    public static Stroke of(TsonElement e, HGraphics g) {
         ObjEx o = ObjEx.of(e);
         Stroke base = null;
         double wavelength = 2;
@@ -35,7 +36,7 @@ public class ZigzagStroke implements Stroke {
                             || arg.type() == TsonElementType.OBJECT
             ) {
                 if (base == null) {
-                    base = StrokeFactory.createStroke(arg);
+                    base = g.createStroke(arg);
                 }
             } else {
                 NOptional<ObjEx.SimplePair> sp = ObjEx.of(arg).asSimplePair();

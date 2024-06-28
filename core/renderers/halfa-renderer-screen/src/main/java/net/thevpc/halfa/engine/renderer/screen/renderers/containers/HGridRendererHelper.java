@@ -4,7 +4,7 @@ import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererUtils;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.eval.HValueByType;

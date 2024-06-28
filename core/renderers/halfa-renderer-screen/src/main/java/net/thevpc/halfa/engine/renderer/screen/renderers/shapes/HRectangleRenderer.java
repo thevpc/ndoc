@@ -5,10 +5,10 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.engin.spibase.renderer.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.engine.renderer.screen.PageView;
 import net.thevpc.halfa.spi.util.HUtils;
@@ -21,7 +21,7 @@ public class HRectangleRenderer extends AbstractHNodeRenderer {
         super(HNodeType.RECTANGLE, HNodeType.SQUARE);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         HProperties defaultStyles = rectangleStyles;
         switch (p.type()) {
             case HNodeType.RECTANGLE: {

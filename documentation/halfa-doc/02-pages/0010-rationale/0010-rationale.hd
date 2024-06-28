@@ -1,0 +1,13 @@
+@normal page(name:Rationale){
+    @Header {
+        text("Rationale"),
+    }
+    @OneColumn{
+        ul{
+        "Text Based"
+        "Human readable, simply writable"
+        "Multi file, SCM (GIT,...) "
+        "Adds support for Primitive & Complex types, Metadata, Comments"
+        }
+    }
+}

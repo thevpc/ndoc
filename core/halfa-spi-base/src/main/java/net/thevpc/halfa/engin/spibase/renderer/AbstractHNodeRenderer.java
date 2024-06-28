@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.renderer.screen.common;
+package net.thevpc.halfa.engin.spibase.renderer;
 
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.node.HNode;
@@ -6,13 +6,10 @@ import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.eval.HValueByType;
 import net.thevpc.halfa.spi.renderer.HNodeRenderer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.eval.ObjEx;
-
-import java.awt.*;
 
 public abstract class AbstractHNodeRenderer implements HNodeRenderer {
 
@@ -46,17 +43,17 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
             return;
         }
         Bounds2 selfBounds = selfBounds(p, ctx);
-        Graphics2D nv = null;
+        HGraphics nv = null;
         try {
             if (!ctx.isDry()) {
-                Rotation rotation = HValueByType.getRotation(p, ctx, HPropName.ROTATE).orElse(null);
+                Rotation rotation = HValueByType.getRotation(p, ctx, HPropName.ROTATE).orNull();
                 if (rotation != null) {
                     double angle = ObjEx.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
                         angle = angle / 180.0 * Math.PI;
                         if (angle != 0) {
                             HGraphics g = ctx.graphics();
-                            nv = (Graphics2D) g.context().create();
+                            nv = g.copy();
                             ///HSizeRef sr=new HSizeRef();
                             double rotX = ObjEx.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
                             double rotY = ObjEx.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
@@ -71,12 +68,12 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
                                     rotX,
                                     rotY
                             );
-                            ctx = ctx.withGraphics(new HGraphicsImpl(nv));
+                            ctx = ctx.withGraphics(nv);
                         }
                     }
                 }
             }
-            render0(p, ctx);
+            renderMain(p, ctx);
         } finally {
             if (nv != null) {
                 nv.dispose();
@@ -84,7 +81,7 @@ public abstract class AbstractHNodeRenderer implements HNodeRenderer {
         }
     }
 
-    public abstract void render0(HNode p, HNodeRendererContext ctx);
+    public abstract void renderMain(HNode p, HNodeRendererContext ctx);
 
     public Bounds2 bgBounds(HNode p, HNodeRendererContext ctx) {
         return HValueByName.selfBounds(p, null, null, ctx);

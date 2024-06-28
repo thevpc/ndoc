@@ -1,6 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
 import net.thevpc.halfa.spi.eval.ObjEx;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementType;
 
@@ -22,7 +23,7 @@ public class CompoundStroke implements Stroke {
     private Stroke stroke1, stroke2;
     private Op operation;
 
-    public static Stroke of(TsonElement ee, CompoundStroke.Op op) {
+    public static Stroke of(TsonElement ee, CompoundStroke.Op op, HGraphics g) {
         ObjEx o = ObjEx.of(ee);
         Stroke base1 = null;
         Stroke base2 = null;
@@ -33,7 +34,7 @@ public class CompoundStroke implements Stroke {
                             || arg.type() == TsonElementType.ARRAY
                             || arg.type() == TsonElementType.OBJECT
             ) {
-                Stroke stroke = StrokeFactory.createStroke(arg);
+                Stroke stroke = g.createStroke(arg);
                 if (base1 == null) {
                     base1 = stroke;
                 } else if (base2 == null) {

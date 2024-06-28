@@ -4,9 +4,9 @@ import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.engine.renderer.screen.common.HNodeRendererUtils;
+import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererUtils;
 import net.thevpc.halfa.spi.renderer.HGraphics;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.engin.spibase.renderer.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 
 public class HFillerRenderer extends AbstractHNodeRenderer {
@@ -16,7 +16,7 @@ public class HFillerRenderer extends AbstractHNodeRenderer {
         super(HNodeType.FILLER);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         HGraphics g = ctx.graphics();
         Bounds2 bounds = ctx.getBounds();
         Bounds2 b = new Bounds2(

@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.renderer.screen.common;
+package net.thevpc.halfa.engin.spibase.renderer;
 
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -17,7 +17,7 @@ public abstract class ConvertedHPartRenderer extends AbstractHNodeRenderer {
 
     public abstract HNode convert(HNode p, HNodeRendererContext ctx);
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx.render(convert(p, ctx).setParent(p));
     }
 

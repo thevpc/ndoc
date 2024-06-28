@@ -1,11 +1,10 @@
-package net.thevpc.halfa.engine.renderer.screen.common;
+package net.thevpc.halfa.engin.spibase.renderer;
 
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.SizeD;
 import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.engine.renderer.screen.common.strokes.StrokeFactory;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -28,7 +27,7 @@ public class HNodeRendererUtils {
     public static Stroke resolveStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
         TsonElement strokeElem = HValueByName.getStroke(t, ctx);
         if (strokeElem != null) {
-            return StrokeFactory.createStroke(strokeElem);
+            return ctx.graphics().createStroke(strokeElem);
         }
         return null;
     }

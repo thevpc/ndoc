@@ -1,6 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen.common.strokes;
 
 import net.thevpc.halfa.engine.renderer.screen.common.shapes.ShapeFactory;
+import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
@@ -14,7 +15,7 @@ import java.util.List;
 public class StrokeFactory {
 
 
-    public static Stroke createStroke(String name, TsonElement e) {
+    public static Stroke createStroke(String name, TsonElement e, HGraphics g) {
         ObjEx o = ObjEx.of(e);
         switch (HUtils.uid(name)) {
             case "basic": {
@@ -24,60 +25,34 @@ public class StrokeFactory {
                 return WobbleStroke.of(e);
             }
             case "sloppy": {
-                return SloppyStroke.of(e);
+                return SloppyStroke.of(e,g);
             }
             case "zigzag": {
-                return ZigzagStroke.of(e);
+                return ZigzagStroke.of(e,g);
             }
             case "add": {
-                return CompoundStroke.of(e, CompoundStroke.Op.ADD);
+                return CompoundStroke.of(e, CompoundStroke.Op.ADD,g);
             }
             case "sub": {
-                return CompoundStroke.of(e, CompoundStroke.Op.SUBTRACT);
+                return CompoundStroke.of(e, CompoundStroke.Op.SUBTRACT,g);
             }
             case "diff": {
-                return CompoundStroke.of(e, CompoundStroke.Op.DIFFERENCE);
+                return CompoundStroke.of(e, CompoundStroke.Op.DIFFERENCE,g);
             }
             case "inter": {
-                return CompoundStroke.of(e, CompoundStroke.Op.INTERSECT);
+                return CompoundStroke.of(e, CompoundStroke.Op.INTERSECT,g);
             }
             case "compose": {
-                return CompositeStroke.of(e);
+                return CompositeStroke.of(e,g);
             }
             case "shaped": {
-                return createShaped(o);
+                return createShaped(o,g);
             }
         }
         return createBasic(o);
     }
 
-    public static Stroke createStroke(TsonElement e) {
-        ObjEx o = ObjEx.of(e);
-        if (o.name() != null) {
-            return createStroke(o.name(), e);
-        }
-        switch (e.type()) {
-            case ARRAY: {
-                return CompositeStroke.of(e);
-            }
-            case UPLET: {
-                return createBasic(o);
-            }
-            case NAME:
-            case STRING: {
-                return createStroke(o.asStringOrName().get(), e);
-            }
-        }
-        {
-            NOptional<Float> d = o.asFloat();
-            if (d.isPresent()) {
-                return new BasicStroke(d.get());
-            }
-        }
-        return new BasicStroke();
-    }
-
-    private static Stroke createShaped(ObjEx o) {
+    private static Stroke createShaped(ObjEx o,HGraphics g) {
         List<Shape> base = new ArrayList<>();
         double advance = 15;
         for (TsonElement arg : o.args()) {
@@ -87,7 +62,7 @@ public class StrokeFactory {
                             || arg.type() == TsonElementType.ARRAY
                             || arg.type() == TsonElementType.OBJECT
             ) {
-                base.add(ShapeFactory.createShape(arg));
+                base.add(g.createShape(arg));
             } else {
                 NOptional<ObjEx.SimplePair> sp = o.asSimplePair();
                 if (sp.isPresent()) {

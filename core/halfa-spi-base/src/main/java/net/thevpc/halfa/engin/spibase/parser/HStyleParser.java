@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.parser.styles;
+package net.thevpc.halfa.engin.spibase.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.style.*;

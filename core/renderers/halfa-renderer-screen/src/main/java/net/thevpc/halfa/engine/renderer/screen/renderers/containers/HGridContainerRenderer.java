@@ -4,7 +4,7 @@ import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.node.HNodeType;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.engine.renderer.screen.common.AbstractHNodeRenderer;
+import net.thevpc.halfa.engin.spibase.renderer.AbstractHNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 
 public class HGridContainerRenderer extends AbstractHNodeRenderer {
@@ -27,7 +27,7 @@ public class HGridContainerRenderer extends AbstractHNodeRenderer {
         return h.computeBound(p, ctx, expectedBounds);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 expectedBounds = selfBounds(p, ctx);
         HGridRendererHelper h = new HGridRendererHelper(p.children());

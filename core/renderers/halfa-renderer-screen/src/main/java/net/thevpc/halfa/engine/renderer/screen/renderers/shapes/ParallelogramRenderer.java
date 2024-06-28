@@ -13,7 +13,7 @@ public class ParallelogramRenderer extends HPolygonBaseRenderer {
         super(HNodeType.PARALLELOGRAM);
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         double w = 20;
         HPoint2D[] points = new HPoint2D[]{

@@ -22,7 +22,7 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
         );
     }
 
-    public void render0(HNode p, HNodeRendererContext ctx) {
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         int count = -1;
         switch (p.type()) {

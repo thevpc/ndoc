@@ -11,11 +11,20 @@ import net.thevpc.halfa.api.model.elem3d.primitives.Element3DArc;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DLine;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DPolygon;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DPolyline;
+import net.thevpc.halfa.api.node.HNode;
 import net.thevpc.halfa.api.util.Colors;
+import net.thevpc.halfa.engine.renderer.screen.common.shapes.ShapeFactory;
+import net.thevpc.halfa.engine.renderer.screen.common.strokes.CompositeStroke;
+import net.thevpc.halfa.engine.renderer.screen.common.strokes.StrokeFactory;
 import net.thevpc.halfa.engine.renderer.screen.renderers.elem2d.Element2DUIFactory;
 import net.thevpc.halfa.engine.renderer.screen.renderers.elem3d.Element3DUIFactory;
+import net.thevpc.halfa.spi.eval.HValueByName;
+import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -48,6 +57,15 @@ public class HGraphicsImpl implements HGraphics {
     };
 
     @Override
+    public HGraphics copy() {
+        HGraphicsImpl hGraphics = new HGraphicsImpl((Graphics2D) g.create());
+        hGraphics.transform3D = transform3D;
+        hGraphics.light3D = light3D;
+        hGraphics.projection3D = projection3D;
+        return hGraphics;
+    }
+
+    @Override
     public Font getFont() {
         return g.getFont();
     }
@@ -73,31 +91,70 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
-    public AffineTransform getTransform(){
+    public AffineTransform getTransform() {
         return g.getTransform();
     }
 
     @Override
-    public void setTransform(AffineTransform tx){
+    public void setTransform(AffineTransform tx) {
         g.setTransform(tx);
     }
+
     @Override
-    public void transform(AffineTransform tx){
+    public void transform(AffineTransform tx) {
         g.transform(tx);
     }
+
     @Override
-    public void scale(double sx,double sy){
-        g.scale(sx,sy);
+    public void scale(double sx, double sy) {
+        g.scale(sx, sy);
     }
+
     @Override
-    public void rotate(double theta,double x,double y){
-        g.rotate(theta,x,y);
+    public void rotate(double theta, double x, double y) {
+        g.rotate(theta, x, y);
     }
+
     @Override
-    public void rotate(double theta){
+    public void rotate(double theta) {
         g.rotate(theta);
     }
 
+    @Override
+    public void dispose() {
+        g.dispose();
+    }
+
+
+    public Shape createShape(TsonElement e){
+        return ShapeFactory.createShape(e);
+    }
+
+    public Stroke createStroke(TsonElement e) {
+        ObjEx o = ObjEx.of(e);
+        if (o.name() != null) {
+            return StrokeFactory.createStroke(o.name(), e,this);
+        }
+        switch (e.type()) {
+            case ARRAY: {
+                return CompositeStroke.of(e, this);
+            }
+            case UPLET: {
+                return StrokeFactory.createBasic(o);
+            }
+            case NAME:
+            case STRING: {
+                return StrokeFactory.createStroke(o.asStringOrName().get(), e,this);
+            }
+        }
+        {
+            NOptional<Float> d = o.asFloat();
+            if (d.isPresent()) {
+                return new BasicStroke(d.get());
+            }
+        }
+        return new BasicStroke();
+    }
 
     @Override
     public void setPaint(Paint c) {
@@ -690,9 +747,6 @@ public class HGraphicsImpl implements HGraphics {
     }
 
 
-
-
-
     public void transform3D(Matrix3D transform3D) {
         if (transform3D != null) {
             this.transform3D = this.transform3D.multiply(transform3D);
@@ -706,8 +760,8 @@ public class HGraphicsImpl implements HGraphics {
         }
     }
 
-    public void shear(double shx,double shy){
-        g.shear(shx,shy);
+    public void shear(double shx, double shy) {
+        g.shear(shx, shy);
     }
 
 
