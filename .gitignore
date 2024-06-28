@@ -9,3 +9,6 @@
 /test/halfa-examples/target/
 /core/halfa-engine/target/
 /core/halfa-viewer/target
+/core/halfa-spi-base/target/
+/extensions/halfa-extension-plantuml/target/
+/.idea/

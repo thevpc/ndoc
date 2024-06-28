@@ -8,7 +8,7 @@ styles:{
     }
 
     source : {
-        font-size : 30,
+        font-size : 10%g,
         font-family : "monospaced",
         source-primary-color: $palette
         source-keyword-color: $palette[1]

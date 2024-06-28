@@ -60,6 +60,11 @@
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
+            <groupId>net.thevpc.nuts</groupId>
+            <artifactId>nuts-runtime</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-renderer-screen</artifactId>
             <version>0.8.4.0</version>
