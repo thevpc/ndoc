@@ -1,10 +1,14 @@
 package net.thevpc.halfa.examples;
 
+import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.HArrayHead;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.*;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DGroup;
-import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
+import net.thevpc.halfa.engine.renderer.HGraphicsImpl;
+import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.Nuts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +21,11 @@ public class Example extends Canvas {
     int rotatingX = 45;
     int rotatingY = -0;
     int rotatingZ = 0;
+    NSession session;
 
     public Example() {
         projection = new Projection3D(1000);
+        session= Nuts.openWorkspace();
         // Focal length for projection
         Timer timer = new Timer(1000, new ActionListener() {
             @Override
@@ -52,7 +58,7 @@ public class Example extends Canvas {
         g2d.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        HGraphicsImpl g3 = new HGraphicsImpl(g2d);
+        HGraphics g3 = new HGraphicsImpl(g2d,session);
         g3.transform3D(Matrix3D.identity()
 //                .translate(0, 0, 200)
                         .rotateX(Math.toRadians(rotatingX))

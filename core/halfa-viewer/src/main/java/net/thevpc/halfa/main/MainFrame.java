@@ -1,6 +1,6 @@
 package net.thevpc.halfa.main;
 
-import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
+import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.nuts.NSession;
 
 import javax.swing.*;

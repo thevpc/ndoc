@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.document.HDocumentClass;
-import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.engin.spibase.model.DefaultHNode;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
-import net.thevpc.halfa.engine.resources.HResourceMonitorImpl;
+import net.thevpc.halfa.engine.compiler.HResourceMonitorImpl;
 import net.thevpc.nuts.util.NOptional;
 
 /**

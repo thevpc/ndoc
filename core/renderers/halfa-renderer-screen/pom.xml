@@ -61,24 +61,15 @@
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
-            <artifactId>halfa-spi-base</artifactId>
+            <artifactId>halfa-engine</artifactId>
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
-            <groupId>org.scilab.forge</groupId>
-            <artifactId>jlatexmath</artifactId>
-            <version>1.0.7</version>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-spi-base</artifactId>
+            <version>0.8.4.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.kitfox.svg</groupId>
-            <artifactId>svg-salamander</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.locationtech.jts</groupId>
-            <artifactId>jts-core</artifactId>
-            <version>1.18.2</version> <!-- Replace with the latest version -->
-        </dependency>
+
 
     </dependencies>
     <build>

@@ -1,0 +1,68 @@
+@normal page{
+    @Header {
+        text("Images"),
+    }
+    @OneColumn{
+        grid((4,4),columns-weight:[1,3]){
+            // Row 2
+            image("../../../images/image.png",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.png")
+            """
+            )
+
+            // Row 2
+            image("../../../images/image.jpg",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.jpg")
+            """
+            )
+
+            // Row 3
+
+            image("../../../images/image.gif",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.gif")
+            """
+            )
+
+            // Row 4
+
+            image("../../../images/image.svg",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.svg")
+            """
+            )
+
+            // Row 4
+
+            image("../../../images/image.avif",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.avif")
+            """
+            )
+
+            // Row 4
+
+            image("../../../images/image.webp",size:(50,50),at:center)
+            source(at:left
+            tson,
+            """
+                image("../../../images/image.webp")
+            """
+            )
+
+        }
+    }
+
+}

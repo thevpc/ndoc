@@ -2,14 +2,16 @@ package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.node.HItemList;
-import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.api.model.node.HItem;
+import net.thevpc.halfa.api.model.node.HItemList;
+import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.engine.parser.nodes.*;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
+import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -74,7 +76,7 @@ public class DefaultHDocumentItemParserFactory
             case MATRIX:
             case UPLET:
             case ALIAS: {
-                HNodeTypeFactory p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                HNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                 if (p != null) {
                     return p.parseNode(context);
                 }
@@ -83,7 +85,7 @@ public class DefaultHDocumentItemParserFactory
             case NAME: {
                 String name = c.toName().value();
                 String uid = HUtils.uid(name);
-                HNodeTypeFactory p = engine.nodeTypeFactory(uid).orNull();
+                HNodeParser p = engine.nodeTypeFactory(uid).orNull();
                 if (p != null) {
                     return p.parseNode(context);
                 }
@@ -109,7 +111,7 @@ public class DefaultHDocumentItemParserFactory
                         });
                     }
                 }
-                for (HNodeTypeFactory ff : engine.nodeTypeFactories()) {
+                for (HNodeParser ff : engine.nodeTypeFactories()) {
                     NCallableSupport<HItem> uu = ff.parseNode(context);
                     if (uu.isValid()) {
                         return uu;
@@ -130,7 +132,7 @@ public class DefaultHDocumentItemParserFactory
                     });
                 } else {
                     String uid = HUtils.uid(ee.name());
-                    HNodeTypeFactory p = engine.nodeTypeFactory(uid).orNull();
+                    HNodeParser p = engine.nodeTypeFactory(uid).orNull();
                     if (p != null) {
                         return p.parseNode(context);
                     }

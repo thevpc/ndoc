@@ -5,9 +5,11 @@
     @OneColumn{
         ul{
         "Text Based"
+        "Full Control on rendering"
         "Human readable, simply writable"
-        "Multi file, SCM (GIT,...) "
-        "Adds support for Primitive & Complex types, Metadata, Comments"
+        "Multi file"
+        "SCM Friendly (GIT,...) "
+        "Supports Latex, UML, and much more"
         }
     }
 }

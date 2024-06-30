@@ -17,6 +17,9 @@
         <module>core/renderers/halfa-renderer-screen</module>
         <module>test/halfa-examples</module>
         <module>extensions/halfa-extension-plantuml</module>
+        <module>extensions/halfa-extension-animated-gif</module>
+        <module>extensions/halfa-extension-svg</module>
+        <module>extensions/halfa-extension-simple3d</module>
         <module>core/halfa-viewer</module>
     </modules>
     <properties>

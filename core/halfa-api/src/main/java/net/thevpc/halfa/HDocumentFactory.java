@@ -1,7 +1,7 @@
 package net.thevpc.halfa;
 
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.node.*;
+import net.thevpc.halfa.api.model.node.HNode;
 
 public interface HDocumentFactory {
 

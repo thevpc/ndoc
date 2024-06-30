@@ -3,13 +3,12 @@ package net.thevpc.halfa.debug;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
+import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 

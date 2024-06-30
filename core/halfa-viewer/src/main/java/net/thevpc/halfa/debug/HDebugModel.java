@@ -3,7 +3,7 @@ package net.thevpc.halfa.debug;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 
 public class HDebugModel {
     private HEngine engine;

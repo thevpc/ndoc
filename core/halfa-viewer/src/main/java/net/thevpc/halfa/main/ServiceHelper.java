@@ -4,7 +4,7 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageType;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.debug.HDebugFrame;
 import net.thevpc.halfa.engine.HEngineImpl;

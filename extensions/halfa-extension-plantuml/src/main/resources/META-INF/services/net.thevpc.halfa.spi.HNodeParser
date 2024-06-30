@@ -1,0 +1,15 @@
+net.thevpc.halfa.extension.plantuml.PlantUmlParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlChenParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlChronologyParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlEbnfParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlJsonDiagramParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlYamlDiagramParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlMindmapParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlUmlParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlDitaaParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlWbsParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlRegexParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlGanttParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlSaltParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlWireframeParser
+net.thevpc.halfa.extension.plantuml.modes.PlantUmlNwdiagParser

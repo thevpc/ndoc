@@ -2,7 +2,6 @@ package net.thevpc.halfa.engine.renderer.screen.components;
 
 import net.thevpc.halfa.engine.renderer.screen.DocumentView;
 import net.thevpc.halfa.spi.renderer.HGraphics;
-import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;

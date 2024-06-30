@@ -4,16 +4,16 @@ page(template:cover){
            color: "#dddddd",
            origin : center,
            position : (50,27),
-           font-size:200,
+           font-size:30%g,
            font-family:Monospaced,
            font-bold,
-           shadow:(color:gray,shift:(1,1))
+           shadow:(color:gray,shift:(0.3,0.5))
        }
        .subtitle:{
            color: $palette[2]
            origin : center,
            position : (50,40),
-           font-size:50,
+           font-size:20%g,
            font-bold,
            font-family:Serif,
        }
@@ -21,21 +21,21 @@ page(template:cover){
            color: $palette[1],
            origin : center,
            position : (50,60),
-           font-size:30,
+           font-size:8%g,
            font-bold,
        }
        .date:{
            color: $palette[1],
            origin : center,
            position : (50,65),
-           font-size:20,
+           font-size:8%g,
            font-bold,
        }
        .version:{
            color: $palette[1],
            origin : center,
            position : (50,69),
-           font-size:20,
+           font-size:8%g,
            font-bold,
        },
     }

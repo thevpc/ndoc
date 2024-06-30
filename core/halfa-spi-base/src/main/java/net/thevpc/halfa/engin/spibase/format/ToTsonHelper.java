@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engin.spibase.format;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HStyleRule;

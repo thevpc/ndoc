@@ -2,7 +2,7 @@ package net.thevpc.halfa.api.document;
 
 import java.util.Properties;
 
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 

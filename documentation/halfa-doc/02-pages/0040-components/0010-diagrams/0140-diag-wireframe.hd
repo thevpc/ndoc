@@ -1,0 +1,78 @@
+@normal page{
+    @Header {
+        text("Wireframe Diagrams"),
+    }
+    @OneColumn{
+        grid((4,1),columns-weight:[2,3]){
+
+            // Row 1
+            // ---------------------------------------------
+            stack(background:white,draw-contour){
+                wireframe(size:(90,30),at:center
+                    """
+                        {+
+                          Login    | "MyName   "
+                          Password | "****     "
+                          [Cancel] | [  OK   ]
+                        }
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 wireframe(
+                     """
+                        Login    | "MyName   "
+                        Password | "****     "
+                        [Cancel] | [  OK   ]
+                     """
+                 )
+
+             ```
+             )
+
+            // Row 2
+            // ---------------------------------------------
+            stack(background:white,draw-contour){
+                wireframe(size:(90,30),at:center
+                    """
+                        {+
+                        {/ <b>General | Fullscreen | Behavior | Saving }
+                        {
+                        { Open image in: | ^Smart Mode^ }
+                        [X] Smooth images when zoomed
+                        [X] Confirm image deletion
+                        [ ] Show hidden images
+                        }
+                        [Close]
+                        }
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 wireframe(
+                     """
+                        {+
+                        {/ <b>General | Fullscreen | Behavior | Saving }
+                        {
+                        { Open image in: | ^Smart Mode^ }
+                        [X] Smooth images when zoomed
+                        [X] Confirm image deletion
+                        [ ] Show hidden images
+                        }
+                        [Close]
+                        }
+                     """
+                 )
+
+             ```
+             )
+        }
+    }
+
+}

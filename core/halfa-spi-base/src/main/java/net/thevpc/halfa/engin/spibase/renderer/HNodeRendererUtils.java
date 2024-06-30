@@ -3,7 +3,7 @@ package net.thevpc.halfa.engin.spibase.renderer;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.SizeD;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
@@ -88,7 +88,7 @@ public class HNodeRendererUtils {
         if (ctx.isDry()) {
             return false;
         }
-        Paint fg = HValueByName.resolveForegroundColor(t, ctx,force);
+        Paint fg = HValueByName.getForegroundColor(t, ctx,force);
         if (fg != null) {
             g.setPaint(fg);
             return true;
@@ -167,12 +167,19 @@ public class HNodeRendererUtils {
         paintDebugBox(t, ctx, g, a, false);
     }
 
+    public static NOptional<Color> colorFromPaint(Paint p) {
+        if(p instanceof Color){
+            return NOptional.of((Color) p);
+        }
+        return NOptional.ofNamedEmpty("color");
+    }
+
     public static void paintBorderLine(HNode t, HNodeRendererContext ctx, HGraphics g, Bounds2 a) {
         if (ctx.isDry()) {
             return;
         }
         paintDebugBox(t, ctx, g, a);
-        if (HValueByName.requireDrawContour(t, ctx)) {
+        if (HValueByName.isDrawContour(t, ctx)) {
             if (applyForeground(t, g, ctx, true)) {
                 Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);

@@ -1,26 +1,30 @@
 package net.thevpc.halfa.engine;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.List;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.*;
-import net.thevpc.halfa.api.node.HItemList;
-import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HItemList;
+import net.thevpc.halfa.api.model.node.HItem;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.*;
-import net.thevpc.halfa.engine.impl.DefaultHNodeFactoryParseContext;
-import net.thevpc.halfa.engine.impl.HDocumentCompiler;
-import net.thevpc.halfa.engine.impl.HDocumentRendererFactoryContextImpl;
-import net.thevpc.halfa.engine.impl.HPropCalculator;
-import net.thevpc.halfa.engine.nodes.HDocumentFactoryImpl;
+import net.thevpc.halfa.engine.compiler.DefaultHNodeFactoryParseContext;
+import net.thevpc.halfa.engine.compiler.HDocumentCompiler;
+import net.thevpc.halfa.engine.compiler.HDocumentRendererFactoryContextImpl;
+import net.thevpc.halfa.engine.compiler.HPropCalculator;
+import net.thevpc.halfa.engine.document.HDocumentFactoryImpl;
 import net.thevpc.halfa.engine.parser.DefaultHDocumentItemParserFactory;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.engine.parser.HDocumentLoadingResultImpl;
 import net.thevpc.halfa.api.util.HResourceFactory;
-import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
+import net.thevpc.halfa.engine.renderer.HGraphicsImpl;
+import net.thevpc.halfa.engine.renderer.HNodeRendererManagerImpl;
+import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
@@ -42,11 +46,12 @@ public class HEngineImpl implements HEngine {
     private List<HDocumentRendererFactory> documentRendererFactories;
     private List<HNodeParserFactory> nodeParserFactories;
 
-    private Map<String, HNodeTypeFactory> nodeTypeFactories;
+    private Map<String, HNodeParser> nodeTypeFactories;
     private Map<String, String> nodeTypeAliases;
     private HDocumentFactory factory;
     private HPropCalculator hPropCalculator = new HPropCalculator();
     private HDocumentCompiler hDocumentCompiler;
+    private HNodeRendererManager rendererManager;
 
     public HEngineImpl(NSession session) {
         this.session = session;
@@ -133,16 +138,16 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public List<HNodeTypeFactory> nodeTypeFactories() {
+    public List<HNodeParser> nodeTypeFactories() {
         return new ArrayList<>(nodeTypeFactories0().values());
     }
 
-    private Map<String, HNodeTypeFactory> nodeTypeFactories0() {
+    private Map<String, HNodeParser> nodeTypeFactories0() {
         if (nodeTypeFactories == null) {
             nodeTypeFactories = new HashMap<>();
             nodeTypeAliases = new HashMap<>();
-            ServiceLoader<HNodeTypeFactory> renderers = ServiceLoader.load(HNodeTypeFactory.class);
-            for (HNodeTypeFactory renderer : renderers) {
+            ServiceLoader<HNodeParser> renderers = ServiceLoader.load(HNodeParser.class);
+            for (HNodeParser renderer : renderers) {
                 addNodeTypeFactory(renderer);
             }
         }
@@ -150,11 +155,11 @@ public class HEngineImpl implements HEngine {
     }
 
 
-    public NOptional<HNodeTypeFactory> nodeTypeFactory(String id) {
+    public NOptional<HNodeParser> nodeTypeFactory(String id) {
         id = NStringUtils.trim(id);
         if (!id.isEmpty()) {
             id = NNameFormat.LOWER_KEBAB_CASE.format(id);
-            HNodeTypeFactory o = nodeTypeFactories0().get(id);
+            HNodeParser o = nodeTypeFactories0().get(id);
             if (o != null) {
                 return NOptional.of(o);
             }
@@ -166,7 +171,7 @@ public class HEngineImpl implements HEngine {
         return NOptional.ofNamedEmpty("NodeType " + id);
     }
 
-    public void addNodeTypeFactory(HNodeTypeFactory renderer) {
+    public void addNodeTypeFactory(HNodeParser renderer) {
         String id = NStringUtils.trim(renderer.id());
         if (id.isEmpty()) {
             throw new IllegalArgumentException("invalid id in " + renderer.getClass().getName());
@@ -182,9 +187,9 @@ public class HEngineImpl implements HEngine {
             }
         }
         for (String i : allIds) {
-            NOptional<HNodeTypeFactory> o = nodeTypeFactory(i);
+            NOptional<HNodeParser> o = nodeTypeFactory(i);
             if (o.isPresent()) {
-                HNodeTypeFactory oo = o.get();
+                HNodeParser oo = o.get();
                 String oid = NNameFormat.LOWER_KEBAB_CASE.format(oo.id());
                 throw new IllegalArgumentException("already registered " + i + "@" + renderer.getClass().getName() + " as " + oid + "@" + oo.getClass().getName());
             }
@@ -453,8 +458,8 @@ public class HEngineImpl implements HEngine {
 
 
     @Override
-    public NOptional<HProp> computeProperty(HNode node, String propertyName) {
-        return hPropCalculator.computeProperty(node, propertyName);
+    public NOptional<HProp> computeProperty(HNode node, String... propertyNames) {
+        return hPropCalculator.computeProperty(node, propertyNames);
     }
 
     @Override
@@ -468,13 +473,26 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public <T> NOptional<T> computePropertyValue(HNode node, String propertyName) {
-        return hPropCalculator.computePropertyValue(node, propertyName);
+    public <T> NOptional<T> computePropertyValue(HNode node, String... propertyNames) {
+        return hPropCalculator.computePropertyValue(node, propertyNames);
     }
+
 
     @Override
     public HResource computeSource(HNode node) {
         return hDocumentCompiler.computeSource(node);
     }
 
+    @Override
+    public HNodeRendererManager renderManager() {
+        if(rendererManager==null){
+            rendererManager=new HNodeRendererManagerImpl(this);
+        }
+        return rendererManager;
+    }
+
+    @Override
+    public HGraphics createGraphics(Graphics2D g2d) {
+        return new HGraphicsImpl(g2d,session);
+    }
 }

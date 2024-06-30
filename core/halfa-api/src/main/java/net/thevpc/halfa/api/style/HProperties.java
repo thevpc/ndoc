@@ -52,6 +52,19 @@ public class HProperties {
         }
     }
 
+    public NOptional<HProp> get(String... names) {
+        HProp last = null;
+        for (String name : names) {
+            HProp hProp = map.get(name);
+            if (hProp != null) {
+                last = hProp;
+            }
+        }
+        return NOptional.ofNamed(last, "style " +
+                (names.length == 1 ? names[0] : Arrays.asList(names).toString())
+        );
+    }
+
     public NOptional<HProp> get(String s) {
         return NOptional.ofNamed(map.get(s), "style " + s);
     }

@@ -12,3 +12,6 @@
 /core/halfa-spi-base/target/
 /extensions/halfa-extension-plantuml/target/
 /.idea/
+/extensions/halfa-extension-svg/target
+/extensions/halfa-extension-simple3d/target
+/extensions/halfa-extension-animated-gif/target

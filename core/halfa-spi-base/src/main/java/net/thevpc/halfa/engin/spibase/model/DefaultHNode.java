@@ -1,10 +1,10 @@
 package net.thevpc.halfa.engin.spibase.model;
 
-import net.thevpc.halfa.api.node.HItemList;
+import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HAlign;
-import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HItem;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.spi.util.HUtils;
@@ -43,11 +43,11 @@ public class DefaultHNode implements HNode {
     }
 
     public String[] getAncestors() {
-        NOptional<HProp> style = getProperty(HPropName.ANCESTORS);
+        NOptional<Object> style = getPropertyValue(HPropName.ANCESTORS);
         if (style.isEmpty()) {
             return new String[0];
         }
-        Object v = style.get().getValue();
+        Object v = style.get();
         if (v == null) {
             return new String[0];
         }
@@ -61,11 +61,11 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String[] getStyleClasses() {
-        NOptional<HProp> style = getProperty(HPropName.CLASS);
+        NOptional<Object> style = getPropertyValue(HPropName.CLASS);
         if (style.isEmpty()) {
             return new String[0];
         }
-        String[] v = ObjEx.of(style.get().getValue()).asStringArrayOrString().orNull();
+        String[] v = ObjEx.of(style.get()).asStringArrayOrString().orNull();
         if (v == null) {
             return new String[0];
         }
@@ -98,11 +98,11 @@ public class DefaultHNode implements HNode {
 
     @Override
     public boolean isTemplate() {
-        NOptional<HProp> style = getProperty(HPropName.TEMPLATE);
+        NOptional<Object> style = getPropertyValue(HPropName.TEMPLATE);
         if (style.isEmpty()) {
             return false;
         }
-        Object v = style.get().getValue();
+        Object v = style.get();
         if (v == null) {
             return false;
         }
@@ -124,11 +124,11 @@ public class DefaultHNode implements HNode {
 
     @Override
     public boolean isDisabled() {
-        NOptional<HProp> style = getProperty(HPropName.HIDE);
+        NOptional<Object> style = getPropertyValue(HPropName.HIDE);
         if (style.isEmpty()) {
             return false;
         }
-        Object v = style.get().getValue();
+        Object v = style.get();
         if (v == null) {
             return false;
         }
@@ -142,11 +142,11 @@ public class DefaultHNode implements HNode {
     }
 
     public String name() {
-        NOptional<HProp> style = getProperty(HPropName.NAME);
+        NOptional<Object> style = getPropertyValue(HPropName.NAME);
         if (style.isEmpty()) {
             return null;
         }
-        Object v = style.get().getValue();
+        Object v = style.get();
         if (v == null) {
             return null;
         }
@@ -160,12 +160,12 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public NOptional<Object> getPropertyValue(String styleType) {
-        return getProperty(styleType).map(HProp::getValue);
+    public NOptional<Object> getPropertyValue(String ... propertyNames) {
+        return getProperty(propertyNames).map(HProp::getValue);
     }
 
-    public NOptional<HProp> getProperty(String propertyName) {
-        return properties.get(propertyName);
+    public NOptional<HProp> getProperty(String ... propertyNames) {
+        return properties.get(propertyNames);
     }
 
     @Override
@@ -407,8 +407,8 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setSize(Double2 size) {
-        HProp old = getProperty(HPropName.SIZE).orNull();
-        Double2 oo = old == null ? null : (Double2) old.getValue();
+        Object old = getPropertyValue(HPropName.SIZE).orNull();
+        Double2 oo = old == null ? null : ObjEx.of(old).asDouble2().orNull();
         if (oo == null) {
             oo = new Double2(null, null);
         }

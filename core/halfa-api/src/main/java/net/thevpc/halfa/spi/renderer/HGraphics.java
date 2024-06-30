@@ -1,14 +1,14 @@
 package net.thevpc.halfa.spi.renderer;
 
+import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.HArrayHead;
-import net.thevpc.halfa.api.model.elem2d.Bounds2;
-import net.thevpc.halfa.api.model.elem2d.HElement2D;
-import net.thevpc.halfa.api.model.elem2d.HPoint2D;
-import net.thevpc.halfa.api.model.elem2d.Vector2D;
+import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HElement3D;
 import net.thevpc.halfa.api.model.elem3d.Light3D;
 import net.thevpc.halfa.api.model.elem3d.Matrix3D;
 import net.thevpc.halfa.api.model.elem3d.Projection3D;
+import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
@@ -21,6 +21,8 @@ import java.text.AttributedCharacterIterator;
 public interface HGraphics {
 
     HGraphics copy();
+
+    NSession session();
 
     Light3D getLight3D();
 
@@ -63,7 +65,7 @@ public interface HGraphics {
 
     Font getFont();
 
-    Graphics2D context();
+    Graphics2D graphics2D();
 
     void setFont(Font font);
 
@@ -94,6 +96,8 @@ public interface HGraphics {
     void draw3DRect(double x, double y, double w, double h, boolean raised);
 
     void drawImage(Image image, double x, double y, ImageObserver o);
+
+    void drawImage(NPath image, double x, double y, HImageOptions options);
 
     Color getSecondaryColor();
 
@@ -132,4 +136,5 @@ public interface HGraphics {
     Shape createShape(TsonElement e);
 
     Stroke createStroke(TsonElement strokeElem);
+
 }

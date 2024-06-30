@@ -1,6 +1,6 @@
 package net.thevpc.halfa.api.style;
 
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;

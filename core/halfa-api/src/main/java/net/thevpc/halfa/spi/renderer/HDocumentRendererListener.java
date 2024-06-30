@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.renderer;
 
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 
 public interface HDocumentRendererListener {
 

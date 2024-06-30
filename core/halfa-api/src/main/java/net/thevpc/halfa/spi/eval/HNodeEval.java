@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.thevpc.halfa.api.node.HNode;
-import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.nuts.util.NOptional;

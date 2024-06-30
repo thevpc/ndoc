@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.eval;
 
 import net.thevpc.halfa.api.model.elem2d.*;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HSizeRef;
@@ -130,7 +130,7 @@ public class HValueByName {
     public static double getFontSize(HNode t, HNodeRendererContext ctx) {
         TsonElement e = HValueByType.getTson(t, ctx, HPropName.FONT_SIZE).orNull();
         HSizeRef sr = ctx.sizeRef();
-        return Math.min(sr.x(e).orElse(10.0),sr.y(e).orElse(10.0));
+        return Math.min(sr.x(e).orElse(16.0),sr.y(e).orElse(16.0));
     }
 
     public static String getFontFamily(HNode t, HNodeRendererContext ctx) {
@@ -264,7 +264,7 @@ public class HValueByName {
         return NOptional.ofNamedEmpty("shadow");
     }
 
-    public static Paint resolveForegroundColor(HNode t, HNodeRendererContext ctx, boolean force) {
+    public static Paint getForegroundColor(HNode t, HNodeRendererContext ctx, boolean force) {
         if (ctx.isDry()) {
             return null;
         }
@@ -293,7 +293,7 @@ public class HValueByName {
         return color;
     }
 
-    public static boolean requireDrawContour(HNode node, HNodeRendererContext ctx) {
+    public static boolean isDrawContour(HNode node, HNodeRendererContext ctx) {
         return HValueByType.getBoolean(node, ctx, HPropName.DRAW_CONTOUR, "contour").orElse(false);
     }
 

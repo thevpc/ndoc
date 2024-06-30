@@ -1,18 +1,11 @@
 // this is a comment
-@unsigned someInt:12
-someBigDecimal:123366558877.3255D
-
-@SafeConfig(lastLoaded:2024-06-12)
-page(simple:[1]){
-    load(file:"sub-config.tson")
-    positions:[(1,2),(3,4)]
-    params:{
-        name:"name",
-        dimension: percentOf(3)
+page{
+    grid((2,2)){
+        rectangle(at:center,size:(50),
+            background:yellow,
+            color:red, stroke:4
+        )
+        ul{ "Item 1" , "Item 2" }
+        eq("x^2_1=\sin(x)")
     }
 }
-
-resultMatrix:[
-    1+i5, i1 ;
-    1+i5, [i1] /* this is a subMatrix*/
-]

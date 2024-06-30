@@ -1,0 +1,130 @@
+package net.thevpc.halfa.engine.nodes.elem2d.container.flow;
+
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
+import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.node.HNodeType;
+import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererUtils;
+import net.thevpc.halfa.spi.model.HSizeRequirements;
+import net.thevpc.halfa.spi.eval.HValueByName;
+import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererBase;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class HFlowContainerRenderer extends HNodeRendererBase {
+    HProperties defaultStyles = new HProperties();
+
+    public HFlowContainerRenderer() {
+        super(HNodeType.FLOW);
+    }
+
+    private static class Elems {
+        Elem[] elems;
+        Double2 size;
+        Double2 fullSize;
+    }
+
+    private static class Elem {
+        HNode node;
+        HSizeRequirements sizeRequirements;
+        Bounds2 bounds;
+    }
+
+    private Elems compute(HNode p, Bounds2 expectedBounds, HNodeRendererContext ctx) {
+        List<HNode> texts = p.children()
+                .stream().filter(x -> HValueByName.isVisible(x, ctx)).collect(Collectors.toList());
+        Elems e = new Elems();
+        e.elems = new Elem[texts.size()];
+        double allWidth = 0;
+        double allHeight = 0;
+
+        Double expectedWidth = expectedBounds.getWidth();
+        Double expectedHeight = expectedBounds.getHeight();
+        double xRef = expectedBounds.getX();
+        double yRef = expectedBounds.getY();
+        HNodeRendererContext ctx2 = ctx.withBounds(p, new Bounds2(0, 0, expectedWidth, expectedHeight));
+        for (int i = 0; i < texts.size(); i++) {
+            HNode text = texts.get(i);
+            HSizeRequirements ee = ctx2.sizeRequirementsOf(text);
+            double w = ee.minX;
+            if (w <= 0) {
+                w = 10;
+            }
+            double h = ee.minY;
+            if (h <= 0) {
+                h = 10;
+            }
+            Elem zz = new Elem();
+            e.elems[i] = zz;
+            zz.node = text;
+            zz.bounds = new Bounds2(xRef, yRef, w, h);
+            if (e.size == null) {
+                allWidth = zz.bounds.getWidth();
+                allHeight = zz.bounds.getHeight();
+                e.size = new Double2(allWidth, allHeight);
+            } else {
+                allWidth += zz.bounds.getWidth();
+                allHeight = Math.max(zz.bounds.getHeight(), allHeight);
+                e.size = new Double2(allWidth, allHeight);
+            }
+            xRef += w;
+        }
+        double w = Math.max(expectedWidth, e.size == null ? 0 : e.size.getX());
+        double h = Math.max(expectedHeight, e.size == null ? 0 : e.size.getY());
+        e.fullSize = new Double2(w, h);
+        return e;
+    }
+
+    public HSizeRequirements sizeRequirements(HNode p, HNodeRendererContext ctx) {
+        Bounds2 bg = selfBounds(p, ctx);
+        Elems ee = compute(p, bg, ctx);
+        return new HSizeRequirements(
+                ee.size.getX(),
+                ee.fullSize.getX(),
+                ee.fullSize.getX(),
+                ee.size.getY(),
+                ee.fullSize.getY(),
+                ee.fullSize.getY()
+        );
+    }
+
+    public void renderMain(HNode p, HNodeRendererContext ctx) {
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
+        HGraphics g = ctx.graphics();
+
+        Bounds2 bg = selfBounds(p, ctx);
+        Elems ee = compute(p, bg, ctx);
+        Bounds2 newExpectedBounds = HValueByName.selfBounds(p, ee.size, null, ctx);
+
+//        g.setColor(Color.BLUE);
+//        g.drawRect(newExpectedBounds);
+        if (HValueByName.getDebugLevel(p, ctx) >= 10) {
+            g.debugString(
+                    "Flow:\n"
+                            + "expected=" + bg + "\n"
+                            + "fullSize=" + ee.fullSize.toString() + "\n"
+                            + "newExpectedBounds=" + newExpectedBounds.toString(),
+                    30, 30
+            );
+        }
+        HNodeRendererContext ctx2 = ctx.withBounds(p, newExpectedBounds);
+        ee = compute(p, newExpectedBounds, ctx2);
+
+        bg = bg.expand(newExpectedBounds);
+        if (!ctx.isDry()) {
+            HNodeRendererUtils.paintBackground(p, ctx, g, bg);
+        }
+
+        for (Elem elem : ee.elems) {
+            HNodeRendererContext ctx3 = ctx.withBounds(p, elem.bounds);
+            ctx3.render(elem.node);
+        }
+
+
+        HNodeRendererUtils.paintBorderLine(p, ctx, g, bg);
+    }
+}

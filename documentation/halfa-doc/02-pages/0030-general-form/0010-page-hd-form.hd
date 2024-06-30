@@ -1,0 +1,16 @@
+@normal page(name:"General Form"){
+    @Header {
+        text("General Form"),
+    }
+    @OneColumn{
+        ul{
+            "Uses TSON format"
+            "Declarative and Parameterizable"
+            "
+              Everything is a Node that has properties
+              and that might have children nodes
+            "
+        }
+    }
+    
+}

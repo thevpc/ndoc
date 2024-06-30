@@ -1,8 +1,7 @@
 package net.thevpc.halfa.api.style;
 
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.tson.ToTson;
-import net.thevpc.tson.TsonElement;
 
 import java.util.function.Predicate;
 

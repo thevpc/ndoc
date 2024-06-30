@@ -1,8 +1,8 @@
 package net.thevpc.halfa.spi.util;
 
-import net.thevpc.halfa.api.node.HNodeType;
+import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 
 import java.util.ArrayList;
 import java.util.List;

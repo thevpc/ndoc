@@ -4,7 +4,7 @@
  */
 package net.thevpc.halfa.spi.eval;
 
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;

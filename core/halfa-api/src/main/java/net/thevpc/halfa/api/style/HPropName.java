@@ -66,4 +66,5 @@ public class HPropName {
     public static final String START_ANGLE = "start-angle" ;
     public static final String EXTENT_ANGLE = "extent-angle" ;
 
+    public static final String TRANSPARENT_COLOR = "transparent-color";
 }

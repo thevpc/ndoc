@@ -3,15 +3,14 @@ package net.thevpc.halfa.engine.renderer.screen;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
 import net.thevpc.halfa.api.util.NPathHResource;
-import net.thevpc.halfa.engine.renderer.screen.common.TextUtils;
+import net.thevpc.halfa.engine.renderer.elem2d.text.util.TextUtils;
 import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
-import net.thevpc.halfa.engine.renderer.screen.renderers.HGraphicsImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
@@ -29,7 +28,7 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
-import net.thevpc.halfa.engine.renderer.screen.common.ImageUtils;
+import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
 
@@ -37,7 +36,7 @@ public class DocumentView {
 
     private HDocument document;
     private HDocumentRendererSupplier documentSupplier;
-    private HEngine halfaEngine;
+    private HEngine engine;
     private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
     private NSession session;
@@ -55,14 +54,14 @@ public class DocumentView {
     private HDocumentRendererListener listener;
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
-    public DocumentView(HDocumentRendererSupplier documentSupplier, HEngine halfaEngine, HDocumentRendererListener listener, HMessageList messages,
+    public DocumentView(HDocumentRendererSupplier documentSupplier, HEngine engine, HDocumentRendererListener listener, HMessageList messages,
                         NSession session) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
-        this.halfaEngine = halfaEngine;
+        this.engine = engine;
         this.messages = messages;
         this.session = session;
-        rendererManager = new RendererManagerImpl(halfaEngine);
+        this.rendererManager = engine.renderManager();
 
         frame = new JFrame();
         frame.setTitle("H Document Viewer");
@@ -171,7 +170,7 @@ public class DocumentView {
             super.paint(g);
 
             Graphics2D g2d = (Graphics2D) g;
-            HGraphics hg = new HGraphicsImpl(g2d);
+            HGraphics hg = engine.createGraphics(g2d);
             g2d.setRenderingHint(
                     RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -261,14 +260,14 @@ public class DocumentView {
             try {
                 HDocument rawDocument = documentSupplier.get(rendererContext);
                 listener.onChangedRawDocument(rawDocument);
-                HDocument compiledDocument = halfaEngine.compileDocument(rawDocument.copy(), messages).get();
+                HDocument compiledDocument = engine.compileDocument(rawDocument.copy(), messages).get();
                 listener.onChangedCompiledDocument(compiledDocument);
                 document = compiledDocument;
             } catch (Exception ex) {
                 this.currentThrowable = ex;
             }
             if (document == null) {
-                document = halfaEngine.documentFactory().ofDocument();
+                document = engine.documentFactory().ofDocument();
             }
             document.resources().save();
             List<HNode> pages = PagesHelper.resolvePages(document);
@@ -282,7 +281,7 @@ public class DocumentView {
             }
             if (pageViews.isEmpty()) {
                 pageViews.add(createPageView(
-                        halfaEngine.documentFactory().ofPage(),
+                        engine.documentFactory().ofPage(),
                         0
                 ));
             }
@@ -359,7 +358,7 @@ public class DocumentView {
     }
 
     public HEngine engine() {
-        return halfaEngine;
+        return engine;
     }
 
     public void nextPage() {

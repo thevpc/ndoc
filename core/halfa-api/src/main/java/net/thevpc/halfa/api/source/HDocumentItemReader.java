@@ -1,6 +1,6 @@
 package net.thevpc.halfa.api.source;
 
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 
 public interface HDocumentItemReader {
 

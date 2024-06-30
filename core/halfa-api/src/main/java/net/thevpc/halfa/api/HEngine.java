@@ -4,6 +4,7 @@
  */
 package net.thevpc.halfa.api;
 
+import java.awt.*;
 import java.io.InputStream;
 import java.util.List;
 
@@ -11,15 +12,13 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HDocumentLoadingResult;
-import net.thevpc.halfa.api.node.HItem;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HItem;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.nodes.HNodeTypeFactory;
-import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
+import net.thevpc.halfa.spi.HNodeParser;
+import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
@@ -29,9 +28,9 @@ import net.thevpc.tson.TsonElement;
  */
 public interface HEngine {
 
-    List<HNodeTypeFactory> nodeTypeFactories();
+    List<HNodeParser> nodeTypeFactories();
 
-    NOptional<HNodeTypeFactory> nodeTypeFactory(String id);
+    NOptional<HNodeParser> nodeTypeFactory(String id);
 
     HDocumentFactory documentFactory();
 
@@ -59,13 +58,17 @@ public interface HEngine {
 
     TsonElement toTson(HNode node);
 
-    NOptional<HProp> computeProperty(HNode node, String propertyName);
+    NOptional<HProp> computeProperty(HNode node, String ... propertyNames);
 
     List<HProp> computeInheritedProperties(HNode node);
 
     List<HProp> computeProperties(HNode node);
 
-    <T> NOptional<T> computePropertyValue(HNode node, String propertyName);
+    <T> NOptional<T> computePropertyValue(HNode node, String... propertyNames);
 
     HResource computeSource(HNode node);
+
+    HNodeRendererManager renderManager();
+
+    HGraphics createGraphics(Graphics2D g2d);
 }

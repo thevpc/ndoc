@@ -71,8 +71,10 @@ public class HStyleParser {
             }
         }
         COMMON_STYLE_PROPS.addAll(
-                Arrays.asList("color",
+                Arrays.asList(
+                        "color",
                         "background",
+                        "foreground",
                         "bg",
                         "fg",
                         "show",

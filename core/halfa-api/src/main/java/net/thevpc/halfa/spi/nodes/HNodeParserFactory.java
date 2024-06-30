@@ -1,6 +1,6 @@
 package net.thevpc.halfa.spi.nodes;
 
-import net.thevpc.halfa.api.node.HItem;
+import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.nuts.NCallableSupport;
 
 /**

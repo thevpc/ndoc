@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.eval;
 
 import net.thevpc.halfa.api.model.elem2d.*;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
@@ -26,6 +26,11 @@ public class HValueByType {
     }
 
     public static NOptional<Paint> getPaint(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orElse(null));
+        return NOptional.of(r.asPaint().orElse(null));
+    }
+
+    public static NOptional<Color> getColor(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
         ObjEx r = ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orElse(null));
         return NOptional.of(r.asColor().orElse(null));
     }

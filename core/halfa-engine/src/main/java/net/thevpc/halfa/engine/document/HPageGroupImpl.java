@@ -4,13 +4,13 @@
  */
 package net.thevpc.halfa.engine.document;
 
-import net.thevpc.halfa.api.node.HNodeType;
-import net.thevpc.halfa.engin.spibase.parser.AbstractHNodeTypeFactory;
+import net.thevpc.halfa.api.model.node.HNodeType;
+import net.thevpc.halfa.engin.spibase.parser.HNodeParserBase;
 
 /**
  * @author vpc
  */
-public class HPageGroupImpl extends AbstractHNodeTypeFactory {
+public class HPageGroupImpl extends HNodeParserBase {
 
     public HPageGroupImpl() {
         super(true, HNodeType.PAGE_GROUP);

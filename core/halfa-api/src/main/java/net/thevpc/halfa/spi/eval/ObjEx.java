@@ -3,7 +3,7 @@ package net.thevpc.halfa.spi.eval;
 import net.thevpc.halfa.api.model.HArrayHead;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
-import net.thevpc.halfa.api.node.HNode;
+import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.util.DefaultColorPalette;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
