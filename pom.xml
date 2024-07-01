@@ -20,7 +20,7 @@
         <module>extensions/halfa-extension-animated-gif</module>
         <module>extensions/halfa-extension-svg</module>
         <module>extensions/halfa-extension-simple3d</module>
-        <module>core/halfa-viewer</module>
+        <module>app/halfa-viewer</module>
     </modules>
     <properties>
     </properties>
