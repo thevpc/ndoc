@@ -1,0 +1,203 @@
+{
+styles{.H2:{
+                         font-size:12%g,
+                         color:"#FFC55A",
+                         font-bold
+                     }
+          }
+page{
+                 polygon(points:[(0,0),(60,0),(60,100),(0,100)],background-color:"#00215E")
+//                 polygon(points:[(48.5,5),(50,5),(50,100),(48.5,100)],color:gray,stroke:5)
+//                 polygon(points:[(49,0),(52,0),(52,100),(49,100)],background-color:"#FC4100")
+                @(H1)text("
+                        Realisation:
+                        ",
+                        position:(4,5)
+                )
+                @(H2)text("
+                        Hash Table avec Java Swing:
+                        ",
+                        at:(4,25)
+                )
+                image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-06-26 155300.png", position:(65,20),size:(30,60),preserve-aspect-ratio)
+                text(
+                                                "
+                                                Ce projet utilise les bibliothèques Java AWT et Swing pour créer une interface
+                                                graphique interactive avec des animations.
+                                                    AWT : pour dessiner et manipuler les éléments graphiques (Graphics2D, Point...).
+                                                    Swing : offre des composants d'interface utilisateur et gère les animations
+                                                    (JPanel, JTextField, Timer...).
+                                                "
+                                                ,font-size:8%g,position:(3,35),color:white
+                )
+                text(
+                                                "
+                                                Lors de l'exécution, l'application affiche une interface graphique où l'utilisateur
+                                                peut ajouter des mots à une table de hachage.
+                                                Les mots ajoutés sont animés pour se déplacer vers leur emplacement prévu dans la table
+                                                de hachage affichée.
+                                                Les mots peuvent également être supprimés, et les animations et positions
+                                                sont mises à jour en conséquence.
+
+                                                "
+                                                ,font-size:8%g,position:(3,65),color:white,font-bold
+                )
+
+    }
+
+    page{
+                      polygon(points:[(0,0),(57,0),(50,100),(0,100)],background-color:"#FC4100")
+                      polygon(points:[(0,2),(60,2),(53,97),(0,97)],background-color:"#00215E")
+                      image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-07-02 095434.png", position:(2,20),size:(50,70))
+                      @(H2)text("
+                                Hash Table avec Angular:
+                           ",
+                           at:(4,12)
+                      )
+                      text(
+                              "
+                              Ce projet Angular utilise les bibliothèques @angular/common et
+
+
+                              @angular/forms pour créer une interface utilisateur interactive
+                              permettant de manipuler et visualiser une table de hachage."
+
+                              ,font-size:8%g,position:(60,20),font-bold, color:"#00215E"
+                      )
+                      text(
+
+                                                      "
+                                                      Il utilise egalement un canvas HTML pour dessiner visuellement
+                                                      la table et ses entrées.
+
+                                                      "
+                                                      ,font-size:8%g,position:(60,35),font-bold, color:"#00215E"
+                      )
+                      text(
+
+                                                      "
+                                                      L'interface utilisateur comprend des boutons pour ajouter,
+                                                      supprimer et rechercher des mots, ainsi qu'un champ de saisie
+                                                      pour entrer les mots.
+                                                      Les éléments graphiques sont dessinés sur le canvas,
+                                                      avec une palette de couleurs pour différencier les listes.
+
+                                                      "
+                                                      ,font-size:8%g,position:(60,50), color:"#00215E"
+                      )
+
+
+}
+page{
+                      polygon(points:[(55,6),(60,6),(53,40),(47,40)],stroke:5,color:white)
+                      image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-07-02 104653.png", position:(3,20),size:(47,65))
+                      polygon(points:[(0,5),(12,5),(0,35),(0,35)],background-color:"#FC4100")
+                      polygon(points:[(0,0),(10,0),(0,25),(0,20)],background-color:"#00215E")
+
+
+                      polygon(points:[(75,0),(100,0),(100,80),(96,100),(51,100)],background-color:"#FC4100")
+                      polygon(points:[(60,0),(100,0),(100,75),(95,98),(40,98)],background-color:"#00215E")
+
+                      polygon(points:[(58,0),(63,0),(56,30),(51,30)],background-color:"#FC4100")
+
+                      @(H2)text(              "
+                                                   AVL Tree avec JavaFX:
+                                              ",
+                                              at:(80,12)
+                      )
+                      text(                   "
+                                                   Cette application utilise JavaFX et FXML pour
+                                                   créer une interface graphique interactive permettant de
+                                                   manipuler un arbre AVL.
+                                            ",
+                                                                    font-size:8%g,position:(60,25),color:white
+                      )
+                      text(                 "
+                                                Le fichier FXML définit la structure de l'interface, incluant
+                                                des boutons pour les actions (insertion, suppression, recherche),
+                                                un champ de texte pour la saisie des valeurs, et un panneau d'ancrage
+                                                pour l'affichage visuel de l'arbre.
+
+                                            ",
+                                                                    font-size:8%g,position:(55,45),color:white
+                      )
+                      text(                 "
+                                                Les nœuds de l'arbre sont représentés par des cercles et les arêtes par des lignes,
+                                                avec des animations de transition pour une visualisation fluide.
+                                            ",
+                                                                    font-size:8%g,position:(50,70),color:white
+                      )
+
+}
+page{
+                      polygon(points:[(0,15),(100,15),(100,85),(0,85)],background-color:"#00215E")
+                      polygon(points:[(55,0),(95,0),(95,100),(55,100)],background-color:"#FC4100")
+                      image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-07-02 130805.png", position:(57,10),size:(35,80))
+                      @(H2)text(    "
+                                 AVL Tree avec Flutter:
+                               ",
+                               at:(7,25)
+                      )
+                      text(
+                                "
+                                  Cette application Flutter permet d'insérer, supprimer et rechercher
+                                  des nœuds dans un arbre AVL avec une visualisation animée en temps réel.
+
+                                ",
+                                font-size:8%g,position:(5,45),color:white
+                      )text(
+                                "
+                                  Utilisant les classes AnimationController pour les animations
+                                  et CustomPainter pour dessiner les nœuds et les connexions sur le canvas.
+                                ",
+                                font-size:8%g,position:(5,56),color:white
+                      )
+
+
+
+}
+ page{
+                      cylinder(position:(75,10) ,size:(12,40),stroke:5,ellipse-height:20,segment-count:5,background-color:"#00215E")
+                      donut (,at:(75,80),size:(20,20),stroke:5,background-color:"#00215E",inner-radius:80,start-angle:0,extent-angle:270)
+                      donut (,at:(95,80),size:(20,20),stroke:5,background-color:"#00215E",inner-radius:30)
+
+
+                      polygon(points:[(0,0),(57,0),(50,100),(0,100)],background-color:"#FC4100")
+                      polygon(points:[(0,2),(60,2),(53,97),(0,97)],background-color:"#00215E")
+                      @(H2)text("
+                                Développement de Formes Cylindriques:
+                                ",
+                                  at:(4,10)
+                      )
+                      text("
+                                J'ai implementé les classes HCylinderRendrer et HCynliderImpl
+                                pour dessiner des cylindres en 2D,en utilisant les bibliothèques Java.
+
+                           ",
+                                              font-size:8%g,position:(5,20),color:"white",font-bold
+                      )
+                      text("
+                             Les cylindres peuvent être stylisés avec diverses propriétés,
+                             notamment la couleur des faces, la hauteur de l'ellipse, et le nombre de segments.
+                             Cela permet de personnaliser l'apparence du cylindre en fonction
+                             des besoins spécifiques des utilisateurs.
+                           ",
+                                              font-size:8%g,position:(5,30),color:"white"
+                      )
+                      text("
+                             J'ai également développé un module pour dessiner des donuts en 2D.
+                             Les donuts peuvent être personnalisés avec des propriétés telles que
+                             le rayon intérieur, l'angle de départ, et l'angle d'extension.
+                             Cela permet de créer des donuts de différentes formes et tailles.
+                           ",
+                                              font-size:8%g,position:(5,65),color:"white"
+                      )
+
+
+
+
+
+
+
+}
+}
