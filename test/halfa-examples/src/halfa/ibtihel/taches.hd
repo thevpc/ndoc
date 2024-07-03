@@ -1,0 +1,41 @@
+page{
+        polygon(points:[(50,0),(100,0),(100,100),(30,100)],background-color:"#00215E")
+        polygon(points:[(47,0),(50,0),(30,100),(27,100)],background-color:"#FC4100")
+        @(H1)text("
+        Taches effectuées:
+        "
+        ,position:(4,10))
+        text("
+                L'objectif principal était de resoudre
+                des petits problèmes avec des technologies
+                differentes.
+                "
+                ,font-size:10%g,position:(4,30)
+       )text("
+                Durant cette période de préparation,
+                les tâches effectuées ont inclus :
+                "
+                ,font-size:10%g,position:(4,50)
+       )
+        text(
+                "
+                Implémentation d'une table de hachage avec une interface
+                graphique animée en utilisant Swing , Angular et Spring
+                "
+                ,font-size:10%g,position:(50,30),color:white
+        )
+        text(
+                "
+                Implémentation d'un arbre AVL avec une interface graphique
+                et animations en utilisant Dart et JavaFX
+                "
+                ,font-size:10%g,position:(45,50),color:white
+        )text(
+                "
+                Développement de Formes Cylindriques dans une Application
+                de Composition de Documents et de Présentations
+
+                "
+                ,font-size:10%g,position:(40,70),color:white
+        )
+}
