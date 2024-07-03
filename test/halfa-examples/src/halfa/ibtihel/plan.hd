@@ -1,44 +1,45 @@
 {
-page{
-        polygon(points:[(20,0),(100,0),(100,100),(10,100)],background-color:"#00215E")
-        polygon(points:[(17,0),(20,0),(10,100),(7,100)],background-color:"#FC4100")
-        @(H1)text(
-        "Plan :"
-        ,position:(25,10)
-        )
 
-        text(
-                        "
-                        Présentation Génerale
-                        "
-                        ,font-size:10%g,position:(50,30),color:white
-        )
-        text(
-                "
-                Simulation graphique de Hashtable
-                "
-                ,font-size:10%g,position:(45,50),color:white
-        )
-        text(
-                "
-                Simulation graphique de AVL Tree
-                "
-                ,font-size:10%g,position:(45,50),color:white
-        )
-        text(
-                "
-                Nouvelles formes géometriques dans une application
-                de présentation
+ page{
+         polygon(points:[(30,0),(100,0),(100,100),(10,100)],background-color:"#00215E")
+         polygon(points:[(27,0),(30,0),(10,100),(7,100)],background-color:"#FC4100")
+         @(H1)text("
+         Plan :
+         "
+         ,position:(35,10))
 
-                "
-                ,font-size:10%g,position:(40,70),color:white
-        )
-        text(
-                "
-                Conclusion
+         text(
+                 "
+                 Présentation Génerale
+                 "
+                 ,font-size:10%g,position:(30,30),color:white
+         )
+         text(
+                 "
+                 Simulation graphique de Hashtable
+                 "
+                 ,font-size:10%g,position:(28,40),color:white
+         )
+         text(
+                 "
+                 Simulation graphique de AVL Tree
 
-                "
-                ,font-size:10%g,position:(40,70),color:white
-        )
+                 "
+                 ,font-size:10%g,position:(26,50),color:white
+         )text(
+                 "
+                 Nouvelles formes géometriques dans une application de présentation
+
+                 "
+                 ,font-size:10%g,position:(24,60),color:white
+         )text(
+                 "
+                 Conclusion
+
+                 "
+                 ,font-size:10%g,position:(22,70),color:white
+         )
+
+         //line(from:(5,5),to:(20,20),color:red)
  }
  }

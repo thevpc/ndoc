@@ -6,9 +6,8 @@ styles{.H2:{
                      }
           }
 page{
+                 image("C:\Users\ibtih\OneDrive\Bureau\hash_swing.gif",at:center,position:(60,15),size:(50,70),preserve-aspect-ratio)
                  polygon(points:[(0,0),(60,0),(60,100),(0,100)],background-color:"#00215E")
-//                 polygon(points:[(48.5,5),(50,5),(50,100),(48.5,100)],color:gray,stroke:5)
-//                 polygon(points:[(49,0),(52,0),(52,100),(49,100)],background-color:"#FC4100")
                 @(H1)text("
                         Realisation:
                         ",
@@ -19,7 +18,6 @@ page{
                         ",
                         at:(4,25)
                 )
-                image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-06-26 155300.png", position:(65,20),size:(30,60),preserve-aspect-ratio)
                 text(
                                                 "
                                                 Ce projet utilise les bibliothèques Java AWT et Swing pour créer une interface
@@ -48,7 +46,7 @@ page{
     page{
                       polygon(points:[(0,0),(57,0),(50,100),(0,100)],background-color:"#FC4100")
                       polygon(points:[(0,2),(60,2),(53,97),(0,97)],background-color:"#00215E")
-                      image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-07-02 095434.png", position:(2,20),size:(50,70))
+                      image("C:\Users\ibtih\OneDrive\Bureau\\hash_ang.gif", position:(60,20),size:(50,70),preserve-aspect-ratio)
                       @(H2)text("
                                 Hash Table avec Angular:
                            ",
@@ -90,7 +88,7 @@ page{
 }
 page{
                       polygon(points:[(55,6),(60,6),(53,40),(47,40)],stroke:5,color:white)
-                      image("C:\\Users\\ibtih\\OneDrive\\Images\\Captures d’écran\\Capture d'écran 2024-07-02 104653.png", position:(3,20),size:(47,65))
+                      image("./images/AVL_FX.png", position:(3,20),size:(47,65))
                       polygon(points:[(0,5),(12,5),(0,35),(0,35)],background-color:"#FC4100")
                       polygon(points:[(0,0),(10,0),(0,25),(0,20)],background-color:"#00215E")
 
@@ -157,38 +155,35 @@ page{
 
 }
  page{
-                      cylinder(position:(75,10) ,size:(12,40),stroke:5,ellipse-height:20,segment-count:5,background-color:"#00215E")
-                      donut (,at:(75,80),size:(20,20),stroke:5,background-color:"#00215E",inner-radius:80,start-angle:0,extent-angle:270)
-                      donut (,at:(95,80),size:(20,20),stroke:5,background-color:"#00215E",inner-radius:30)
-
 
                       polygon(points:[(0,0),(57,0),(50,100),(0,100)],background-color:"#FC4100")
-                      polygon(points:[(0,2),(60,2),(53,97),(0,97)],background-color:"#00215E")
+                      polygon(points:[(0,2),(70,2),(63,97),(0,97)],background-color:"#00215E")
                       @(H2)text("
-                                Développement de Formes Cylindriques:
+                                Integration d'un nouveau module d'affichage de formes
+                                   geométriques dans une application de presentation:
                                 ",
-                                  at:(4,10)
+                                  at:(6,10)
                       )
                       text("
-                                J'ai implementé les classes HCylinderRendrer et HCynliderImpl
-                                pour dessiner des cylindres en 2D,en utilisant les bibliothèques Java.
+                                L'intérêt d'utiliser cette application réside dans sa capacité à combler
+                                les lacunes des solutions existantes :
+
 
                            ",
-                                              font-size:8%g,position:(5,20),color:"white",font-bold
+                                              font-size:8%g,position:(5,30),color:"white",font-bold
                       )
+
                       text("
-                             Les cylindres peuvent être stylisés avec diverses propriétés,
-                             notamment la couleur des faces, la hauteur de l'ellipse, et le nombre de segments.
-                             Cela permet de personnaliser l'apparence du cylindre en fonction
-                             des besoins spécifiques des utilisateurs.
+                             Asciidoctor est très limité en termes de fonctionnalités graphiques.
+                             LaTeX est complexe et difficile à maîtriser.
+                             PowerPoint manque d'automatisation pour des présentations dynamiques.
+
                            ",
-                                              font-size:8%g,position:(5,30),color:"white"
+                                              font-size:8%g,position:(10,40),color:"white"
                       )
                       text("
-                             J'ai également développé un module pour dessiner des donuts en 2D.
-                             Les donuts peuvent être personnalisés avec des propriétés telles que
-                             le rayon intérieur, l'angle de départ, et l'angle d'extension.
-                             Cela permet de créer des donuts de différentes formes et tailles.
+                             Cette nouvelle application vise à offrir une alternative puissante et flexible,
+                             facilitant la création et l'affichage de présentations de manière intuitive et automatisée.
                            ",
                                               font-size:8%g,position:(5,65),color:"white"
                       )
@@ -200,4 +195,63 @@ page{
 
 
 }
+page{
+                 polygon(points:[(0,0),(100,0),(100,100),(0,100)],background-color:"#2C4E80")
+                 polygon(points:[(0,0),(40,0),(40,100),(0,100)],background-color:"#00215E")
+                text(                  "
+                                         Il existait déjà des formes simples comme des rectangles,
+                                         triangles et cercles dans l'application.
+                                       ",
+                                                          font-size:8%g,position:(4,15),color:"white"
+                )
+              text(
+                    "
+                     Mon travail a consisté à développer des formes plus complexes,telles que des cylindres
+                     et des donuts, pour enrichir les possibilités de présentation et permettre
+                     une visualisation plus diversifiée et sophistiquée.
+                   ",
+                                      font-size:8%g,position:(45,15),color:"white"
+              )
+
+              cylinder(position:(80,30) ,size:(12,35),stroke:5,ellipse-height:20,segment-count:5,background-color:"#00215E")
+              cylinder(position:(65,30) ,size:(12,35),stroke:5,ellipse-height:20,segment-count:3,background-color:"#F86F03")
+              cylinder(position:(50,30) ,size:(12,35),stroke:5,ellipse-height:20)
+
+              donut (position:(80,75),size:(20,20),stroke:5,background-color:"#00215E",inner-radius:80,start-angle:0,extent-angle:270)
+              donut (position:(60,75),size:(20,20),stroke:5,background-color:"#FC4100",inner-radius:30)
+              donut (position:(40,75),size:(20,20),stroke:5,inner-radius:80)
+
+              circle(bg:"FC4100",size:(8,13),at:(24,30))
+              polygon(points:[(3,30),(17,30),(17,40),(3,40)],background-color:"FFC55A")
+              polygon(points:[(20,45),(30,45),(30,60),(20,60)],background-color:"F86F03")
+              polygon(points:[(10,45),(15,60),(5,60)],background-color:"2C4E80")
+
+
+}
+page{
+                 polygon(points:[(0,0),(100,0),(100,100),(0,100)],background-color:"#00215E")
+
+                stack(background:white,draw-contour ,size:(70,70), at:center){
+                        uml(
+                            """
+                                HNodeRendererBase <|-- HCylinderRenderer
+                                HNodeParserBase <|-- HCylinderImpl
+                                HNodeParser <|.. HNodeParserBase
+                                HNodeRenderer <|.. HNodeRendererBase
+
+                                abstract class HNodeParserBase
+                                abstract class HNodeRendererBase
+                                interface HNodeParser
+                                interface HNodeRenderer
+
+                                HCylinderImpl : HCylinderImpl()
+                                HCylinderImpl : processArg() : boolean
+                                HCylinderImpl : toTson(HNode) : TsonElement
+
+                                HCylinderRenderer : defaultStyles
+                                HCylinderRenderer : renderMain(HNode, HNodeRendererContext) : void
+                                HCylinderRenderer : renderShadow(HNode, HNodeRendererContext) : void
+                            """
+                        )
+                    }}
 }

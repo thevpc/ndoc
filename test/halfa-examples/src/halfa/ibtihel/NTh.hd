@@ -2,26 +2,27 @@
 page{
 
             polygon(points:[(0,0),(0,100),(100,100),(100,0)],background-color:white)
-            image("C:\Users\ibtih\OneDrive\Bureau\\hashmap.jpg", origin:center, position:(83,50),size:(100,100),preserve-aspect-ratio)
+
+            image("C:\Users\ibtih\OneDrive\Bureau\\hasht.gif", position:(65,15),size:(50,70),preserve-aspect-ratio)
             polygon(points:[(0,0),(50,0),(70,100),(0,100)],background-color:"#00215E")
             polygon(points:[(50,5),(53,5),(70,95),(67,95)],stroke:5,color:gray)
             polygon(points:[(50,0),(53,0),(70,90),(67,90)],background-color:"#FC4100")
-            @(H1)text("
-                    Notions Théoriques:
+
+            @(H2)text("
+                    Simulation graphique du fonctionnement de
+                    la structure de données Hashtable:
                     "
                     at:(6,10)
             )
             text(
                     "
-                    La table de hachage est une structure de données
-                    qui permet une recherche rapide en utilisant une fonction
-                    de hachage pour mapper des clés à des emplacements
-                    dans une table.
-                    Cette approche offre généralement un temps daccès constant O(1),
-                    ce qui la rend très efficace pour des opérations de
-                    recherche, d'insertion et de suppression.
+                    La table de hachage est une structure de données qui permet
+                    une recherche rapide grâce à une fonction de hachage,
+                    offrant un temps d'accès constant O(1).
+                    Cela la rend très efficace pour les opérations de recherche,
+                    d'insertion et de suppression.
                     "
-                    ,font-size:10%g,at:(6,40),color:white
+                    ,font-size:10%g,position:(5,35),color:white
             )
             text(
                     "
@@ -30,7 +31,7 @@ page{
                     structures de données pour minimiser les collisions
                     et garantir des performances optimales.
                     "
-                    ,font-size:10%g,at:(6,80),color:white
+                    ,font-size:10%g,position:(5,70),color:white
             )
 }
 page{

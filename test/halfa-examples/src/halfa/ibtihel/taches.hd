@@ -1,41 +1,47 @@
 page{
-        polygon(points:[(50,0),(100,0),(100,100),(30,100)],background-color:"#00215E")
-        polygon(points:[(47,0),(50,0),(30,100),(27,100)],background-color:"#FC4100")
+        polygon(points:[(60,0),(100,0),(100,100),(40,100)],background-color:"#00215E")
+        polygon(points:[(57,0),(60,0),(40,100),(37,100)],background-color:"#FC4100")
         @(H1)text("
-        Taches effectuées:
+        Présentation Générale:
         "
         ,position:(4,10))
-        text("
-                L'objectif principal était de resoudre
-                des petits problèmes avec des technologies
-                differentes.
-                "
-                ,font-size:10%g,position:(4,30)
-       )text("
-                Durant cette période de préparation,
-                les tâches effectuées ont inclus :
-                "
-                ,font-size:10%g,position:(4,50)
-       )
-        text(
-                "
-                Implémentation d'une table de hachage avec une interface
-                graphique animée en utilisant Swing , Angular et Spring
-                "
-                ,font-size:10%g,position:(50,30),color:white
-        )
-        text(
-                "
-                Implémentation d'un arbre AVL avec une interface graphique
-                et animations en utilisant Dart et JavaFX
-                "
-                ,font-size:10%g,position:(45,50),color:white
-        )text(
-                "
-                Développement de Formes Cylindriques dans une Application
-                de Composition de Documents et de Présentations
 
-                "
-                ,font-size:10%g,position:(40,70),color:white
-        )
+        text("
+        Au cours de ce stage d'été, réalisé durant ma première année
+        de formation d'ingénieur en informatique à l'ISIM Monastir,
+        j'ai eu l'opportunité de passer quatre semaines au sein de l'entreprise
+        Core Techs Solutions à Sahloul, Sousse.
+        "
+        ,position:(4,25),font-size:8%g)
+
+        text("
+        L'objectif principal de ce stage était de me familiariser
+        avec le développement web, mobile et d'applications de bureau.
+        Cette expérience m'a permis d'acquérir de nouvelles compétences
+        en développement logiciel, en utilisant des technologies
+        différentes telles qu'Angular, Flutter, JavaFX et Swing...
+        "
+        ,position:(4,45),font-size:8%g)
+
+        text("
+        Au cours de cette expérience, j'ai pu mettre en pratique
+        mes connaissances théoriques, développer des projets concrets
+        et collaborer avec des professionnels du secteur.
+        Ce fut une occasion enrichissante d'apprendre
+        et de progresser dans le domaine du développement.
+        "
+        ,position:(4,70),font-size:8%g)
+
+
+gantt(size:(45,50), at:(95,50)
+                     """
+                        [SG Htable] requires 6 days
+                        [SG Avl] requires 5 days
+                        [NModule daff] requires 5 days
+                        [Prstation] requires 4 days
+                        [SG Avl] starts at [SG Htable]'s end
+                        [NModule daff] starts at [SG Avl]'s end
+                        [Prstation] starts at [NModule daff]'s end
+                     """
+                 )
 }

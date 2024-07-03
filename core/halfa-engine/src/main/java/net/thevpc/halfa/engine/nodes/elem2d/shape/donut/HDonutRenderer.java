@@ -71,7 +71,7 @@ public class HDonutRenderer extends HNodeRendererBase {
                 g.drawOval((int) (centerX - innerRadius), (int) (centerY - innerRadius), (int) (innerRadius * 2), (int) (innerRadius * 2));
             }
 
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b,true);
+            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 }
