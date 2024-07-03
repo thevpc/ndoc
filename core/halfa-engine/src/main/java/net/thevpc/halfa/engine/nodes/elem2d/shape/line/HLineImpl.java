@@ -31,29 +31,13 @@ public class HLineImpl extends HNodeParserBase {
                 ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
-                    switch (HUtils.uid(n.get())) {
-                        case "from": {
-                            if (isAncestorScene3D(node)) {
-                                node.setProperty(HProp.ofHPoint3D(HPropName.FROM, ObjEx.of(v).asHPoint3D().get()));
-                            } else {
-                                node.setProperty(HProp.ofHPoint2D(HPropName.FROM, ObjEx.of(v).asHPoint2D().get()));
-                            }
-                            return true;
-                        }
-                        case "to": {
-                            if (isAncestorScene3D(node)) {
-                                node.setProperty(HProp.ofHPoint3D(HPropName.TO, ObjEx.of(v).asHPoint3D().get()));
-                            } else {
-                                node.setProperty(HProp.ofHPoint2D(HPropName.TO, ObjEx.of(v).asHPoint2D().get()));
-                            }
-                            return false;
-                        }
-                        case "start-arrow": {
-                            node.setProperty(new HProp(HPropName.START_ARROW, ObjEx.of(v).asHArrayHead().get()));
-                            return true;
-                        }
-                        case "end-arrow": {
-                            node.setProperty(new HProp(HPropName.END_ARROW, ObjEx.of(v).asHArrayHead().get()));
+                    String uid = HUtils.uid(n.get());
+                    switch (uid) {
+                        case HPropName.FROM:
+                        case HPropName.TO:
+                        case HPropName.END_ARROW:
+                        case HPropName.START_ARROW: {
+                            node.setProperty(new HProp(uid, v));
                             return true;
                         }
                     }
@@ -65,14 +49,9 @@ public class HLineImpl extends HNodeParserBase {
 
     @Override
     public TsonElement toTson(HNode item) {
-        Object from = item.getPropertyValue(HPropName.FROM).orElse(new HPoint2D(0, 0));
-        Object to = item.getPropertyValue(HPropName.TO).orElse(new HPoint2D(100, 100));
         return ToTsonHelper.of(
                         item, engine()
-                ).addChildren(
-                        from == null ? null : Tson.ofPair("from", HUtils.toTson(from)),
-                        to == null ? null : Tson.ofPair("to", HUtils.toTson(to))
-                )
+                ).addChildProps(new String[]{HPropName.FROM, HPropName.TO, HPropName.START_ARROW, HPropName.END_ARROW})
                 .build();
     }
 

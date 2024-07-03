@@ -1,14 +1,14 @@
 package net.thevpc.halfa.api.model.elem2d.primitives;
 
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
 import net.thevpc.halfa.api.model.elem2d.Element2DPrimitiveType;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 
 public class HElement2DLine extends AbstractElement2DPrimitive {
     private HPoint2D from;
     private HPoint2D to;
-    private HArrayHead startType;
-    private HArrayHead endType;
+    private HArrow startArrow;
+    private HArrow endArrow;
 
     public HElement2DLine(HPoint2D from, HPoint2D to) {
         this.from = from;
@@ -38,21 +38,21 @@ public class HElement2DLine extends AbstractElement2DPrimitive {
         return this;
     }
 
-    public HArrayHead getStartType() {
-        return startType;
+    public HArrow getStartArrow() {
+        return startArrow;
     }
 
-    public HElement2DLine setStartType(HArrayHead startType) {
-        this.startType = startType;
+    public HElement2DLine setStartArrow(HArrow startType) {
+        this.startArrow = startType;
         return this;
     }
 
-    public HArrayHead getEndType() {
-        return endType;
+    public HArrow getEndArrow() {
+        return endArrow;
     }
 
-    public HElement2DLine setEndType(HArrayHead toType) {
-        this.endType = toType;
+    public HElement2DLine setEndArrow(HArrow toType) {
+        this.endArrow = toType;
         return this;
     }
 }

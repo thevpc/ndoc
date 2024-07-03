@@ -57,6 +57,7 @@ public class HUnorderedListRenderer extends ConvertedHPartRenderer {
                 , HPropName.BACKGROUND_COLOR
                 , HPropName.FILL_BACKGROUND
                 , HPropName.PADDING
+                , HPropName.MARGIN
                 , HPropName.AT
                 , HPropName.STROKE
                 , HPropName.CLASS

@@ -8,7 +8,7 @@ styles:{
     }
 
     source : {
-        font-size : 2%g,
+        font-size : 7%g,
         font-family : "monospaced",
         source-primary-color: $palette
         source-keyword-color: $palette[1]
@@ -21,6 +21,9 @@ styles:{
 
     }
 
+    .ul-item:{
+        margin : (5,0)
+    }
     .ul-bullet:{
         background: $palette[1]
         position:(50,0.75%g),

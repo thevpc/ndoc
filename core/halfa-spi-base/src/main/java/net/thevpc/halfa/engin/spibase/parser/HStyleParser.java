@@ -34,6 +34,7 @@ public class HStyleParser {
 //                HPropName.LINE_COLOR,
                 HPropName.ROTATE,
                 HPropName.PADDING,
+                HPropName.MARGIN,
                 HPropName.FONT_SIZE,
                 HPropName.DEBUG,
                 HPropName.DEBUG_COLOR,

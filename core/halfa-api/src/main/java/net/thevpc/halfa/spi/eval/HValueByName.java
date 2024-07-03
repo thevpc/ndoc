@@ -23,14 +23,17 @@ public class HValueByName {
         return b == null ? false : b;
     }
 
-    private static Double2 getSize(HNode t, Double2 minSize, HNodeRendererContext ctx) {
+    private static Double2 getSize(HNode t, Double2 minSize, HNodeRendererContext ctx,HSizeRef hSizeRef) {
+        if(hSizeRef==null) {
+            hSizeRef = ctx.sizeRef();
+        }
         TsonNumber2 double2OrHAlign = HValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
                 new TsonNumber2(Tson.of(100.0).toNumber(), Tson.of(100.0).toNumber())
         );
 
         Double2 size = new Double2(
-                ctx.sizeRef().x(double2OrHAlign.getX()).get(),
-                ctx.sizeRef().y(double2OrHAlign.getY()).get()
+                hSizeRef.x(double2OrHAlign.getX()).get(),
+                hSizeRef.y(double2OrHAlign.getY()).get()
         );
 
         boolean shapeRatio = isPreserveShapeRatio(t, ctx);
@@ -86,28 +89,34 @@ public class HValueByName {
     }
 
     public static Bounds2 selfBounds(HNode t, Double2 selfSize, Double2 minSize, HNodeRendererContext ctx) {
-        if (selfSize == null) {
-            selfSize = getSize(t, minSize, ctx);
-        }
         Bounds2 parentBounds = ctx.getBounds();
         double pw = parentBounds.getWidth();
         double ph = parentBounds.getHeight();
+        Padding padding = HValueByType.getPadding(t, ctx, HPropName.MARGIN).orElse(Padding.of(0))
+                .mul(pw / 100, ph / 100);
+        HSizeRef hSizeRef = new HSizeRef(
+                Math.max(pw - padding.getLeft() - padding.getRight(), 0),
+                Math.max(ph - padding.getTop() - padding.getBottom(), 0),
+                ctx.getGlobalBounds().getWidth(),
+                ctx.getGlobalBounds().getHeight()
+        );
+        if (selfSize == null) {
+            selfSize = getSize(t, minSize, ctx, hSizeRef);
+        }
 
-        Double2 pos = getPosition(t, ctx, new Double2(pw, ph));
+        Double2 pos = getPosition(t, ctx, new Double2(hSizeRef.getParentWidth(), hSizeRef.getParentHeight()));
 
         Double2 origin = getOrigin(t, ctx, selfSize);
 
         double x = pos.getX() - origin.getX() + parentBounds.getX();
         double y = pos.getY() - origin.getY() + parentBounds.getY();
 
-        Padding padding = HValueByType.getPadding(t, ctx, HPropName.PADDING).orElse(Padding.of(0))
-                .mul(pw / 100, ph / 100);
 
         return new Bounds2(
                 x + padding.getLeft(),
                 y + padding.getTop(),
-                Math.max(selfSize.getX() - padding.getLeft() - padding.getRight(),0),
-                Math.max(selfSize.getY() - padding.getTop() - padding.getBottom(),0)
+                selfSize.getX(),
+                selfSize.getY()
         );
     }
 

@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HElement3D;
 import net.thevpc.halfa.api.model.elem3d.Light3D;
@@ -28,10 +28,7 @@ public interface HGraphics {
 
     Light3D setLight3D(Light3D light3D);
 
-    void drawArrayHead(HPoint2D origin, Vector2D direction,
-                       double arrowWidth, double arrowHeight,
-                       HArrayHead head
-    );
+    void drawArrayHead(HPoint2D origin, Vector2D direction, HArrow arrow);
 
     AffineTransform getTransform();
 

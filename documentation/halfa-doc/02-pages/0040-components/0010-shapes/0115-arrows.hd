@@ -1,0 +1,105 @@
+@normal page{
+    @Header {
+        text("Arrows (FIX ME)"),
+    }
+    @OneColumn{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+            // Row
+            stack(background:white,draw-contour){
+                line(from:(10,10), to:(80,90),
+                end-arrow:simple()
+                color:red,stroke:3)
+            }
+            source(tson,
+                """
+                    line(
+                        from:(10,10), to:(80,90)
+                        end-arrow:simple()
+                    )
+                """
+            )
+            // Row
+            stack(background:white,draw-contour){
+                line(from:(10,10), to:(80,90), color:red
+                ,stroke:3
+                start-arrow:triangle()
+                end-arrow:triangle-full(10)
+                )
+            }
+            source(tson,
+                """
+                    line(
+                        from:(10,10), to:(80,90)
+                        start-arrow:triangle()
+                        end-arrow:triangle-full(10)
+                    )
+                """
+            )
+
+            // Row
+            stack(background:white,draw-contour){
+                line(from:(10,10), to:(80,90), color:red
+                ,stroke:3
+                start-arrow:oval()
+                end-arrow:oval-full(10)
+                )
+            }
+            source(tson,
+                """
+                    line(
+                        from:(10,10), to:(80,90)
+                        start-arrow:circle()
+                        end-arrow:circle-full(10)
+                    )
+                """
+            )
+
+
+            // Row
+            stack(background:white,draw-contour){
+                line(from:(10,10), to:(80,90), color:red
+                ,stroke:3
+                start-arrow:diamond()
+                end-arrow:diamond-full(10)
+                )
+            }
+            source(tson,
+                """
+                    line(
+                        from:(10,10), to:(80,90)
+                        start-arrow:diamond()
+                        end-arrow:diamond-full(10)
+                    )
+                """
+            )
+
+            // Row
+            stack(background:white,draw-contour){
+                line(from:(10,10), to:(80,90), color:red
+                ,stroke:3
+                start-arrow:rectangle()
+                end-arrow:rectangle-full(10)
+                )
+            }
+            source(tson,
+                """
+                    line(
+                        from:(10,10), to:(80,90)
+                        start-arrow:rectangle()
+                        end-arrow:rectangle-full(10)
+                    )
+                """
+            )
+
+
+
+        }
+    }
+
+}

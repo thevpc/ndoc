@@ -6,7 +6,7 @@ import net.thevpc.halfa.engin.spibase.parser.HNodeParserBase;
 public class HRhombusImpl extends HNodeParserBase {
 
     public HRhombusImpl() {
-        super(false, HNodeType.RHOMBUS);
+        super(false, HNodeType.RHOMBUS,"diamond");
     }
 
 }

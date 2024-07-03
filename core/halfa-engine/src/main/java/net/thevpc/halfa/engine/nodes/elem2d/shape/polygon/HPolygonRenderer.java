@@ -17,6 +17,7 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
                 , HNodeType.PENTAGON
                 , HNodeType.HEXAGON
                 , HNodeType.HEPTAGON
+                , HNodeType.OCTAGON
                 , HNodeType.NONAGON
                 , HNodeType.DECAGON
         );
@@ -56,9 +57,11 @@ public class HPolygonRenderer extends HPolygonBaseRenderer {
         }
         HPoint2D[] points = null;
         if (count < 3) {
-            points = ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().get();
-            if (points.length < 3) {
-                points = null;
+            points = ObjEx.ofProp(p, HPropName.POINTS).asHPoint2DArray().orNull();
+            if(points != null) {
+                if (points.length < 3) {
+                    points = null;
+                }
             }
         }
         if (points == null) {

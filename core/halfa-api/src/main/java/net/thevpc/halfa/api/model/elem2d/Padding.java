@@ -10,7 +10,7 @@ public class Padding implements ToTson {
     private Double bottom;
     private Double left;
 
-    public Padding(Double top, Double right, Double bottom, Double left) {
+    public Padding(Double left,Double top, Double right, Double bottom) {
         this.top = top;
         this.right = right;
         this.bottom = bottom;
@@ -21,16 +21,16 @@ public class Padding implements ToTson {
         return new Padding(v, v, v, v);
     }
 
-    public static Padding of(double t, double r) {
-        return new Padding(t, r, t, r);
+    public static Padding of(double l, double t) {
+        return new Padding(l, t, l, t);
     }
 
-    public static Padding of(double t, double rl, double b) {
-        return new Padding(t, rl, b, rl);
+    public static Padding of(double rl, double t, double b) {
+        return new Padding(rl, t, b, t);
     }
 
-    public static Padding of(double t, double r, double b, double l) {
-        return new Padding(t, r, b, l);
+    public static Padding of(double l, double t, double b, double r) {
+        return new Padding(l, t, b, r);
     }
 
     public Double getTop() {
@@ -51,29 +51,29 @@ public class Padding implements ToTson {
 
     @Override
     public String toString() {
-        return "(" + top
+        return "(" + left
+                + ", " + top
                 + ", " + right
                 + ", " + bottom
-                + ", " + left
                 + ')';
     }
 
     @Override
     public TsonElement toTson() {
         return Tson.ofUplet(
+                Tson.ofDouble(getLeft()),
                 Tson.ofDouble(getTop()),
                 Tson.ofDouble(getRight()),
-                Tson.ofDouble(getBottom()),
-                Tson.ofDouble(getLeft())
+                Tson.ofDouble(getBottom())
         ).build();
     }
 
     public Padding mul(double w, double h) {
         return new Padding(
+                left * w,
                 top * h,
-                top * w,
-                bottom * h,
-                left * w
+                right * w,
+                bottom * h
         );
     }
 }

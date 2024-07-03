@@ -4,6 +4,9 @@
     }
     @OneColumn{
         grid((6,3),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+            }
             // Row
             stack(background:white,draw-contour){
                 rectangle(at:center, size:(30,30), background:$palette[4], color:$palette[2])

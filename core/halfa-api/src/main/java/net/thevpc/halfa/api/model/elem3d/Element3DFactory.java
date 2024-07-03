@@ -1,7 +1,8 @@
 package net.thevpc.halfa.api.model.elem3d;
 
 import net.thevpc.halfa.api.fct.HFunctionXY;
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DBox;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DGroup;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DSurface;
@@ -21,9 +22,9 @@ public class Element3DFactory {
 
     public static HElement3D axis(HPoint3D origin, double length) {
         Element3DGroup g = group();
-        g.add(segment(origin, new HVector3D(1, 0, 0), length).setEndType(HArrayHead.ARROW).setLinePaint(Color.BLUE));
-        g.add(segment(origin, new HVector3D(0, 1, 0), length).setEndType(HArrayHead.ARROW).setLinePaint(Color.GREEN));
-        g.add(segment(origin, new HVector3D(0, 0, 1), length).setEndType(HArrayHead.ARROW).setLinePaint(Color.RED));
+        g.add(segment(origin, new HVector3D(1, 0, 0), length).setEndArrow(new HArrow()).setLinePaint(Color.BLUE));
+        g.add(segment(origin, new HVector3D(0, 1, 0), length).setEndArrow(new HArrow()).setLinePaint(Color.GREEN));
+        g.add(segment(origin, new HVector3D(0, 0, 1), length).setEndArrow(new HArrow()).setLinePaint(Color.RED));
         return g;
     }
 

@@ -4,11 +4,17 @@
     }
     @OneColumn{
         grid((4,1),columns-weight:[2,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
 
             // Row 1
             // ---------------------------------------------
             stack(background:white,draw-contour){
-                uml(
+                uml(at:center,size:(100,50)
                     """
                         left to right direction
                         actor "Food Critic" as fc
@@ -48,7 +54,7 @@
             // Row 2
             // ---------------------------------------------
             stack(background:white,draw-contour){
-                uml(
+                uml(at:center,size:(100,50)
                     """
                         [c]
                         node node {

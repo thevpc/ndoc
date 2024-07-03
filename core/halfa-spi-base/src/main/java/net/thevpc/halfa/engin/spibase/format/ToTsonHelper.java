@@ -107,6 +107,13 @@ public class ToTsonHelper {
         return this;
     }
 
+    public ToTsonHelper addNonNullPairChild(String name,Object value) {
+        if(value!=null){
+            addChild(Tson.ofPair(name, HUtils.toTson(name)));
+        }
+        return this;
+    }
+
     public ToTsonHelper addChildren(TsonElement... elements) {
         if (elements != null) {
             for (TsonElement e : elements) {
@@ -142,6 +149,20 @@ public class ToTsonHelper {
     public ToTsonHelper excludeProps(String prop) {
         if (!NBlankable.isBlank(prop)) {
             excludeSet.add(HUtils.uid(prop));
+        }
+        return this;
+    }
+
+    public ToTsonHelper addChildProps(String[] propNames) {
+        if(propNames!=null) {
+            for (String propName : propNames) {
+                if(propName!=null) {
+                    Object v = node.getPropertyValue(propName).orNull();
+                    if (v != null) {
+                        addChild(Tson.ofPair(propName, HUtils.toTson(v)));
+                    }
+                }
+            }
         }
         return this;
     }

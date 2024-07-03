@@ -1,5 +1,7 @@
 package net.thevpc.halfa.spi.eval;
 
+import net.thevpc.halfa.api.model.HArrow;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -9,6 +11,15 @@ import net.thevpc.tson.TsonElement;
 import java.awt.*;
 
 public class HValueByType {
+
+    public static NOptional<HArrowType> getArrowType(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asArrowType();
+    }
+
+    public static NOptional<HArrow> getArrow(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
+        return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asArrow();
+    }
+
     public static NOptional<Boolean> getBoolean(HNode t, HNodeRendererContext ctx, String propName, String... propNames) {
         return ObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asBoolean();
     }

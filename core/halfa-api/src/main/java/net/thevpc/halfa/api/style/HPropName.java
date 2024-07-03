@@ -53,7 +53,11 @@ public class HPropName {
     public static final String START_ARROW ="start-arrow";
     public static final String END_ARROW ="end-arrow";
     public static final String TO="to";
+    public static final String CTRL="ctrl";
+    public static final String CTRL1="ctrl1";
+    public static final String CTRL2="ctrl2";
     public static final String PADDING="padding";
+    public static final String MARGIN="margin";
     public static final String ROTATE="rotate";
     public static final String SHADOW="shadow";
 
@@ -64,6 +68,7 @@ public class HPropName {
     public static final String TOP_COLOR = "top-color" ;
     public static final String INNER_RADIUS = "INNER-radius" ;
     public static final String START_ANGLE = "start-angle" ;
+    public static final String END_ANGLE = "end-angle" ;
     public static final String EXTENT_ANGLE = "extent-angle" ;
 
     public static final String TRANSPARENT_COLOR = "transparent-color";

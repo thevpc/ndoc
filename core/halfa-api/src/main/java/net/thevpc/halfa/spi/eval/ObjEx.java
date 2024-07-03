@@ -1,6 +1,7 @@
 package net.thevpc.halfa.spi.eval;
 
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -373,7 +374,7 @@ public class ObjEx {
     }
 
     public NOptional<Integer> asIntOrBoolean() {
-        return asInt().orElseUse(()->asBoolean().map(x->x?1:0));
+        return asInt().orElseUse(() -> asBoolean().map(x -> x ? 1 : 0));
     }
 
     public NOptional<Integer> asInt() {
@@ -522,30 +523,29 @@ public class ObjEx {
 
     public NOptional<TsonElement[]> asTsonArray() {
         if (element instanceof TsonElement[]) {
-            return NOptional.of(((TsonElement[])element));
+            return NOptional.of(((TsonElement[]) element));
         }
         if (element instanceof double[]) {
             return NOptional.of(
-                    Arrays.stream((double[])element).mapToObj(x->Tson.of(x)).toArray(TsonElement[]::new)
+                    Arrays.stream((double[]) element).mapToObj(x -> Tson.of(x)).toArray(TsonElement[]::new)
             );
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY:{
-                    if(te.toArray().header()!=null){
+                case ARRAY: {
+                    if (te.toArray().header() != null) {
                         return NOptional.of(new TsonElement[]{te});
                     }
                     return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
                 }
-                case OBJECT:{
-                    if(te.toObject().header()!=null){
+                case OBJECT: {
+                    if (te.toObject().header() != null) {
                         return NOptional.of(new TsonElement[]{te});
                     }
                     return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
                 }
-                case UPLET:
-                {
+                case UPLET: {
                     return NOptional.of(te.toUplet().all().toArray(new TsonElement[0]));
                 }
             }
@@ -557,14 +557,14 @@ public class ObjEx {
             return ObjEx.of(new double[]{((HPoint2D) element).getX(), ((HPoint2D) element).getY()}).asTsonArray();
         }
         if (element instanceof HPoint3D) {
-            return ObjEx.of(new double[]{((HPoint3D) element).getX(), ((HPoint3D) element).getY(),((HPoint3D) element).getZ()}).asTsonArray();
+            return ObjEx.of(new double[]{((HPoint3D) element).getX(), ((HPoint3D) element).getY(), ((HPoint3D) element).getZ()}).asTsonArray();
         }
         if (element instanceof Double4) {
             return ObjEx.of(new double[]{
                     ((Double4) element).getX1(),
                     ((Double4) element).getX2()
-                    ,((Double4) element).getX3()
-                    ,((Double4) element).getX4()
+                    , ((Double4) element).getX3()
+                    , ((Double4) element).getX4()
             }).asTsonArray();
         }
         return NOptional.ofNamedEmpty("TsonElement[] from " + element);
@@ -782,7 +782,7 @@ public class ObjEx {
 
     public NOptional<TsonNumber2> asTsonNumber2Or1OrHAlign() {
         NOptional<TsonElement[]> ta = asTsonArray();
-        if(ta.isPresent()) {
+        if (ta.isPresent()) {
             TsonElement[] taa = ta.get();
             switch (taa.length) {
                 case 1: {
@@ -821,7 +821,7 @@ public class ObjEx {
             }
         }
         NOptional<TsonElement> te = asTson();
-        if(te.isPresent()) {
+        if (te.isPresent()) {
             TsonElement taa = te.get();
             if (taa.isNumber()) {
                 return NOptional.of(new TsonNumber2((TsonNumber) taa, (TsonNumber) taa));
@@ -843,7 +843,7 @@ public class ObjEx {
         if (element instanceof Padding) {
             return NOptional.of((Padding) element);
         }
-        NOptional<double[]> d = asDoubleArray();
+        NOptional<double[]> d = asDoubleArrayOrDouble();
         if (d.isPresent()) {
             double[] dd = d.get();
             switch (dd.length) {
@@ -963,24 +963,64 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("HPoint2D from " + element);
     }
 
-    public NOptional<HArrayHead> asHArrayHead() {
-        if (element instanceof HArrayHead) {
-            return NOptional.of((HArrayHead) element);
+    public NOptional<HArrowType> asArrowType() {
+        if (element instanceof HArrowType) {
+            return NOptional.of((HArrowType) element);
         }
         NOptional<String> s = asStringOrName();
         if (s.isPresent()) {
             String v = s.get().trim();
             if (v.isEmpty()) {
-                return NOptional.of(HArrayHead.NONE);
+                return NOptional.ofNamedEmpty("arrow-type");
             }
             try {
-                HArrayHead y = HArrayHead.valueOf(NNameFormat.CONST_NAME.format(v));
+                HArrowType y = HArrowType.valueOf(NNameFormat.CONST_NAME.format(v));
                 return NOptional.of(y);
             } catch (Exception e) {
                 //
             }
         }
-        return NOptional.ofNamedError("HArrayHead from " + element);
+        return NOptional.ofNamedError("HArrowType from " + element);
+    }
+
+    public NOptional<HArrow> asArrow() {
+        if (element instanceof HArrow) {
+            return NOptional.of((HArrow) element);
+        }
+        if (element instanceof HArrowType) {
+            return NOptional.of(new HArrow((HArrowType) element));
+        }
+        if (element instanceof TsonFunction) {
+            TsonFunction f = (TsonFunction) element;
+            NOptional<HArrowType> u = ObjEx.of(f.name()).asArrowType();
+            Double width = null;
+            Double height = null;
+            if (u.isPresent()) {
+                for (TsonElement arg : f.args()) {
+                    NOptional<Number> n = ObjEx.of(arg).asNumber();
+                    if (n.isPresent()) {
+                        if (width == null) {
+                            width = n.get().doubleValue();
+                        } else if (height == null) {
+                            height = n.get().doubleValue();
+                        }
+                    }
+                }
+                return NOptional.of(
+                        new HArrow(
+                                u.get(),
+                                width == null ? 0 : width.doubleValue(),
+                                height == null ? 0 : height.doubleValue()
+                        )
+                );
+            }
+            return NOptional.ofNamedError("HArrow from " + element);
+        }
+        NOptional<HArrowType> s = asArrowType();
+        if (s.isPresent()) {
+            return NOptional.of(new HArrow(s.get()));
+        }
+        return NOptional.ofNamedError("HArrow from " + element);
     }
 
     public NOptional<HPoint3D> asHPoint3D() {

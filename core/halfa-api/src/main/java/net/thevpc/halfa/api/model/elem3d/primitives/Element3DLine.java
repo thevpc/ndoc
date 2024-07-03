@@ -1,6 +1,6 @@
 package net.thevpc.halfa.api.model.elem3d.primitives;
 
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
 import net.thevpc.halfa.api.model.elem3d.AbstractElement3DPrimitive;
 import net.thevpc.halfa.api.model.elem3d.Element3DPrimitiveType;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
@@ -10,29 +10,29 @@ import java.util.Objects;
 public class Element3DLine extends AbstractElement3DPrimitive {
     private HPoint3D from;
     private HPoint3D to;
-    private HArrayHead startType = HArrayHead.NONE;
-    private HArrayHead endType = HArrayHead.NONE;
+    private HArrow startArrow = null;
+    private HArrow endArrow = null;
 
     public Element3DLine(HPoint3D from, HPoint3D to) {
         this.from = from;
         this.to = to;
     }
 
-    public HArrayHead getStartType() {
-        return startType;
+    public HArrow getStartArrow() {
+        return startArrow;
     }
 
-    public Element3DLine setStartType(HArrayHead startType) {
-        this.startType = startType;
+    public Element3DLine setStartArrow(HArrow startArrow) {
+        this.startArrow = startArrow;
         return this;
     }
 
-    public HArrayHead getEndType() {
-        return endType;
+    public HArrow getEndArrow() {
+        return endArrow;
     }
 
-    public Element3DLine setEndType(HArrayHead endType) {
-        this.endType = endType;
+    public Element3DLine setEndArrow(HArrow endArrow) {
+        this.endArrow = endArrow;
         return this;
     }
 

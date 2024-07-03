@@ -5,7 +5,17 @@ page{
             background:yellow,
             color:red, stroke:4
         )
-        ul{ "Item 1" , "Item 2" }
-        eq("x^2_1=\sin(x)")
+        ul(at:center){ "Item 1" , "Item 2" }
+        eq("x^2_1=\sin(x)") // supports LATEX
+        uml( // supports PLANTUML
+            """
+                left to right direction
+                actor "Food Critic" as fc
+                rectangle Restaurant {
+                  usecase "Eat Food" as UC1
+                }
+                fc --> UC1
+            """
+        )
     }
 }

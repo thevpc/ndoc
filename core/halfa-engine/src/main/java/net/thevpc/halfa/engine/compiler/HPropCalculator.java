@@ -54,7 +54,7 @@ public class HPropCalculator {
                 NOptional<HProp> ok = rule.styles().get(propertyNames);
                 if(ok.isPresent()){
                     rr.add(new HStyleRuleResult2(rule, ok.get()));
-                    break;
+//                    break;
                 }
             }
         }

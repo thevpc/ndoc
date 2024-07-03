@@ -141,11 +141,20 @@ public abstract class HTextBaseRenderer extends HNodeRendererBase {
                 rows.add(string);
             }
         }
-        int startingSpaces = -1;
         for (int i = rows.size() - 1; i >= 0; i--) {
             String r = rows.get(i);
             if (r.trim().isEmpty()) {
                 rows.remove(i);
+            } else {
+                break;
+            }
+        }
+
+        int startingSpaces = -1;
+        for (int i = rows.size() - 1; i >= 0; i--) {
+            String r = rows.get(i);
+            if (r.trim().isEmpty()) {
+                rows.set(i,"");
             } else {
                 int s = computeStartingSpaces(r);
                 if (startingSpaces < 0 || startingSpaces > s) {

@@ -23,5 +23,7 @@ net.thevpc.halfa.engine.nodes.elem2d.shape.trapezoid.TrapezoidRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.triangle.TriangleRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.rhombus.RhombusRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.parallelogram.ParallelogramRenderer
+net.thevpc.halfa.engine.nodes.elem2d.shape.quadcurve.HQuadCurveRenderer
+net.thevpc.halfa.engine.nodes.elem2d.shape.cubiccurve.HCubicCurveRenderer
 net.thevpc.halfa.engine.nodes.page.HPageRenderer
 

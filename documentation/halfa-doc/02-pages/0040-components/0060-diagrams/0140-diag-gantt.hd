@@ -4,7 +4,12 @@
     }
     @OneColumn{
         grid((2,2),columns-weight:[2,3]){
-
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
             // Row 1
             // ---------------------------------------------
             stack(background:white,draw-contour){
@@ -24,7 +29,7 @@
                 )
             }
 
-            source(at:left
+            source(at:left, font-size:7%g
             tson,
             ```
                  gantt(
@@ -59,7 +64,7 @@
                 )
             }
 
-            source(at:left
+            source(at:left, font-size:7%g
             tson,
             ```
                  gantt(

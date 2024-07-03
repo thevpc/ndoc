@@ -101,4 +101,8 @@ public class HPoint2D implements ToTson {
                 Tson.ofDouble(getY())
         ).build();
     }
+
+    public HPoint2D add(double x, double y) {
+        return new HPoint2D(x+x, y+y);
+    }
 }

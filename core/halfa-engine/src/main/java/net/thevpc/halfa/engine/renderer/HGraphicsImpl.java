@@ -1,11 +1,9 @@
 package net.thevpc.halfa.engine.renderer;
 
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrow;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
-import net.thevpc.halfa.api.model.elem2d.primitives.HElement2DLine;
-import net.thevpc.halfa.api.model.elem2d.primitives.HElement2DPolygon;
-import net.thevpc.halfa.api.model.elem2d.primitives.HElement2DPolyline;
+import net.thevpc.halfa.api.model.elem2d.primitives.*;
 import net.thevpc.halfa.api.model.elem3d.*;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DTriangle;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DArc;
@@ -35,6 +33,8 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
@@ -86,12 +86,6 @@ public class HGraphicsImpl implements HGraphics {
         return session;
     }
 
-    private HGraphicsImageDrawer putCache(Object[] keys, HGraphicsImageDrawer value) {
-        for (Object key : keys) {
-            imageCache.put(key, value);
-        }
-        return value;
-    }
 
     @Override
     public HGraphics copy() {
@@ -168,6 +162,9 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     public Stroke createStroke(TsonElement e) {
+        if (e == null || e.isNull()) {
+            return null;
+        }
         ObjEx o = ObjEx.of(e);
         if (o.name() != null) {
             return StrokeFactory.createStroke(o.name(), e, this);
@@ -199,32 +196,88 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
-    public void drawArrayHead(HPoint2D origin, Vector2D direction, double arrowWidth, double arrowHeight, HArrayHead head) {
-        if (head == null) {
+    public void drawArrayHead(HPoint2D origin, Vector2D direction, HArrow arrow) {
+        if (arrow == null || arrow.getType() == null) {
             return;
         }
         int[] xPoints;
         int[] yPoints;
-        switch (head) {
-            case NONE: {
-                return;
-            }
-            case ARROW: {
-                xPoints = new int[]{0, -(int) arrowWidth, -(int) arrowWidth};
-                yPoints = new int[]{0, -(int) arrowHeight, (int) arrowHeight};
-                break;
-            }
-            default: {
-                xPoints = new int[]{0, -(int) arrowWidth, -(int) arrowWidth};
-                yPoints = new int[]{0, -(int) arrowHeight, (int) arrowHeight};
-            }
+        HArrowType type = arrow.getType();
+        if (type == HArrowType.DEFAULT) {
+            type = HArrowType.SIMPLE;
+        }
+        double arrowWidth = arrow.getWidth();
+        double arrowHeight = arrow.getHeight();
+        if (arrowWidth <= 0) {
+            arrowWidth = arrowHeight;
+        }
+        if (arrowHeight <= 0) {
+            arrowHeight = arrowWidth;
+        }
+        if (arrowHeight <= 0) {
+            arrowHeight = 10;
+        }
+        if (arrowWidth <= 0) {
+            arrowWidth = 10;
         }
         double angle = Math.atan2(direction.y, direction.x);
-        Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
         AffineTransform originalTransform = g.getTransform();
         g.translate(origin.x, origin.y);
         g.rotate(angle);
-        g.fill(arrowHead);
+        switch (type) {
+            case SIMPLE: {
+                xPoints = new int[]{-(int) arrowWidth, 0, -(int) arrowWidth};
+                yPoints = new int[]{-(int) arrowHeight, 0, (int) arrowHeight};
+                g.drawPolyline(xPoints, yPoints, xPoints.length);
+                break;
+            }
+            case TRIANGLE_FULL:
+            case TRIANGLE: {
+                xPoints = new int[]{0, -(int) arrowWidth, -(int) arrowWidth};
+                yPoints = new int[]{0, -(int) arrowHeight, (int) arrowHeight};
+                Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
+                if (type == HArrowType.TRIANGLE_FULL) {
+                    g.fill(arrowHead);
+                } else {
+                    g.draw(arrowHead);
+                }
+                break;
+            }
+            case DIAMOND_FULL:
+            case DIAMOND: {
+                xPoints = new int[]{0, -(int) (arrowWidth/2),-(int) (arrowWidth), -(int) arrowWidth};
+                yPoints = new int[]{0, -(int) (arrowHeight/2), 0                ,  (int) arrowHeight};
+                Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
+                if (type == HArrowType.DIAMOND_FULL) {
+                    g.fill(arrowHead);
+                } else {
+                    g.draw(arrowHead);
+                }
+                break;
+            }
+            case OVAL_FULL:
+            case OVAL: {
+                if (type == HArrowType.OVAL_FULL) {
+                    fillOval(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                } else {
+                    drawOval(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                }
+                break;
+            }
+            case RECTANGLE:
+            case RECTANGLE_FULL: {
+                if (type == HArrowType.RECTANGLE_FULL) {
+                    fillRect(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                } else {
+                    drawRect(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                }
+                break;
+            }
+            default: {
+                //unsupported arrow type
+                break;
+            }
+        }
         g.setTransform(originalTransform);
     }
 
@@ -234,110 +287,23 @@ public class HGraphicsImpl implements HGraphics {
         for (Element2DPrimitive primitive : primitives) {
             switch (primitive.type()) {
                 case LINE: {
-                    HElement2DLine pr = (HElement2DLine) primitive;
-                    HPoint2D a = pr.getFrom();
-                    HPoint2D b = pr.getTo();
-                    Paint oldPaint = g.getPaint();
-                    Stroke oldStroke = g.getStroke();
-                    if (pr.getLinePaint() != null) {
-                        setPaint(pr.getLinePaint());
-                    }
-                    if (pr.getLineStroke() != null) {
-                        setStroke(pr.getLineStroke());
-                    }
-                    g.drawLine(
-                            (int) a.x,
-                            (int) a.y,
-                            (int) b.x,
-                            (int) b.y
-                    );
-                    //restore default stroke?
-                    setStroke(oldStroke);
-                    drawArrayHead(a, a.minus(b).asVector(), 5, 5, pr.getStartType());
-                    drawArrayHead(b, b.minus(a).asVector(), 5, 5, pr.getEndType());
-                    setPaint(oldPaint);
-                    setStroke(oldStroke);
+                    draw2DHElement2DLine((HElement2DLine) primitive);
+                    break;
+                }
+                case QUAD_CURVE: {
+                    draw2DHElement2DQuadCurve((HElement2DQuadCurve) primitive);
+                    break;
+                }
+                case CUBIC_CURVE: {
+                    draw2DHElement2DCubicCurve((HElement2DCubicCurve) primitive);
                     break;
                 }
                 case POLYLINE: {
-                    HElement2DPolyline pr = (HElement2DPolyline) primitive;
-                    Paint oldPaint = g.getPaint();
-                    Stroke oldStroke = g.getStroke();
-                    if (pr.getLinePaint() != null) {
-                        setPaint(pr.getLinePaint());
-                    }
-                    if (pr.getLineStroke() != null) {
-                        setStroke(pr.getLineStroke());
-                    }
-                    HPoint2D[] nodes = pr.getNodes();
-                    int[] xx = new int[nodes.length];
-                    int[] yy = new int[nodes.length];
-                    for (int i = 0; i < xx.length; i++) {
-                        HPoint2D pp = nodes[i];
-                        xx[i] = (int) (pp.x);
-                        yy[i] = (int) (pp.y);
-                    }
-
-                    g.drawPolyline(xx, yy, xx.length);
-                    //restore default stroke?
-                    setStroke(oldStroke);
-//                    drawArrayHead(a, a.minus(b).asVector(), 5, 5, pr.getStartType());
-//                    drawArrayHead(b, b.minus(a).asVector(), 5, 5, pr.getEndType());
-                    setPaint(oldPaint);
-                    setStroke(oldStroke);
+                    draw2DHElement2DPolyline((HElement2DPolyline) primitive);
                     break;
                 }
                 case POLYGON: {
-                    HElement2DPolygon pr = (HElement2DPolygon) primitive;
-                    Paint oldPaint = g.getPaint();
-                    Stroke oldStroke = g.getStroke();
-                    if (pr.getLinePaint() != null) {
-                        setPaint(pr.getLinePaint());
-                    }
-                    if (pr.getLineStroke() != null) {
-                        setStroke(pr.getLineStroke());
-                    }
-                    HPoint2D[] nodes = pr.getNodes();
-                    int[] xx = new int[nodes.length];
-                    int[] yy = new int[nodes.length];
-                    for (int i = 0; i < xx.length; i++) {
-                        HPoint2D pp = nodes[i];
-                        xx[i] = (int) (pp.x);
-                        yy[i] = (int) (pp.y);
-                    }
-
-                    if (pr.isFill()) {
-                        Composite oldComposite = g.getComposite();
-
-                        if (pr.getLinePaint() != null) {
-                            setPaint(pr.getLinePaint());
-                        }
-                        if (pr.getLineStroke() != null) {
-                            setStroke(pr.getLineStroke());
-                        }
-
-                        Paint bg = pr.getBackgroundPaint();
-                        if (bg != null) {
-                            setPaint(bg);
-                        }
-                        if (pr.getComposite() != null) {
-                            setComposite(pr.getComposite());
-                        }
-                        g.fillPolygon(xx, yy, xx.length);
-                        setPaint(oldPaint);
-                        setComposite(oldComposite);
-                    }
-                    if (pr.isContour()) {
-                        if (pr.getLinePaint() != null) {
-                            setPaint(pr.getLinePaint());
-                        }
-                        if (pr.getLineStroke() != null) {
-                            setStroke(pr.getLineStroke());
-                        }
-                        g.drawPolygon(xx, yy, xx.length);
-                        setPaint(oldPaint);
-                        setStroke(oldStroke);
-                    }
+                    draw2DHElement2DPolygon((HElement2DPolygon) primitive);
                     break;
                 }
             }
@@ -352,206 +318,24 @@ public class HGraphicsImpl implements HGraphics {
         for (HElement3DPrimitive primitive : primitives) {
             switch (primitive.type()) {
                 case LINE: {
-                    Element3DLine pr = (Element3DLine) primitive;
-                    HPoint3D p1 = pr.getFrom().transform(transform3D);
-                    HPoint3D p2 = pr.getTo().transform(transform3D);
-
-                    HPoint2D point1 = projection3D.project(p1).plus(origin);
-                    HPoint2D point2 = projection3D.project(p2).plus(origin);
-
-                    draw2D(
-                            new HElement2DLine(point1, point2)
-                                    .setStartType(pr.getStartType())
-                                    .setEndType(pr.getEndType())
-                                    .setComposite(pr.getComposite())
-                                    .setBackgroundPaint(pr.getBackgroundPaint())
-                                    .setLinePaint(pr.getLinePaint())
-                                    .setLineStroke(pr.getLineStroke())
-                    );
-
+                    draw3DElement3DLine((Element3DLine) primitive, origin);
                     break;
                 }
                 case ARC: {
-                    Element3DArc pr = (Element3DArc) primitive;
-                    HPoint3D p1 = pr.getFrom().transform(transform3D);
-                    HPoint3D p2 = pr.getTo().transform(transform3D);
-
-                    HPoint2D point1 = projection3D.project(p1);
-                    HPoint2D point2 = projection3D.project(p2);
-                    double xmin = Math.min(point1.x + x, point2.x + x);
-                    double w = Math.abs(point1.x - point2.x);
-                    double ymin = Math.min(point1.y + y, point2.y + y);
-                    double h = Math.abs(point1.y - point2.y);
-                    Paint oldPaint = g.getPaint();
-                    Stroke oldStroke = g.getStroke();
-                    if (pr.getLinePaint() != null) {
-                        setPaint(pr.getLinePaint());
-                    }
-                    if (pr.getLineStroke() != null) {
-                        setStroke(pr.getLineStroke());
-                    }
-                    drawArc(
-                            xmin, ymin,
-                            w,
-                            h,
-                            pr.getStartAngle(),
-                            pr.getEndAngle()
-                    );
-                    setPaint(oldPaint);
-                    setStroke(oldStroke);
+                    draw3DElement3DArc((Element3DArc) primitive, origin);
                     break;
                 }
                 case POLYGON: {
-                    Element3DPolygon pr = (Element3DPolygon) primitive;
-                    HPoint3D[] nodes = pr.getNodes();
-                    double[] xx = new double[nodes.length];
-                    double[] yy = new double[nodes.length];
-                    for (int i = 0; i < xx.length; i++) {
-                        HPoint3D p = nodes[i].transform(transform3D);
-                        HPoint2D pp = projection3D.project(p);
-                        xx[i] = (pp.x + x);
-                        yy[i] = (pp.y + y);
-                    }
-                    double d = D3Utils.surfaceNormal(nodes[0], nodes[1], nodes[2]).dot(getLight3D().orientation());
-                    if (pr.isFill()) {
-
-                        Paint oldPaint = g.getPaint();
-                        Composite oldComposite = g.getComposite();
-
-                        if (pr.getLinePaint() != null) {
-                            setPaint(pr.getLinePaint());
-                        }
-                        if (pr.getLineStroke() != null) {
-                            setStroke(pr.getLineStroke());
-                        }
-
-                        Paint bg = pr.getBackgroundPaint();
-                        if (bg == null) {
-                            bg = getColor();
-                        }
-                        if (bg instanceof Color) {
-                            setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
-                                    ,
-                                    Math.abs((float) d)
-                                    //, Math.abs(Math.abs((float) d))
-                            ));
-                        } else {
-                            setPaint(bg);
-                        }
-                        if (pr.getComposite() != null) {
-                            setComposite(pr.getComposite());
-                        }
-                        fillPolygon(xx, yy, xx.length);
-                        setPaint(oldPaint);
-                        setComposite(oldComposite);
-                    }
-                    if (pr.isContour()) {
-                        Paint oldPaint = g.getPaint();
-                        Stroke oldStroke = g.getStroke();
-                        if (pr.getLinePaint() != null) {
-                            setPaint(pr.getLinePaint());
-                        }
-                        if (pr.getLineStroke() != null) {
-                            setStroke(pr.getLineStroke());
-                        }
-                        drawPolygon(xx, yy, xx.length);
-                        setPaint(oldPaint);
-                        setStroke(oldStroke);
-                    }
+                    draw3DElement3DPolygon((Element3DPolygon) primitive, origin);
                     break;
                 }
 
                 case POLYLINE: {
-                    Element3DPolyline pr = (Element3DPolyline) primitive;
-                    HPoint3D[] nodes = pr.getNodes();
-                    double[] xx = new double[nodes.length];
-                    double[] yy = new double[nodes.length];
-                    for (int i = 0; i < xx.length; i++) {
-                        HPoint3D p = nodes[i].transform(transform3D);
-                        HPoint2D pp = projection3D.project(p);
-                        xx[i] = (pp.x + x);
-                        yy[i] = (pp.y + y);
-                    }
-                    Paint oldPaint = g.getPaint();
-                    Stroke oldStroke = g.getStroke();
-                    if (pr.getLinePaint() != null) {
-                        setPaint(pr.getLinePaint());
-                    }
-                    if (pr.getLineStroke() != null) {
-                        setStroke(pr.getLineStroke());
-                    }
-                    drawPolyline(xx, yy, xx.length);
-                    setPaint(oldPaint);
-                    setStroke(oldStroke);
+                    draw3DElement3DPolyline((Element3DPolyline) primitive, origin);
                     break;
                 }
                 case TRIANGLE: {
-                    Element3DTriangle pr = (Element3DTriangle) primitive;
-                    double[] xx = new double[3];
-                    double[] yy = new double[3];
-
-                    HPoint3D p1 = pr.getP1();
-                    HPoint2D pp1 = projection3D.project(p1.transform(transform3D));
-                    xx[0] = (pp1.x + x);
-                    yy[0] = (pp1.y + y);
-
-                    HPoint3D p2 = pr.getP2();
-                    HPoint2D pp2 = projection3D.project(p2.transform(transform3D));
-                    xx[1] = (pp2.x + x);
-                    yy[1] = (pp2.y + y);
-
-                    HPoint3D p3 = pr.getP3();
-                    HPoint2D pp3 = projection3D.project(p3.transform(transform3D));
-                    xx[2] = (pp3.x + x);
-                    yy[2] = (pp3.y + y);
-
-                    double d = D3Utils.surfaceNormal(p1, p2, p3).dot(getLight3D().orientation());
-                    if (true/*d < 0*/) {
-                        if (pr.isFill()) {
-                            Paint oldPaint = g.getPaint();
-                            Composite oldComposite = g.getComposite();
-
-                            if (pr.getLinePaint() != null) {
-                                setPaint(pr.getLinePaint());
-                            }
-                            if (pr.getLineStroke() != null) {
-                                setStroke(pr.getLineStroke());
-                            }
-
-                            Paint bg = pr.getBackgroundPaint();
-                            if (bg == null) {
-                                bg = getColor();
-                            }
-                            if (bg instanceof Color) {
-                                setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
-                                        ,
-                                        Math.abs((float) d)
-                                        //, Math.abs(Math.abs((float) d))
-                                ));
-                            } else {
-                                setPaint(bg);
-                            }
-                            if (pr.getComposite() != null) {
-                                setComposite(pr.getComposite());
-                            }
-                            fillPolygon(xx, yy, xx.length);
-                            setPaint(oldPaint);
-                            setComposite(oldComposite);
-                        }
-                        if (false && pr.isContour()) {
-                            Paint oldPaint = g.getPaint();
-                            Stroke oldStroke = g.getStroke();
-                            if (pr.getLinePaint() != null) {
-                                setPaint(pr.getLinePaint());
-                            }
-                            if (pr.getLineStroke() != null) {
-                                setStroke(pr.getLineStroke());
-                            }
-                            drawPolygon(xx, yy, xx.length);
-                            setPaint(oldPaint);
-                            setStroke(oldStroke);
-                        }
-                    }
+                    draw3DElement3DTriangle((Element3DTriangle) primitive, origin);
                     break;
                 }
             }
@@ -718,7 +502,7 @@ public class HGraphicsImpl implements HGraphics {
 
     @Override
     public void draw3DRect(double x, double y, double w, double h, boolean raised) {
-        g.fill3DRect((int) x, (int) y, (int) w, (int) h, raised);
+        g.draw3DRect((int) x, (int) y, (int) w, (int) h, raised);
     }
 
     @Override
@@ -822,5 +606,381 @@ public class HGraphicsImpl implements HGraphics {
         g.shear(shx, shy);
     }
 
+
+    ///////////////////////////////////////////////////////
+
+
+    private void draw3DElement3DLine(Element3DLine pr, HPoint2D origin) {
+        HPoint3D p1 = pr.getFrom().transform(transform3D);
+        HPoint3D p2 = pr.getTo().transform(transform3D);
+
+        HPoint2D point1 = projection3D.project(p1).plus(origin);
+        HPoint2D point2 = projection3D.project(p2).plus(origin);
+
+        draw2D(
+                new HElement2DLine(point1, point2)
+                        .setStartArrow(pr.getStartArrow())
+                        .setEndArrow(pr.getEndArrow())
+                        .setComposite(pr.getComposite())
+                        .setBackgroundPaint(pr.getBackgroundPaint())
+                        .setLinePaint(pr.getLinePaint())
+                        .setLineStroke(pr.getLineStroke())
+        );
+    }
+
+    private void draw3DElement3DArc(Element3DArc pr, HPoint2D origin) {
+        double x = origin.x;
+        double y = origin.y;
+        HPoint3D p1 = pr.getFrom().transform(transform3D);
+        HPoint3D p2 = pr.getTo().transform(transform3D);
+
+        HPoint2D point1 = projection3D.project(p1);
+        HPoint2D point2 = projection3D.project(p2);
+        double xmin = Math.min(point1.x + x, point2.x + x);
+        double w = Math.abs(point1.x - point2.x);
+        double ymin = Math.min(point1.y + y, point2.y + y);
+        double h = Math.abs(point1.y - point2.y);
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        drawArc(
+                xmin, ymin,
+                w,
+                h,
+                pr.getStartAngle(),
+                pr.getEndAngle()
+        );
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw3DElement3DPolygon(Element3DPolygon pr, HPoint2D origin) {
+        double x = origin.x;
+        double y = origin.y;
+        HPoint3D[] nodes = pr.getNodes();
+        double[] xx = new double[nodes.length];
+        double[] yy = new double[nodes.length];
+        for (int i = 0; i < xx.length; i++) {
+            HPoint3D p = nodes[i].transform(transform3D);
+            HPoint2D pp = projection3D.project(p);
+            xx[i] = (pp.x + x);
+            yy[i] = (pp.y + y);
+        }
+        double d = D3Utils.surfaceNormal(nodes[0], nodes[1], nodes[2]).dot(getLight3D().orientation());
+        if (pr.isFill()) {
+
+            Paint oldPaint = g.getPaint();
+            Composite oldComposite = g.getComposite();
+
+            if (pr.getLinePaint() != null) {
+                setPaint(pr.getLinePaint());
+            }
+            if (pr.getLineStroke() != null) {
+                setStroke(pr.getLineStroke());
+            }
+
+            Paint bg = pr.getBackgroundPaint();
+            if (bg == null) {
+                bg = getColor();
+            }
+            if (bg instanceof Color) {
+                setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
+                        ,
+                        Math.abs((float) d)
+                        //, Math.abs(Math.abs((float) d))
+                ));
+            } else {
+                setPaint(bg);
+            }
+            if (pr.getComposite() != null) {
+                setComposite(pr.getComposite());
+            }
+            fillPolygon(xx, yy, xx.length);
+            setPaint(oldPaint);
+            setComposite(oldComposite);
+        }
+        if (pr.isContour()) {
+            Paint oldPaint = g.getPaint();
+            Stroke oldStroke = g.getStroke();
+            if (pr.getLinePaint() != null) {
+                setPaint(pr.getLinePaint());
+            }
+            if (pr.getLineStroke() != null) {
+                setStroke(pr.getLineStroke());
+            }
+            drawPolygon(xx, yy, xx.length);
+            setPaint(oldPaint);
+            setStroke(oldStroke);
+        }
+    }
+
+    private void draw3DElement3DPolyline(Element3DPolyline pr, HPoint2D origin) {
+        double x = origin.x;
+        double y = origin.y;
+        HPoint3D[] nodes = pr.getNodes();
+        double[] xx = new double[nodes.length];
+        double[] yy = new double[nodes.length];
+        for (int i = 0; i < xx.length; i++) {
+            HPoint3D p = nodes[i].transform(transform3D);
+            HPoint2D pp = projection3D.project(p);
+            xx[i] = (pp.x + x);
+            yy[i] = (pp.y + y);
+        }
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        drawPolyline(xx, yy, xx.length);
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw3DElement3DTriangle(Element3DTriangle pr, HPoint2D origin) {
+        double x = origin.x;
+        double y = origin.y;
+        double[] xx = new double[3];
+        double[] yy = new double[3];
+
+        HPoint3D p1 = pr.getP1();
+        HPoint2D pp1 = projection3D.project(p1.transform(transform3D));
+        xx[0] = (pp1.x + x);
+        yy[0] = (pp1.y + y);
+
+        HPoint3D p2 = pr.getP2();
+        HPoint2D pp2 = projection3D.project(p2.transform(transform3D));
+        xx[1] = (pp2.x + x);
+        yy[1] = (pp2.y + y);
+
+        HPoint3D p3 = pr.getP3();
+        HPoint2D pp3 = projection3D.project(p3.transform(transform3D));
+        xx[2] = (pp3.x + x);
+        yy[2] = (pp3.y + y);
+
+        double d = D3Utils.surfaceNormal(p1, p2, p3).dot(getLight3D().orientation());
+        if (true/*d < 0*/) {
+            if (pr.isFill()) {
+                Paint oldPaint = g.getPaint();
+                Composite oldComposite = g.getComposite();
+
+                if (pr.getLinePaint() != null) {
+                    setPaint(pr.getLinePaint());
+                }
+                if (pr.getLineStroke() != null) {
+                    setStroke(pr.getLineStroke());
+                }
+
+                Paint bg = pr.getBackgroundPaint();
+                if (bg == null) {
+                    bg = getColor();
+                }
+                if (bg instanceof Color) {
+                    setColor(Colors.withB((Color) bg //                                        , Math.abs(1 - (float) d)
+                            ,
+                            Math.abs((float) d)
+                            //, Math.abs(Math.abs((float) d))
+                    ));
+                } else {
+                    setPaint(bg);
+                }
+                if (pr.getComposite() != null) {
+                    setComposite(pr.getComposite());
+                }
+                fillPolygon(xx, yy, xx.length);
+                setPaint(oldPaint);
+                setComposite(oldComposite);
+            }
+            if (false && pr.isContour()) {
+                Paint oldPaint = g.getPaint();
+                Stroke oldStroke = g.getStroke();
+                if (pr.getLinePaint() != null) {
+                    setPaint(pr.getLinePaint());
+                }
+                if (pr.getLineStroke() != null) {
+                    setStroke(pr.getLineStroke());
+                }
+                drawPolygon(xx, yy, xx.length);
+                setPaint(oldPaint);
+                setStroke(oldStroke);
+            }
+        }
+    }
+
+
+    private void draw2DHElement2DLine(HElement2DLine pr) {
+        HPoint2D a = pr.getFrom();
+        HPoint2D b = pr.getTo();
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        g.drawLine(
+                (int) a.x,
+                (int) a.y,
+                (int) b.x,
+                (int) b.y
+        );
+        //restore default stroke?
+        setStroke(oldStroke);
+        drawArrayHead(a, a.minus(b).asVector(), pr.getStartArrow());
+        drawArrayHead(b, b.minus(a).asVector(), pr.getEndArrow());
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw2DHElement2DQuadCurve(HElement2DQuadCurve pr) {
+        HPoint2D a = pr.getFrom();
+        HPoint2D b = pr.getTo();
+        HPoint2D c = pr.getCtrl();
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        QuadCurve2D q = new QuadCurve2D.Double();
+
+        q.setCurve(a.x, a.y, c.x, c.y, b.x, b.y);
+
+        g.draw(q);
+
+        //restore default stroke?
+        setStroke(oldStroke);
+        drawArrayHead(a, a.minus(b).asVector(), pr.getStartArrow());
+        drawArrayHead(b, b.minus(a).asVector(), pr.getEndArrow());
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw2DHElement2DCubicCurve(HElement2DCubicCurve pr) {
+        HPoint2D a = pr.getFrom();
+        HPoint2D b = pr.getTo();
+        HPoint2D c1 = pr.getCtrl1();
+        HPoint2D c2 = pr.getCtrl2();
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        CubicCurve2D q = new CubicCurve2D.Double();
+
+        q.setCurve(a.x, a.y,
+                c1.x, c1.y,
+                c2.x, c2.y,
+                b.x, b.y);
+
+        g.draw(q);
+
+        //restore default stroke?
+        setStroke(oldStroke);
+        drawArrayHead(a, a.minus(b).asVector(), pr.getStartArrow());
+        drawArrayHead(b, b.minus(a).asVector(), pr.getEndArrow());
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw2DHElement2DPolyline(HElement2DPolyline pr) {
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        HPoint2D[] nodes = pr.getNodes();
+        int[] xx = new int[nodes.length];
+        int[] yy = new int[nodes.length];
+        for (int i = 0; i < xx.length; i++) {
+            HPoint2D pp = nodes[i];
+            xx[i] = (int) (pp.x);
+            yy[i] = (int) (pp.y);
+        }
+
+        g.drawPolyline(xx, yy, xx.length);
+        //restore default stroke?
+        setStroke(oldStroke);
+//                    drawArrayHead(a, a.minus(b).asVector(), 5, 5, pr.getStartType());
+//                    drawArrayHead(b, b.minus(a).asVector(), 5, 5, pr.getEndType());
+        setPaint(oldPaint);
+        setStroke(oldStroke);
+    }
+
+    private void draw2DHElement2DPolygon(HElement2DPolygon pr) {
+        Paint oldPaint = g.getPaint();
+        Stroke oldStroke = g.getStroke();
+        if (pr.getLinePaint() != null) {
+            setPaint(pr.getLinePaint());
+        }
+        if (pr.getLineStroke() != null) {
+            setStroke(pr.getLineStroke());
+        }
+        HPoint2D[] nodes = pr.getNodes();
+        int[] xx = new int[nodes.length];
+        int[] yy = new int[nodes.length];
+        for (int i = 0; i < xx.length; i++) {
+            HPoint2D pp = nodes[i];
+            xx[i] = (int) (pp.x);
+            yy[i] = (int) (pp.y);
+        }
+
+        if (pr.isFill()) {
+            Composite oldComposite = g.getComposite();
+
+            if (pr.getLinePaint() != null) {
+                setPaint(pr.getLinePaint());
+            }
+            if (pr.getLineStroke() != null) {
+                setStroke(pr.getLineStroke());
+            }
+
+            Paint bg = pr.getBackgroundPaint();
+            if (bg != null) {
+                setPaint(bg);
+            }
+            if (pr.getComposite() != null) {
+                setComposite(pr.getComposite());
+            }
+            g.fillPolygon(xx, yy, xx.length);
+            setPaint(oldPaint);
+            setComposite(oldComposite);
+        }
+        if (pr.isContour()) {
+            if (pr.getLinePaint() != null) {
+                setPaint(pr.getLinePaint());
+            }
+            if (pr.getLineStroke() != null) {
+                setStroke(pr.getLineStroke());
+            }
+            g.drawPolygon(xx, yy, xx.length);
+            setPaint(oldPaint);
+            setStroke(oldStroke);
+        }
+    }
+
+
+    private HGraphicsImageDrawer putCache(Object[] keys, HGraphicsImageDrawer value) {
+        for (Object key : keys) {
+            imageCache.put(key, value);
+        }
+        return value;
+    }
 
 }

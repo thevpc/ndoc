@@ -1,7 +1,6 @@
 package net.thevpc.halfa.examples;
 
-import net.thevpc.halfa.api.document.HMessageListImpl;
-import net.thevpc.halfa.api.model.HArrayHead;
+import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.*;
 import net.thevpc.halfa.api.model.elem3d.composite.Element3DGroup;
@@ -86,7 +85,7 @@ public class Example extends Canvas {
                 new HPoint3D(100, 100, 100),
                 g3.getLight3D().orientation(),
                 200
-        ).setEndType(HArrayHead.ARROW).setLineStroke(new BasicStroke(3)));
+        ).setEndArrow(HArrowType.DEFAULT).setLineStroke(new BasicStroke(3)));
         g3.draw3D(
                 gg,
                 new HPoint2D(getWidth() / 2, getHeight() / 2)

@@ -4,6 +4,12 @@
     }
     @OneColumn{
         grid((4,1),columns-weight:[2,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
 
             // Row 1
             // ---------------------------------------------

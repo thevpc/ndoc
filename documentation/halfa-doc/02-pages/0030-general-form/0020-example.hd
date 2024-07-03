@@ -6,16 +6,31 @@
         grid((2,1)){
             source(tson,file:"0020-example.tson", position: (2,2))
             grid((2,2),draw-contour,background:white){
+                styles:{
+                    "*":{
+                        margin:5
+                    }
+                }
                     rectangle(at:center,size:(50),
                         background:yellow,
                         color:red,
                         stroke:4
                     )
-                    ul{
+                    ul(at:center){
                         "Item 1"
                         "Item 2"
                     }
-                    eq("x^2_1=\sin(x)")
+                    eq("f_1(x)=\int_x \sin(x^2)",font-size:5%g)
+                    uml(
+                                        """
+                                            left to right direction
+                                            actor "Food Critic" as fc
+                                            rectangle Restaurant {
+                                              usecase "Eat Food" as UC1
+                                            }
+                                            fc --> UC1
+                                        """
+                                    )
             }
         }
     }
