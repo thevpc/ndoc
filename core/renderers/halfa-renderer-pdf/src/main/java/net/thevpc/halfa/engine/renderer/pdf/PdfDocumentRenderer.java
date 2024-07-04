@@ -147,6 +147,10 @@ public void renderStream(HDocument hdocument, OutputStream stream) {
         BufferedImage newImage = new BufferedImage(sizeHeight, sizeWidth, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = newImage.createGraphics();
+        g.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
         HGraphics gh = engine.createGraphics(g);
         HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
         renderer.render(page, new PdfHNodeRendererContext(engine, gh, new Dimension(sizeHeight, sizeWidth), session, messages2));

@@ -39,7 +39,6 @@ public class MainFrame extends JFrame {
         jmb.add(createMenuFile());
         jmb.add(createMenuView());
         jmb.add(createMenuHelp());
-        jmb.add(createMenuSave());
         return jmb;
 
 
@@ -84,19 +83,21 @@ public class MainFrame extends JFrame {
         JMenu menu = new JMenu("File");
         menu.add(createMenuItemOpenFile());
         menu.addSeparator();
+        menu.add(createMenuItemSave());
         menu.add(createMenuItemExit());
         return menu;
     }
-    private JMenu createMenuSave() {
-        JMenu menu = new JMenu("Save");
 
-
-        return menu;
-    }
 
     private JMenuItem createMenuItemExit() {
         JMenuItem menu = new JMenuItem("Exit");
         menu.addActionListener(e -> serviceHelper.doExit());
+        return menu;
+    }
+
+    private JMenuItem createMenuItemSave() {
+        JMenuItem menu = new JMenuItem("Save");
+        menu.addActionListener(e -> serviceHelper.doSavePDf());
         return menu;
     }
 

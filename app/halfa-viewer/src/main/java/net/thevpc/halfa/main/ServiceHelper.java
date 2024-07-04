@@ -10,6 +10,7 @@ import net.thevpc.halfa.debug.HDebugFrame;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
+import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -135,5 +136,38 @@ public class ServiceHelper {
 
     public void doExit() {
         System.exit(0);
+    }
+
+    public void doSavePDf() {
+        NSession session = mainFrame.getSession();
+        NPath lastDocumentPath = loadPath(session);
+        JFileChooser f = new JFileChooser();
+        f.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (lastDocumentPath != null) {
+            f.setCurrentDirectory(lastDocumentPath.toFile().get());
+            f.setSelectedFile(
+                    lastDocumentPath.isDirectory()?
+                            lastDocumentPath.resolve("output.pdf").toFile().get()
+                            : lastDocumentPath.resolveSibling("output.pdf").toFile().get()
+            );
+        }
+        int r = f.showOpenDialog(mainFrame.getContentPane());
+        if (r == JFileChooser.APPROVE_OPTION) {
+            File sf = f.getSelectedFile();
+            if (sf != null) {
+                if(!sf.exists()){
+                    if(!sf.getName().endsWith(".pdf")){
+                        sf=new File(sf.getParent(),sf.getName()+".pdf");
+                    }
+                }
+                NPath outputPdfPath = NPath.of(sf, session);
+                //savePath(path, session);
+                HDocumentStreamRenderer renderer = engine.newPdfRenderer();
+                renderer.setMessages(currentMessageList);
+                renderer.addRendererListener(currListener);
+                renderer.setOutput(outputPdfPath);
+                renderer.renderPath(lastDocumentPath);
+            }
+        }
     }
 }
