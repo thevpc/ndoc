@@ -19,3 +19,9 @@
 /documentation/halfa-doc/output.pdf
 /test/halfa-examples/src/halfa/examples/example001/output.pdf
 /output.pdf
+/core/halfa-elements/target
+/extensions/halfa-extension-latex/target
+/extensions/halfa-extension-latex/.pom.xml.kate-swp
+/extensions/halfa-extension-shapes3d/target
+/extensions/halfa-extension-shapes2d/target
+/app/halfa-viewer/target

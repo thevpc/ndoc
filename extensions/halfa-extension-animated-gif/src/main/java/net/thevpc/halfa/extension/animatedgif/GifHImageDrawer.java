@@ -1,9 +1,8 @@
 package net.thevpc.halfa.extension.animatedgif;
 
 import net.thevpc.halfa.api.model.elem2d.HImageOptions;
-import net.thevpc.halfa.engin.spibase.renderer.ImageUtils;
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.HGraphicsImageDrawer;
-import net.thevpc.halfa.spi.util.LazyValue;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.nuts.io.NPath;
 
@@ -66,7 +65,7 @@ class GifHImageDrawer implements HGraphicsImageDrawer {
                 throw new RuntimeException(e);
             }
             if(image!=null){
-                image= ImageUtils.resize(image, options.getSize());
+                image= HImageUtils.resize(image, options.getSize());
                 g.drawImage(image, x, y, options.getImageObserver());
             }
             new Thread(){

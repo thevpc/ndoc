@@ -1,0 +1,66 @@
+@normal page{
+    @Header {
+        text("Simple Text"),
+    }
+    @OneColumn{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+            // Row
+            stack(background:white,draw-contour){
+                plain("Hello World")
+            }
+            source(tson, """ plain("Hello World") """)
+
+            // Row
+            stack(background:white,draw-contour){
+                plain("Hello World",font-italic)
+            }
+            source(tson, """ plain("Hello World",font-italic) """)
+
+            // Row
+            stack(background:white,draw-contour){
+                plain(
+                    "
+                        Hello
+                        World
+                    "
+                    ,font-bold)
+            }
+            source(tson, """
+                            plain(
+                                     "
+                                         Hello
+                                         World
+                                     "
+                                 ,font-bold)
+                         """)
+
+            // Row
+            stack(background:white,draw-contour){
+                plain(
+                    "
+                        Hello  World
+                        This    Is    Me
+                    ", font-family:monospaced,
+                       font-size:5%g
+                    )
+            }
+            source(tson, """
+                            plain(
+                                     "
+                                         Hello
+                                         World
+                                     "
+                                  font-family: monospaced
+                                  font-size: 5%g
+                                 )
+                         """)
+        }
+    }
+
+}

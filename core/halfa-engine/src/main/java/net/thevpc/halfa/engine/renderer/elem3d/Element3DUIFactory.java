@@ -3,21 +3,21 @@ package net.thevpc.halfa.engine.renderer.elem3d;
 import net.thevpc.halfa.api.model.elem3d.HElement3DPrimitive;
 import net.thevpc.halfa.api.model.elem3d.HElement3D;
 import net.thevpc.halfa.api.model.elem3d.RenderState3D;
-import net.thevpc.halfa.spi.HNode3DSimplifier;
+import net.thevpc.halfa.spi.HElement3DRenderer;
 
 import java.util.*;
 
 public class Element3DUIFactory {
-    private Map<Class, HNode3DSimplifier> map = new HashMap<>();
+    private Map<Class, HElement3DRenderer> map = new HashMap<>();
 
     public Element3DUIFactory() {
-        ServiceLoader<HNode3DSimplifier> serviceLoader = ServiceLoader.load(HNode3DSimplifier.class);
-        for (HNode3DSimplifier element3DPrimitiveBuilder : serviceLoader) {
+        ServiceLoader<HElement3DRenderer> serviceLoader = ServiceLoader.load(HElement3DRenderer.class);
+        for (HElement3DRenderer element3DPrimitiveBuilder : serviceLoader) {
             register(element3DPrimitiveBuilder.forType(), element3DPrimitiveBuilder);
         }
     }
 
-    void register(Class c, HNode3DSimplifier f) {
+    void register(Class c, HElement3DRenderer f) {
         map.put(c, f);
     }
 
@@ -25,7 +25,7 @@ public class Element3DUIFactory {
         if (e instanceof HElement3DPrimitive) {
             return new HElement3DPrimitive[]{(HElement3DPrimitive) e};
         }
-        HNode3DSimplifier i = map.get(e.getClass());
+        HElement3DRenderer i = map.get(e.getClass());
         if (i != null) {
             return i.toPrimitives(e, renderState);
         }

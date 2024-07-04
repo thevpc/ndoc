@@ -33,8 +33,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.madgag.gif.fmsware.GifDecoder;
-import net.thevpc.halfa.engin.spibase.renderer.ImageUtils;
-import net.thevpc.halfa.spi.util.LazyValue;
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -181,7 +180,7 @@ public class GifResizer {
             }
             Dimension size = transform.size();
             if(size!=null && size.width>0 && size.height>0){
-                tframe= ImageUtils.resize(tframe, size.width, size.height);
+                tframe= HImageUtils.resize(tframe, size.width, size.height);
             }
             encoder.addFrame(tframe);
         }

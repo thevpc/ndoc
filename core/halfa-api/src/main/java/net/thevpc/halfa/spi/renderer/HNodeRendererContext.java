@@ -11,6 +11,7 @@ import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.image.ImageObserver;
@@ -64,7 +65,15 @@ public interface HNodeRendererContext {
 
     HSizeRef sizeRef();
 
+    boolean isPrint();
+
     boolean isAnimated();
 
     void repaint();
+
+    Object getCapability(String name);
+
+    boolean hasCapability(String name);
+
+    public boolean isCapability(String name);
 }

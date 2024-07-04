@@ -13,29 +13,30 @@ page(template:cover){
            color: $palette[2]
            origin : center,
            position : (50,40),
-           font-size:20%g,
+           font-size:15%g,
            font-bold,
            font-family:Serif,
        }
        .author:{
            color: $palette[1],
            origin : center,
-           position : (50,60),
-           font-size:15%g,
+           position : (50,70),
+           font-size:10%g,
+           font-family:monospaced
            font-bold,
        }
        .date:{
            color: $palette[1],
            origin : center,
-           position : (50,65),
-           font-size:15%g,
+           position : (50,80),
+           font-size:10%g,
            font-bold,
        }
        .version:{
            color: $palette[1],
            origin : center,
-           position : (50,69),
-           font-size:15%g,
+           position : (50,90),
+           font-size:10%g,
            font-bold,
        },
     }

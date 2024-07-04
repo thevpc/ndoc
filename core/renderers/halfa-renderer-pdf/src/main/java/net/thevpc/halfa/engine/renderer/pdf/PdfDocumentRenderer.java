@@ -5,13 +5,11 @@
 package net.thevpc.halfa.engine.renderer.pdf;
 
 import com.lowagie.text.*;
-import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,27 +21,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
-import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.api.style.HProp;
-import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.engin.spibase.renderer.HPartRendererContextImpl;
+import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.*;
-import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.imageio.ImageIO;
@@ -76,7 +68,8 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             renderStream(d, (OutputStream) o);
         }
     }
-//    public void renderStream(HDocument hdocument, OutputStream stream) {
+
+    //    public void renderStream(HDocument hdocument, OutputStream stream) {
 //        try {
 //            PdfDocument document = new PdfDocument();
 //            PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
@@ -101,47 +94,47 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
 //            throw new NIOException(session, ex);
 //        }
 //    }
-public void renderStream(HDocument hdocument, OutputStream stream) {
-    Document document = new Document(PageSize.A4.rotate());
+    public void renderStream(HDocument hdocument, OutputStream stream) {
+        Document document = new Document(PageSize.A4.rotate());
 
-    try {
-        PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
-        PageNumberEvent pageNumberEvent = new PageNumberEvent();
-        pdfWriter.setPageEvent(pageNumberEvent);
-        document.open();
+        try {
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
+            PageNumberEvent pageNumberEvent = new PageNumberEvent();
+            pdfWriter.setPageEvent(pageNumberEvent);
+            document.open();
 
-        HMessageList messages2 = this.messages;
-        if (messages2 == null) {
-            messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
-        }
+            HMessageList messages2 = this.messages;
+            if (messages2 == null) {
+                messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
+            }
 
-        int sizeWidth = 640;
-        int sizeHeight = 800;
+            int sizeWidth = 640;
+            int sizeHeight = 800;
 
-        for (HNode page : PagesHelper.resolvePages(hdocument)) {
-            byte[] imgData = createPageImage(sizeWidth, sizeHeight, page, messages2);
-            Image img = Image.getInstance(imgData);
-            img.scaleToFit(sizeWidth, sizeHeight);
-            document.add(img);
-            document.setMargins(50f, 50f, 50f, 50f);
+            for (HNode page : PagesHelper.resolvePages(hdocument)) {
+                byte[] imgData = createPageImage(sizeWidth, sizeHeight, page, messages2);
+                Image img = Image.getInstance(imgData);
+                img.scaleToFit(sizeWidth, sizeHeight);
+                document.add(img);
+                document.setMargins(50f, 50f, 50f, 50f);
 
 
-            document.newPage();
-        }
+                document.newPage();
+            }
 
-        // String imagePath = "C:/Users/msi/Desktop/stage/halfa/test/halfa-examples/src/halfa/examples/example001/téléchargé (4).jpeg";
-        // Image img = Image.getInstance(imagePath);
-        // img.setRotationDegrees(90);
-        // document.add(img);
+            // String imagePath = "C:/Users/msi/Desktop/stage/halfa/test/halfa-examples/src/halfa/examples/example001/téléchargé (4).jpeg";
+            // Image img = Image.getInstance(imagePath);
+            // img.setRotationDegrees(90);
+            // document.add(img);
 
-    } catch (Exception ex) {
-        throw new NIOException(session, ex);
-    } finally {
-        if (document != null) {
-            document.close();
+        } catch (Exception ex) {
+            throw new NIOException(session, ex);
+        } finally {
+            if (document != null) {
+                document.close();
+            }
         }
     }
-}
 
     private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages2) {
         BufferedImage newImage = new BufferedImage(sizeHeight, sizeWidth, BufferedImage.TYPE_INT_ARGB);
@@ -166,7 +159,6 @@ public void renderStream(HDocument hdocument, OutputStream stream) {
 
         return bos.toByteArray();
     }
-
 
 
 //}
@@ -313,33 +305,14 @@ public void renderStream(HDocument hdocument, OutputStream stream) {
         }
     }
 
-    private static class PdfHNodeRendererContext extends HPartRendererContextImpl {
-        private HEngine engine;
+    private static class PdfHNodeRendererContext extends HNodeRendererContextBase {
 
         public PdfHNodeRendererContext(HEngine engine, HGraphics g, Dimension size, NSession session, HMessageList messages) {
-            super(g, size, session, messages);
-            this.engine = engine;
+            super(engine, g, size, session, messages);
+            setCapability("print", true);
+            setCapability("animated", false);
         }
 
-        @Override
-        public ImageObserver imageObserver() {
-            return null;
-        }
-
-        @Override
-        public HEngine engine() {
-            return engine;
-        }
-
-        @Override
-        public boolean isAnimated() {
-            return false;
-        }
-
-        @Override
-        public void repaint() {
-
-        }
     }
 
     private class HDocumentRendererContextImpl implements HDocumentRendererContext {

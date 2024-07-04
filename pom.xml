@@ -11,6 +11,7 @@
     <modules>
         <module>core/halfa-api</module>
         <module>core/halfa-spi-base</module>
+        <module>core/halfa-elements</module>
         <module>core/halfa-engine</module>
         <module>core/renderers/halfa-renderer-pdf</module>
         <module>core/renderers/halfa-renderer-html</module>
@@ -19,7 +20,9 @@
         <module>extensions/halfa-extension-plantuml</module>
         <module>extensions/halfa-extension-animated-gif</module>
         <module>extensions/halfa-extension-svg</module>
-        <module>extensions/halfa-extension-simple3d</module>
+        <module>extensions/halfa-extension-shapes2d-obj</module>
+        <module>extensions/halfa-extension-shapes3d</module>
+        <module>extensions/halfa-extension-latex</module>
         <module>app/halfa-viewer</module>
     </modules>
     <properties>

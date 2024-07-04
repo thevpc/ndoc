@@ -13,10 +13,12 @@ public class FontBySizeResolver {
 
     private static class Key {
         String name;
+        int style;
         int sizeMul100;
 
-        public Key(String name, int sizeMul100) {
+        public Key(String name,int style, int sizeMul100) {
             this.name = name;
+            this.style = style;
             this.sizeMul100 = sizeMul100;
         }
 
@@ -25,17 +27,19 @@ public class FontBySizeResolver {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Key key = (Key) o;
-            return sizeMul100 == key.sizeMul100 && Objects.equals(name, key.name);
+            return sizeMul100 == key.sizeMul100
+             && style == key.style
+                    && Objects.equals(name, key.name);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(name, sizeMul100);
+            return Objects.hash(name,style, sizeMul100);
         }
     }
 
     public Font getFont(String name, int style, double height, Function<Font, FontMetrics> fontMetricsFunction) {
-        Key k = new Key(name, (int) (height * 100));
+        Key k = new Key(name, style,(int) (height * 100));
         return cache.computeIfAbsent(k, r -> getFont0(name, style, height, fontMetricsFunction));
     }
 

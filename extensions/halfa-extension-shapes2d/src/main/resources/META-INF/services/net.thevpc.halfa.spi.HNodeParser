@@ -1,0 +1,4 @@
+net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder.HCylinderImpl
+net.thevpc.halfa.engine.nodes.elem2d.shape.donut.HDonutImpl
+net.thevpc.halfa.engine.nodes.elem2d.shape.arrow.HArrowImpl
+

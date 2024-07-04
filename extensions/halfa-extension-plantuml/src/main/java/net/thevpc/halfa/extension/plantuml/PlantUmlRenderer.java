@@ -6,9 +6,9 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
-import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererBase;
-import net.thevpc.halfa.engin.spibase.renderer.HNodeRendererUtils;
-import net.thevpc.halfa.engin.spibase.renderer.ImageUtils;
+import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
+import net.thevpc.halfa.spi.util.HNodeRendererUtils;
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -113,7 +113,7 @@ public class PlantUmlRenderer extends HNodeRendererBase {
                     int w = HUtils.intOf(b.getWidth());
                     int h = HUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
-                        BufferedImage resized = ImageUtils.resize(image, w, h);
+                        BufferedImage resized = HImageUtils.resize(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);
                     }
                 }

@@ -8,7 +8,6 @@ import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
-import net.thevpc.halfa.engine.compiler.HDocumentRootRules;
 import net.thevpc.nuts.util.NAssert;
 
 public class HDocumentFactoryImpl implements HDocumentFactory {

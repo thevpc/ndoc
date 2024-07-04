@@ -204,25 +204,6 @@ public class DocumentView {
                 }
             }
         });
-    }
-
-    private void showPopupMenu(MouseEvent e) {
-        JPopupMenu popupMenu = new JPopupMenu();
-
-        JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
-        saveAsPdfMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (document != null && listener != null) {
-                    listener.onSaveDocument(document);
-                }
-            }
-        });
-        popupMenu.add(saveAsPdfMenuItem);
-
-
-        popupMenu.show(e.getComponent(), e.getX(), e.getY());
-
 
         contentPane.setFocusTraversalKeysEnabled(false);
         contentPane.setFocusable(true);
@@ -263,6 +244,27 @@ public class DocumentView {
             public void keyTyped(KeyEvent e) {
             }
         });
+    }
+
+    private void showPopupMenu(MouseEvent e) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
+        saveAsPdfMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (document != null && listener != null) {
+                    listener.onSaveDocument(document);
+                }
+            }
+        });
+        popupMenu.add(saveAsPdfMenuItem);
+
+
+        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+
+
+
     }
 
     private boolean reloadDocument() {

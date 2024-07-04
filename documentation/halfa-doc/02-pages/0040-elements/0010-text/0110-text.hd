@@ -1,0 +1,90 @@
+@normal page{
+    @Header {
+        text("Rich Text"),
+    }
+    @OneColumn{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:5%g}
+                }
+                "Hello World"
+                text("Hello World")
+                text("Hello World",font-italic)
+                text("Hello World",font-bold)
+            }
+            source(tson,
+                """
+                "Hello World"
+                text("Hello World")
+                text("Hello World",font-italic)
+                text("Hello World",font-bold)
+                """)
+
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:4%g}
+                }
+                """
+                    **Bold X**
+                    __Italic Y__
+                    #Equation 1# =  $X^2=\sin(x) $
+                    ##Equation 2## =  $X^2=\sin(x) $
+                    ###Equation 3### =  $X^2=\sin(x) $
+                """
+            }
+            source(tson,
+                """
+                    **Bold X**
+                    __Italic Y__
+                    #Equation 1# =  $X^2=\sin(x) $
+                    ##Equation 2## =  $X^2=\sin(x) $
+                    ###Equation 3### =  $X^2=\sin(x) $
+                """)
+
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:4%g}
+                }
+                text(
+                ntf
+                """
+                    ##:p1:color 1##
+                    ##:p2:color 2##
+                    ##:p3:color 3##
+                    ##:p10:color 4##
+                    ##:/:italic##
+                """
+                )
+            }
+            source(tson,
+                ```
+                    text(
+                    ntf
+                    """
+                        ##:p1:color 1##
+                        ##:p2:color 2##
+                        ##:p3:color 3##
+                        ##:p10:color 4##
+                        ##:/:italic##
+                    """
+                    )
+                ```)
+
+
+        }
+    }
+
+}

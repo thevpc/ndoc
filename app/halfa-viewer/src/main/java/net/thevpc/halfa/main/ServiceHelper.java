@@ -17,6 +17,7 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -135,6 +136,20 @@ public class ServiceHelper {
         NSession session = mainFrame.getSession();
         NPath nPath = loadPath(session);
         JFileChooser f = new JFileChooser();
+        f.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()){
+                    return true;
+                }
+                return f.getName().toLowerCase().endsWith(".hd");
+            }
+
+            @Override
+            public String getDescription() {
+                return "H Document";
+            }
+        });
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (nPath != null) {
             f.setCurrentDirectory(nPath.toFile().get());

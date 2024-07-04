@@ -60,13 +60,13 @@
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
-            <groupId>net.thevpc.nuts</groupId>
-            <artifactId>nuts-runtime</artifactId>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-elements</artifactId>
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
-            <groupId>net.thevpc.halfa</groupId>
-            <artifactId>halfa-renderer-screen</artifactId>
+            <groupId>net.thevpc.nuts</groupId>
+            <artifactId>nuts-runtime</artifactId>
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
@@ -102,12 +102,32 @@
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
-            <artifactId>halfa-extension-simple3d</artifactId>
+            <artifactId>halfa-extension-shapes2d</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-shapes3d</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-latex</artifactId>
             <version>0.8.4.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-renderer-pdf</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-renderer-screen</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-renderer-html</artifactId>
             <version>0.8.4.0</version>
         </dependency>
     </dependencies>

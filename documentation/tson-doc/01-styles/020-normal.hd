@@ -154,7 +154,6 @@ page(template:normal){
             origin : top-left,
             font-size:20,
             color: "#6b3a09",
-            font-bold
     ){
         styles:{
             "*" :{
