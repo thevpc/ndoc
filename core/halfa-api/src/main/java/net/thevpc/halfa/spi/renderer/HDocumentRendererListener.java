@@ -5,10 +5,13 @@ import net.thevpc.halfa.api.model.node.HNode;
 
 public interface HDocumentRendererListener {
 
-    void onChangedCompiledDocument(HDocument compiledDocument);
+    default void onChangedCompiledDocument(HDocument compiledDocument){}
 
-    void onChangedRawDocument(HDocument rawDocument);
+    default void onChangedRawDocument(HDocument rawDocument){}
 
-    void onChangedPage(HNode page);
-    void onCloseView();
+    default void onChangedPage(HNode page){}
+
+    default void onSaveDocument(HDocument document){}
+
+    default void onCloseView(){}
 }

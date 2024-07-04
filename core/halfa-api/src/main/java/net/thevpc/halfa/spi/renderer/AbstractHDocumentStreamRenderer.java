@@ -16,9 +16,20 @@ import net.thevpc.nuts.io.NPath;
 public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentRenderer implements HDocumentStreamRenderer {
 
     protected Object output;
+    protected HDocumentStreamRendererConfig config;
 
     public AbstractHDocumentStreamRenderer(HEngine engine, NSession session) {
         super(engine, session);
+    }
+
+    @Override
+    public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
+        this.config=config;
+    }
+
+    @Override
+    public HDocumentStreamRendererConfig getStreamRendererConfig() {
+        return config;
     }
 
     @Override

@@ -42,6 +42,13 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
                 eventListener.onCloseView();
             }
         }
+
+        @Override
+        public void onSaveDocument(HDocument document) {
+            for (HDocumentRendererListener eventListener : eventListeners) {
+                eventListener.onSaveDocument(document);
+            }
+        }
     };
     protected final NSession session;
     protected final HEngine engine;

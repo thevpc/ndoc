@@ -14,10 +14,7 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.spi.renderer.AbstractHDocumentStreamRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
+import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
@@ -70,6 +67,16 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
             return (PrintStream) out;
         }
         return new PrintStream(out);
+    }
+
+    @Override
+    public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
+
+    }
+
+    @Override
+    public HDocumentStreamRendererConfig getStreamRendererConfig() {
+        return null;
     }
 
     @Override

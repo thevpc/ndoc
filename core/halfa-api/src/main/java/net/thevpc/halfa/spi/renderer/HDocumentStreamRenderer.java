@@ -10,6 +10,10 @@ import net.thevpc.nuts.io.NPath;
  */
 public interface HDocumentStreamRenderer extends HDocumentRenderer {
 
+    void setStreamRendererConfig(HDocumentStreamRendererConfig config);
+
+    HDocumentStreamRendererConfig getStreamRendererConfig();
+
     void setOutput(OutputStream stream);
 
     void setOutput(NPath stream);

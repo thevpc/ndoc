@@ -17,7 +17,9 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +56,16 @@ public class ServiceHelper {
                 r.onCloseView();
             }
         }
+
+        @Override
+        public void onSaveDocument(HDocument document) {
+            for (HDocumentRendererListener eventListener : registeredHDocumentRendererListener) {
+                eventListener.onSaveDocument(document);
+            }
+        }
     };
-    private HMessageList currentMessageList=new HMessageList() {
+
+    private HMessageList currentMessageList = new HMessageList() {
         @Override
         public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
             for (HMessageList r : registeredMessages) {
@@ -63,9 +73,18 @@ public class ServiceHelper {
             }
         }
     };
+
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         engine = new HEngineImpl(mainFrame.getSession());
+        registeredHDocumentRendererListener.add(new HDocumentRendererListener() {
+
+            @Override
+            public void onSaveDocument(HDocument document) {
+                doSavePDf(document);
+            }
+
+        });
     }
 
     private static NPath confPath(NSession session) {
@@ -138,26 +157,18 @@ public class ServiceHelper {
         System.exit(0);
     }
 
-    public void doSavePDf() {
+    public void doSavePDf(HDocument document) {
         NSession session = mainFrame.getSession();
-        NPath lastDocumentPath = loadPath(session);
         JFileChooser f = new JFileChooser();
         f.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        if (lastDocumentPath != null) {
-            f.setCurrentDirectory(lastDocumentPath.toFile().get());
-            f.setSelectedFile(
-                    lastDocumentPath.isDirectory()?
-                            lastDocumentPath.resolve("output.pdf").toFile().get()
-                            : lastDocumentPath.resolveSibling("output.pdf").toFile().get()
-            );
-        }
+
         int r = f.showOpenDialog(mainFrame.getContentPane());
         if (r == JFileChooser.APPROVE_OPTION) {
             File sf = f.getSelectedFile();
             if (sf != null) {
-                if(!sf.exists()){
-                    if(!sf.getName().endsWith(".pdf")){
-                        sf=new File(sf.getParent(),sf.getName()+".pdf");
+                if (!sf.exists()) {
+                    if (!sf.getName().endsWith(".pdf")) {
+                        sf = new File(sf.getParent(), sf.getName() + ".pdf");
                     }
                 }
                 NPath outputPdfPath = NPath.of(sf, session);
@@ -166,8 +177,21 @@ public class ServiceHelper {
                 renderer.setMessages(currentMessageList);
                 renderer.addRendererListener(currListener);
                 renderer.setOutput(outputPdfPath);
-                renderer.renderPath(lastDocumentPath);
+                renderer.render(document);
+
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().open(sf);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Desktop is not supported on this system.");
+                }
+
+
             }
         }
     }
+
 }

@@ -1,4 +1,5 @@
 package net.thevpc.halfa.engine.renderer.screen;
+//import net.thevpc.halfa.main.ServiceHelper;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
@@ -17,12 +18,12 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
@@ -54,7 +55,9 @@ public class DocumentView {
     private HDocumentRendererListener listener;
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
-    public DocumentView(HDocumentRendererSupplier documentSupplier, HEngine engine, HDocumentRendererListener listener, HMessageList messages,
+    public DocumentView(HDocumentRendererSupplier documentSupplier,
+                        HEngine engine, HDocumentRendererListener listener,
+                        HMessageList messages,
                         NSession session) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
@@ -197,10 +200,30 @@ public class DocumentView {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     nextPage();
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    previousPage();
+                    showPopupMenu(e);
                 }
             }
         });
+    }
+
+    private void showPopupMenu(MouseEvent e) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
+        saveAsPdfMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (document != null && listener != null) {
+                    listener.onSaveDocument(document);
+                }
+            }
+        });
+        popupMenu.add(saveAsPdfMenuItem);
+
+
+        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+
+
         contentPane.setFocusTraversalKeysEnabled(false);
         contentPane.setFocusable(true);
         contentPane.requestFocus();

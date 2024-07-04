@@ -35,6 +35,11 @@ public class HDebugFrame extends JFrame {
         }
 
         @Override
+        public void onSaveDocument(HDocument document) {
+
+        }
+
+        @Override
         public void onCloseView() {
             model().setCurrentPage(null);
             model().setCompiledDocument(null);

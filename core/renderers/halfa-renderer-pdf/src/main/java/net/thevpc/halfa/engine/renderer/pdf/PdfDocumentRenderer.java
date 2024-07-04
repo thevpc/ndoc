@@ -115,16 +115,16 @@ public void renderStream(HDocument hdocument, OutputStream stream) {
             messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
         }
 
-        int sizeWidth = 600;
-        int sizeHeight = 700;
+        int sizeWidth = 640;
+        int sizeHeight = 800;
 
         for (HNode page : PagesHelper.resolvePages(hdocument)) {
             byte[] imgData = createPageImage(sizeWidth, sizeHeight, page, messages2);
             Image img = Image.getInstance(imgData);
             img.scaleToFit(sizeWidth, sizeHeight);
             document.add(img);
-            document.left(100f);
-            document.top(150f);
+            document.setMargins(50f, 50f, 50f, 50f);
+
 
             document.newPage();
         }
