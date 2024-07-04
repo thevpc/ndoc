@@ -1,6 +1,4 @@
 {
-$palette:["#212E53","#137C8B","#709CA7","#B8CBD0","#7A90A4","#344D59"]
-
 styles{
 .ul-bullet:{
         background: "#FC4100"
@@ -16,7 +14,9 @@ styles{
               }
    }
 
-}
+
+
+
 page{
         polygon(points:[(43,60),(100,60),(100,95),(35,95)],background-color:"FC4100")
         polygon(points:[(60,0),(100,0),(100,90),(40,90)],background-color:"#00215E")
@@ -54,7 +54,17 @@ page{
 include("plan.hd")
 include("taches.hd")
 
-include("NTh.hd")
-include("realisation.hd")
-}
+include("NTh1.hd")
+include("realisationHashtable.hd")
+include("realisationAVL.hd")
+include("realisationForme.hd")
+include("conclusion.hd")
 
+page{
+                      polygon(points:[(0,15),(100,15),(100,85),(0,85)],background-color:"#00215E")
+                      @(H1)text(
+                      "
+                      MERCI
+                      ",at:center)
+}
+}

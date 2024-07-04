@@ -33,15 +33,36 @@ page{
         ,position:(4,70),font-size:8%g)
 
 
-gantt(size:(45,50), at:(95,50)
+//gantt(size:(45,50), at:(95,50)
+//                     """
+//                        [SG Htable] requires 6 days
+//                        [SG Avl] requires 5 days
+//                        [NModule daff] requires 5 days
+//                        [Prstation] requires 4 days
+//                        [SG Avl] starts at [SG Htable]'s end
+//                        [NModule daff] starts at [SG Avl]'s end
+//                        [Prstation] starts at [NModule daff]'s end
+//                     """
+//                 )
+                 gantt(size:(45,60), position:(53,30)
                      """
-                        [SG Htable] requires 6 days
-                        [SG Avl] requires 5 days
-                        [NModule daff] requires 5 days
-                        [Prstation] requires 4 days
-                        [SG Avl] starts at [SG Htable]'s end
-                        [NModule daff] starts at [SG Avl]'s end
-                        [Prstation] starts at [NModule daff]'s end
+                        Project starts 2024-06-04
+
+                        -- Tasks --
+                        [SGraphique de Htable] as [T1] lasts 1 week and 1 day and is 100% complete
+                        [SGraphique Avl] as [T2] starts 2024-06-12 and ends 2024-06-17
+                        [Integration dun nouv module daffichage] as [T3] starts 2024-06-18 and lasts 2 weeks
+
+                        [T1] is colored in orange
+                        [T2] is colored in lightblue
+                        [T3] is colored in darkorange
+                        [T2] is 100% completed
+
+                        -- Days Off --
+                        [H1] starts 2024-06-8 and ends 2024-06-9
+                        [H2] starts 2024-06-15 and ends 2024-06-16
+                        [H3] starts 2024-06-22 and ends 2024-06-23
+                        [H4] starts 2024-06-29 and lasts 2 days
                      """
                  )
 }
