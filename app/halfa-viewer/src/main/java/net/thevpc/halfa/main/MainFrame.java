@@ -44,6 +44,9 @@ public class MainFrame extends JFrame {
 
 
     }
+
+
+
     private JComponent createCenter() {
         JPanel jPanel = new JPanel(new BorderLayout());
         jPanel.add(createMenu(),BorderLayout.NORTH);
@@ -80,13 +83,21 @@ public class MainFrame extends JFrame {
         JMenu menu = new JMenu("File");
         menu.add(createMenuItemOpenFile());
         menu.addSeparator();
+        menu.add(createMenuItemSave());
         menu.add(createMenuItemExit());
         return menu;
     }
 
+
     private JMenuItem createMenuItemExit() {
         JMenuItem menu = new JMenuItem("Exit");
         menu.addActionListener(e -> serviceHelper.doExit());
+        return menu;
+    }
+
+    private JMenuItem createMenuItemSave() {
+        JMenuItem menu = new JMenuItem("Save");
+        menu.addActionListener(e -> serviceHelper.doSavePDf());
         return menu;
     }
 

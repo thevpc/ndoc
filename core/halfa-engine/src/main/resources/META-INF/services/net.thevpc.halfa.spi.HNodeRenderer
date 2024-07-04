@@ -10,6 +10,7 @@ net.thevpc.halfa.engine.nodes.elem2d.text.eq.HEquationRenderer
 net.thevpc.halfa.engine.nodes.elem2d.text.plain.HPlainTextRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder.HCylinderRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.donut.HDonutRenderer
+net.thevpc.halfa.engine.nodes.elem2d.shape.arrow.HArrowRenderer
 net.thevpc.halfa.engine.nodes.elem2d.text.source.HSourceRenderer
 net.thevpc.halfa.engine.nodes.elem2d.text.text.HTextRenderer
 net.thevpc.halfa.engine.nodes.elem2d.shape.sphere.HSphereRenderer

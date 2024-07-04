@@ -1,11 +1,12 @@
-package net.thevpc.halfa.engine.renderer;
+package net.thevpc.halfa.engin.spibase.renderer;
 
-import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
+import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NAssert;
@@ -32,6 +33,9 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
         this.session = session;
         this.g3 = g;
         this.messages = messages;
+    }
+    public HPartRendererContextImpl(HGraphics g, Dimension bound, NSession session, HMessageList messages) {
+        this(g, bound,new Bounds2(0, 0, bound.getWidth(), bound.getHeight()),session,messages);
     }
 
     @Override
@@ -102,7 +106,20 @@ public abstract class HPartRendererContextImpl extends AbstractHNodeRendererCont
     }
 
     @Override
+    public void render(HNode p, HNodeRendererContext ctx) {
+        if (p.isTemplate()) {
+            return;
+        }
+        manager().getRenderer(p.type()).get().render(p,ctx);
+    }
+
+    @Override
     public List<HProp> computeProperties(HNode t) {
         return engine().computeProperties(t);
+    }
+
+    @Override
+    public HNodeRendererManager manager() {
+        return engine().renderManager();
     }
 }

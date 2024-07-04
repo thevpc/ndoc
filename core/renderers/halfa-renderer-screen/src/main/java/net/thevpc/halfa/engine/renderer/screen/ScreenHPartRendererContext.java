@@ -4,7 +4,7 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.engine.renderer.HPartRendererContextImpl;
+import net.thevpc.halfa.engin.spibase.renderer.HPartRendererContextImpl;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;

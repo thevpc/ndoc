@@ -26,6 +26,7 @@ net.thevpc.halfa.engine.nodes.elem2d.shape.trapezoid.HTrapezoidImpl
 net.thevpc.halfa.engine.nodes.elem2d.shape.triangle.HTriangleImpl
 net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder.HCylinderImpl
 net.thevpc.halfa.engine.nodes.elem2d.shape.donut.HDonutImpl
+net.thevpc.halfa.engine.nodes.elem2d.shape.arrow.HArrowImpl
 net.thevpc.halfa.engine.nodes.elem2d.shape.quadcurve.HQuadCurveImpl
 net.thevpc.halfa.engine.nodes.elem2d.shape.cubiccurve.HCubicCurveImpl
 net.thevpc.halfa.engine.nodes.elem2d.image.HImageImpl
