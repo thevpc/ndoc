@@ -1,4 +1,4 @@
-net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder.HCylinderImpl
-net.thevpc.halfa.engine.nodes.elem2d.shape.donut.HDonutImpl
-net.thevpc.halfa.engine.nodes.elem2d.shape.arrow.HArrowImpl
+net.thevpc.halfa.extension.shapes2d.cylinder.HCylinderImpl
+net.thevpc.halfa.extension.shapes2d.donut.HDonutImpl
+net.thevpc.halfa.extension.shapes2d.arrow.HArrowImpl
 

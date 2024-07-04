@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder;
+package net.thevpc.halfa.extension.shapes2d.cylinder;
 
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;

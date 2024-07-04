@@ -1,3 +1,3 @@
-net.thevpc.halfa.engine.nodes.elem2d.shape.cylinder.HCylinderRenderer
-net.thevpc.halfa.engine.nodes.elem2d.shape.donut.HDonutRenderer
-net.thevpc.halfa.engine.nodes.elem2d.shape.arrow.HArrowRenderer
+net.thevpc.halfa.extension.shapes2d.cylinder.HCylinderRenderer
+net.thevpc.halfa.extension.shapes2d.donut.HDonutRenderer
+net.thevpc.halfa.extension.shapes2d.arrow.HArrowRenderer
