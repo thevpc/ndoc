@@ -7,43 +7,15 @@ page{
         ,position:(4,10))
 
         text("
-        Au cours de ce stage d'été, réalisé durant ma première année
-        de formation d'ingénieur en informatique à l'ISIM Monastir,
-        j'ai eu l'opportunité de passer quatre semaines au sein de l'entreprise
-        Core Techs Solutions à Sahloul, Sousse.
-        "
-        ,position:(4,25),font-size:8%g)
-
-        text("
         L'objectif principal de ce stage était de me familiariser
         avec le développement web, mobile et d'applications de bureau.
         Cette expérience m'a permis d'acquérir de nouvelles compétences
         en développement logiciel, en utilisant des technologies
         différentes telles qu'Angular, Flutter, JavaFX et Swing...
         "
-        ,position:(4,45),font-size:8%g)
-
-        text("
-        Au cours de cette expérience, j'ai pu mettre en pratique
-        mes connaissances théoriques, développer des projets concrets
-        et collaborer avec des professionnels du secteur.
-        Ce fut une occasion enrichissante d'apprendre
-        et de progresser dans le domaine du développement.
-        "
-        ,position:(4,70),font-size:8%g)
+        ,position:(4,35),font-size:8%g)
 
 
-//gantt(size:(45,50), at:(95,50)
-//                     """
-//                        [SG Htable] requires 6 days
-//                        [SG Avl] requires 5 days
-//                        [NModule daff] requires 5 days
-//                        [Prstation] requires 4 days
-//                        [SG Avl] starts at [SG Htable]'s end
-//                        [NModule daff] starts at [SG Avl]'s end
-//                        [Prstation] starts at [NModule daff]'s end
-//                     """
-//                 )
                  gantt(size:(45,60), position:(53,30)
                      """
                         Project starts 2024-06-04

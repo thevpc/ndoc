@@ -13,18 +13,23 @@
                  "
                  ,font-size:10%g,position:(30,30),color:white
          )
+         text("
+                 Pour l'avenir, il serait intéressant d'envisager d'intégrer des formes en 3D
+              pour une représentation encore plus immersive et réaliste.
+             De plus, l'ajout de templates de styles prêts à utiliser permettrait aux utilisateurs
+            de créer des présentations attrayantes avec un minimum d'effort,
+           augmentant ainsi l'efficacité et la qualité des présentations réalisées avec cette application.
+
+                 "
+                 ,position:(30,35),font-size:9%g,color:white)
          text(
                  "
-                  Pour l'avenir, il serait intéressant d'envisager d'intégrer des formes en 3D
-                 pour une représentation encore plus immersive et réaliste.
-                De plus, l'ajout de templates de styles prêts à utiliser permettrait aux utilisateurs
-               de créer des présentations attrayantes avec un minimum d'effort,
-              augmentant ainsi l'efficacité et la qualité des présentations réalisées avec cette application.
+
              Ces développements pourraient positionner l'application comme un outil incontournable
             pour les professionnels recherchant à la fois flexibilité et sophistication dans leurs présentations.
 
                  "
-                 ,font-size:10%g,position:(20,50),color:white
+                 ,font-size:9%g,position:(25,60),color:white
          )
 
  }

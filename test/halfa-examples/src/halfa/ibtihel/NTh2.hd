@@ -79,18 +79,18 @@ page{
                     les sous-arbres gauche et droit d'un nœud < ou = 1,
                     optimisant ainsi les performances de recherche et d'insertion/suppression.
                     "
-                    ,font-size:8%g,position:(3,30),color:white
+                    ,font-size:9%g,position:(3,35),color:white
             )
-            text(
-                    "
-                    Cependant, un inconvénient des arbres AVL est le surcoût
-                    en termes de rotations et de rééquilibrage après chaque
-                    insertion ou suppression, ce qui peut rendre ces opérations
-                    relativement coûteuses en comparaison avec d'autres arbres
-                    binaires de recherche non équilibrés.
-                    "
-                    ,font-size:8%g,position:(3,70),color:white
-            )
+//            text(
+//                    "
+//                    Cependant, un inconvénient des arbres AVL est le surcoût
+//                    en termes de rotations et de rééquilibrage après chaque
+//                    insertion ou suppression, ce qui peut rendre ces opérations
+//                    relativement coûteuses en comparaison avec d'autres arbres
+//                    binaires de recherche non équilibrés.
+//                    "
+//                    ,font-size:8%g,position:(3,70),color:white
+//            )
 
             polygon(points:[(78,17),(90,48),(90,48),(78,17)])
             circle(bg:"#FC4100",size:(5,10),at:(80,15),stroke:10)

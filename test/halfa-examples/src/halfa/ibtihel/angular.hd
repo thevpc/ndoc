@@ -3,6 +3,7 @@ page{
                       polygon(points:[(0,0),(57,0),(50,100),(0,100)],background-color:"#FC4100")
                       polygon(points:[(0,2),(60,2),(53,97),(0,97)],background-color:"#00215E")
                       image("./images/hashtable_angular.png" position:(2,20),size:(55,70))
+//                      image("./images/hash_ang.gif" position:(2,20),size:(55,70))
                       @(H2)text("
                                 Hash Table avec Angular:
                            ",
@@ -10,34 +11,34 @@ page{
                       )
                       text(
                               "
-                              Ce projet Angular utilise les bibliothèques @angular/common et
-
-
-                              @angular/forms pour créer une interface utilisateur interactive
+                              Ce projet Angular utilise les bibliothèques
+                              @angular/common et  @angular/forms
+                              pour créer une interface utilisateur interactive
                               permettant de manipuler et visualiser une table de hachage."
 
-                              ,font-size:8%g,position:(60,20),font-bold, color:"#00215E"
+                              ,font-size:9%g,position:(60,20),font-bold, color:"#00215E"
                       )
-                      text(
-
-                                                      "
-                                                      Il utilise egalement un canvas HTML pour dessiner visuellement
-                                                      la table et ses entrées.
-
-                                                      "
-                                                      ,font-size:8%g,position:(60,35),font-bold, color:"#00215E"
-                      )
+//                      text(
+//
+//                                                      "
+//                                                      Il utilise egalement un canvas HTML pour dessiner visuellement
+//                                                      la table et ses entrées.
+//
+//                                                      "
+//                                                      ,font-size:8%g,position:(60,35),font-bold, color:"#00215E"
+//                      )
                       text(
 
                                                       "
                                                       L'interface utilisateur comprend des boutons pour ajouter,
-                                                      supprimer et rechercher des mots, ainsi qu'un champ de saisie
-                                                      pour entrer les mots.
+                                                      supprimer et rechercher des mots,
+                                                      ainsi qu'un champ de saisie pour entrer les mots.
+
                                                       Les éléments graphiques sont dessinés sur le canvas,
                                                       avec une palette de couleurs pour différencier les listes.
 
                                                       "
-                                                      ,font-size:8%g,position:(60,50), color:"#00215E"
+                                                      ,font-size:9%g,position:(60,50), color:"#00215E"
                       )
 
 

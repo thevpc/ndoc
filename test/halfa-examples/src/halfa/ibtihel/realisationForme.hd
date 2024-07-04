@@ -34,19 +34,19 @@ page{
                              LaTeX est complexe et difficile à maîtriser.
 
                            ",
-                                              font-size:9%g,position:(5,40),color:"white"
+                                              font-size:9%g,position:(5,45),color:"white"
                       )text("
 
                              PowerPoint manque d'automatisation pour des présentations dynamiques.
 
                            ",
-                                              font-size:9%g,position:(5,45),color:"white"
+                                              font-size:9%g,position:(5,55),color:"white"
                       )
                       text("
                              Cette nouvelle application vise à offrir une alternative puissante et flexible,
                              facilitant la création et l'affichage de présentations de manière intuitive et automatisée.
                            ",
-                                              font-size:9%g,position:(5,65),color:"white"
+                                              font-size:9%g,position:(5,70),color:"white"
                       )
 
 
@@ -69,7 +69,7 @@ page{
                     "
                      Mon travail a consisté à développer des formes plus complexes,telles que des cylindres
                      et des donuts, pour enrichir les possibilités de présentation et permettre
-                     une visualisation plus diversifiée et sophistiquée.
+                     une visualisation plus diversifiée.
                    ",
                                       font-size:8%g,position:(45,15),color:"white"
               )

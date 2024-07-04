@@ -1,11 +1,6 @@
 {
 styles{
-.ul-bullet:{
-        background: "#FC4100"
-        position:(10%g,10%g),
-        size:3%g
 
-    },
     .H1:{
                   font-size:20%g,
                   color:"#FC4100",
