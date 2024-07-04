@@ -4,13 +4,14 @@
  */
 package net.thevpc.halfa.engine.renderer.pdf;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.*;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,23 +23,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
+import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.spi.renderer.AbstractHDocumentStreamRenderer;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.engin.spibase.renderer.HPartRendererContextImpl;
+import net.thevpc.halfa.spi.HNodeRenderer;
+import net.thevpc.halfa.spi.renderer.*;
+import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NOptional;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author vpc
@@ -68,27 +76,136 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             renderStream(d, (OutputStream) o);
         }
     }
+//    public void renderStream(HDocument hdocument, OutputStream stream) {
+//        try {
+//            PdfDocument document = new PdfDocument();
+//            PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
+//
+//            HMessageList messages2 = this.messages;
+//            if (messages2 == null) {
+//                messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
+//            }
+//            int sizeWidth = 400;
+//            int sizeHeight = 300;
+//            for (HNode page : PagesHelper.resolvePages(hdocument)) {
+//                pdfWriter.add(new ImgRaw(
+//                        sizeWidth, sizeHeight, 5, 8, createPageImage(sizeWidth, sizeHeight, page, messages2)
+//                ));
+//            }
+//            pdfWriter.add(new Paragraph("Hello World"));
+//
+//
+//            pdfWriter.close();
+//
+//        } catch (Exception ex) {
+//            throw new NIOException(session, ex);
+//        }
+//    }
+public void renderStream(HDocument hdocument, OutputStream stream) {
+    Document document = new Document(PageSize.A4.rotate());
 
-    public void renderStream(HDocument document, OutputStream stream) {
-        try {
-            HMessageList messages2 = this.messages;
-            if (messages2 == null) {
-                messages2 = new HMessageListImpl(session, engine.computeSource(document.root()));
-            }
-            document = engine.compileDocument(document, messages2).get();
-            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
-            List<Supplier<InputStream>> all = new ArrayList<>();
-            for (HNode page : PagesHelper.resolvePages(document)) {
-                Supplier<InputStream> y = renderPage(page, htmlRenderer);
-                if (y != null) {
-                    all.add(y);
-                }
-            }
-            mergePdfFiles(all, stream);
-        } catch (IOException | DocumentException ex) {
-            throw new NIOException(session, ex);
+    try {
+        PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
+        PageNumberEvent pageNumberEvent = new PageNumberEvent();
+        pdfWriter.setPageEvent(pageNumberEvent);
+        document.open();
+
+        HMessageList messages2 = this.messages;
+        if (messages2 == null) {
+            messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
+        }
+
+        int sizeWidth = 600;
+        int sizeHeight = 700;
+
+        for (HNode page : PagesHelper.resolvePages(hdocument)) {
+            byte[] imgData = createPageImage(sizeWidth, sizeHeight, page, messages2);
+            Image img = Image.getInstance(imgData);
+            img.scaleToFit(sizeWidth, sizeHeight);
+            document.add(img);
+            document.left(100f);
+            document.top(150f);
+
+            document.newPage();
+        }
+
+        // String imagePath = "C:/Users/msi/Desktop/stage/halfa/test/halfa-examples/src/halfa/examples/example001/téléchargé (4).jpeg";
+        // Image img = Image.getInstance(imagePath);
+        // img.setRotationDegrees(90);
+        // document.add(img);
+
+    } catch (Exception ex) {
+        throw new NIOException(session, ex);
+    } finally {
+        if (document != null) {
+            document.close();
         }
     }
+}
+
+    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages2) {
+        BufferedImage newImage = new BufferedImage(sizeHeight, sizeWidth, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = newImage.createGraphics();
+        HGraphics gh = engine.createGraphics(g);
+        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
+        renderer.render(page, new PdfHNodeRendererContext(engine, gh, new Dimension(sizeHeight, sizeWidth), session, messages2));
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(newImage, "png", bos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            g.dispose();
+        }
+
+        return bos.toByteArray();
+    }
+
+
+
+//}
+//
+//
+//    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages2) {
+//        BufferedImage newImage = new BufferedImage(
+//                sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
+//
+//        Graphics2D g = newImage.createGraphics();
+//        HGraphics gh = engine.createGraphics(g);
+//        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
+//        renderer.render(page, new PdfHNodeRendererContext(engine, gh, new Dimension(sizeWidth, sizeHeight), session, messages2));
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        try {
+//            ImageIO.write(newImage, "png", bos);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return bos.toByteArray();
+//    }
+
+
+//    public void renderStream(HDocument document, OutputStream stream) {
+//        try {
+//            HMessageList messages2 = this.messages;
+//            if (messages2 == null) {
+//                messages2 = new HMessageListImpl(session, engine.computeSource(document.root()));
+//            }
+//            document = engine.compileDocument(document, messages2).get();
+//            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
+//            List<Supplier<InputStream>> all = new ArrayList<>();
+//            for (HNode page : PagesHelper.resolvePages(document)) {
+//                Supplier<InputStream> y = renderPage(page, htmlRenderer);
+//                if (y != null) {
+//                    all.add(y);
+//                }
+//            }
+//            mergePdfFiles(all, stream);
+//        } catch (IOException | DocumentException ex) {
+//            throw new NIOException(session, ex);
+//        }
+//    }
 
     @Override
     public void renderNode(HNode part, OutputStream out) {
@@ -189,6 +306,35 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                 break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);
+        }
+    }
+
+    private static class PdfHNodeRendererContext extends HPartRendererContextImpl {
+        private HEngine engine;
+
+        public PdfHNodeRendererContext(HEngine engine, HGraphics g, Dimension size, NSession session, HMessageList messages) {
+            super(g, size, session, messages);
+            this.engine = engine;
+        }
+
+        @Override
+        public ImageObserver imageObserver() {
+            return null;
+        }
+
+        @Override
+        public HEngine engine() {
+            return engine;
+        }
+
+        @Override
+        public boolean isAnimated() {
+            return false;
+        }
+
+        @Override
+        public void repaint() {
+
         }
     }
 

@@ -39,11 +39,15 @@ public class MainFrame extends JFrame {
         jmb.add(createMenuFile());
         jmb.add(createMenuView());
         jmb.add(createMenuHelp());
+        jmb.add(createMenuSave());
         return jmb;
 
 
 
     }
+
+
+
     private JComponent createCenter() {
         JPanel jPanel = new JPanel(new BorderLayout());
         jPanel.add(createMenu(),BorderLayout.NORTH);
@@ -81,6 +85,12 @@ public class MainFrame extends JFrame {
         menu.add(createMenuItemOpenFile());
         menu.addSeparator();
         menu.add(createMenuItemExit());
+        return menu;
+    }
+    private JMenu createMenuSave() {
+        JMenu menu = new JMenu("Save");
+
+
         return menu;
     }
 

@@ -79,6 +79,27 @@
             <artifactId>halfa-renderer-html</artifactId>
             <version>0.8.4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-plantuml</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-animated-gif</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-svg</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.halfa</groupId>
+            <artifactId>halfa-extension-simple3d</artifactId>
+            <version>0.8.4.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

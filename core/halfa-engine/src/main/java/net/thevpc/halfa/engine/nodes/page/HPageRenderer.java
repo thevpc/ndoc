@@ -22,7 +22,7 @@ public class HPageRenderer extends HNodeRendererBase {
     public void renderMain(HNode p, HNodeRendererContext ctx) {
         Bounds2 b = HValueByName.selfBounds(p, null, null, ctx);
 
-        drawBackground(ctx.graphics(), ctx, b);
+        // drawBackground(ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
 
         for (HNode child : p.children()) {
