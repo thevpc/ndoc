@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package net.thevpc.halfa.engine.renderer.pdf;
 
 import net.thevpc.halfa.spi.renderer.*;
@@ -9,7 +5,7 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
 /**
- * @author vpc
+ * Factory class for creating PDF document stream renderers.
  */
 public class PdfDocumentStreamRendererFactory implements HDocumentRendererFactory {
 
@@ -17,10 +13,12 @@ public class PdfDocumentStreamRendererFactory implements HDocumentRendererFactor
     public NCallableSupport<HDocumentRenderer> createDocumentRenderer(HDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "pdf":
-                return NCallableSupport.of(10, () -> new PdfDocumentRenderer(context.engine(), context.session()));
+                return NCallableSupport.of(10, () -> {
+                    HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
+                    return new PdfDocumentRenderer(context.engine(), context.session(), config);
+                });
             default:
-                return NCallableSupport.invalid(s -> NMsg.ofPlain("factory"));
+                return NCallableSupport.invalid(s -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
         }
     }
-
 }

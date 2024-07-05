@@ -4,6 +4,7 @@
  */
 package net.thevpc.halfa.engine.renderer.pdf;
 
+import com.itextpdf.text.Rectangle;
 import com.lowagie.text.*;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
@@ -47,91 +48,109 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
 
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
-    public PdfDocumentRenderer(HEngine engine, NSession session) {
-        super(engine, session);
-    }
 
+    public PdfDocumentRenderer(HEngine engine, NSession session, HDocumentStreamRendererConfig config) {
+        super(engine, session);
+        this.config = config;
+
+    }
     @Override
-    public void renderSupplier(HDocumentRendererSupplier document) {
-        HDocument d = document.get(rendererContext);
-        Object o = output;
-        if (o == null) {
-            o = NPath.of("document.pdf", session);
+    public void renderSupplier(HDocumentRendererSupplier documentSupplier) {
+        HDocument document = documentSupplier.get(rendererContext);
+        Object outputTarget = output;
+        if (outputTarget == null) {
+            outputTarget = NPath.of("document.pdf", session);
         }
-        if (o instanceof NPath) {
-            try (OutputStream os = ((NPath) o).getOutputStream()) {
-                renderStream(d, os);
+        if (outputTarget instanceof NPath) {
+            try (OutputStream os = ((NPath) outputTarget).getOutputStream()) {
+                renderStream(document, os, config);
             } catch (IOException ex) {
                 throw new NIOException(session, ex);
             }
-        } else if (o instanceof OutputStream) {
-            renderStream(d, (OutputStream) o);
+        } else if (outputTarget instanceof OutputStream) {
+            renderStream(document, (OutputStream) outputTarget, config);
         }
     }
 
-    //    public void renderStream(HDocument hdocument, OutputStream stream) {
-//        try {
-//            PdfDocument document = new PdfDocument();
-//            PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
-//
-//            HMessageList messages2 = this.messages;
-//            if (messages2 == null) {
-//                messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
-//            }
-//            int sizeWidth = 400;
-//            int sizeHeight = 300;
-//            for (HNode page : PagesHelper.resolvePages(hdocument)) {
-//                pdfWriter.add(new ImgRaw(
-//                        sizeWidth, sizeHeight, 5, 8, createPageImage(sizeWidth, sizeHeight, page, messages2)
-//                ));
-//            }
-//            pdfWriter.add(new Paragraph("Hello World"));
-//
-//
-//            pdfWriter.close();
-//
-//        } catch (Exception ex) {
-//            throw new NIOException(session, ex);
-//        }
-//    }
-    public void renderStream(HDocument hdocument, OutputStream stream) {
-        Document document = new Document(PageSize.A4.rotate());
 
+    public void renderStream(HDocument document, OutputStream stream, HDocumentStreamRendererConfig config) {
+        Document pdfDocument = new Document();
         try {
-            PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
-            PageNumberEvent pageNumberEvent = new PageNumberEvent();
-            pdfWriter.setPageEvent(pageNumberEvent);
-            document.open();
+            PdfWriter pdfWriter = PdfWriter.getInstance(pdfDocument, stream);
+            applyConfigSettings(pdfDocument, pdfWriter, config);
+            pdfDocument.open();
 
-            HMessageList messages2 = this.messages;
-            if (messages2 == null) {
-                messages2 = new HMessageListImpl(session, engine.computeSource(hdocument.root()));
+            HMessageList messages = this.messages;
+            if (messages == null) {
+                messages = new HMessageListImpl(session, engine.computeSource(document.root()));
             }
 
-            int sizeWidth = 640;
-            int sizeHeight = 800;
 
-            for (HNode page : PagesHelper.resolvePages(hdocument)) {
-                byte[] imgData = createPageImage(sizeWidth, sizeHeight, page, messages2);
+            for (HNode page : PagesHelper.resolvePages(document)) {
+                byte[] imgData = createPageImage(config.getPageWidth(), config.getPageHeight(), page, messages);
                 Image img = Image.getInstance(imgData);
-                img.scaleToFit(sizeWidth, sizeHeight);
-                document.add(img);
-                document.setMargins(50f, 50f, 50f, 50f);
-
-
-                document.newPage();
+                img.scaleToFit(config.getPageWidth(), config.getPageHeight());
+                pdfDocument.add(img);
+                pdfDocument.newPage();
             }
-
-            // String imagePath = "C:/Users/msi/Desktop/stage/halfa/test/halfa-examples/src/halfa/examples/example001/téléchargé (4).jpeg";
-            // Image img = Image.getInstance(imagePath);
-            // img.setRotationDegrees(90);
-            // document.add(img);
 
         } catch (Exception ex) {
             throw new NIOException(session, ex);
-        } finally {
-            if (document != null) {
-                document.close();
+
+        }
+    }
+
+    private void applyConfigSettings(Document document, PdfWriter pdfWriter, HDocumentStreamRendererConfig config) throws DocumentException {
+        if (config != null) {
+          if (config.getOrientation() == PageOrientation.LANDSCAPE) {
+                document.setPageSize(PageSize.A4.rotate());
+            } else {
+                document.setPageSize(PageSize.A4);
+            }
+            document.setMargins(50f, 50f, 50f, 50f);
+
+            if (config.getGridX() > 0 && config.getGridY() > 0) {
+                PdfPTable table = new PdfPTable(config.getGridX());
+                table.setWidthPercentage(100);
+                table.setSpacingBefore(10);
+                for (int i = 0; i < config.getGridY(); i++) {
+                    for (int j = 0; j < config.getGridX(); j++) {
+                        PdfPCell cell = new PdfPCell(new Phrase("Cell " + (i * config.getGridX() + j + 1)));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        table.addCell(cell);
+                    }
+                }
+                document.add(table);
+            }
+
+            if (config.isShowPageNumber()) {
+                PageNumberEvent pageNumberEvent = new PageNumberEvent();
+                pdfWriter.setPageEvent(pageNumberEvent);
+            }
+
+            if (config.isShowFileName()) {
+                String fileName = "Document Name";
+                PdfPTable table = new PdfPTable(1);
+                table.setWidthPercentage(100);
+                table.setSpacingBefore(10);
+                PdfPCell cell = new PdfPCell(new Phrase("File: " + fileName));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+                document.add(table);
+            }
+
+            if (config.isShowDate()) {
+                java.util.Date date = new java.util.Date();
+                PdfPTable table = new PdfPTable(1);
+                table.setWidthPercentage(100);
+                table.setSpacingBefore(10);
+                PdfPCell cell = new PdfPCell(new Phrase("Date: " + date.toString()));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setBorder(Rectangle.NO_BORDER);
+                table.addCell(cell);
+                document.add(table);
             }
         }
     }

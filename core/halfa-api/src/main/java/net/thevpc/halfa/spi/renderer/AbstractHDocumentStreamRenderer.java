@@ -24,6 +24,7 @@ public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentR
 
     @Override
     public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
+        this.config=config;
     }
 
     @Override
