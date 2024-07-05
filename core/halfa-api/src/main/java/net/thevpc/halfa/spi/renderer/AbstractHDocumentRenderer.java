@@ -44,9 +44,9 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
         }
 
         @Override
-        public void onSaveDocument(HDocument document) {
+        public void onSaveDocument(HDocument document ,HDocumentStreamRendererConfig config) {
             for (HDocumentRendererListener eventListener : eventListeners) {
-                eventListener.onSaveDocument(document);
+                eventListener.onSaveDocument(document,config);
             }
         }
     };

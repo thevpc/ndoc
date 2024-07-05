@@ -11,6 +11,7 @@ import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
+import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -59,9 +60,9 @@ public class ServiceHelper {
         }
 
         @Override
-        public void onSaveDocument(HDocument document) {
+        public void onSaveDocument(HDocument document,HDocumentStreamRendererConfig config) {
             for (HDocumentRendererListener eventListener : registeredHDocumentRendererListener) {
-                eventListener.onSaveDocument(document);
+                eventListener.onSaveDocument(document,config);
             }
         }
     };
@@ -81,8 +82,8 @@ public class ServiceHelper {
         registeredHDocumentRendererListener.add(new HDocumentRendererListener() {
 
             @Override
-            public void onSaveDocument(HDocument document) {
-                doSavePDf(document);
+            public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
+                doSavePDf(document,config);
             }
 
         });
@@ -172,7 +173,7 @@ public class ServiceHelper {
         System.exit(0);
     }
 
-    public void doSavePDf(HDocument document) {
+    public void doSavePDf(HDocument document, HDocumentStreamRendererConfig config) {
         NSession session = mainFrame.getSession();
         JFileChooser f = new JFileChooser();
         f.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -187,12 +188,12 @@ public class ServiceHelper {
                     }
                 }
                 NPath outputPdfPath = NPath.of(sf, session);
-                //savePath(path, session);
+
                 HDocumentStreamRenderer renderer = engine.newPdfRenderer();
-                renderer.setMessages(currentMessageList);
-                renderer.addRendererListener(currListener);
+                renderer.setStreamRendererConfig(config);
                 renderer.setOutput(outputPdfPath);
                 renderer.render(document);
+
 
                 if (Desktop.isDesktopSupported()) {
                     try {
@@ -203,10 +204,11 @@ public class ServiceHelper {
                 } else {
                     System.out.println("Desktop is not supported on this system.");
                 }
-
-
             }
         }
     }
 
 }
+
+
+

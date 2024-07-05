@@ -12,9 +12,9 @@ import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
-import net.thevpc.halfa.spi.renderer.HGraphics;
-import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
+
+
+import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
 
@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -30,8 +31,6 @@ import java.util.List;
 import java.util.Timer;
 
 import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererContext;
-import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
 
 public class DocumentView {
 
@@ -246,6 +245,7 @@ public class DocumentView {
         });
     }
 
+
     private void showPopupMenu(MouseEvent e) {
         JPopupMenu popupMenu = new JPopupMenu();
 
@@ -253,19 +253,27 @@ public class DocumentView {
         saveAsPdfMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (document != null && listener != null) {
-                    listener.onSaveDocument(document);
+                PdfConfigDialog configDialog = new PdfConfigDialog((Frame) SwingUtilities.getWindowAncestor((Component) e.getSource()));
+                configDialog.setVisible(true);
+                if (configDialog.isConfirmed()) {
+                    HDocumentStreamRendererConfig config = configDialog.getConfig();
+
+                    if (document != null && listener != null ) {
+                        listener.onSaveDocument(document, config);
+                    } else {
+                        System.err.println("saveDocumentListener is null or document is null");
+                    }
                 }
             }
         });
+
         popupMenu.add(saveAsPdfMenuItem);
-
-
         popupMenu.show(e.getComponent(), e.getX(), e.getY());
-
-
-
     }
+
+
+
+
 
     private boolean reloadDocument() {
         if (inLoadDocument) {
@@ -413,5 +421,92 @@ public class DocumentView {
         public HMessageList messages() {
             return messages;
         }
+    }
+
+    public class PdfConfigDialog extends JDialog {
+        private JComboBox<String> orientationComboBox;
+        private JTextField gridXField;
+        private JTextField gridYField;
+        private JTextField pageWidthField;
+        private JTextField pageHeightField;
+        private JCheckBox showPageNumberCheckBox;
+        private JCheckBox showFileNameCheckBox;
+        private JCheckBox showDateCheckBox;
+        private boolean confirmed;
+
+        public PdfConfigDialog(Frame parent) {
+            super(parent, "PDF Configuration", true);
+            setLayout(new GridLayout(0, 2));
+
+            add(new JLabel("Orientation:"));
+            orientationComboBox = new JComboBox<>(new String[]{"Portrait", "Landscape"});
+            add(orientationComboBox);
+
+            add(new JLabel("Grid X:"));
+            gridXField = new JTextField();
+            add(gridXField);
+
+            add(new JLabel("Grid Y:"));
+            gridYField = new JTextField();
+            add(gridYField);
+
+            add(new JLabel("Page Width:"));
+            pageWidthField = new JTextField();
+            add(pageWidthField);
+
+            add(new JLabel("Page Height:"));
+            pageHeightField = new JTextField();
+            add(pageHeightField);
+
+            showPageNumberCheckBox = new JCheckBox("Show Page Number");
+            add(showPageNumberCheckBox);
+
+            showFileNameCheckBox = new JCheckBox("Show File Name");
+            add(showFileNameCheckBox);
+
+            showDateCheckBox = new JCheckBox("Show Date");
+            add(showDateCheckBox);
+
+            JButton okButton = new JButton("OK");
+            okButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    confirmed = true;
+                    setVisible(false);
+                }
+            });
+            add(okButton);
+
+            JButton cancelButton = new JButton("Cancel");
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    confirmed = false;
+                    setVisible(false);
+                }
+            });
+            add(cancelButton);
+
+            pack();
+            setLocationRelativeTo(parent);
+        }
+
+        public boolean isConfirmed() {
+            return confirmed;
+        }
+
+        public HDocumentStreamRendererConfig getConfig() {
+            HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
+            config.setOrientation(orientationComboBox.getSelectedItem().equals("Portrait") ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
+            config.setGridX(Integer.parseInt(gridXField.getText()));
+            config.setGridY(Integer.parseInt(gridYField.getText()));
+            config.setPageWidth(Integer.parseInt(pageWidthField.getText()));
+            config.setPageHeight(Integer.parseInt(pageHeightField.getText()));
+            config.setShowPageNumber(showPageNumberCheckBox.isSelected());
+            config.setShowFileName(showFileNameCheckBox.isSelected());
+            config.setShowDate(showDateCheckBox.isSelected());
+            return config;
+        }
+
     }
 }

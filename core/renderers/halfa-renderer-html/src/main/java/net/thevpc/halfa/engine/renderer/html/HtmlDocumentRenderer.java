@@ -71,12 +71,14 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
 
     @Override
     public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
+       this.config=config;
+
 
     }
 
     @Override
     public HDocumentStreamRendererConfig getStreamRendererConfig() {
-        return null;
+        return config;
     }
 
     @Override

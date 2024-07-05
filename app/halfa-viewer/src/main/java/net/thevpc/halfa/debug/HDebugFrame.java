@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
+import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +36,7 @@ public class HDebugFrame extends JFrame {
         }
 
         @Override
-        public void onSaveDocument(HDocument document) {
+        public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
 
         }
 

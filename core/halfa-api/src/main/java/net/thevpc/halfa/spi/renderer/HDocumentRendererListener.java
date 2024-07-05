@@ -11,7 +11,7 @@ public interface HDocumentRendererListener {
 
     default void onChangedPage(HNode page){}
 
-    default void onSaveDocument(HDocument document){}
+    default void onSaveDocument(HDocument document,HDocumentStreamRendererConfig config){}
 
     default void onCloseView(){}
 }
