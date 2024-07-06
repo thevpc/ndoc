@@ -362,6 +362,7 @@ public class HGraphicsImpl implements HGraphics {
         g.drawRect((int) x, (int) y, (int) w, (int) h);
     }
 
+
     @Override
     public Rectangle2D getStringBounds(String str) {
         return getFontMetrics().getStringBounds(str == null ? "" : str, graphics2D());

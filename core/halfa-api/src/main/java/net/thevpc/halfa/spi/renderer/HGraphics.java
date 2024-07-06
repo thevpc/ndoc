@@ -46,6 +46,7 @@ public interface HGraphics {
 
     void drawRect(double x, double y, double w, double h);
 
+
     void fillRect(Bounds2 b);
 
     void drawRect(Bounds2 a);

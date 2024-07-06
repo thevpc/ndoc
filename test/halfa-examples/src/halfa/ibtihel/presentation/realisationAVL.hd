@@ -9,7 +9,7 @@ styles{.H2:{
 include("NTh2.hd")
 page{
                       polygon(points:[(55,6),(60,6),(53,40),(47,40)],stroke:5,color:white)
-                      image("./images/hash_fx.gif", position:(3,20),size:(47,65))
+                      image("../images/hash_fx.gif", position:(3,20),size:(47,65))
                       polygon(points:[(0,5),(12,5),(0,35),(0,35)],background-color:"#FC4100")
                       polygon(points:[(0,0),(10,0),(0,25),(0,20)],background-color:"#00215E")
 
@@ -51,7 +51,7 @@ page{
 page{
                       polygon(points:[(0,15),(100,15),(100,85),(0,85)],background-color:"#00215E")
                       polygon(points:[(55,0),(95,0),(95,100),(55,100)],background-color:"#FC4100")
-                      image("./images/avl_flutter.gif", position:(57,10),size:(35,80))
+                      image("../images/avl_flutter.gif", position:(57,10),size:(35,80))
                       @(H2)text(    "
                                  AVL Tree avec Flutter:
                                ",

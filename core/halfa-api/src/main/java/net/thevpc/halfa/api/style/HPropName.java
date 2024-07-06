@@ -21,6 +21,7 @@ public class HPropName {
     public static final String FONT_STRIKE="font-strike";
     public static final String FOREGROUND_COLOR="foreground-color";
     public static final String BACKGROUND_COLOR="background-color";
+    public static final String COLORS ="colors";
 //    public static final String LINE_COLOR="line-color";
     public static final String GRID_COLOR="grid-color";
     public static final String DRAW_GRID="draw-grid";
@@ -68,8 +69,10 @@ public class HPropName {
     public static final String TOP_COLOR = "top-color" ;
     public static final String INNER_RADIUS = "INNER-radius" ;
     public static final String START_ANGLE = "start-angle" ;
-    public static final String END_ANGLE = "end-angle" ;
     public static final String EXTENT_ANGLE = "extent-angle" ;
+    public static final String SLICE_COUNT = "slice-count" ;
+    public static final String SLICES = "slices" ;
+    public static final String DASH = "dash" ;
 
     public static final String TRANSPARENT_COLOR = "transparent-color";
 }

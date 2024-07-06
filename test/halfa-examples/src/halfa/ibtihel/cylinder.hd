@@ -1,8 +1,0 @@
-{
-
-page{
-    //cylinder(at:center ,size:(20,50),stroke:5,ellipse-height:20,segment-count:5,background-color:"#212E53")
-    donut (at:center ,size:(50,50),stroke:5,background-color:red,inner-radius:80,start-angle:0,extent-angle:-50)
-
-}
-}

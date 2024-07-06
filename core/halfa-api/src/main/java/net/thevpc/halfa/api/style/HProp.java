@@ -72,6 +72,9 @@ public class HProp implements HItem, ToTson {
     public static HProp ofDouble2Array(String name, Double2... d) {
         return new HProp(name, d);
     }
+    public static HProp ofDoubleArray (String name, double[] d) {
+        return new HProp(name, d);
+    }
 
     public static HProp ofHPoint2DArray(String name, HPoint2D... d) {
         return new HProp(name, d);
