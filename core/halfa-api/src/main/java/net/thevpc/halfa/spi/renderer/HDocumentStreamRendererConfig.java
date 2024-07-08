@@ -9,6 +9,8 @@ public class HDocumentStreamRendererConfig {
     private boolean showPageNumber;
     private boolean showFileName;
     private boolean showDate;
+    private int pagenumber;
+    private int sizepage;
 
     public PageOrientation getOrientation() {
         return orientation;
@@ -18,21 +20,21 @@ public class HDocumentStreamRendererConfig {
         this.orientation = orientation;
     }
 
-    public int getGridX() {
-        return gridX;
-    }
-
-    public void setGridX(int gridX) {
-        this.gridX = gridX;
-    }
-
-    public int getGridY() {
-        return gridY;
-    }
-
-    public void setGridY(int gridY) {
-        this.gridY = gridY;
-    }
+//    public int getGridX() {
+//        return gridX;
+//    }
+//
+//    public void setGridX(int gridX) {
+//        this.gridX = gridX;
+//    }
+//
+//    public int getGridY() {
+//        return gridY;
+//    }
+//
+//    public void setGridY(int gridY) {
+//        this.gridY = gridY;
+//    }
 
     public int getPageWidth() {
         return pageWidth;
@@ -73,4 +75,18 @@ public class HDocumentStreamRendererConfig {
     public void setShowDate(boolean showDate) {
         this.showDate = showDate;
     }
+
+    public void setImagesPerPage(int selectedItem) {
+        this.pagenumber = selectedItem;
+    }
+    public int getPagenumber() {
+        return pagenumber;
+    }
+
+//    public void setSizePage(int i) {
+//        this.sizepage = i;
+//    }
+//    public int getSizePage() {
+//        return sizepage;
+//    }
 }

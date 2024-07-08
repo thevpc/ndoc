@@ -425,10 +425,8 @@ public class DocumentView {
 
     public class PdfConfigDialog extends JDialog {
         private JComboBox<String> orientationComboBox;
-        private JTextField gridXField;
-        private JTextField gridYField;
-        private JTextField pageWidthField;
-        private JTextField pageHeightField;
+        private JComboBox<String> sizePageComboBox;
+        private JComboBox<Integer> imagesPerPageComboBox;
         private JCheckBox showPageNumberCheckBox;
         private JCheckBox showFileNameCheckBox;
         private JCheckBox showDateCheckBox;
@@ -442,21 +440,13 @@ public class DocumentView {
             orientationComboBox = new JComboBox<>(new String[]{"Portrait", "Landscape"});
             add(orientationComboBox);
 
-            add(new JLabel("Grid X:"));
-            gridXField = new JTextField();
-            add(gridXField);
+            add(new JLabel("Page Size:"));
+            sizePageComboBox = new JComboBox<>(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)","Max (1200x1200)"});
+            add(sizePageComboBox);
 
-            add(new JLabel("Grid Y:"));
-            gridYField = new JTextField();
-            add(gridYField);
-
-            add(new JLabel("Page Width:"));
-            pageWidthField = new JTextField();
-            add(pageWidthField);
-
-            add(new JLabel("Page Height:"));
-            pageHeightField = new JTextField();
-            add(pageHeightField);
+            add(new JLabel("Pages Per Sheet:"));
+            imagesPerPageComboBox = new JComboBox<>(new Integer[]{1, 2, 4, 6});
+            add(imagesPerPageComboBox);
 
             showPageNumberCheckBox = new JCheckBox("Show Page Number");
             add(showPageNumberCheckBox);
@@ -498,15 +488,30 @@ public class DocumentView {
         public HDocumentStreamRendererConfig getConfig() {
             HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
             config.setOrientation(orientationComboBox.getSelectedItem().equals("Portrait") ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
-            config.setGridX(Integer.parseInt(gridXField.getText()));
-            config.setGridY(Integer.parseInt(gridYField.getText()));
-            config.setPageWidth(Integer.parseInt(pageWidthField.getText()));
-            config.setPageHeight(Integer.parseInt(pageHeightField.getText()));
+            switch ((String) sizePageComboBox.getSelectedItem()) {
+                case "Small (300x300)":
+                    config.setPageWidth(300);
+                    config.setPageHeight(300);
+                    break;
+                case "Medium (600x600)":
+                    config.setPageWidth(600);
+                    config.setPageHeight(600);
+                    break;
+                case "Large (900x900)":
+                    config.setPageWidth(900);
+                    config.setPageHeight(900);
+                    break;
+                case "Max (1200x1200)":
+                    config.setPageWidth(1200);
+                    config.setPageHeight(1200);
+                    break;
+            }
+            config.setImagesPerPage((int) imagesPerPageComboBox.getSelectedItem());
             config.setShowPageNumber(showPageNumberCheckBox.isSelected());
             config.setShowFileName(showFileNameCheckBox.isSelected());
             config.setShowDate(showDateCheckBox.isSelected());
             return config;
         }
-
     }
+
 }

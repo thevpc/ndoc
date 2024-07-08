@@ -72,65 +72,118 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
     }
 
-
     public void renderStream(HDocument document, OutputStream stream, HDocumentStreamRendererConfig config) {
         Document pdfDocument = new Document();
         try {
             PdfWriter pdfWriter = PdfWriter.getInstance(pdfDocument, stream);
             applyConfigSettings(pdfDocument, pdfWriter, config);
             pdfDocument.open();
+            addContent(pdfDocument, config);
 
-            HMessageList messages = this.messages;
-            if (messages == null) {
-                messages = new HMessageListImpl(session, engine.computeSource(document.root()));
+            HMessageList messages = this.messages != null ?
+                    this.messages : new HMessageListImpl(session, engine.computeSource(document.root()));
+
+            int imagesPerPage = config.getPagenumber();
+            int imagesPerRow = (int) Math.ceil(Math.sqrt(imagesPerPage));
+//            int totalCells = imagesPerPage;
+
+            List<HNode> pages = PagesHelper.resolvePages(document);
+            int imageCount = 0;
+
+            float usableWidth = pdfDocument.getPageSize().getWidth() - pdfDocument.leftMargin() - pdfDocument.rightMargin();
+            float usableHeight = pdfDocument.getPageSize().getHeight() - pdfDocument.topMargin() - pdfDocument.bottomMargin();
+            float cellWidth = usableWidth / imagesPerRow;
+            float cellHeight = usableHeight / (float) Math.ceil((double) imagesPerPage / imagesPerRow);
+
+            PdfPTable table = null;
+
+            for (HNode page : pages) {
+                if (imageCount % imagesPerPage == 0) {
+                    if (table != null) {
+                        pdfDocument.add(table);
+                        pdfDocument.newPage();
+                    }
+                    table = new PdfPTable(imagesPerRow);
+                    table.setWidthPercentage(95);
+                    table.setSpacingBefore(8);
+                }
+
+                byte[] imageData = createPageImage((int) cellWidth, (int) cellHeight, page, messages);
+                Image img = Image.getInstance(imageData);
+                img.scaleToFit(cellWidth, cellHeight);
+
+                PdfPCell cell = new PdfPCell(img, true);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setPadding(10f);
+
+                table.addCell(cell);
+                imageCount++;
             }
 
+            if (table != null) {
+                while (imageCount % imagesPerPage != 0) {
+                    PdfPCell emptyCell = new PdfPCell();
+                    emptyCell.setBorder(Rectangle.NO_BORDER);
+                    table.addCell(emptyCell);
+                    emptyCell.setPadding(10f);
 
-            for (HNode page : PagesHelper.resolvePages(document)) {
-                byte[] imgData = createPageImage(config.getPageWidth(), config.getPageHeight(), page, messages);
-                Image img = Image.getInstance(imgData);
-                img.scaleToFit(config.getPageWidth(), config.getPageHeight());
-                pdfDocument.add(img);
-                pdfDocument.newPage();
+                    imageCount++;
+                }
+                pdfDocument.add(table);
             }
 
         } catch (Exception ex) {
             throw new NIOException(session, ex);
-
+        } finally {
+            if (pdfDocument.isOpen()) {
+                pdfDocument.close();
+            }
         }
+    }
+
+    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages) {
+        BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = newImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        HGraphics hg = engine.createGraphics(g);
+        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
+        renderer.render(page, new PdfHNodeRendererContext(engine, hg, new Dimension(sizeWidth, sizeHeight), session, messages));
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(newImage, "png", bos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            g.dispose();
+        }
+
+        return bos.toByteArray();
     }
 
     private void applyConfigSettings(Document document, PdfWriter pdfWriter, HDocumentStreamRendererConfig config) throws DocumentException {
         if (config != null) {
-          if (config.getOrientation() == PageOrientation.LANDSCAPE) {
+            if (config.getOrientation() == PageOrientation.LANDSCAPE) {
                 document.setPageSize(PageSize.A4.rotate());
             } else {
                 document.setPageSize(PageSize.A4);
             }
-            document.setMargins(50f, 50f, 50f, 50f);
-
-            if (config.getGridX() > 0 && config.getGridY() > 0) {
-                PdfPTable table = new PdfPTable(config.getGridX());
-                table.setWidthPercentage(100);
-                table.setSpacingBefore(10);
-                for (int i = 0; i < config.getGridY(); i++) {
-                    for (int j = 0; j < config.getGridX(); j++) {
-                        PdfPCell cell = new PdfPCell(new Phrase("Cell " + (i * config.getGridX() + j + 1)));
-                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        table.addCell(cell);
-                    }
-                }
-                document.add(table);
-            }
+            document.setMargins(0f, 0f, 0f, 0f);
 
             if (config.isShowPageNumber()) {
                 PageNumberEvent pageNumberEvent = new PageNumberEvent();
                 pdfWriter.setPageEvent(pageNumberEvent);
             }
+        }
+    }
 
+    private void addContent(Document document, HDocumentStreamRendererConfig config) throws DocumentException {
+        if (config != null) {
             if (config.isShowFileName()) {
-                String fileName = "Document Name";
+                String fileName = "MyDocument.pdf";
                 PdfPTable table = new PdfPTable(1);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10);
@@ -155,29 +208,15 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
     }
 
-    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages2) {
-        BufferedImage newImage = new BufferedImage(sizeHeight, sizeWidth, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = newImage.createGraphics();
-        g.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        HGraphics gh = engine.createGraphics(g);
-        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
-        renderer.render(page, new PdfHNodeRendererContext(engine, gh, new Dimension(sizeHeight, sizeWidth), session, messages2));
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(newImage, "png", bos);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            g.dispose();
+    private class PageNumberEvent extends PdfPageEventHelper {
+        @Override
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfContentByte cb = writer.getDirectContent();
+            Phrase header = new Phrase("Page " + writer.getPageNumber());
+            ColumnText.showTextAligned(cb, Element.ALIGN_RIGHT, header, document.right() - 50, document.top() + 10, 0);
         }
-
-        return bos.toByteArray();
     }
+
 
 
 //}
