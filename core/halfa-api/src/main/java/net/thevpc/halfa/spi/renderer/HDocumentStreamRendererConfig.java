@@ -20,21 +20,21 @@ public class HDocumentStreamRendererConfig {
         this.orientation = orientation;
     }
 
-//    public int getGridX() {
-//        return gridX;
-//    }
-//
-//    public void setGridX(int gridX) {
-//        this.gridX = gridX;
-//    }
-//
-//    public int getGridY() {
-//        return gridY;
-//    }
-//
-//    public void setGridY(int gridY) {
-//        this.gridY = gridY;
-//    }
+    public int getGridX() {
+        return gridX;
+    }
+
+    public void setGridX(int gridX) {
+        this.gridX = gridX;
+    }
+
+    public int getGridY() {
+        return gridY;
+    }
+
+    public void setGridY(int gridY) {
+        this.gridY = gridY;
+    }
 
     public int getPageWidth() {
         return pageWidth;

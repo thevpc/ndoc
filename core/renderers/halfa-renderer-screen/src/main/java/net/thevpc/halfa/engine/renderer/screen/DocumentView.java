@@ -424,9 +424,11 @@ public class DocumentView {
     }
 
     public class PdfConfigDialog extends JDialog {
-        private JComboBox<String> orientationComboBox;
-        private JComboBox<String> sizePageComboBox;
-        private JComboBox<Integer> imagesPerPageComboBox;
+        private JRadioButton portraitRadioButton;
+        private JRadioButton landscapeRadioButton;
+        private JTextField gridXField;
+        private JTextField gridYField;
+        private JComboBox<String> sizePageComboBox; // Moved to class level
         private JCheckBox showPageNumberCheckBox;
         private JCheckBox showFileNameCheckBox;
         private JCheckBox showDateCheckBox;
@@ -436,17 +438,29 @@ public class DocumentView {
             super(parent, "PDF Configuration", true);
             setLayout(new GridLayout(0, 2));
 
+            // Orientation selection
             add(new JLabel("Orientation:"));
-            orientationComboBox = new JComboBox<>(new String[]{"Portrait", "Landscape"});
-            add(orientationComboBox);
+            ButtonGroup orientationGroup = new ButtonGroup();
+            portraitRadioButton = new JRadioButton("Portrait", true);
+            landscapeRadioButton = new JRadioButton("Landscape", false);
+            orientationGroup.add(portraitRadioButton);
+            orientationGroup.add(landscapeRadioButton);
+            JPanel orientationPanel = new JPanel();
+            orientationPanel.add(portraitRadioButton);
+            orientationPanel.add(landscapeRadioButton);
+            add(orientationPanel);
+
+            add(new JLabel("Grid X:"));
+            gridXField = new JTextField();
+            add(gridXField);
+
+            add(new JLabel("Grid Y:"));
+            gridYField = new JTextField();
+            add(gridYField);
 
             add(new JLabel("Page Size:"));
-            sizePageComboBox = new JComboBox<>(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)","Max (1200x1200)"});
+            sizePageComboBox = new JComboBox<>(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)", "Max (1200x1200)"});
             add(sizePageComboBox);
-
-            add(new JLabel("Pages Per Sheet:"));
-            imagesPerPageComboBox = new JComboBox<>(new Integer[]{1, 2, 4, 6});
-            add(imagesPerPageComboBox);
 
             showPageNumberCheckBox = new JCheckBox("Show Page Number");
             add(showPageNumberCheckBox);
@@ -487,7 +501,9 @@ public class DocumentView {
 
         public HDocumentStreamRendererConfig getConfig() {
             HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
-            config.setOrientation(orientationComboBox.getSelectedItem().equals("Portrait") ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
+            config.setOrientation(portraitRadioButton.isSelected() ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
+            config.setGridX(Integer.parseInt(gridXField.getText()));
+            config.setGridY(Integer.parseInt(gridYField.getText()));
             switch ((String) sizePageComboBox.getSelectedItem()) {
                 case "Small (300x300)":
                     config.setPageWidth(300);
@@ -506,12 +522,12 @@ public class DocumentView {
                     config.setPageHeight(1200);
                     break;
             }
-            config.setImagesPerPage((int) imagesPerPageComboBox.getSelectedItem());
             config.setShowPageNumber(showPageNumberCheckBox.isSelected());
             config.setShowFileName(showFileNameCheckBox.isSelected());
             config.setShowDate(showDateCheckBox.isSelected());
             return config;
         }
     }
+
 
 }

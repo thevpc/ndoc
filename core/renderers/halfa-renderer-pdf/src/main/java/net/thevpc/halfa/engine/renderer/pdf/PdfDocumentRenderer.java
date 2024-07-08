@@ -83,17 +83,15 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             HMessageList messages = this.messages != null ?
                     this.messages : new HMessageListImpl(session, engine.computeSource(document.root()));
 
-            int imagesPerPage = config.getPagenumber();
-            int imagesPerRow = (int) Math.ceil(Math.sqrt(imagesPerPage));
-//            int totalCells = imagesPerPage;
-
+            int imagesPerRow = config.getGridX();
+            int imagesPerPage = config.getGridX() * config.getGridY();
             List<HNode> pages = PagesHelper.resolvePages(document);
             int imageCount = 0;
 
             float usableWidth = pdfDocument.getPageSize().getWidth() - pdfDocument.leftMargin() - pdfDocument.rightMargin();
             float usableHeight = pdfDocument.getPageSize().getHeight() - pdfDocument.topMargin() - pdfDocument.bottomMargin();
             float cellWidth = usableWidth / imagesPerRow;
-            float cellHeight = usableHeight / (float) Math.ceil((double) imagesPerPage / imagesPerRow);
+            float cellHeight = usableHeight / config.getGridY();
 
             PdfPTable table = null;
 
