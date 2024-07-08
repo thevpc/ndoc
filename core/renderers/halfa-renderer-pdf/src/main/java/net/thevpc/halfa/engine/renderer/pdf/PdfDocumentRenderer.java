@@ -132,6 +132,32 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                 pdfDocument.add(table);
             }
 
+            // Ajouter la date et le nom de fichier à la fin si configuré
+            if (config.isShowDate() || config.isShowFileName()) {
+                pdfDocument.newPage();
+                PdfPTable footerTable = new PdfPTable(1);
+                footerTable.setWidthPercentage(100);
+                footerTable.setSpacingBefore(10);
+
+                if (config.isShowFileName()) {
+                    String fileName = "MyDocument.pdf"; // ou utilisez une variable pour le nom du fichier
+                    PdfPCell fileNameCell = new PdfPCell(new Phrase("File: " + fileName));
+                    fileNameCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    fileNameCell.setBorder(Rectangle.NO_BORDER);
+                    footerTable.addCell(fileNameCell);
+                }
+
+                if (config.isShowDate()) {
+                    java.util.Date date = new java.util.Date();
+                    PdfPCell dateCell = new PdfPCell(new Phrase("Date: " + date.toString()));
+                    dateCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    dateCell.setBorder(Rectangle.NO_BORDER);
+                    footerTable.addCell(dateCell);
+                }
+
+                pdfDocument.add(footerTable);
+            }
+
         } catch (Exception ex) {
             throw new NIOException(session, ex);
         } finally {
@@ -140,6 +166,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             }
         }
     }
+
 
     private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages) {
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);

@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
@@ -428,7 +429,7 @@ public class DocumentView {
         private JRadioButton landscapeRadioButton;
         private JTextField gridXField;
         private JTextField gridYField;
-        private JComboBox<String> sizePageComboBox; // Moved to class level
+        private JComboBox<String> sizePageComboBox;
         private JCheckBox showPageNumberCheckBox;
         private JCheckBox showFileNameCheckBox;
         private JCheckBox showDateCheckBox;
@@ -436,63 +437,134 @@ public class DocumentView {
 
         public PdfConfigDialog(Frame parent) {
             super(parent, "PDF Configuration", true);
-            setLayout(new GridLayout(0, 2));
+            setLayout(new BorderLayout());
+            getContentPane().setBackground(Color.WHITE);
 
-            // Orientation selection
-            add(new JLabel("Orientation:"));
-            ButtonGroup orientationGroup = new ButtonGroup();
-            portraitRadioButton = new JRadioButton("Portrait", true);
-            landscapeRadioButton = new JRadioButton("Landscape", false);
-            orientationGroup.add(portraitRadioButton);
-            orientationGroup.add(landscapeRadioButton);
-            JPanel orientationPanel = new JPanel();
-            orientationPanel.add(portraitRadioButton);
-            orientationPanel.add(landscapeRadioButton);
-            add(orientationPanel);
+            // Header
+            JPanel headerPanel = new JPanel();
+            headerPanel.setBackground(new Color(33, 150, 243));
+            headerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            JLabel titleLabel = new JLabel("PDF Configuration");
+            titleLabel.setForeground(Color.WHITE);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            headerPanel.add(titleLabel);
+            add(headerPanel, BorderLayout.NORTH);
 
-            add(new JLabel("Grid X:"));
-            gridXField = new JTextField();
-            add(gridXField);
+            // Content
+            JPanel contentPanel = new JPanel();
+            contentPanel.setLayout(new GridLayout(0, 2, 10, 10));
+            contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            contentPanel.setBackground(Color.WHITE);
 
-            add(new JLabel("Grid Y:"));
-            gridYField = new JTextField();
-            add(gridYField);
+            // Orientation
+            addLabelAndComponent(contentPanel, "Orientation:", createOrientationPanel());
 
-            add(new JLabel("Page Size:"));
-            sizePageComboBox = new JComboBox<>(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)", "Max (1200x1200)"});
-            add(sizePageComboBox);
+            // Grid X
+            addLabelAndComponent(contentPanel, "Grid X:", gridXField = createTextField());
 
-            showPageNumberCheckBox = new JCheckBox("Show Page Number");
-            add(showPageNumberCheckBox);
+            // Grid Y
+            addLabelAndComponent(contentPanel, "Grid Y:", gridYField = createTextField());
 
-            showFileNameCheckBox = new JCheckBox("Show File Name");
-            add(showFileNameCheckBox);
+            // Page Size
+            addLabelAndComponent(contentPanel, "Page Size:", sizePageComboBox = createComboBox(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)", "Max (1200x1200)"}));
 
-            showDateCheckBox = new JCheckBox("Show Date");
-            add(showDateCheckBox);
+            // Show Page Number
+            addLabelAndComponent(contentPanel, "Show Page Number:", showPageNumberCheckBox = createCheckBox());
 
-            JButton okButton = new JButton("OK");
-            okButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    confirmed = true;
-                    setVisible(false);
-                }
+            // Show File Name
+            addLabelAndComponent(contentPanel, "Show File Name:", showFileNameCheckBox = createCheckBox());
+
+            // Show Date
+            addLabelAndComponent(contentPanel, "Show Date:", showDateCheckBox = createCheckBox());
+
+            add(contentPanel, BorderLayout.CENTER);
+
+            // Footer
+            JPanel footerPanel = new JPanel();
+            footerPanel.setBackground(Color.WHITE);
+            footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+            JButton okButton = createButton("OK", new Color(76, 175, 80));
+            okButton.addActionListener(e -> {
+                confirmed = true;
+                setVisible(false);
             });
-            add(okButton);
 
-            JButton cancelButton = new JButton("Cancel");
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    confirmed = false;
-                    setVisible(false);
-                }
+            JButton cancelButton = createButton("Cancel", new Color(244, 67, 54));
+            cancelButton.addActionListener(e -> {
+                confirmed = false;
+                setVisible(false);
             });
-            add(cancelButton);
+
+            footerPanel.add(okButton);
+            footerPanel.add(cancelButton);
+            add(footerPanel, BorderLayout.SOUTH);
 
             pack();
             setLocationRelativeTo(parent);
+            setResizable(false);
+        }
+
+        private void addLabelAndComponent(JPanel panel, String labelText, JComponent component) {
+            JLabel label = new JLabel(labelText);
+            label.setForeground(new Color(33, 150, 243));
+            label.setFont(new Font("Arial", Font.BOLD, 14));
+            panel.add(label);
+            panel.add(component);
+        }
+
+        private JPanel createOrientationPanel() {
+            JPanel orientationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            orientationPanel.setBackground(Color.WHITE);
+            ButtonGroup orientationGroup = new ButtonGroup();
+            portraitRadioButton = createRadioButton("Portrait", true);
+            landscapeRadioButton = createRadioButton("Landscape", false);
+            orientationGroup.add(portraitRadioButton);
+            orientationGroup.add(landscapeRadioButton);
+            orientationPanel.add(portraitRadioButton);
+            orientationPanel.add(landscapeRadioButton);
+            return orientationPanel;
+        }
+
+        private JRadioButton createRadioButton(String text, boolean selected) {
+            JRadioButton radioButton = new JRadioButton(text, selected);
+            radioButton.setBackground(Color.WHITE);
+            radioButton.setForeground(new Color(33, 150, 243));
+            radioButton.setFont(new Font("Arial", Font.PLAIN, 14));
+            return radioButton;
+        }
+
+        private JTextField createTextField() {
+            JTextField textField = new JTextField();
+            textField.setBackground(new Color(245, 245, 245));
+            textField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+            return textField;
+        }
+
+        private JComboBox<String> createComboBox(String[] items) {
+            JComboBox<String> comboBox = new JComboBox<>(items);
+            comboBox.setBackground(new Color(245, 245, 245));
+            comboBox.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+            return comboBox;
+        }
+
+        private JCheckBox createCheckBox() {
+            JCheckBox checkBox = new JCheckBox();
+            checkBox.setBackground(Color.WHITE);
+            checkBox.setForeground(new Color(33, 150, 243));
+            checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
+            return checkBox;
+        }
+
+        private JButton createButton(String text, Color backgroundColor) {
+            JButton button = new JButton(text);
+            button.setBackground(backgroundColor);
+            button.setForeground(Color.WHITE);
+            button.setFocusPainted(false);
+            button.setFont(new Font("Arial", Font.BOLD, 14));
+            button.setPreferredSize(new Dimension(100, 40));
+            return button;
         }
 
         public boolean isConfirmed() {
