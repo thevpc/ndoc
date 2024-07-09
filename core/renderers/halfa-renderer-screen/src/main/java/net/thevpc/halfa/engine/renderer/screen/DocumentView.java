@@ -440,7 +440,6 @@ public class DocumentView {
             setLayout(new BorderLayout());
             getContentPane().setBackground(Color.WHITE);
 
-            // Header
             JPanel headerPanel = new JPanel();
             headerPanel.setBackground(new Color(33, 150, 243));
             headerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -450,36 +449,27 @@ public class DocumentView {
             headerPanel.add(titleLabel);
             add(headerPanel, BorderLayout.NORTH);
 
-            // Content
             JPanel contentPanel = new JPanel();
             contentPanel.setLayout(new GridLayout(0, 2, 10, 10));
             contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
             contentPanel.setBackground(Color.WHITE);
 
-            // Orientation
             addLabelAndComponent(contentPanel, "Orientation:", createOrientationPanel());
 
-            // Grid X
             addLabelAndComponent(contentPanel, "Grid X:", gridXField = createTextField());
 
-            // Grid Y
             addLabelAndComponent(contentPanel, "Grid Y:", gridYField = createTextField());
 
-            // Page Size
             addLabelAndComponent(contentPanel, "Page Size:", sizePageComboBox = createComboBox(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)", "Max (1200x1200)"}));
 
-            // Show Page Number
             addLabelAndComponent(contentPanel, "Show Page Number:", showPageNumberCheckBox = createCheckBox());
 
-            // Show File Name
             addLabelAndComponent(contentPanel, "Show File Name:", showFileNameCheckBox = createCheckBox());
 
-            // Show Date
             addLabelAndComponent(contentPanel, "Show Date:", showDateCheckBox = createCheckBox());
 
             add(contentPanel, BorderLayout.CENTER);
 
-            // Footer
             JPanel footerPanel = new JPanel();
             footerPanel.setBackground(Color.WHITE);
             footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
