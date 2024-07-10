@@ -10,8 +10,43 @@ public class HDocumentStreamRendererConfig {
     private boolean showFileName;
     private boolean showDate;
     private int pagenumber;
-    private int sizepage;
+    private float marginTop;
+    private float marginBottom;
+    private float marginLeft;
+    private float marginRight;
 
+    // getters and setters
+    public float getMarginTop() {
+        return marginTop;
+    }
+
+    public void setMarginTop(float marginTop) {
+        this.marginTop = marginTop;
+    }
+
+    public float getMarginBottom() {
+        return marginBottom;
+    }
+
+    public void setMarginBottom(float marginBottom) {
+        this.marginBottom = marginBottom;
+    }
+
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
+    public void setMarginLeft(float marginLeft) {
+        this.marginLeft = marginLeft;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
+    }
+
+    public void setMarginRight(float marginRight) {
+        this.marginRight = marginRight;
+    }
     public PageOrientation getOrientation() {
         return orientation;
     }

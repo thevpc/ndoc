@@ -80,26 +80,37 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             pdfDocument.open();
             addContent(pdfDocument, config);
 
-            HMessageList messages = this.messages != null ?
-                    this.messages : new HMessageListImpl(session, engine.computeSource(document.root()));
+            HMessageList messages = this.messages != null ? this.messages : new HMessageListImpl(session, engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
             int imagesPerPage = config.getGridX() * config.getGridY();
             List<HNode> pages = PagesHelper.resolvePages(document);
             int imageCount = 0;
+
+            float margin = 10f;
+
+
+            float marginLeft = config.getMarginLeft() >= 0 ? config.getMarginLeft() : 0;
+            float marginRight = config.getMarginRight() >= 0 ? config.getMarginRight() : 0;
+            float marginTop = config.getMarginTop() >= 0 ? config.getMarginTop() : 0;
+            float marginBottom = config.getMarginBottom() >= 0 ? config.getMarginBottom() : 0;
+
             float usableWidth;
             float usableHeight;
 
             if (config.getOrientation() == PageOrientation.LANDSCAPE) {
-                usableWidth = 842f -  config.getGridX()*30f ;
-                usableHeight = 595f  - config.getGridY()*30f ;
+                usableWidth = PageSize.A4.getHeight() - marginLeft - marginRight-10f;
+                usableHeight = PageSize.A4.getWidth() - marginTop - marginBottom -10f;
             } else {
-                usableWidth = 595f -  config.getGridX()*30 ;
-                usableHeight = 842f  - config.getGridY()*30f ;
+                usableWidth = PageSize.A4.getWidth() - marginLeft - marginRight-10f;
+                usableHeight = PageSize.A4.getHeight() - marginTop - marginBottom-10f;
             }
 
-            float cellWidth = usableWidth / imagesPerRow;
-            float cellHeight = usableHeight / config.getGridY();
+            float totalMarginWidth = (imagesPerRow - 1) * margin;
+            float totalMarginHeight = (config.getGridY() - 1) * margin;
+
+            float cellWidth = (usableWidth - totalMarginWidth) / imagesPerRow;
+            float cellHeight = (usableHeight - totalMarginHeight) / config.getGridY();
 
             PdfPTable table = null;
 
@@ -110,8 +121,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                         pdfDocument.newPage();
                     }
                     table = new PdfPTable(imagesPerRow);
-                    table.setWidthPercentage(95);
-                    table.setSpacingBefore(8);
+                    table.setWidthPercentage(100);
                     table.setTotalWidth(usableWidth);
                     table.setLockedWidth(true);
                 }
@@ -125,7 +135,20 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBorder(Rectangle.NO_BORDER);
-                cell.setPadding(10f);
+
+                // Adding margins between cells
+                if (imageCount % imagesPerRow != 0) {
+                    cell.setPaddingLeft(margin / 2);
+                }
+                if ((imageCount + 1) % imagesPerRow != 0) {
+                    cell.setPaddingRight(margin / 2);
+                }
+                if (imageCount >= imagesPerRow) {
+                    cell.setPaddingTop(margin / 2);
+                }
+                if (imageCount < imagesPerPage - imagesPerRow) {
+                    cell.setPaddingBottom(margin / 2);
+                }
 
                 table.addCell(cell);
                 imageCount++;
@@ -136,9 +159,8 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                     PdfPCell emptyCell = new PdfPCell();
                     emptyCell.setBorder(Rectangle.NO_BORDER);
                     emptyCell.setFixedHeight(cellHeight);
-                    emptyCell.setPadding(10f);
-
                     table.addCell(emptyCell);
+
                     imageCount++;
                 }
                 pdfDocument.add(table);
@@ -178,6 +200,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
     }
 
+
     private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages) {
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
@@ -206,7 +229,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             } else {
                 document.setPageSize(PageSize.A4);
             }
-            document.setMargins(0f, 0f, 0f, 0f);
+            document.setMargins(config.getMarginLeft(), config.getMarginRight(), config.getMarginTop(), config.getMarginBottom());
 
             if (config.isShowPageNumber()) {
                 PageNumberEvent pageNumberEvent = new PageNumberEvent();
@@ -214,6 +237,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             }
         }
     }
+
 
     private void addContent(Document document, HDocumentStreamRendererConfig config) throws DocumentException {
         if (config != null) {

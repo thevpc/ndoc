@@ -433,6 +433,10 @@ public class DocumentView {
         private JCheckBox showPageNumberCheckBox;
         private JCheckBox showFileNameCheckBox;
         private JCheckBox showDateCheckBox;
+        private JTextField marginTopField;
+        private JTextField marginBottomField;
+        private JTextField marginLeftField;
+        private JTextField marginRightField;
         private boolean confirmed;
 
         public PdfConfigDialog(Frame parent) {
@@ -455,18 +459,16 @@ public class DocumentView {
             contentPanel.setBackground(Color.WHITE);
 
             addLabelAndComponent(contentPanel, "Orientation:", createOrientationPanel());
-
             addLabelAndComponent(contentPanel, "Grid X:", gridXField = createTextField());
-
             addLabelAndComponent(contentPanel, "Grid Y:", gridYField = createTextField());
-
             addLabelAndComponent(contentPanel, "Page Size:", sizePageComboBox = createComboBox(new String[]{"Small (300x300)", "Medium (600x600)", "Large (900x900)", "Max (1200x1200)"}));
-
             addLabelAndComponent(contentPanel, "Show Page Number:", showPageNumberCheckBox = createCheckBox());
-
             addLabelAndComponent(contentPanel, "Show File Name:", showFileNameCheckBox = createCheckBox());
-
             addLabelAndComponent(contentPanel, "Show Date:", showDateCheckBox = createCheckBox());
+            addLabelAndComponent(contentPanel, "Margin Top:", marginTopField = createTextField());
+            addLabelAndComponent(contentPanel, "Margin Bottom:", marginBottomField = createTextField());
+            addLabelAndComponent(contentPanel, "Margin Left:", marginLeftField = createTextField());
+            addLabelAndComponent(contentPanel, "Margin Right:", marginRightField = createTextField());
 
             add(contentPanel, BorderLayout.CENTER);
 
@@ -587,9 +589,14 @@ public class DocumentView {
             config.setShowPageNumber(showPageNumberCheckBox.isSelected());
             config.setShowFileName(showFileNameCheckBox.isSelected());
             config.setShowDate(showDateCheckBox.isSelected());
+            config.setMarginTop(Float.parseFloat(marginTopField.getText()));
+            config.setMarginBottom(Float.parseFloat(marginBottomField.getText()));
+            config.setMarginLeft(Float.parseFloat(marginLeftField.getText()));
+            config.setMarginRight(Float.parseFloat(marginRightField.getText()));
             return config;
         }
     }
+
 
 
 }
