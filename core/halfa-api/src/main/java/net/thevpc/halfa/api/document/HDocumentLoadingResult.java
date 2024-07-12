@@ -10,4 +10,5 @@ public interface HDocumentLoadingResult {
     boolean isSuccessful();
 
     HDocument get();
+
 }

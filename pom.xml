@@ -16,6 +16,7 @@
         <module>core/renderers/halfa-renderer-pdf</module>
         <module>core/renderers/halfa-renderer-html</module>
         <module>core/renderers/halfa-renderer-screen</module>
+        <module>core/renderers/halfa-renderer-web</module>
         <module>test/halfa-examples</module>
         <module>extensions/halfa-extension-plantuml</module>
         <module>extensions/halfa-extension-animated-gif</module>

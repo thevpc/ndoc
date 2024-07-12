@@ -147,7 +147,7 @@ stack(template:Palette,size:100%g){
        size : (1,2),
        background: $palette[12],
        rotate:0
-       color:gray
+      color:gray
        draw-contour
    )
 }
