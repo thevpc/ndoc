@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Renderer</title>
+</head>
+<body>
+<h1>Document Renderer</h1>
+<button onclick="renderPdf()">Render PDF</button>
+<br>
+<p id="pdfLink"></p>
+
+<script>
+    function renderPdf() {
+        fetch('/renderPdf')
+            .then(response => response.text())
+            .then(pdfName => {
+                document.getElementById('pdfLink').innerHTML = `PDF generated: <a href="/${pdfName}" target="_blank">${pdfName}</a>`;
+            })
+            .catch(error => console.error('Error rendering PDF:', error));
+    }
+</script>
+</body>
+</html>
