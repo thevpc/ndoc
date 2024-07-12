@@ -1,5 +1,5 @@
 $palette:["#26355D","#AF47D2","#DE3163","#2ECC71","#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED"]
-//palette:["#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED","#26355D","#AF47D2","#DE3163","#2ECC71"]
+//$palette:["#FF8F00","#FF7F50","#FFBF00","#FFDB00","#9FE2BF","#40E0D0","#CCCCFF","#6495ED","#26355D","#AF47D2","#DE3163","#2ECC71"]
 styles:{
     "*" : {
         font-size : 10%g

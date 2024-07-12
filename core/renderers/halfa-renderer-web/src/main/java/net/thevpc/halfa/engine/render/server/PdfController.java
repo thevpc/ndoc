@@ -20,13 +20,12 @@ public class PdfController {
         NSession session = Nuts.openWorkspace();
 
         HEngine e = new HEngineImpl(session);
-
-        NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd", session)
+        System.out.println(NPath.ofUserDirectory(session));
+        NPath file = NPath.of("/home/vpc/xprojects/nuts/nuts-enterprise/halfa/documentation/tson-doc/main.hd", session)
                 .toAbsolute()
                 .normalize();
 
         HDocument doc = e.loadDocument(file, null).get();
-
         HDocumentStreamRenderer renderer = e.newStreamRenderer("hd");
         renderer.setOutput(NPath.ofUserHome(session).resolve("exemple.hd"));
 
