@@ -2,23 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document Renderer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Images</title>
 </head>
 <body>
-<h1>Document Renderer</h1>
-<button onclick="renderPdf()">Render PDF</button>
+<h1>Document Images</h1>
+<label for="pageNumberInput">Page Number:</label>
+<input type="number" id="pageNumberInput" name="pageNumber" value="1" min="1" step="1">
+<button onclick="loadDocumentImage()">Load Image</button>
 <br>
-<p id="pdfLink"></p>
+<img id="documentImage" src="" alt="Document Image">
 
 <script>
-    function renderPdf() {
-        fetch('/renderPdf')
-            .then(response => response.text())
-            .then(pdfName => {
-                document.getElementById('pdfLink').innerHTML = `PDF generated: <a href="/${pdfName}" target="_blank">${pdfName}</a>`;
-            })
-            .catch(error => console.error('Error rendering PDF:', error));
-    }
+    function loadDocumentImage() {
+    const pageNumber = document.getElementById('pageNumberInput').value;
+    const apiUrl = `/api/document/images?page=${pageNumber}`;
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.blob();
+        })
+        .then(imageBlob => {
+            const imageUrl = URL.createObjectURL(imageBlob);
+            const imgElement = document.getElementById('documentImage');
+            imgElement.src = imageUrl;
+        })
+        .catch(error => {
+            console.error('Error fetching document image:', error);
+        });
+}
+
+
+    document.addEventListener("DOMContentLoaded", loadDocumentImage);
 </script>
 </body>
 </html>
