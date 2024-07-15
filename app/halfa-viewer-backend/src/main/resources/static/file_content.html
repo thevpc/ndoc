@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>File Content</title>
+</head>
+<body>
+<h1>File Content</h1>
+
+<pre th:text="${fileContent}"></pre>
+
+<div th:if="${error}" th:text="${error}" style="color: red;"></div>
+</body>
+</html>

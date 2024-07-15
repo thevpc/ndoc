@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.renderer.pdf.PdfDocumentRenderer;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
 import net.thevpc.halfa.spi.renderer.HGraphics;
@@ -27,22 +28,19 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/document")
 public class DocumentController {
 
-    private HEngine engine;
-    private NSession session;
+    private final HEngine engine;
+    private final NSession session;
+
     @Autowired
     public DocumentController(HEngine engine, NSession session) {
         this.engine = engine;
         this.session = session;
     }
-
-
 
     @GetMapping(value = "/images", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getDocumentImages(@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
@@ -57,8 +55,8 @@ public class DocumentController {
 
             List<HNode> pages = PagesHelper.resolvePages(doc);
 
-            if (pageNumber >= 0 && pageNumber <= pages.size()) {
-                byte[] imageData = createPageImage(pages.get(pageNumber ), messages);
+            if (pageNumber >= 0 && pageNumber < pages.size()) {
+                byte[] imageData = createPageImage(pages.get(pageNumber), messages);
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)

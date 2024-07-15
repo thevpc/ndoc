@@ -25,6 +25,7 @@
         <module>extensions/halfa-extension-shapes3d</module>
         <module>extensions/halfa-extension-latex</module>
         <module>app/halfa-viewer</module>
+        <module>app/halfa-viewer-backend</module>
     </modules>
     <properties>
     </properties>
