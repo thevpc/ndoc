@@ -82,22 +82,22 @@ public class GitService {
                 .build();
     }
 
-    public List<String> listRepositoryContents(String localPath, String path) throws IOException, GitAPIException {
-        List<String> contents = new ArrayList<>();
-        try (Repository repository = openRepository(localPath);
-             TreeWalk treeWalk = new TreeWalk(repository)) {
-            treeWalk.addTree(repository.resolve("HEAD^{tree}"));
-            treeWalk.setRecursive(false);
-            if (!path.isEmpty()) {
-                treeWalk.setFilter(PathFilter.create(path));
-            }
-
-            while (treeWalk.next()) {
-                contents.add(treeWalk.getPathString());
-            }
-        }
-        return contents;
-    }
+//    public List<String> listRepositoryContents(String localPath, String path) throws IOException, GitAPIException {
+//        List<String> contents = new ArrayList<>();
+//        try (Repository repository = openRepository(localPath);
+//             TreeWalk treeWalk = new TreeWalk(repository)) {
+//            treeWalk.addTree(repository.resolve("HEAD^{tree}"));
+//            treeWalk.setRecursive(false);
+//            if (!path.isEmpty()) {
+//                treeWalk.setFilter(PathFilter.create(path));
+//            }
+//
+//            while (treeWalk.next()) {
+//                contents.add(treeWalk.getPathString());
+//            }
+//        }
+//        return contents;
+//    }
     public String[] listRepositoryContents(String localPath){
         return NPath.of(localPath,session).list().stream().map(x->x.getName()).toArray(String[]::new);
     }
