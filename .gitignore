@@ -25,3 +25,5 @@
 /extensions/halfa-extension-shapes3d/target
 /extensions/halfa-extension-shapes2d/target
 /app/halfa-viewer/target
+/app/halfa-viewer-backend/target
+/app/halfa-viewer-frontend-ng/.vscode/
