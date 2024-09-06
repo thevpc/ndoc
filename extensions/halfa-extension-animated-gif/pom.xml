@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.halfa</groupId>
     <artifactId>halfa-extension-animated-gif</artifactId>
-    <version>0.8.4.0</version>
+    <version>0.8.5.0</version>
     <packaging>jar</packaging>
     <name>Halfa Extension Animated GIF</name>
     <description>Animated GIF</description>
@@ -57,12 +57,12 @@
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-api</artifactId>
-            <version>0.8.4</version>
+            <version>0.8.5</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-spi-base</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.madgag</groupId>

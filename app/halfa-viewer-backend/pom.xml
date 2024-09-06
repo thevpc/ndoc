@@ -6,7 +6,7 @@
 
 	<groupId>net.thevpc.halfa</groupId>
 	<artifactId>halfa-viewer-backend</artifactId>
-	<version>0.8.4.0</version>
+	<version>0.8.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>GitHub Render Application</name>
@@ -27,38 +27,38 @@
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>
 			<artifactId>halfa-api</artifactId>
-			<version>0.8.4</version>
+			<version>0.8.5</version>
 		</dependency>
 		<dependency>
 			<groupId>net.thevpc.nuts.lib</groupId>
 			<artifactId>nlib-spring-boot</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>
 			<artifactId>halfa-spi-base</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>
 			<artifactId>halfa-engine</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>
 			<artifactId>halfa-elements</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.thevpc.nuts</groupId>
 			<artifactId>nuts-runtime</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>
 			<artifactId>halfa-renderer-html</artifactId>
-			<version>0.8.4.0</version>
+			<version>0.8.5.0</version>
 		</dependency>
 		<!-- Spring Boot dependencies -->
 		<dependency>

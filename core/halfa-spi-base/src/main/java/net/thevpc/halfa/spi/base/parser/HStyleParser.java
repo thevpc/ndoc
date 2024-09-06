@@ -98,7 +98,7 @@ public class HStyleParser {
     public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case STRING: {
-                String s = e.toStr().getValue();
+                String s = e.toStr().stringValue();
                 if (s.isEmpty() || s.equals("*")) {
                     return NOptional.of(DefaultHNodeSelector.ofAny());
                 }
@@ -121,12 +121,12 @@ public class HStyleParser {
                 for (TsonElement child : e.toUplet().all()) {
                     switch (child.type()) {
                         case PAIR: {
-                            ObjEx h = ObjEx.of(e.toPair().getKey());
+                            ObjEx h = ObjEx.of(e.toPair().key());
                             NOptional<String> k = h.asStringOrName();
                             if (k.isPresent()) {
                                 switch (HUtils.uid(k.get())) {
                                     case "class": {
-                                        ObjEx h2 = ObjEx.of(e.toPair().getValue());
+                                        ObjEx h2 = ObjEx.of(e.toPair().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
@@ -136,7 +136,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "name": {
-                                        ObjEx h2 = ObjEx.of(e.toPair().getValue());
+                                        ObjEx h2 = ObjEx.of(e.toPair().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
@@ -148,7 +148,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "type": {
-                                        ObjEx h2 = ObjEx.of(e.toPair().getValue());
+                                        ObjEx h2 = ObjEx.of(e.toPair().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
@@ -179,7 +179,7 @@ public class HStyleParser {
                             break;
                         }
                         case STRING: {
-                            String s = child.toStr().getValue().trim();
+                            String s = child.toStr().stringValue().trim();
                             if (s.isEmpty() || s.equals("*")) {
                                 //
                             } else if (s.startsWith(".")) {
@@ -212,11 +212,11 @@ public class HStyleParser {
     public static NOptional<HStyleRule[]> parseStyleRule(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.toPair().getKey(), f, context);
+                NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.toPair().key(), f, context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
-                TsonElement v = e.toPair().getValue();
+                TsonElement v = e.toPair().value();
                 switch (v.type()) {
                     case OBJECT: {
                         List<HProp> styles = new ArrayList<>();
@@ -246,11 +246,11 @@ public class HStyleParser {
     public static NOptional<HProp[]> parseStyle(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                ObjEx h = ObjEx.of(e.toPair().getKey());
+                ObjEx h = ObjEx.of(e.toPair().key());
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, e.toPair().getValue())});
+                    return NOptional.of(new HProp[]{new HProp(uid, e.toPair().value())});
                 }
                 break;
             }

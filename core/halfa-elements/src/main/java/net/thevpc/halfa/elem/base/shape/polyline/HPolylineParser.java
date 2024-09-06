@@ -64,7 +64,7 @@ public class HPolylineParser extends HNodeParserBase {
             }
             case UPLET: {
                 if (isAncestorScene3D(node)) {
-                    NOptional<HPoint3D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint3D();
+                    NOptional<HPoint3D> p2d = ObjEx.of(e.toPair().value()).asHPoint3D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(node, p2d.get());
                         return true;
@@ -72,7 +72,7 @@ public class HPolylineParser extends HNodeParserBase {
                         return false;
                     }
                 } else {
-                    NOptional<HPoint2D> p2d = ObjEx.of(e.toPair().getValue()).asHPoint2D();
+                    NOptional<HPoint2D> p2d = ObjEx.of(e.toPair().value()).asHPoint2D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(node, p2d.get());
                         return true;

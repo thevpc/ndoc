@@ -87,14 +87,14 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case PAIR: {
-                    TsonElement key = te.toPair().getKey();
+                    TsonElement key = te.toPair().key();
                     NOptional<String> s = ObjEx.of(key).asStringOrName();
                     if (s.isPresent()) {
                         return NOptional.of(
                                 new SimplePair(
                                         s.get(),
                                         key,
-                                        ObjEx.of(te.toPair().getValue())
+                                        ObjEx.of(te.toPair().key())
                                 )
                         );
                     }
@@ -363,7 +363,7 @@ public class ObjEx {
                         return NOptional.of(te.toNumber().doubleValue());
                     }
                 }
-                return NOptional.of(te.toDouble().getValue());
+                return NOptional.of(te.toDouble().doubleValue());
             } else if (te.type() == TsonElementType.STRING) {
                 return ObjEx.of(te.toStr().raw()).asDouble();
             } else {

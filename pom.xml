@@ -6,7 +6,7 @@
     <groupId>net.thevpc.halfa.builders</groupId>
     <artifactId>halfa-project</artifactId>
     <name>Halfa Builder</name>
-    <version>0.8.4.0</version>
+    <version>0.8.5.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>core/halfa-api</module>

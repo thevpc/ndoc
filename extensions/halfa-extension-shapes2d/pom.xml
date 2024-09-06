@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.halfa</groupId>
     <artifactId>halfa-extension-shapes2d</artifactId>
-    <version>0.8.4.0</version>
+    <version>0.8.5.0</version>
     <packaging>jar</packaging>
     <name>Halfa Extension Shapes 2D OBJ</name>
     <description>SVG</description>
@@ -57,12 +57,12 @@
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-api</artifactId>
-            <version>0.8.4</version>
+            <version>0.8.5</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-spi-base</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
     </dependencies>
     <build>

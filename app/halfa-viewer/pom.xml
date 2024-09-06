@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.halfa</groupId>
     <artifactId>halfa-viewer</artifactId>
-    <version>0.8.4.0</version>
+    <version>0.8.5.0</version>
     <packaging>jar</packaging>
     <name>Halfa Viewer</name>
     <description>Halfa Viewer</description>
@@ -57,27 +57,27 @@
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-engine</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-elements</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.nuts</groupId>
             <artifactId>nuts-runtime</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-spi-base</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.nuts.lib</groupId>
             <artifactId>nlib-swing</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
@@ -88,47 +88,47 @@
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-plantuml</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-animated-gif</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-svg</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-shapes2d</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-shapes3d</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-extension-latex</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-renderer-pdf</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-renderer-screen</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-renderer-html</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
     </dependencies>
     <build>

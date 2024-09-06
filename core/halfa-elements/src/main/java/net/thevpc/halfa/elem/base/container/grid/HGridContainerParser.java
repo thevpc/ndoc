@@ -58,8 +58,8 @@ public class HGridContainerParser extends HNodeParserBase {
             }
             case PAIR: {
                 TsonPair pp = e.toPair();
-                TsonElement k = pp.getKey();
-                TsonElement v = pp.getValue();
+                TsonElement k = pp.key();
+                TsonElement v = pp.value();
                 ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {

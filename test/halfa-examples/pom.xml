@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.halfa.test</groupId>
     <artifactId>halfa-examples</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
     <packaging>jar</packaging>
     <name>Halfa Examples</name>
     <description>Halfa Examples</description>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>net.thevpc.halfa</groupId>
             <artifactId>halfa-viewer</artifactId>
-            <version>0.8.4.0</version>
+            <version>0.8.5.0</version>
         </dependency>
     </dependencies>
     <build>

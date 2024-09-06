@@ -148,9 +148,9 @@ public class HUtils {
         }
         switch (v.type()) {
             case INT:
-                return v.toInt().getValue();
+                return v.toInt().intValue();
             case STRING:
-                return v.toStr().getValue();
+                return v.toStr().intValue();
         }
         throw new IllegalArgumentException("unsupported yet : fromTson(" + v.type() + ")");
     }
