@@ -1,2 +1,2 @@
-import("01-styles/**/*.hd")
+import("github://thevpc/halfa-templates/2024/simple-01","01-styles/**/*.hd")
 import("02-pages/**/*.hd")

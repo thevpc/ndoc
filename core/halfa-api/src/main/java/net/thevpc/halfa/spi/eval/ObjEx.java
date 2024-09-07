@@ -94,7 +94,7 @@ public class ObjEx {
                                 new SimplePair(
                                         s.get(),
                                         key,
-                                        ObjEx.of(te.toPair().key())
+                                        ObjEx.of(te.toPair().value())
                                 )
                         );
                     }

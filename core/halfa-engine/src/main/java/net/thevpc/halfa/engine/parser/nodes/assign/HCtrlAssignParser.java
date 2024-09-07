@@ -35,8 +35,8 @@ public class HCtrlAssignParser extends HNodeParserBase {
         switch (c.type()) {
             case PAIR: {
                 TsonPair p = c.toPair();
-                TsonElement k = p.getKey();
-                TsonElement v = p.getValue();
+                TsonElement k = p.key();
+                TsonElement v = p.value();
                 ObjEx kh = ObjEx.of(k);
                 NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {

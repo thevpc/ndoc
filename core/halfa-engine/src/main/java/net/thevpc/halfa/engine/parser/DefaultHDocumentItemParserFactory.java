@@ -97,8 +97,8 @@ public class DefaultHDocumentItemParserFactory
             }
             case PAIR: {
                 TsonPair p = c.toPair();
-                TsonElement k = p.getKey();
-                TsonElement v = p.getValue();
+                TsonElement k = p.key();
+                TsonElement v = p.value();
                 ObjEx kh = ObjEx.of(k);
                 NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
@@ -180,9 +180,9 @@ public class DefaultHDocumentItemParserFactory
             for (TsonElement cls : a.all()) {
                 switch (cls.type()) {
                     case STRING: {
-                        if (cls.toStr().getValue().equalsIgnoreCase("halfa")) {
+                        if (cls.toStr().value().equalsIgnoreCase("halfa")) {
                             foundHalfa = true;
-                        } else if (isVersionString(cls.toStr().getValue())) {
+                        } else if (isVersionString(cls.toStr().value())) {
                             foundVersion = true;
                         } else {
                             foundOther = true;
@@ -192,7 +192,7 @@ public class DefaultHDocumentItemParserFactory
                     case NAME: {
                         if (cls.toName().value().equalsIgnoreCase("halfa")) {
                             foundHalfa = true;
-                        } else if (isVersionString(cls.toStr().getValue())) {
+                        } else if (isVersionString(cls.toStr().value())) {
                             foundVersion = true;
                         } else {
                             foundOther = true;
