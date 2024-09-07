@@ -3,6 +3,7 @@ package net.thevpc.halfa.engine.parser.nodes;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.engine.parser.util.GitHelper;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NExecCmd;
@@ -62,49 +63,8 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         return NOptional.ofNamedEmpty("include elements");
     }
 
-    public NOptional<HItem> importOne(String sp, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
-        if (sp.startsWith("github://")) {
-            return importOneGitHub(sp, loaded, putInto, context);
-        } else {
-            return importOneLocalFile(context.resolvePath(sp), loaded, putInto, context);
-        }
-    }
-
-    public NOptional<HItem> importOneGitHub(String sp, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
-        NSession session = context.session();
-        NPath userConfHome = NPath.ofUserHome(session).resolve(".config/halfa/github");
-        String part0 = sp.substring("github://".length());
-        int i1 = part0.indexOf('/');
-        if (i1 <= 0) {
-            context.messages().addError(NMsg.ofC("invalid include. error loading : %s", sp), context.source());
-            return NOptional.ofError(s -> NMsg.ofC("invalid include. error loading : %s", sp));
-        }
-        int i2 = part0.indexOf('/', i1+1);
-        if (i2 <= 0) {
-            context.messages().addError(NMsg.ofC("invalid include. error loading : %s", sp), context.source());
-            return NOptional.ofError(s -> NMsg.ofC("invalid include. error loading : %s", sp));
-        }
-        String user = part0.substring(0, i1);
-        String repoName = part0.substring(i1 + 1, i2);
-        String path = part0.substring(i2 + 1);
-        NPath localRepo = userConfHome.resolve(user + "/" + repoName + "/" + path);userConfHome.resolve(user).mkdirs()
-        if (localRepo.isDirectory()) {
-            NExecCmd.of(session)
-                    .addCommand("git", "pull")
-                    .setDirectory(userConfHome.resolve(user + "/" + repoName))
-                    .failFast()
-                    .run();
-        } else {
-            NExecCmd.of(session)
-                    .addCommand("git", "clone", "git@github.com:" + user + "/" + repoName + ".git")
-                    .setDirectory(userConfHome.resolve(user))
-                    .failFast()
-                    .run();
-        }
-        return importOneLocalFile(localRepo, loaded, putInto, context);
-    }
-
-    public NOptional<HItem> importOneLocalFile(NPath spp, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
+    public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
+        NPath spp = context.resolvePath(anyPath);
         context.document().resources().add(spp);
         List<NPath> list = spp.walkGlob().toList();
         list.sort(Comparator.comparing(NPath::toString));

@@ -7,6 +7,7 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.util.NPathHResource;
+import net.thevpc.halfa.engine.parser.util.GitHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -111,6 +112,9 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
     public NPath resolvePath(String path) {
         if (NBlankable.isBlank(path)) {
             return null;
+        }
+        if (GitHelper.isGithubFolder(path)) {
+            return resolvePath(GitHelper.resolveGithubPath(path, session));
         }
         HResource src = source;
         if (src == null) {
