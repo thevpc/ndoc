@@ -46,8 +46,8 @@ public class HDonutRenderer extends HNodeRendererBase {
         String[] colors = ObjEx.of(p.getPropertyValue(HPropName.COLORS)).asStringArray().orElse(null);
 
         if (!ctx.isDry()) {
-                HNodeRendererUtils.applyStroke(p, g, ctx);
-
+            double finalInnerRadius = innerRadius;
+            HNodeRendererUtils.withStroke(p, g, ctx, () -> {
                 int sliceCount = ObjEx.of(p.getPropertyValue(HPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
@@ -58,7 +58,7 @@ public class HDonutRenderer extends HNodeRendererBase {
                         Color color = getColor(i, colors);
 
                         Area outerCircle = new Area(new Arc2D.Double(x + (width / 2 - outerRadius), y + (height / 2 - outerRadius), outerRadius * 2, outerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
-                        Area innerCircle = new Area(new Arc2D.Double(x + (width / 2 - innerRadius), y + (height / 2 - innerRadius), innerRadius * 2, innerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
+                        Area innerCircle = new Area(new Arc2D.Double(x + (width / 2 - finalInnerRadius), y + (height / 2 - finalInnerRadius), finalInnerRadius * 2, finalInnerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
                         outerCircle.subtract(innerCircle);
 
                         g.setColor(color);
@@ -87,7 +87,7 @@ public class HDonutRenderer extends HNodeRendererBase {
                         double sliceAngle = sliceAngles[i];
 
                         Area outerCircle = new Area(new Arc2D.Double(x + (width / 2 - outerRadius), y + (height / 2 - outerRadius), outerRadius * 2, outerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
-                        Area innerCircle = new Area(new Arc2D.Double(x + (width / 2 - innerRadius), y + (height / 2 - innerRadius), innerRadius * 2, innerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
+                        Area innerCircle = new Area(new Arc2D.Double(x + (width / 2 - finalInnerRadius), y + (height / 2 - finalInnerRadius), finalInnerRadius * 2, finalInnerRadius * 2, currentAngle, sliceAngle, Arc2D.PIE));
                         outerCircle.subtract(innerCircle);
 
                         g.setColor(color);
@@ -96,6 +96,7 @@ public class HDonutRenderer extends HNodeRendererBase {
                         currentAngle += sliceAngle + dash;
                     }
                 }
+            });
 
 
 //            if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {

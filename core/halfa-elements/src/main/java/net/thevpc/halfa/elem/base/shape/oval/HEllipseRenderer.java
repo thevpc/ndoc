@@ -34,8 +34,9 @@ public class HEllipseRenderer extends HNodeRendererBase {
                 g.fillOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
             if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                HNodeRendererUtils.applyStroke(p, g, ctx);
-                g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                HNodeRendererUtils.withStroke(p, g, ctx,()->{
+                    g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                });
             }
         }
         HNodeRendererUtils.paintDebugBox(p, ctx, g, b);

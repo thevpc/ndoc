@@ -9,8 +9,6 @@ import com.lowagie.text.*;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,8 +26,6 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
-import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -38,8 +34,6 @@ import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import javax.imageio.ImageIO;
 
 /**
  * @author vpc
@@ -54,6 +48,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         this.config = config;
 
     }
+
     @Override
     public void renderSupplier(HDocumentRendererSupplier documentSupplier) {
         HDocument document = documentSupplier.get(rendererContext);
@@ -84,7 +79,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
 
             int imagesPerRow = config.getGridX();
             int imagesPerPage = config.getGridX() * config.getGridY();
-            List<HNode> pages = PagesHelper.resolvePages(document);
+            List<HNode> pages = document.pages();
             int imageCount = 0;
 
             float margin = 10f;
@@ -99,11 +94,11 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             float usableHeight;
 
             if (config.getOrientation() == PageOrientation.LANDSCAPE) {
-                usableWidth = PageSize.A4.getHeight() - marginLeft - marginRight-10f;
-                usableHeight = PageSize.A4.getWidth() - marginTop - marginBottom -10f;
+                usableWidth = PageSize.A4.getHeight() - marginLeft - marginRight - 10f;
+                usableHeight = PageSize.A4.getWidth() - marginTop - marginBottom - 10f;
             } else {
-                usableWidth = PageSize.A4.getWidth() - marginLeft - marginRight-10f;
-                usableHeight = PageSize.A4.getHeight() - marginTop - marginBottom-10f;
+                usableWidth = PageSize.A4.getWidth() - marginLeft - marginRight - 10f;
+                usableHeight = PageSize.A4.getHeight() - marginTop - marginBottom - 10f;
             }
 
             float totalMarginWidth = (imagesPerRow - 1) * margin;
@@ -125,9 +120,14 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                     table.setTotalWidth(usableWidth);
                     table.setLockedWidth(true);
                 }
-
-                byte[] imageData = createPageImage((int) cellWidth, (int) cellHeight, page, messages);
-                Image img = Image.getInstance(imageData);
+                Image img = Image.getInstance(engine.renderManager().renderImageBytes(
+                        page,
+                        new HNodeRendererConfig((int) cellWidth, (int) cellHeight)
+                                .withAnimate(false)
+                                .withPrint(true)
+                                .setMessages(messages),
+                        session
+                ));
                 img.scaleToFit(cellWidth, cellHeight);
 
                 PdfPCell cell = new PdfPCell(img, true);
@@ -200,28 +200,6 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
     }
 
-
-    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages) {
-        BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = newImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        HGraphics hg = engine.createGraphics(g);
-        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
-        renderer.render(page, new PdfHNodeRendererContext(engine, hg, new Dimension(sizeWidth, sizeHeight), session, messages));
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(newImage, "png", bos);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            g.dispose();
-        }
-
-        return bos.toByteArray();
-    }
-
     private void applyConfigSettings(Document document, PdfWriter pdfWriter, HDocumentStreamRendererConfig config) throws DocumentException {
         if (config != null) {
             if (config.getOrientation() == PageOrientation.LANDSCAPE) {
@@ -242,7 +220,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
     private void addContent(Document document, HDocumentStreamRendererConfig config) throws DocumentException {
         if (config != null) {
             if (config.isShowFileName()) {
-                String fileName = "MyDocument.pdf";
+                String fileName = "my-document.pdf";
                 PdfPTable table = new PdfPTable(1);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10);
@@ -307,7 +285,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
 //            document = engine.compileDocument(document, messages2).get();
 //            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
 //            List<Supplier<InputStream>> all = new ArrayList<>();
-//            for (HNode page : PagesHelper.resolvePages(document)) {
+//            for (HNode page : document.pages()) {
 //                Supplier<InputStream> y = renderPage(page, htmlRenderer);
 //                if (y != null) {
 //                    all.add(y);
@@ -419,16 +397,6 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             default:
                 throw new IllegalArgumentException("invalid type " + part);
         }
-    }
-
-    private static class PdfHNodeRendererContext extends HNodeRendererContextBase {
-
-        public PdfHNodeRendererContext(HEngine engine, HGraphics g, Dimension size, NSession session, HMessageList messages) {
-            super(engine, g, size, session, messages);
-            setCapability("print", true);
-            setCapability("animated", false);
-        }
-
     }
 
     private class HDocumentRendererContextImpl implements HDocumentRendererContext {

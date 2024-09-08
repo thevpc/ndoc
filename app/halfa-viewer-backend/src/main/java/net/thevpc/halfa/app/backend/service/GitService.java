@@ -13,8 +13,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class GitService {
@@ -81,7 +74,7 @@ public class GitService {
                 .build();
     }
 
-//    public List<String> listRepositoryContents(String localPath, String path) throws IOException, GitAPIException {
+    //    public List<String> listRepositoryContents(String localPath, String path) throws IOException, GitAPIException {
 //        List<String> contents = new ArrayList<>();
 //        try (Repository repository = openRepository(localPath);
 //             TreeWalk treeWalk = new TreeWalk(repository)) {
@@ -97,46 +90,23 @@ public class GitService {
 //        }
 //        return contents;
 //    }
-    public String[] listRepositoryContents(String localPath){
-        return NPath.of(localPath,session).list().stream().map(x->x.getName()).toArray(String[]::new);
+    public String[] listRepositoryContents(String localPath) {
+        return NPath.of(localPath, session).list().stream().map(x -> x.getName()).toArray(String[]::new);
     }
 
-    public String getFileContent(String localPath ) throws IOException {
+    public String getFileContent(String localPath) throws IOException {
         File file = new File(localPath);
         return new String(Files.readAllBytes(file.toPath()));
     }
 
-    public byte[] createPageImage( HNode page, HMessageList messages) throws IOException {
-        int sizeWidth = 1200;
-        int sizeHeight = 1000;
-
-        BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = newImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        HGraphics hg = engine.createGraphics(g);
-        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
-        renderer.render(page, new PdfHNodeRendererContext(engine, hg, new Dimension(sizeWidth, sizeHeight), session, messages));
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(newImage, "png", bos);
-        } finally {
-            g.dispose();
-        }
-
-        return bos.toByteArray();
+    public byte[] createPageImage(HNode page, int width,int height,HMessageList messages) throws IOException {
+        return engine.rendererManager().renderImageBytes(
+                page,
+                new HNodeRendererConfig((int) sizeWidth, (int) sizeHeight)
+                        .withAnimate(false)
+                        .setMessages(messages),
+                session
+        )
     }
 
-
-
-    private static class PdfHNodeRendererContext extends HNodeRendererContextBase {
-
-        public PdfHNodeRendererContext(HEngine engine, HGraphics g, Dimension size, NSession session, HMessageList messages) {
-            super(engine, g, size, session, messages);
-            setCapability("print", true);
-            setCapability("animated", false);
-        }
-
-    }
 }

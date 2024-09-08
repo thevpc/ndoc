@@ -11,13 +11,14 @@ import net.thevpc.halfa.spi.model.HSizeRequirements;
 import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.image.ImageObserver;
 import java.util.List;
 
 public interface HNodeRendererContext {
+    String CAPABILITY_PRINT="print";
+    String CAPABILITY_ANIMATE ="animate";
 
     default HSizeRequirements sizeRequirementsOf(HNode p) {
         return manager().getRenderer(p.type()).get().sizeRequirements(p, this);
@@ -67,7 +68,7 @@ public interface HNodeRendererContext {
 
     boolean isPrint();
 
-    boolean isAnimated();
+    boolean isAnimate();
 
     void repaint();
 

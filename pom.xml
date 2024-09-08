@@ -16,7 +16,6 @@
         <module>core/renderers/halfa-renderer-pdf</module>
         <module>core/renderers/halfa-renderer-html</module>
         <module>core/renderers/halfa-renderer-screen</module>
-        <module>core/renderers/halfa-renderer-web</module>
         <module>test/halfa-examples</module>
         <module>extensions/halfa-extension-plantuml</module>
         <module>extensions/halfa-extension-animated-gif</module>
@@ -25,21 +24,7 @@
         <module>extensions/halfa-extension-shapes3d</module>
         <module>extensions/halfa-extension-latex</module>
         <module>app/halfa-viewer</module>
-        <module>app/halfa-viewer-backend</module>
+<!--        <module>app/halfa-viewer-backend</module>-->
+<!--        <module>core/renderers/halfa-renderer-web</module>-->
     </modules>
-    <properties>
-    </properties>
-    <build>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -15,6 +15,7 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.*;
 import net.thevpc.halfa.engine.parser.DefaultHNodeFactoryParseContext;
 import net.thevpc.halfa.engine.document.HDocumentCompiler;
+import net.thevpc.halfa.engine.parser.util.GitHelper;
 import net.thevpc.halfa.engine.renderer.HDocumentRendererFactoryContextImpl;
 import net.thevpc.halfa.engine.document.HPropCalculator;
 import net.thevpc.halfa.engine.document.HDocumentFactoryImpl;
@@ -226,6 +227,9 @@ public class HEngineImpl implements HEngine {
     @Override
     public HDocumentLoadingResult loadDocument(NPath path, HMessageList messages) {
         NAssert.requireNonNull(path, "path");
+        if(GitHelper.isGithubFolder(path.toString())){
+            path=GitHelper.resolveGithubPath(path.toString(),messages,session);
+        }
         HResource source = HResourceFactory.of(path);
         HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages, session);
         HMessageListDelegateImpl messages1 = r.messages();

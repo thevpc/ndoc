@@ -31,6 +31,20 @@ public class HNodeRendererUtils {
         return null;
     }
 
+    public static boolean withStroke(HNode t, HGraphics g, HNodeRendererContext ctx,Runnable r) {
+        Stroke strokeElem = resolveStroke(t, g, ctx);
+        if (strokeElem != null) {
+            Stroke o = g.getStroke();
+            g.setStroke(strokeElem);
+            r.run();
+            g.setStroke(o);
+            return true;
+        }else{
+            r.run();
+            return false;
+        }
+    }
+
     public static boolean applyStroke(HNode t, HGraphics g, HNodeRendererContext ctx) {
         Stroke strokeElem = resolveStroke(t, g, ctx);
         if (strokeElem != null) {

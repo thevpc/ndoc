@@ -72,13 +72,13 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     }
 
     @Override
-    public boolean isAnimated() {
-        return isCapability("animated");
+    public boolean isAnimate() {
+        return isCapability(HNodeRendererContext.CAPABILITY_ANIMATE);
     }
 
     @Override
     public boolean isPrint() {
-        return isCapability("print");
+        return isCapability(HNodeRendererContext.CAPABILITY_PRINT);
     }
 
     public Object getCapability(String name) {

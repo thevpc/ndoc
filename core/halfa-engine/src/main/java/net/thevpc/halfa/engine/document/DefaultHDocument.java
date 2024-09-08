@@ -4,6 +4,8 @@
  */
 package net.thevpc.halfa.engine.document;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -13,6 +15,7 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
+import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -116,4 +119,8 @@ public class DefaultHDocument implements HDocument, Cloneable {
         return cloned;
     }
 
+    @Override
+    public List<HNode> pages() {
+        return PagesHelper.resolvePages(this);
+    }
 }

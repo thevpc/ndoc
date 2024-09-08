@@ -40,7 +40,7 @@ public class HImageRenderer extends HNodeRendererBase {
         Color transparentColor = HValueByType.getColor(p, ctx, HPropName.TRANSPARENT_COLOR).orNull();
         HImageOptions options = new HImageOptions();
         options.setTransparentColor(transparentColor);
-        options.setDisableAnimation(!ctx.isAnimated());
+        options.setDisableAnimation(!ctx.isAnimate());
         HNodeRendererContext finalCtx = ctx;
         options.setAsyncLoad(() -> finalCtx.repaint());
         options.setImageObserver(ctx.imageObserver());

@@ -71,12 +71,12 @@ public class HCylinderRenderer extends HNodeRendererBase {
                 }
                 HPoint2D shear = shadow.getShear();
                 if (shear == null) {
-                    shear = new HPoint2D (0,0);
+                    shear = new HPoint2D(0, 0);
                 }
 
                 g.setColor((Color) shadowColor);
                 AffineTransform t = g.getTransform();
-                g.shear( -1, 0);
+                g.shear(-1, 0);
 
                 g.fillRect((int) (x + translation.getX()), (int) (y + ellipse_height / 2 + translation.getY()), HUtils.intOf(width), HUtils.intOf(height - ellipse_height));
                 g.fillOval((int) (x + translation.getX()), (int) (arcY - ellipse_height / 2 + translation.getY()), HUtils.intOf(width), HUtils.intOf(ellipse_height));
@@ -86,63 +86,60 @@ public class HCylinderRenderer extends HNodeRendererBase {
 
 
             }
+            double finalEllipse_height = ellipse_height;
             if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
 
-                HNodeRendererUtils.applyStroke(p, g, ctx);
-                g.setColor(sideColor);
-                g.fillRect(x, y + ellipse_height / 2, width, height - ellipse_height);
-                g.fillOval((int) x, (int) arcY - ellipse_height / 2, HUtils.intOf(width), HUtils.intOf(ellipse_height));
+                HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                    g.setColor(sideColor);
+                    g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
+                    g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, HUtils.intOf(width), HUtils.intOf(finalEllipse_height));
 
-                g.setColor(sideColor.darker());
-                Area rightButtomArc = new Area( new Arc2D.Double(x, (int) arcY - ellipse_height / 2, width, ellipse_height, -90, -180, Arc2D.PIE));
-                g.fill(rightButtomArc);
+                    g.setColor(sideColor.darker());
+                    Area rightButtomArc = new Area(new Arc2D.Double(x, (int) arcY - finalEllipse_height / 2, width, finalEllipse_height, -90, -180, Arc2D.PIE));
+                    g.fill(rightButtomArc);
 
-                g.fillRect(x, y + ellipse_height / 2, width/2, height - ellipse_height);
-
-
-                g.setColor(topColor);
-                g.fillOval((int) x, (int) y, width,ellipse_height);
-
-                Area rightHalfEllipse = new Area( new Arc2D.Double(x, y, width, ellipse_height, 90, 180, Arc2D.PIE));
-                g.setColor(topColor.darker());
-                g.fill(rightHalfEllipse);
+                    g.fillRect(x, y + finalEllipse_height / 2, width / 2, height - finalEllipse_height);
 
 
-
-                double segmentHeight = (height - ellipse_height) / (segmentCount + 1);
-                for (int i = 1; i <= segmentCount; i++) {
-                    double segY = y + i * segmentHeight;
-
-                    g.setColor(topColor.darker());
-                    g.drawArc(x, segY + arcStroke, width, ellipse_height, 0, -180);
                     g.setColor(topColor);
-                    g.drawArc(x, segY + arcStroke, width, ellipse_height, 0, -90);
-                    g.setColor(Color.gray);
-                    g.drawArc(x, segY, width, ellipse_height, 0, -180);
+                    g.fillOval((int) x, (int) y, width, finalEllipse_height);
 
-                }
+                    Area rightHalfEllipse = new Area(new Arc2D.Double(x, y, width, finalEllipse_height, 90, 180, Arc2D.PIE));
+                    g.setColor(topColor.darker());
+                    g.fill(rightHalfEllipse);
 
 
+                    double segmentHeight = (height - finalEllipse_height) / (segmentCount + 1);
+                    for (int i = 1; i <= segmentCount; i++) {
+                        double segY = y + i * segmentHeight;
 
+                        g.setColor(topColor.darker());
+                        g.drawArc(x, segY + arcStroke, width, finalEllipse_height, 0, -180);
+                        g.setColor(topColor);
+                        g.drawArc(x, segY + arcStroke, width, finalEllipse_height, 0, -90);
+                        g.setColor(Color.gray);
+                        g.drawArc(x, segY, width, finalEllipse_height, 0, -180);
+
+                    }
+                });
             }
 
 
-
             if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                HNodeRendererUtils.applyStroke(p, g, ctx);
+                HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                    g.drawOval((int) x, (int) y, HUtils.doubleOf(width), HUtils.intOf(finalEllipse_height));
 
-                g.drawOval((int) x, (int) y, HUtils.doubleOf(width), HUtils.intOf(ellipse_height));
+                    g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
+                    g.drawLine((int) (x + width), (int) (y + finalEllipse_height / 2), (int) (x + width), (int) (arcY));
 
-                g.drawLine((int) x, (int) (y + ellipse_height / 2), (int) x, (int) (arcY));
-                g.drawLine((int) (x + width), (int) (y + ellipse_height / 2), (int) (x + width), (int) (arcY));
+                    g.drawArc((int) x, (int) arcY - finalEllipse_height / 2, HUtils.intOf(width), HUtils.intOf(finalEllipse_height), 0, -180);
 
-                g.drawArc((int) x, (int) arcY - ellipse_height / 2, HUtils.intOf(width), HUtils.intOf(ellipse_height), 0, -180);
-
-                double segmentHeight = (height - ellipse_height) / (segmentCount + 1);
-                for (int i = 1; i <= segmentCount; i++) {
-                    double segY = y + i * segmentHeight;
-                    g.drawArc(x, segY, HUtils.doubleOf(width), HUtils.doubleOf(ellipse_height), 0, -180);
-                }
+                    double segmentHeight = (height - finalEllipse_height) / (segmentCount + 1);
+                    for (int i = 1; i <= segmentCount; i++) {
+                        double segY = y + i * segmentHeight;
+                        g.drawArc(x, segY, HUtils.doubleOf(width), HUtils.doubleOf(finalEllipse_height), 0, -180);
+                    }
+                });
             }
             HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }

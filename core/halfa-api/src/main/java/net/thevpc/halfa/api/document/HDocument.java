@@ -1,5 +1,6 @@
 package net.thevpc.halfa.api.document;
 
+import java.util.List;
 import java.util.Properties;
 
 import net.thevpc.halfa.api.model.node.HNode;
@@ -27,5 +28,7 @@ public interface HDocument {
 
     void mergeDocument(HDocument other);
 
-    public HDocument copy();
+    HDocument copy();
+
+    List<HNode> pages();
 }

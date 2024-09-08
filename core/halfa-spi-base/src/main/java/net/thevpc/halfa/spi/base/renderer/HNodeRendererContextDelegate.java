@@ -198,8 +198,8 @@ public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
     }
 
     @Override
-    public boolean isAnimated() {
-        return base.isAnimated();
+    public boolean isAnimate() {
+        return base.isAnimate();
     }
 
     @Override

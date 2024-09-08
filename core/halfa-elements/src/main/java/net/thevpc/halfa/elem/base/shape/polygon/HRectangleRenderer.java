@@ -12,6 +12,8 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HUtils;
 
+import java.awt.*;
+
 public class HRectangleRenderer extends HNodeRendererBase {
     HProperties rectangleStyles = new HProperties();
     HProperties squareDefaultStyles = new HProperties();
@@ -56,8 +58,9 @@ public class HRectangleRenderer extends HNodeRendererBase {
                     g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 }
                 if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                    HNodeRendererUtils.applyStroke(p, g, ctx);
-                    g.drawRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                    HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                        g.drawRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                    });
                 }
             } else if (round) {
                 double cx = HUtils.doubleOf(roundCorners.getX()) / 100 * ctx.getGlobalBounds().getWidth();
@@ -67,8 +70,9 @@ public class HRectangleRenderer extends HNodeRendererBase {
                     g.fillRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
                 if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                    HNodeRendererUtils.applyStroke(p, g, ctx);
-                    g.drawRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
+                    HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                        g.drawRoundRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
+                    });
                 }
             } else if (threeD) {
                 boolean someBG = false;
@@ -76,8 +80,9 @@ public class HRectangleRenderer extends HNodeRendererBase {
                     g.fill3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
                 }
                 if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                    HNodeRendererUtils.applyStroke(p, g, ctx);
-                    g.draw3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
+                    HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                        g.draw3DRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
+                    });
                 }
             }
         }

@@ -128,11 +128,13 @@ public class RepositoryController {
             HDocument doc = e.loadDocument(file, null).get();
             HMessageList messages = new HMessageListImpl(session, engine.computeSource(doc.root()));
 
-            List<HNode> pages = PagesHelper.resolvePages(doc);
+            List<HNode> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 GitService gitService = new GitService(engine, session);
-                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), messages);
+                int sizeWidth = 1200;
+                int sizeHeight = 1000;
+                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth,sizeHeight,messages);
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)

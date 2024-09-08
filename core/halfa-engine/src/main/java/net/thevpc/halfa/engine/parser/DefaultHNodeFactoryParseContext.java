@@ -114,7 +114,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             return null;
         }
         if (GitHelper.isGithubFolder(path)) {
-            return resolvePath(GitHelper.resolveGithubPath(path, session));
+            return resolvePath(GitHelper.resolveGithubPath(path,messages, session));
         }
         HResource src = source;
         if (src == null) {

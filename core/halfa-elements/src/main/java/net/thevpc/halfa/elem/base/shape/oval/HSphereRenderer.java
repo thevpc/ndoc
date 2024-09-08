@@ -45,8 +45,9 @@ public class HSphereRenderer extends HNodeRendererBase {
                 g.fillSphere((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), 45, 50f);
             }
             if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                HNodeRendererUtils.applyStroke(p, g, ctx);
-                g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                HNodeRendererUtils.withStroke(p, g, ctx,()->{
+                    g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                });
             }
         }
         HNodeRendererUtils.paintDebugBox(p, ctx, g, b, false);

@@ -61,6 +61,18 @@ public class SloppyStroke implements Stroke {
                             break;
                         }
                     }
+                }else if(arg.isAnyString()){
+                    switch (HUtils.uid(arg.toStr().stringValue())) {
+                        case "dashed":
+                        case "dash":
+                        {
+                            if (basic == null) {
+                                basic = Tson.ofObj();
+                            }
+                            basic.add(Tson.of("dash"));
+                            break;
+                        }
+                    }
                 }
             }
         }

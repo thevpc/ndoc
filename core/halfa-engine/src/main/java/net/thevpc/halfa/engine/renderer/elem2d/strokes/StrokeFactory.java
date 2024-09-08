@@ -12,46 +12,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StrokeFactory {
-
+    public static final float[] DASH_LARGE = new float[]{8};
+    public static final float[] DASH_NORMAL = new float[]{5};
+    public static final float[] DASH_SMALL = new float[]{3};
 
     public static Stroke createStroke(String name, TsonElement e, HGraphics g) {
         ObjEx o = ObjEx.of(e);
         switch (HUtils.uid(name)) {
-            case "basic": {
+            case "basic":
+            case "simple":
+            case "regular":
+            case "straight": {
                 return createBasic(o);
             }
             case "wobble": {
                 return WobbleStroke.of(e);
             }
             case "sloppy": {
-                return SloppyStroke.of(e,g);
+                return SloppyStroke.of(e, g);
             }
             case "zigzag": {
-                return ZigzagStroke.of(e,g);
+                return ZigzagStroke.of(e, g);
             }
             case "add": {
-                return CompoundStroke.of(e, CompoundStroke.Op.ADD,g);
+                return CompoundStroke.of(e, CompoundStroke.Op.ADD, g);
             }
             case "sub": {
-                return CompoundStroke.of(e, CompoundStroke.Op.SUBTRACT,g);
+                return CompoundStroke.of(e, CompoundStroke.Op.SUBTRACT, g);
             }
             case "diff": {
-                return CompoundStroke.of(e, CompoundStroke.Op.DIFFERENCE,g);
+                return CompoundStroke.of(e, CompoundStroke.Op.DIFFERENCE, g);
             }
             case "inter": {
-                return CompoundStroke.of(e, CompoundStroke.Op.INTERSECT,g);
+                return CompoundStroke.of(e, CompoundStroke.Op.INTERSECT, g);
             }
             case "compose": {
-                return CompositeStroke.of(e,g);
+                return CompositeStroke.of(e, g);
             }
             case "shaped": {
-                return createShaped(o,g);
+                return createShaped(o, g);
             }
         }
         return createBasic(o);
     }
 
-    private static Stroke createShaped(ObjEx o,HGraphics g) {
+    private static Stroke createShaped(ObjEx o, HGraphics g) {
         List<Shape> base = new ArrayList<>();
         double advance = 15;
         for (TsonElement arg : o.args()) {
@@ -79,58 +84,114 @@ public class StrokeFactory {
     }
 
     public static BasicStroke createBasic(ObjEx o) {
-        double width = 1;
+        double width = .5;
         int cap = BasicStroke.CAP_SQUARE;
         int join = BasicStroke.JOIN_MITER;
         double miterLimit = 10;
         float[] dash = null;
         double dashPhase = 0;
-        for (TsonElement ee : o.argsOrBody()) {
-            ObjEx objEx = ObjEx.of(ee);
-            NOptional<ObjEx.SimplePair> sp = objEx.asSimplePair();
-            if (sp.isPresent()) {
-                ObjEx.SimplePair ke = sp.get();
-                switch (ke.getNameId()) {
-                    case "width": {
-                        width = ke.getValue().asDouble().orElse(width);
-                        break;
+        if (o.asDouble().isPresent()) {
+            width = o.asDouble().get();
+        } else if (o.asName().isPresent()) {
+            switch (HUtils.uid(o.asName().get())) {
+                case "dash":
+                case "dashed": {
+                    dash = DASH_NORMAL;
+                    break;
+                }
+            }
+        } else {
+            for (TsonElement ee : o.argsOrBody()) {
+                ObjEx objEx = ObjEx.of(ee);
+                NOptional<ObjEx.SimplePair> sp = objEx.asSimplePair();
+                if (sp.isPresent()) {
+                    ObjEx.SimplePair ke = sp.get();
+                    switch (ke.getNameId()) {
+                        case "width": {
+                            width = ke.getValue().asDouble().orElse(width);
+                            break;
+                        }
+                        case "dash-phase": {
+                            dashPhase = ke.getValue().asDouble().orElse(dashPhase);
+                            break;
+                        }
+                        case "miter-limit": {
+                            miterLimit = ke.getValue().asDouble().orElse(miterLimit);
+                            break;
+                        }
+                        case "dash": {
+                            dash = ke.getValue().asFloatArrayOrFloat().orElse(null);
+                            break;
+                        }
+                        case "cap": {
+                            String s = ke.getValue().asStringOrName().orElse(null);
+                            if (s != null) {
+                                switch (HUtils.uid(s)) {
+                                    case "square": {
+                                        cap = BasicStroke.CAP_SQUARE;
+                                        break;
+                                    }
+                                    case "round": {
+                                        cap = BasicStroke.CAP_ROUND;
+                                        break;
+                                    }
+                                    case "butt": {
+                                        cap = BasicStroke.CAP_BUTT;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case "join": {
+                            String s = ke.getValue().asStringOrName().orElse(null);
+                            if (s != null) {
+                                switch (HUtils.uid(s)) {
+                                    case "miter": {
+                                        join = BasicStroke.JOIN_MITER;
+                                        break;
+                                    }
+                                    case "bevel": {
+                                        join = BasicStroke.JOIN_BEVEL;
+                                        break;
+                                    }
+                                    case "round": {
+                                        join = BasicStroke.JOIN_ROUND;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        default: {
+                            NOptional<Double> w = ke.getValue().asDouble();
+                            if (w.isPresent()) {
+                                dashPhase = w.get();
+                            }
+                            break;
+                        }
                     }
-                    case "dash-phase": {
-                        dashPhase = ke.getValue().asDouble().orElse(dashPhase);
-                        break;
-                    }
-                    case "miter-limit": {
-                        miterLimit = ke.getValue().asDouble().orElse(miterLimit);
-                        break;
-                    }
-                    case "dash": {
-                        dash = ke.getValue().asFloatArrayOrFloat().orElse(null);
-                        break;
-                    }
-                    case "cap": {
-                        String s = ke.getValue().asStringOrName().orElse(null);
-                        if (s != null) {
-                            switch (HUtils.uid(s)) {
+                } else {
+                    NOptional<Double> w = objEx.asDouble();
+                    if (w.isPresent()) {
+                        width = w.get();
+                    } else {
+                        NOptional<String> n = objEx.asName();
+                        if (n.isPresent()) {
+                            switch (n.get()) {
                                 case "square": {
                                     cap = BasicStroke.CAP_SQUARE;
                                     break;
                                 }
                                 case "round": {
                                     cap = BasicStroke.CAP_ROUND;
+                                    join = BasicStroke.JOIN_ROUND;
                                     break;
                                 }
                                 case "butt": {
                                     cap = BasicStroke.CAP_BUTT;
                                     break;
                                 }
-                            }
-                        }
-                        break;
-                    }
-                    case "join": {
-                        String s = ke.getValue().asStringOrName().orElse(null);
-                        if (s != null) {
-                            switch (HUtils.uid(s)) {
                                 case "miter": {
                                     join = BasicStroke.JOIN_MITER;
                                     break;
@@ -139,56 +200,13 @@ public class StrokeFactory {
                                     join = BasicStroke.JOIN_BEVEL;
                                     break;
                                 }
-                                case "round": {
-                                    join = BasicStroke.JOIN_ROUND;
+                                case "dash":
+                                case "dashed": {
+                                    if (dash == null) {
+                                        dash = DASH_NORMAL;
+                                    }
                                     break;
                                 }
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        NOptional<Double> w = ke.getValue().asDouble();
-                        if (w.isPresent()) {
-                            dashPhase = w.get();
-                        }
-                        break;
-                    }
-                }
-            } else {
-                NOptional<Double> w = objEx.asDouble();
-                if (w.isPresent()) {
-                    width = w.get();
-                } else {
-                    NOptional<String> n = objEx.asName();
-                    if (n.isPresent()) {
-                        switch (n.get()) {
-                            case "square": {
-                                cap = BasicStroke.CAP_SQUARE;
-                                break;
-                            }
-                            case "round": {
-                                cap = BasicStroke.CAP_ROUND;
-                                join = BasicStroke.JOIN_ROUND;
-                                break;
-                            }
-                            case "butt": {
-                                cap = BasicStroke.CAP_BUTT;
-                                break;
-                            }
-                            case "miter": {
-                                join = BasicStroke.JOIN_MITER;
-                                break;
-                            }
-                            case "bevel": {
-                                join = BasicStroke.JOIN_BEVEL;
-                                break;
-                            }
-                            case "dash": {
-                                if (dash == null) {
-                                    dash = new float[]{8};
-                                }
-                                break;
                             }
                         }
                     }

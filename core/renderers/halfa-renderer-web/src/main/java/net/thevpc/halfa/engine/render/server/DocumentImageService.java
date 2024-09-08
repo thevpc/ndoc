@@ -39,7 +39,7 @@
 //    public List<byte[]> generateImages(HDocument document) {
 //        List<byte[]> images = new ArrayList<>();
 //        HMessageList messages = new HMessageListImpl(session, engine.computeSource(document.root()));
-//        List<HNode> pages = PagesHelper.resolvePages(document);
+//        List<HNode> pages = document.pages();
 //
 //        for (HNode page : pages) {
 //            images.add(createPageImage(800, 600, page, messages)); // Assuming size 800x600 for example

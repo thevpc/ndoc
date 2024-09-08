@@ -30,7 +30,6 @@ public interface HNodeFactoryParseContext {
 
     HResource source();
 
-
     NPath resolvePath(String path);
 
     NPath resolvePath(NPath path);
