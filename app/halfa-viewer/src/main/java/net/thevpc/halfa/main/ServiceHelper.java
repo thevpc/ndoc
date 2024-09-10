@@ -22,10 +22,26 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ServiceHelper {
+    public static final FileFilter HD_FILTER = new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+            return f.getName().toLowerCase().endsWith(".hd");
+        }
+
+        @Override
+        public String getDescription() {
+            return "H Document";
+        }
+    };
     MainFrame mainFrame;
     HEngine engine;
     private List<HDocumentRendererListener> registeredHDocumentRendererListener = new ArrayList<>();
@@ -60,9 +76,9 @@ public class ServiceHelper {
         }
 
         @Override
-        public void onSaveDocument(HDocument document,HDocumentStreamRendererConfig config) {
+        public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
             for (HDocumentRendererListener eventListener : registeredHDocumentRendererListener) {
-                eventListener.onSaveDocument(document,config);
+                eventListener.onSaveDocument(document, config);
             }
         }
     };
@@ -83,7 +99,7 @@ public class ServiceHelper {
 
             @Override
             public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
-                doSavePDf(document,config);
+                doSavePDf(document, config);
             }
 
         });
@@ -137,20 +153,7 @@ public class ServiceHelper {
         NSession session = mainFrame.getSession();
         NPath nPath = loadPath(session);
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                if(f.isDirectory()){
-                    return true;
-                }
-                return f.getName().toLowerCase().endsWith(".hd");
-            }
-
-            @Override
-            public String getDescription() {
-                return "H Document";
-            }
-        });
+        f.setFileFilter(HD_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (nPath != null) {
             f.setCurrentDirectory(nPath.toFile().get());
@@ -167,6 +170,68 @@ public class ServiceHelper {
                 renderer.renderPath(path);
             }
         }
+    }
+
+    public void showNewFolder() {
+        NSession session = mainFrame.getSession();
+
+        String myTitle = "MyDocument";
+        String mySubTitle = "Subtitle";
+        String mySubTitle2 = "Subtitle2";
+        String myEmail = "me@email.com";
+        String myDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+        NPath nPath = loadPath(session);
+        JFileChooser f = new JFileChooser();
+        f.setFileFilter(HD_FILTER);
+        f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        if (nPath != null) {
+            f.setCurrentDirectory(nPath.toFile().get());
+        }
+        int r = f.showSaveDialog(mainFrame.getContentPane());
+        if (r == JFileChooser.APPROVE_OPTION) {
+            File sf = f.getSelectedFile();
+            if (sf != null) {
+                NPath path = NPath.of(sf, session);
+                savePath(path, session);
+                if (path.isRegularFile()) {
+                    JOptionPane.showMessageDialog(mainFrame.getContentPane(), "File exists","Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                } else if (path.isDirectory()
+                        &&
+                        path.list().stream().anyMatch(x -> isHalfaDocFile(x) || x.isDirectory())
+                ) {
+                    JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "Folder exists","Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String myName = System.getProperty("user.name");
+                path.resolve("01-styles/001-styles.hd").mkParentDirs().writeString("import(\"github://thevpc/halfa-templates/2024/simple-01/**/*.hd\")\n");
+                path.resolve("02-pages/0001-cover/0001-page-cover.hd").mkParentDirs().writeString("@cover page{\n" +
+                        "    @(title)    text(\"" + myTitle + "\")\n" +
+                        "    @(subtitle) text(\"" + mySubTitle + "\")\n" +
+                        "    @(subtitle2) text(\"" + mySubTitle2 + "\")\n" +
+                        "    @(author)   text(\"" + myName + "\")\n" +
+                        "    @(author2)   text(\"" + myEmail + "\")\n" +
+                        "    @(date)     text(\"" + myDate + "\")\n" +
+                        "    @(version)  text(\"v1.0\")\n" +
+                        "}\n");
+                path.resolve("01-pages/9999-conclusion/9999-page-conclusion.hd").mkParentDirs().writeString("@conclusion page{\n" +
+                        "    @(title)    text(\"Thanks\"),\n" +
+                        "    @(author)   text(\"" + myEmail + "\"),\n" +
+                        "}\n");
+                path.resolve("main.hd").mkParentDirs().writeString("import(\"01-styles/**/*.hd\")\n" +
+                        "import(\"02-pages/**/*.hd\")\n");
+                HDocumentScreenRenderer renderer = engine.newScreenRenderer();
+                renderer.setMessages(currentMessageList);
+                renderer.addRendererListener(currListener);
+                renderer.renderPath(path);
+            }
+        }
+    }
+
+    private static boolean isHalfaDocFile(NPath x) {
+        return x.getName().endsWith(".hd");
     }
 
     public void doExit() {
