@@ -5,6 +5,7 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
 import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.engine.renderer.elem2d.text.util.TextUtils;
@@ -26,6 +27,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -249,31 +252,59 @@ public class DocumentView {
 
     private void showPopupMenu(MouseEvent e) {
         JPopupMenu popupMenu = new JPopupMenu();
+        boolean someMenus = false;
+        if (Desktop.isDesktopSupported()) {
+            JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
+            saveAsPdfMenuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PdfConfigDialog configDialog = new PdfConfigDialog((Frame) SwingUtilities.getWindowAncestor((Component) e.getSource()));
+                    configDialog.setVisible(true);
+                    if (configDialog.isConfirmed()) {
+                        HDocumentStreamRendererConfig config = configDialog.getConfig();
 
-        JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
-        saveAsPdfMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PdfConfigDialog configDialog = new PdfConfigDialog((Frame) SwingUtilities.getWindowAncestor((Component) e.getSource()));
-                configDialog.setVisible(true);
-                if (configDialog.isConfirmed()) {
-                    HDocumentStreamRendererConfig config = configDialog.getConfig();
-
-                    if (document != null && listener != null ) {
-                        listener.onSaveDocument(document, config);
-                    } else {
-                        System.err.println("saveDocumentListener is null or document is null");
+                        if (document != null && listener != null) {
+                            listener.onSaveDocument(document, config);
+                        } else {
+                            System.err.println("saveDocumentListener is null or document is null");
+                        }
                     }
                 }
+            });
+            popupMenu.add(saveAsPdfMenuItem);
+            someMenus = true;
+        }
+
+        HResource source = document.root().source();
+        if (Desktop.isDesktopSupported() && source instanceof NPathHResource) {
+            NPathHResource pp = (NPathHResource) source;
+            File file = pp.getPath().toFile().orNull();
+            if (file != null) {
+                JMenuItem openProject = new JMenuItem(
+                    file.isDirectory()?"Open Project in Explorer":"Open Project"
+                );
+                openProject.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (Desktop.isDesktopSupported()) {
+                            try {
+                                Desktop.getDesktop().open(file);
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            System.out.println("Desktop is not supported on this system.");
+                        }
+                    }
+                });
+                popupMenu.add(openProject);
             }
-        });
-
-        popupMenu.add(saveAsPdfMenuItem);
-        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            someMenus = true;
+        }
+        if (someMenus) {
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
     }
-
-
-
 
 
     private boolean reloadDocument() {
@@ -293,6 +324,12 @@ public class DocumentView {
             this.currentThrowable = null;
             try {
                 HDocument rawDocument = documentSupplier.get(rendererContext);
+                HResource source = rawDocument.root().source();
+                if (source == null) {
+                    frame.setTitle("H Document Viewer");
+                } else {
+                    frame.setTitle(String.valueOf(source));
+                }
                 listener.onChangedRawDocument(rawDocument);
                 HDocument compiledDocument = engine.compileDocument(rawDocument.copy(), messages).get();
                 listener.onChangedCompiledDocument(compiledDocument);
@@ -596,7 +633,6 @@ public class DocumentView {
             return config;
         }
     }
-
 
 
 }

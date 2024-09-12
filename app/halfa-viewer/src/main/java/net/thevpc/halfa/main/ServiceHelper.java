@@ -7,8 +7,11 @@ import net.thevpc.halfa.api.document.HMessageType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.config.HalfaViewerConfigManager;
+import net.thevpc.halfa.config.UserConfig;
+import net.thevpc.halfa.config.UserConfigManager;
 import net.thevpc.halfa.debug.HDebugFrame;
 import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.main.components.NewProjectPanel;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
@@ -25,12 +28,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 import java.util.function.Function;
 
 public class ServiceHelper {
+
     public static final FileFilter HD_FILTER = new FileFilter() {
         @Override
         public boolean accept(File f) {
@@ -47,6 +50,7 @@ public class ServiceHelper {
     };
     MainFrame mainFrame;
     HEngine engine;
+    UserConfigManager usersConfigManager;
     HalfaViewerConfigManager configManager;
     private List<HDocumentRendererListener> registeredHDocumentRendererListener = new ArrayList<>();
     private List<HMessageList> registeredMessages = new ArrayList<>();
@@ -108,8 +112,12 @@ public class ServiceHelper {
 
         });
         configManager = new HalfaViewerConfigManager(mainFrame.getSession());
+        usersConfigManager = new UserConfigManager(mainFrame.getSession());
     }
 
+    public HEngine engine() {
+        return engine;
+    }
 
     public void showDebug() {
         HDebugFrame debugFrame = new HDebugFrame(engine);
@@ -127,6 +135,10 @@ public class ServiceHelper {
 
     public HalfaViewerConfigManager config() {
         return configManager;
+    }
+
+    public UserConfigManager usersConfig() {
+        return usersConfigManager;
     }
 
     public void openProject(NPath path) {
@@ -156,64 +168,46 @@ public class ServiceHelper {
     }
 
     public void showNewProject() {
-        NewProjectPanel projectPanel = new NewProjectPanel();
-        int i = JOptionPane.showOptionDialog(mainFrame.getContentPane(), projectPanel, "New Project", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         NSession session = mainFrame.getSession();
-        if (i == JOptionPane.OK_OPTION) {
+        NewProjectPanel projectPanel = new NewProjectPanel(this, session);
+        if (projectPanel.showDialog(mainFrame.getContentPane())) {
             String selectedTemplate = projectPanel.getSelectedTemplate();
-            String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, "/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default");
+            String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, engine.getDefaultTemplateUrl());
             NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."), session);
-            if (NBlankable.isBlank(projectPanel.getSelectedProjectName())) {
-                String aa = "new-project";
-                int index = 1;
-                NPath newProjectPath=null;
-                while (true) {
-                    String nn = index == 1 ? aa : (aa + "-" + index);
-                    newProjectPath = rootPath.resolve(nn);
-                    if (!newProjectPath.exists()) {
-                        break;
-                    }
-                    index++;
-                }
-                //engine.createProject(path,"github://thevpc/halfa-templates/main/simple/v1.0/boot/default");
-                Function<String, String> vars = m -> {
-                    switch (m) {
-                        case "title":
-                            return "MyDocument";
-                        case "subtitle":
-                            return "My Subtitle";
-                        case "subsubtitle":
-                            return "My Sub Subtitle";
-                        case "email":
-                            return "me@email.com";
-                        case "author":
-                            return System.getProperty("user.name");
-                        case "date":
-                            return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-                        case "templateBootUrl":
-                            return templateBootUrl;
-                        case "templateUrl": {
-                            try {
-                                NPath bp = NPath.of(templateBootUrl, session);
-                                NPath pp = bp.getParent();
-                                if (pp != null && pp.getName().equals("boot")) {
-                                    pp = pp.getParent();
-                                    if (pp != null) {
-                                        pp = pp.resolve("dist");
-                                        return pp.toString();
-                                    }
-                                }
-                            } catch (Exception ex) {
-                                throw new IllegalArgumentException("Failed to resolve template boot url from " + templateBootUrl);
-                            }
-                            return templateBootUrl;
-                        }
-                    }
-                    return null;
-                };
-                engine.createProject(newProjectPath, NPath.of(templateBootUrl, session), vars);
-                openProject(newProjectPath);
+            NPath newProjectPath;
+            String baseName = NStringUtils.trim(projectPanel.getSelectedProjectName());
+            if (NBlankable.isBlank(baseName)) {
+                baseName = "new-project";
             }
+            int index = 1;
+            newProjectPath = null;
+            while (true) {
+                String nn = index == 1 ? baseName : (baseName + "-" + index);
+                newProjectPath = rootPath.resolve(nn);
+                if (!newProjectPath.exists()) {
+                    break;
+                }
+                index++;
+            }
+            if(index!=1){
+                if (JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "Folder "+baseName+" already exists. Should we consider new name "+newProjectPath.getName(), "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    //usersConfig().saveUserConfig(newUserConfig);
+                }else{
+                    return;
+                }
+            }
+            Map<String, String> propValues = projectPanel.getPropValues();
+            engine.createProject(newProjectPath, NPath.of(templateBootUrl, session), propValues::get);
+            UserConfig newUserConfig = projectPanel.getUserConfig();
+            UserConfig oldUser = usersConfig().loadUserConfig(newUserConfig.getId());
+            if (oldUser != null && Objects.equals(newUserConfig, oldUser)) {
+                if (JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "User Info changed. Do you want to save them?", "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    usersConfig().saveUserConfig(newUserConfig);
+                }
+            } else if (oldUser == null) {
+                usersConfig().saveUserConfig(newUserConfig);
+            }
+            openProject(newProjectPath);
         }
     }
 
@@ -272,7 +266,6 @@ public class ServiceHelper {
                 renderer.setOutput(outputPdfPath);
                 renderer.render(document);
 
-
                 if (Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().open(sf);
@@ -286,98 +279,4 @@ public class ServiceHelper {
         }
     }
 
-    private static class PathField extends JPanel {
-        JTextField path;
-        JButton button;
-
-        public PathField() {
-            super(new GridBagLayout());
-            GridBagConstraints g = new GridBagConstraints();
-            g.gridx = 0;
-            g.gridy = 0;
-            g.weightx = 2;
-            g.fill = GridBagConstraints.BOTH;
-            g.anchor = GridBagConstraints.WEST;
-            add(path = new JTextField(), g);
-            g = new GridBagConstraints();
-            g.gridx = 1;
-            g.gridy = 0;
-            g.anchor = GridBagConstraints.WEST;
-            add(button = new JButton("..."), g);
-            button.addActionListener(e -> onSelectPath());
-        }
-
-        private void onSelectPath() {
-            String oldPath = path.getText();
-            JFileChooser f = new JFileChooser();
-            f.setFileFilter(HD_FILTER);
-            f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            if (!NBlankable.isBlank(oldPath)) {
-                f.setCurrentDirectory(new File(oldPath));
-            }
-            int r = f.showSaveDialog(this);
-            if (r == JFileChooser.APPROVE_OPTION) {
-                File sf = f.getSelectedFile();
-                path.setText(sf.toString());
-            }
-        }
-    }
-
-    private static class NewProjectPanel extends JPanel {
-        JTextField projectName;
-        PathField rootFolder;
-        JComboBox template;
-
-        public NewProjectPanel() {
-            super(new GridBagLayout());
-
-            add(new JLabel("Project Name"), forLabel(0, 0));
-            add(projectName = new JTextField(), forEditor(1, 0));
-
-            add(new JLabel("Root Folder"), forLabel(0, 1));
-            add(rootFolder = new PathField(), forEditor(1, 1));
-
-            add(new JLabel("Template"), forLabel(0, 2));
-            add(template = new JComboBox<>(), forEditor(1, 2));
-            template.setEditable(true);
-            DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-            aModel.addElement("/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default");
-            aModel.addElement("/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/minimum");
-            template.setModel(aModel);
-        }
-
-        public String getSelectedProjectName() {
-            return projectName.getText();
-        }
-
-        public String getSelectedRootFolder() {
-            return rootFolder.path.getText();
-        }
-
-        public String getSelectedTemplate() {
-            return (String) template.getSelectedItem();
-        }
-
-    }
-
-    private static GridBagConstraints forEditor(int x, int y) {
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = x;
-        g.gridy = y;
-        g.weightx = 2;
-        g.fill = GridBagConstraints.BOTH;
-        g.anchor = GridBagConstraints.WEST;
-        return g;
-    }
-
-    private static GridBagConstraints forLabel(int x, int y) {
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = x;
-        g.gridy = y;
-        g.anchor = GridBagConstraints.WEST;
-        return g;
-    }
 }
-
-
-

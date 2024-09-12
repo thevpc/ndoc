@@ -61,6 +61,9 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
 
     public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
+        if(spp.isDirectory()){
+            spp=spp.resolve("**/*.hd");
+        }
         context.document().resources().add(spp);
         List<NPath> list = spp.walkGlob().toList();
         list.sort(Comparator.comparing(NPath::toString));

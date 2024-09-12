@@ -133,7 +133,7 @@ public class HDocumentCompiler {
         try {
             aa = findAncestor(node, a);
         } catch (Exception ex) {
-            result.messages().addError(NMsg.ofC("ancestor %s is invalid for %s : %s", a, HUtils.strSnapshot(node), ex),
+            result.messages().addError(NMsg.ofC("invalid ancestor % for %s : %s", a, HUtils.strSnapshot(node), ex),
                     null,
                     engine.computeSource(node)
             );
@@ -161,7 +161,7 @@ public class HDocumentCompiler {
             }
             inheritedRules.addAll(Arrays.asList(aa.rules()));
         } else {
-            result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("ancestor not found '%s' for %s", a,
+            result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("missing ancestor '%s' for %s", a,
                             HUtils.strSnapshot(node)
                     ), null,
                     engine.computeSource(node)

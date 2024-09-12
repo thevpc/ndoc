@@ -74,4 +74,8 @@ public interface HEngine {
     HGraphics createGraphics(Graphics2D g2d);
 
     void createProject(NPath path, NPath projectUrl, Function<String, String> vars);
+
+    String[] getDefaultTemplateUrls();
+    
+    String getDefaultTemplateUrl();
 }

@@ -24,18 +24,20 @@ import net.thevpc.tson.TsonPair;
 public class HGridContainerParser extends HNodeParserBase {
 
     public HGridContainerParser() {
-        super(true, HNodeType.GRID, "vgrid", "hgrid");
+        super(true, HNodeType.GRID, "vgrid", "hgrid", "column", "row");
     }
 
     @Override
     protected void processImplicitStyles(String id, HNode p, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (id) {
-            case "vgrid": {
+            case "vgrid":
+            case "column": {
                 p.setProperty(HPropName.COLUMNS, 1);
                 p.setProperty(HPropName.ROWS, -1);
                 break;
             }
-            case "hgrid": {
+            case "hgrid":
+            case "row": {
                 p.setProperty(HPropName.COLUMNS, -1);
                 p.setProperty(HPropName.ROWS, 1);
                 break;
@@ -63,16 +65,24 @@ public class HGridContainerParser extends HNodeParserBase {
                 ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
+
                     switch (HUtils.uid(n.get())) {
                         case "columns": {
-                            node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
-                            return true;
+                            if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("hgrid") || HUtils.uid(id).equals("row")) {
+                                node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
+                                return true;
+                            }
+                            break;
                         }
                         case "rows": {
-                            node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
-                            return true;
+                            if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("vgrid") || HUtils.uid(id).equals("column")) {
+                                node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
+                                return true;
+                            }
+                            break;
                         }
                     }
+
                 }
             }
         }
