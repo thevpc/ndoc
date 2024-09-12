@@ -1,8 +1,8 @@
 @normal page{
-    @Header {
+    @header {
         text("UML Classes"),
     }
-    @OneColumn{
+    @body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
                 "*": {margin:2}

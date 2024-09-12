@@ -1,8 +1,8 @@
 @normal page{
-    @Header {
+    @header {
         text("Gantt Diagrams"),
     }
-    @OneColumn{
+    @body{
         grid((2,2),columns-weight:[2,3]){
             styles:{
                 "*": {margin:2}

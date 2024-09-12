@@ -1,8 +1,8 @@
 @normal page(name:Rationale){
-    @Header {
+    @header {
         text("Rationale"),
     }
-    @OneColumn{
+    @body{
         ul{
         "Text Based, declarative syntax"
         "Human readable, simply writable"

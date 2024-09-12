@@ -105,7 +105,7 @@ public class EntryComponent extends JPanel {
         newFileButton.addActionListener(e->serviceHelper.showNewFile());
         p.add(newFileButton);
 
-        JButton openExisting = new JButton("Open existing project...");
+        JButton openExisting = new JButton("Open existing...");
         openExisting.addActionListener(e->serviceHelper.showOpenFile());
         p.add(openExisting);
         return p;

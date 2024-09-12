@@ -1,8 +1,8 @@
 //@normal page(name:"Example"){
-   //@Header {
+   //@header {
         //text("Example"),
     //}
-    //@OneColumn{
+    //@body{
        // grid((2,1)){
            // source(tson,file:"0020-example.tson", position: (2,2))
             //grid((2,2),draw-contour,background:white){

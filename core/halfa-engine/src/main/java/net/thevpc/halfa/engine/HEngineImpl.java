@@ -249,7 +249,7 @@ public class HEngineImpl implements HEngine {
                 } else if (r.isSuccessful()) {
                     messages1.addError(dd.getMessage().apply(session), nPathResource);
                 }
-                if(r.get().root().source()==null){
+                if (r.get().root().source() == null) {
                     r.get().root().setSource(HResourceFactory.of(path));
                 }
                 return r;
@@ -294,7 +294,7 @@ public class HEngineImpl implements HEngine {
                         document.root().append(d.get());
                     }
                 }
-                if(document.root().source()==null){
+                if (document.root().source() == null) {
                     document.root().setSource(HResourceFactory.of(path));
                 }
                 r.setDocument(document);
@@ -539,9 +539,9 @@ public class HEngineImpl implements HEngine {
                     }
                 }
             }
-            if(vars!=null) {
+            if (vars != null) {
                 String u = vars.apply(m);
-                if(u==null){
+                if (u == null) {
                     switch (m) {
                         case "template.title":
                             return "New Document";
@@ -549,7 +549,7 @@ public class HEngineImpl implements HEngine {
                         case "template.author":
                             return System.getProperty("user.name");
                         case "template.date":
-                            return  new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                            return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                         case "template.version":
                             return "v1.0.0";
                     }
@@ -561,16 +561,23 @@ public class HEngineImpl implements HEngine {
         copyTemplate(projectUrl, path, vars2);
     }
 
+    private String baseHalfaTemplatesUrl() {
+        if (false) {
+            return "/home/vpc/xprojects/productivity/halfa-templates";
+        }
+        return "github://thevpc/halfa-templates";
+    }
+
     @Override
     public String getDefaultTemplateUrl() {
-        return "/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default";
+        return baseHalfaTemplatesUrl() + "/main/simple/v1.0/boot/default";
     }
 
     @Override
     public String[] getDefaultTemplateUrls() {
         return new String[]{
-                "/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default",
-                "/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/single-page"
+                baseHalfaTemplatesUrl() + "/main/simple/v1.0/boot/default",
+                baseHalfaTemplatesUrl() + "/main/simple/v1.0/boot/single-page"
         };
     }
 
