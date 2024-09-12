@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -72,11 +73,11 @@ public class RepositoryController {
 
             gitService.cloneRepository(url, localPath);
 
-            List<String> contents = gitService.listRepositoryContents(localPath, "");
+            List<String> contents = Arrays.asList(gitService.listRepositoryContents(localPath));
             return ResponseEntity.ok(contents);
         } catch (GitAPIException | IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(List.of("Repository not found or cannot be accessed"));
+                    .body(Arrays.asList("Repository not found or cannot be accessed"));
         }
     }
 
@@ -134,7 +135,7 @@ public class RepositoryController {
                 GitService gitService = new GitService(engine, session);
                 int sizeWidth = 1200;
                 int sizeHeight = 1000;
-                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth,sizeHeight,messages);
+                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight, messages);
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)

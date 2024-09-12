@@ -7,6 +7,7 @@ package net.thevpc.halfa.api;
 import java.awt.*;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Function;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
@@ -71,4 +72,6 @@ public interface HEngine {
     HNodeRendererManager renderManager();
 
     HGraphics createGraphics(Graphics2D g2d);
+
+    void createProject(NPath path, NPath projectUrl, Function<String, String> vars);
 }

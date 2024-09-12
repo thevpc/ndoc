@@ -28,7 +28,7 @@ public class GitHelper {
         NPath userConfHome;
         NPath appCacheFolder = session.getAppCacheFolder();
         if (appCacheFolder == null) {
-            userConfHome = NLocations.of(session).getStoreLocation(NId.API_ID, NStoreType.CACHE).resolve("halfa/github");
+            userConfHome = NLocations.of(session).getStoreLocation(NId.of("net.thevpc.halfa:halfa").get(), NStoreType.CACHE).resolve("github");
         } else {
             userConfHome = appCacheFolder.resolve("halfa/github");
         }
@@ -88,7 +88,7 @@ public class GitHelper {
                 } else {
                     NMsg message = NMsg.ofC("ignored pull repo %s to %s", NPath.of(githubPath, session), localRepo);
                     if (messages != null) {
-                        messages.addError(message);
+                        messages.addWarning(message);
                     }
                     if (session.isTrace()) {
                         session.out().println(message);
@@ -119,7 +119,7 @@ public class GitHelper {
             } else {
                 NMsg message = NMsg.ofC("took %s to %s repo %s to %s", c, pulling ? "pull" : "clone", NPath.of(githubPath, session), localRepo);
                 if (messages != null) {
-                    messages.addError(message);
+                    messages.addWarning(message);
                 }
                 if (session.isTrace()) {
                     session.out().println(message);

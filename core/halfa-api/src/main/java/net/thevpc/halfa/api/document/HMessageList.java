@@ -20,6 +20,9 @@ public interface HMessageList {
     default void addWarning(NMsg message, HResource source) {
         addMessage(HMessageType.ERROR, message, null, source);
     }
+    default void addWarning(NMsg message) {
+        addMessage(HMessageType.ERROR, message, null, null);
+    }
 
     void addMessage(HMessageType type, NMsg message, Throwable error, HResource source);
 }

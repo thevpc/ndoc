@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
+import net.thevpc.halfa.config.HalfaViewerConfigManager;
 import net.thevpc.halfa.debug.HDebugFrame;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
@@ -14,6 +15,7 @@ import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 public class ServiceHelper {
     public static final FileFilter HD_FILTER = new FileFilter() {
@@ -44,6 +47,7 @@ public class ServiceHelper {
     };
     MainFrame mainFrame;
     HEngine engine;
+    HalfaViewerConfigManager configManager;
     private List<HDocumentRendererListener> registeredHDocumentRendererListener = new ArrayList<>();
     private List<HMessageList> registeredMessages = new ArrayList<>();
     HDocumentRendererListener currListener = new HDocumentRendererListener() {
@@ -103,37 +107,9 @@ public class ServiceHelper {
             }
 
         });
+        configManager = new HalfaViewerConfigManager(mainFrame.getSession());
     }
 
-    private static NPath confPath(NSession session) {
-        NPath c = session.getAppConfFolder();
-        if (c == null) {
-            c = NPath.ofUserHome(session).resolve(".config");
-        }
-        return c.resolve("HalfaOpenFile.conf");
-    }
-
-    private static NPath loadPath(NSession session) {
-        try {
-            String s = NStringUtils.trimToNull(confPath(session).readString());
-            if (s != null) {
-                return NPath.of(s, session);
-            }
-            return null;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static void savePath(NPath path, NSession session) {
-        try {
-            NPath p = confPath(session);
-            p.getParent().mkdirs();
-            p.writeString(path.toAbsolute().normalize().toString());
-        } catch (Exception e) {
-            //
-        }
-    }
 
     public void showDebug() {
         HDebugFrame debugFrame = new HDebugFrame(engine);
@@ -149,9 +125,21 @@ public class ServiceHelper {
         debugFrame.run();
     }
 
+    public HalfaViewerConfigManager config() {
+        return configManager;
+    }
+
+    public void openProject(NPath path) {
+        configManager.markAccessed(path);
+        HDocumentScreenRenderer renderer = engine.newScreenRenderer();
+        renderer.setMessages(currentMessageList);
+        renderer.addRendererListener(currListener);
+        renderer.renderPath(path);
+    }
+
     public void showOpenFile() {
         NSession session = mainFrame.getSession();
-        NPath nPath = loadPath(session);
+        NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
         f.setFileFilter(HD_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -162,29 +150,80 @@ public class ServiceHelper {
         if (r == JFileChooser.APPROVE_OPTION) {
             File sf = f.getSelectedFile();
             if (sf != null) {
-                NPath path = NPath.of(sf, session);
-                savePath(path, session);
-                HDocumentScreenRenderer renderer = engine.newScreenRenderer();
-                renderer.setMessages(currentMessageList);
-                renderer.addRendererListener(currListener);
-                renderer.renderPath(path);
+                openProject(NPath.of(sf, session));
             }
         }
     }
 
-    public void showNewFolder() {
+    public void showNewProject() {
+        NewProjectPanel projectPanel = new NewProjectPanel();
+        int i = JOptionPane.showOptionDialog(mainFrame.getContentPane(), projectPanel, "New Project", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        NSession session = mainFrame.getSession();
+        if (i == JOptionPane.OK_OPTION) {
+            String selectedTemplate = projectPanel.getSelectedTemplate();
+            String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, "/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default");
+            NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."), session);
+            if (NBlankable.isBlank(projectPanel.getSelectedProjectName())) {
+                String aa = "new-project";
+                int index = 1;
+                NPath newProjectPath=null;
+                while (true) {
+                    String nn = index == 1 ? aa : (aa + "-" + index);
+                    newProjectPath = rootPath.resolve(nn);
+                    if (!newProjectPath.exists()) {
+                        break;
+                    }
+                    index++;
+                }
+                //engine.createProject(path,"github://thevpc/halfa-templates/main/simple/v1.0/boot/default");
+                Function<String, String> vars = m -> {
+                    switch (m) {
+                        case "title":
+                            return "MyDocument";
+                        case "subtitle":
+                            return "My Subtitle";
+                        case "subsubtitle":
+                            return "My Sub Subtitle";
+                        case "email":
+                            return "me@email.com";
+                        case "author":
+                            return System.getProperty("user.name");
+                        case "date":
+                            return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                        case "templateBootUrl":
+                            return templateBootUrl;
+                        case "templateUrl": {
+                            try {
+                                NPath bp = NPath.of(templateBootUrl, session);
+                                NPath pp = bp.getParent();
+                                if (pp != null && pp.getName().equals("boot")) {
+                                    pp = pp.getParent();
+                                    if (pp != null) {
+                                        pp = pp.resolve("dist");
+                                        return pp.toString();
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                throw new IllegalArgumentException("Failed to resolve template boot url from " + templateBootUrl);
+                            }
+                            return templateBootUrl;
+                        }
+                    }
+                    return null;
+                };
+                engine.createProject(newProjectPath, NPath.of(templateBootUrl, session), vars);
+                openProject(newProjectPath);
+            }
+        }
+    }
+
+    public void showNewFile() {
         NSession session = mainFrame.getSession();
 
-        String myTitle = "MyDocument";
-        String mySubTitle = "Subtitle";
-        String mySubTitle2 = "Subtitle2";
-        String myEmail = "me@email.com";
-        String myDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-        NPath nPath = loadPath(session);
+        NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
         f.setFileFilter(HD_FILTER);
-        f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        f.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (nPath != null) {
             f.setCurrentDirectory(nPath.toFile().get());
         }
@@ -192,40 +231,14 @@ public class ServiceHelper {
         if (r == JFileChooser.APPROVE_OPTION) {
             File sf = f.getSelectedFile();
             if (sf != null) {
-                NPath path = NPath.of(sf, session);
-                savePath(path, session);
-                if (path.isRegularFile()) {
-                    JOptionPane.showMessageDialog(mainFrame.getContentPane(), "File exists","Error",JOptionPane.ERROR_MESSAGE);
+                if (sf.isFile()) {
                     return;
-                } else if (path.isDirectory()
-                        &&
-                        path.list().stream().anyMatch(x -> isHalfaDocFile(x) || x.isDirectory())
-                ) {
-                    JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "Folder exists","Error",JOptionPane.ERROR_MESSAGE);
-                    return;
+                } else {
+                    if (!sf.getName().endsWith(".hd")) {
+                        sf = new File(sf.getParent(), sf.getName() + ".hd");
+                    }
+                    NPath.of(sf, session).writeString("//Hadra Document File\n");
                 }
-
-                String myName = System.getProperty("user.name");
-                path.resolve("01-styles/001-styles.hd").mkParentDirs().writeString("import(\"github://thevpc/halfa-templates/2024/simple-01/**/*.hd\")\n");
-                path.resolve("02-pages/0001-cover/0001-page-cover.hd").mkParentDirs().writeString("@cover page{\n" +
-                        "    @(title)    text(\"" + myTitle + "\")\n" +
-                        "    @(subtitle) text(\"" + mySubTitle + "\")\n" +
-                        "    @(subtitle2) text(\"" + mySubTitle2 + "\")\n" +
-                        "    @(author)   text(\"" + myName + "\")\n" +
-                        "    @(author2)   text(\"" + myEmail + "\")\n" +
-                        "    @(date)     text(\"" + myDate + "\")\n" +
-                        "    @(version)  text(\"v1.0\")\n" +
-                        "}\n");
-                path.resolve("01-pages/9999-conclusion/9999-page-conclusion.hd").mkParentDirs().writeString("@conclusion page{\n" +
-                        "    @(title)    text(\"Thanks\"),\n" +
-                        "    @(author)   text(\"" + myEmail + "\"),\n" +
-                        "}\n");
-                path.resolve("main.hd").mkParentDirs().writeString("import(\"01-styles/**/*.hd\")\n" +
-                        "import(\"02-pages/**/*.hd\")\n");
-                HDocumentScreenRenderer renderer = engine.newScreenRenderer();
-                renderer.setMessages(currentMessageList);
-                renderer.addRendererListener(currListener);
-                renderer.renderPath(path);
             }
         }
     }
@@ -273,6 +286,97 @@ public class ServiceHelper {
         }
     }
 
+    private static class PathField extends JPanel {
+        JTextField path;
+        JButton button;
+
+        public PathField() {
+            super(new GridBagLayout());
+            GridBagConstraints g = new GridBagConstraints();
+            g.gridx = 0;
+            g.gridy = 0;
+            g.weightx = 2;
+            g.fill = GridBagConstraints.BOTH;
+            g.anchor = GridBagConstraints.WEST;
+            add(path = new JTextField(), g);
+            g = new GridBagConstraints();
+            g.gridx = 1;
+            g.gridy = 0;
+            g.anchor = GridBagConstraints.WEST;
+            add(button = new JButton("..."), g);
+            button.addActionListener(e -> onSelectPath());
+        }
+
+        private void onSelectPath() {
+            String oldPath = path.getText();
+            JFileChooser f = new JFileChooser();
+            f.setFileFilter(HD_FILTER);
+            f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            if (!NBlankable.isBlank(oldPath)) {
+                f.setCurrentDirectory(new File(oldPath));
+            }
+            int r = f.showSaveDialog(this);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                File sf = f.getSelectedFile();
+                path.setText(sf.toString());
+            }
+        }
+    }
+
+    private static class NewProjectPanel extends JPanel {
+        JTextField projectName;
+        PathField rootFolder;
+        JComboBox template;
+
+        public NewProjectPanel() {
+            super(new GridBagLayout());
+
+            add(new JLabel("Project Name"), forLabel(0, 0));
+            add(projectName = new JTextField(), forEditor(1, 0));
+
+            add(new JLabel("Root Folder"), forLabel(0, 1));
+            add(rootFolder = new PathField(), forEditor(1, 1));
+
+            add(new JLabel("Template"), forLabel(0, 2));
+            add(template = new JComboBox<>(), forEditor(1, 2));
+            template.setEditable(true);
+            DefaultComboBoxModel aModel = new DefaultComboBoxModel();
+            aModel.addElement("/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/default");
+            aModel.addElement("/home/vpc/xprojects/productivity/halfa-templates/main/simple/v1.0/boot/minimum");
+            template.setModel(aModel);
+        }
+
+        public String getSelectedProjectName() {
+            return projectName.getText();
+        }
+
+        public String getSelectedRootFolder() {
+            return rootFolder.path.getText();
+        }
+
+        public String getSelectedTemplate() {
+            return (String) template.getSelectedItem();
+        }
+
+    }
+
+    private static GridBagConstraints forEditor(int x, int y) {
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = x;
+        g.gridy = y;
+        g.weightx = 2;
+        g.fill = GridBagConstraints.BOTH;
+        g.anchor = GridBagConstraints.WEST;
+        return g;
+    }
+
+    private static GridBagConstraints forLabel(int x, int y) {
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = x;
+        g.gridy = y;
+        g.anchor = GridBagConstraints.WEST;
+        return g;
+    }
 }
 
 

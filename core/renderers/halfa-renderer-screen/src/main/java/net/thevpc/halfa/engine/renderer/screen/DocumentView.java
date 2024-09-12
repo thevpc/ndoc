@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Timer;
 
 import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
+import net.thevpc.nuts.util.NLiteral;
 
 public class DocumentView {
 
@@ -510,8 +510,8 @@ public class DocumentView {
             JPanel orientationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             orientationPanel.setBackground(Color.WHITE);
             ButtonGroup orientationGroup = new ButtonGroup();
-            portraitRadioButton = createRadioButton("Portrait", true);
-            landscapeRadioButton = createRadioButton("Landscape", false);
+            portraitRadioButton = createRadioButton("Portrait", false);
+            landscapeRadioButton = createRadioButton("Landscape", true);
             orientationGroup.add(portraitRadioButton);
             orientationGroup.add(landscapeRadioButton);
             orientationPanel.add(portraitRadioButton);
@@ -566,8 +566,8 @@ public class DocumentView {
         public HDocumentStreamRendererConfig getConfig() {
             HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
             config.setOrientation(portraitRadioButton.isSelected() ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
-            config.setGridX(Integer.parseInt(gridXField.getText()));
-            config.setGridY(Integer.parseInt(gridYField.getText()));
+            config.setGridX(NLiteral.of(gridXField.getText()).asInt().orElse(1));
+            config.setGridY(NLiteral.of(gridYField.getText()).asInt().orElse(1));
             switch ((String) sizePageComboBox.getSelectedItem()) {
                 case "Small (300x300)":
                     config.setPageWidth(300);
@@ -589,10 +589,10 @@ public class DocumentView {
             config.setShowPageNumber(showPageNumberCheckBox.isSelected());
             config.setShowFileName(showFileNameCheckBox.isSelected());
             config.setShowDate(showDateCheckBox.isSelected());
-            config.setMarginTop(Float.parseFloat(marginTopField.getText()));
-            config.setMarginBottom(Float.parseFloat(marginBottomField.getText()));
-            config.setMarginLeft(Float.parseFloat(marginLeftField.getText()));
-            config.setMarginRight(Float.parseFloat(marginRightField.getText()));
+            config.setMarginTop(NLiteral.of(marginTopField.getText()).asFloat().orElse(0f));
+            config.setMarginBottom(NLiteral.of(marginBottomField.getText()).asFloat().orElse(0f));
+            config.setMarginLeft(NLiteral.of(marginLeftField.getText()).asFloat().orElse(0f));
+            config.setMarginRight(NLiteral.of(marginRightField.getText()).asFloat().orElse(0f));
             return config;
         }
     }

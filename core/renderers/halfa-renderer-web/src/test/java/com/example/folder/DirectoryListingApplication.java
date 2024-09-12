@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DirectoryListingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(directoryListingApplication.class, args);
+		SpringApplication.run(DirectoryListingApplication.class, args);
 	}
 }

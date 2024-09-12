@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
@@ -89,7 +90,7 @@ public class HEngineImpl implements HEngine {
         return NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        s -> NMsg.ofC("support for node '%s' ",element))
+                        s -> NMsg.ofC("support for node '%s' ", element))
                 .toOptional();
     }
 
@@ -227,8 +228,8 @@ public class HEngineImpl implements HEngine {
     @Override
     public HDocumentLoadingResult loadDocument(NPath path, HMessageList messages) {
         NAssert.requireNonNull(path, "path");
-        if(GitHelper.isGithubFolder(path.toString())){
-            path=GitHelper.resolveGithubPath(path.toString(),messages,session);
+        if (GitHelper.isGithubFolder(path.toString())) {
+            path = GitHelper.resolveGithubPath(path.toString(), messages, session);
         }
         HResource source = HResourceFactory.of(path);
         HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages, session);
@@ -489,14 +490,51 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HNodeRendererManager renderManager() {
-        if(rendererManager==null){
-            rendererManager=new HNodeRendererManagerImpl(this);
+        if (rendererManager == null) {
+            rendererManager = new HNodeRendererManagerImpl(this);
         }
         return rendererManager;
     }
 
     @Override
     public HGraphics createGraphics(Graphics2D g2d) {
-        return new HGraphicsImpl(g2d,session);
+        return new HGraphicsImpl(g2d, session);
     }
+
+    @Override
+    public void createProject(NPath path, NPath projectUrl, Function<String, String> vars) {
+        NAssert.requireNonNull(path, "path");
+        NAssert.requireNonNull(projectUrl, "projectUrl");
+        if (GitHelper.isGithubFolder(projectUrl.toString())) {
+            projectUrl = GitHelper.resolveGithubPath(path.toString(), null, session);
+        }
+        if (!projectUrl.exists()) {
+            throw new IllegalArgumentException("invalid project " + projectUrl);
+        }
+        copyTemplate(projectUrl, path, vars);
+    }
+
+    private void copyTemplate(NPath from, NPath to, Function<String, String> vars) {
+        if (from.isDirectory()) {
+            if (!to.exists()) {
+                to.mkdirs();
+            }
+            if (!to.isDirectory()) {
+                throw new IllegalArgumentException("cannot copy folder " + from + " to " + to);
+            }
+            for (NPath nPath : from.list()) {
+                copyTemplate(nPath, to.resolve(nPath.getName()), vars);
+            }
+        } else if (from.isRegularFile()) {
+            if (from.getName().endsWith(".hd")) {
+                String code = from.readString();
+                to.writeString(NMsg.ofV(code, vars).toString());
+            } else {
+                from.copyTo(to);
+            }
+        } else {
+            throw new IllegalArgumentException("cannot copy " + from + " to " + to);
+        }
+    }
+
 }

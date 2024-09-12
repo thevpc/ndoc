@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
 import net.thevpc.halfa.spi.renderer.HGraphics;
+import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -100,13 +101,13 @@ public class GitService {
     }
 
     public byte[] createPageImage(HNode page, int width,int height,HMessageList messages) throws IOException {
-        return engine.rendererManager().renderImageBytes(
+        return engine.renderManager().renderImageBytes(
                 page,
-                new HNodeRendererConfig((int) sizeWidth, (int) sizeHeight)
+                new HNodeRendererConfig((int) width, (int) height)
                         .withAnimate(false)
                         .setMessages(messages),
                 session
-        )
+        );
     }
 
 }
