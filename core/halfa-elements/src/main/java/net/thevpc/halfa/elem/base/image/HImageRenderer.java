@@ -21,12 +21,12 @@ import net.thevpc.nuts.util.NOptional;
 import java.awt.*;
 
 public class HImageRenderer extends HNodeRendererBase {
+
     HProperties defaultStyles = new HProperties();
 
     public HImageRenderer() {
         super(HNodeType.IMAGE);
     }
-
 
     public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
@@ -64,19 +64,67 @@ public class HImageRenderer extends HNodeRendererBase {
 
             HNodeRendererUtils.applyForeground(p, g, ctx, false);
             if (img instanceof NPath) {
-                try {
-                    g.drawImage((NPath) img, x, y, options);
-                } catch (Exception ex) {
-                    HResource src = ctx.engine().computeSource(p);
-                    ctx.messages().addError(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
-                            src == null ? null : src.shortName(),
-                            img, ex), src);
+                NPath imgPath = (NPath) img;
+                NPath vp = resolveImagePath(imgPath);
+                if (vp != null) {
+                    try {
+                        g.drawImage(vp, x, y, options);
+                    } catch (Exception ex) {
+                        HResource src = ctx.engine().computeSource(p);
+                        ctx.messages().addError(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
+                                src == null ? null : src.shortName(),
+                                vp, ex), src);
 
+                    }
+                } else {
+                    HResource src = ctx.engine().computeSource(p);
+                    ctx.messages().addError(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                            src == null ? null : src.shortName(),
+                            img), src);
                 }
             }
         }
         HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
     }
 
+    private NPath resolveImagePath(NPath p) {
+        if (p.isRegularFile()) {
+            return p;
+        }
+        for (String ext : new String[]{"png", "jpg", "gif", "jpeg"}) {
+            String n = p.getName();
+            String nLowered = n.toLowerCase();
+            if (nLowered.endsWith(".")) {
+                NPath p2 = p.resolveSibling(n + ext);
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+                p2 = p.resolveSibling(n + ext.toUpperCase());
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+            } else if (nLowered.endsWith(".*")) {
+                NPath p2 = p.resolveSibling(n.substring(0, n.length() - 1) + ext);
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+                p2 = p.resolveSibling(n.substring(0, n.length() - 1) + ext.toUpperCase());
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+            } else {
+                NPath p2 = p.resolveSibling(n + "." + ext);
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+                p2 = p.resolveSibling(n + "." + ext.toUpperCase());
+                if (p2.isRegularFile()) {
+                    return p2;
+                }
+            }
+        }
+        return null;
+
+    }
 
 }

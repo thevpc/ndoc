@@ -3,6 +3,7 @@ package net.thevpc.halfa.engine.parser.nodes;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.engine.HEngineUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.io.NPath;
@@ -62,11 +63,11 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
         if(spp.isDirectory()){
-            spp=spp.resolve("**/*.hd");
+            spp=spp.resolve(HEngineUtils.HALFA_EXT_STAR_STAR);
         }
         context.document().resources().add(spp);
         List<NPath> list = spp.walkGlob().toList();
-        list.sort(Comparator.comparing(NPath::toString));
+        list.sort(HEngineUtils::comparePaths);
         for (NPath nPath : list) {
             if (nPath.isRegularFile()) {
                 NOptional<HItem> se = context.engine().loadNode(putInto, nPath, context.document(), context.messages());

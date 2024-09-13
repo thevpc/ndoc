@@ -34,13 +34,16 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
     public List<HRichTextRow> rows = new ArrayList<>();
     public Rectangle2D.Double bounds;
     private Map<String, HTextRendererFlavor> flavors;
+    private Paint defaultColor;
 
-    public HTextRendererBuilderImpl(Map<String, HTextRendererFlavor> flavors) {
+    public HTextRendererBuilderImpl(Map<String, HTextRendererFlavor> flavors,Paint defaultColor) {
         this.flavors = flavors;
+        this.defaultColor = defaultColor;
     }
 
-    public HTextRendererBuilderImpl() {
+    public HTextRendererBuilderImpl(Paint defaultColor) {
         this.flavors = new HashMap<>();
+        this.defaultColor=defaultColor;
     }
 
     public void appendNText(String lang, String rawText, NText text, HNode node, HNodeRendererContext ctx) {
@@ -81,7 +84,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             end++;
         }
 
-        List<String> a = NStringUtils.split(text, "\n");
+        List<String> a = NStringUtils.split(text, "\n",false,true);
 
         HGraphics g = ctx.graphics();
         for (int j = 0; j < a.size(); j++) {
@@ -237,6 +240,9 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
                         case PLAIN: {
                             if (shadowColor != null) {
                                 g.setPaint(shadowColor);
+                            }
+                            if(defaultColor!=null) {
+                                g.setPaint(defaultColor);
                             }
                             g.drawString(col.text
                                     , x + col.xOffset + translation.getX()

@@ -98,15 +98,24 @@ public class EntryComponent extends JPanel {
         JPanel p=new JPanel(new GridLayout(-1,1));
 
         JButton newProjectButton = new JButton("New Project...");
-        newProjectButton.addActionListener(e->serviceHelper.showNewProject());
+        newProjectButton.addActionListener(e->{
+            serviceHelper.showNewProject();
+            reload();
+        });
         p.add(newProjectButton);
 
         JButton newFileButton = new JButton("New File...");
-        newFileButton.addActionListener(e->serviceHelper.showNewFile());
+        newFileButton.addActionListener(e->{
+            serviceHelper.showNewFile();
+            reload();
+        });
         p.add(newFileButton);
 
         JButton openExisting = new JButton("Open existing...");
-        openExisting.addActionListener(e->serviceHelper.showOpenFile());
+        openExisting.addActionListener(e->{
+            serviceHelper.showOpenFile();
+            reload();
+        });
         p.add(openExisting);
         return p;
     }

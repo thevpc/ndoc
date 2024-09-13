@@ -58,8 +58,8 @@ public class DefaultHStyleRule implements HStyleRule {
     }
 
     @Override
-    public boolean accept(HNode node) {
-        return selector.test(node);
+    public boolean acceptNode(HNode node) {
+        return selector.acceptNode(node);
     }
 
     public HStyleRuleSelector selector() {
@@ -73,7 +73,7 @@ public class DefaultHStyleRule implements HStyleRule {
 
     @Override
     public HStyleRuleResult styles(HNode node) {
-        if (selector == null || selector.test(node)) {
+        if (selector == null || selector.acceptNode(node)) {
             return new HStyleRuleResult() {
                 @Override
                 public boolean isValid() {

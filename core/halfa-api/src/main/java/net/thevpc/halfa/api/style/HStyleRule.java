@@ -12,7 +12,7 @@ import net.thevpc.tson.TsonElement;
  * @author vpc
  */
 public interface HStyleRule extends HItem {
-    boolean accept(HNode node);
+    boolean acceptNode(HNode node);
 
     HStyleRuleSelector selector();
 

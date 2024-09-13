@@ -4,6 +4,7 @@ import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.elem.base.text.text.HTextRendererBuilderImpl;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.text.HRichTextToken;
@@ -12,6 +13,8 @@ import net.thevpc.halfa.spi.renderer.text.HTextBaseRenderer;
 import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.nuts.util.NStringUtils;
 
+import java.awt.*;
+
 public class HPlainTextRenderer extends HTextBaseRenderer {
     public HPlainTextRenderer() {
         super(HNodeType.PLAIN);
@@ -19,7 +22,8 @@ public class HPlainTextRenderer extends HTextBaseRenderer {
 
 
     public HTextRendererBuilder createRichTextHelper(HNode p, HNodeRendererContext ctx) {
-        HTextRendererBuilder helper = new HTextRendererBuilderImpl();
+        Paint fg = HValueByName.getForegroundColor(p, ctx,true);
+        HTextRendererBuilder helper = new HTextRendererBuilderImpl(fg);
         String message = NStringUtils.trim((String) (p.getPropertyValue(HPropName.VALUE).orElse("")));
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {

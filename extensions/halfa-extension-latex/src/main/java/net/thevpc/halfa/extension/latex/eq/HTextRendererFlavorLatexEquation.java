@@ -66,7 +66,7 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
                 double yy = y;//+ascent-descent;
                 icon.setForeground(g.getColor());
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
-                g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
+                //g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
             }
 
             public Double2 size() {

@@ -3,6 +3,7 @@ package net.thevpc.halfa.elem.base.text.text;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.text.HTextBaseRenderer;
@@ -10,6 +11,7 @@ import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.halfa.spi.HTextRendererFlavor;
 import net.thevpc.nuts.util.NStringUtils;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -40,7 +42,8 @@ public class HTextRenderer extends HTextBaseRenderer {
         if (f == null) {
             f = defaultFlavor;
         }
-        HTextRendererBuilderImpl builder = new HTextRendererBuilderImpl(flavors);
+        Paint fg = HValueByName.getForegroundColor(p, ctx,true);
+        HTextRendererBuilderImpl builder = new HTextRendererBuilderImpl(flavors,fg);
         f.buildText(text, p, ctx, builder);
         return builder;
     }

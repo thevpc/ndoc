@@ -147,7 +147,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     }
 
     @Override
-    public boolean test(HNode n) {
+    public boolean acceptNode(HNode n) {
         if (important) {
             return true;
         }

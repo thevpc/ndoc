@@ -26,16 +26,27 @@ public class HStyleMagnitude implements Comparable<HStyleMagnitude> {
 
     @Override
     public int compareTo(HStyleMagnitude o) {
+        if (this.selector != o.selector) {
+            int u = this.selector.compareTo(o.selector);
+            if (u != 0) {
+                return u;
+            }
+        }
         if (this.distance != o.distance) {
-            return Integer.compare(this.distance, o.distance);
+            int u = Integer.compare(this.distance, o.distance);
+            if (u != 0) {
+                return u;
+            }
         }
         if (this.support != o.support) {
             // bigger is first!
-            return -Integer.compare(this.support, o.support);
+            int u = -Integer.compare(this.support, o.support);
+            if (u != 0) {
+                return u;
+            }
+            return u;
         }
-        if (this.selector != o.selector) {
-            return this.selector.compareTo(o.selector);
-        }
+
         return 0;
     }
 

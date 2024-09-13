@@ -255,8 +255,8 @@ public class HEngineImpl implements HEngine {
                 return r;
             } else if (path.isDirectory()) {
                 HDocument document = documentFactory().ofDocument();
-                document.resources().add(path.resolve("*.hd"));
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && x.getName().endsWith(".hd")).toList();
+                document.resources().add(path.resolve(HEngineUtils.HALFA_EXT_STAR));
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x)).toList();
                 if (all.isEmpty()) {
                     messages1.addError(NMsg.ofC("invalid folder (no valid enclosed files) %s", path));
                     return r;
@@ -333,8 +333,8 @@ public class HEngineImpl implements HEngine {
                 }
                 return d;
             } else if (path.isDirectory()) {
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && x.getName().endsWith(".hd")).toList();
-                all.sort((a, b) -> a.getName().compareTo(b.getName()));
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x.getName())).toList();
+                all.sort(HEngineUtils::comparePaths);
                 HItem node = null;
                 for (NPath nPath : all) {
                     NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath, document, messages);
@@ -593,7 +593,7 @@ public class HEngineImpl implements HEngine {
                 copyTemplate(nPath, to.resolve(nPath.getName()), vars);
             }
         } else if (from.isRegularFile()) {
-            if (from.getName().endsWith(".hd")) {
+            if (HEngineUtils.isHalfaFile(from)) {
                 String code = from.readString();
                 to.writeString(NMsg.ofV(code, vars).toString());
             } else {

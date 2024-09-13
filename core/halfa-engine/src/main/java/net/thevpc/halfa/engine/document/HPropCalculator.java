@@ -18,10 +18,21 @@ public class HPropCalculator {
     private static class HStyleRuleResult2 {
         HStyleRule rule;
         HProp property;
+        int distance;
 
         public HStyleRuleResult2(HStyleRule rule, HProp property) {
             this.rule = rule;
             this.property = property;
+        }
+        public HStyleRuleResult2(HStyleRule rule, HProp property,int distance) {
+            this.rule = rule;
+            this.property = property;
+            this.distance = distance;
+        }
+        public HStyleRuleResult2(HStyleRuleResult2 other,int distance) {
+            this.rule = other.rule;
+            this.property = other.property;
+            this.distance = distance;
         }
 
         @Override
@@ -37,7 +48,7 @@ public class HPropCalculator {
         HStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
         for (HStyleRule rule : rules) {
-            if (rule.accept(t)) {
+            if (rule.acceptNode(t)) {
                 for (HProp style : rule.styles().toList()) {
                     rr.add(new HStyleRuleResult2(rule, style));
                 }
@@ -50,9 +61,9 @@ public class HPropCalculator {
         HStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
         for (HStyleRule rule : rules) {
-            if (rule.accept(t)) {
+            if (rule.acceptNode(t)) {
                 NOptional<HProp> ok = rule.styles().get(propertyNames);
-                if(ok.isPresent()){
+                if (ok.isPresent()) {
                     rr.add(new HStyleRuleResult2(rule, ok.get()));
 //                    break;
                 }
@@ -74,17 +85,20 @@ public class HPropCalculator {
         }
         HNode p = node.parent();
         int distance = 1;
+        HProp bestStyle = null;
+        HStyleMagnitude bestMag = null;
+        List<HStyleRuleResult2> acceptable=new ArrayList<>();
         while (p != null) {
-            HStyleMagnitude bestMag = null;
-            HProp bestStyle = null;
             HStyleRuleResult2[] validRules = _HStyleRuleResult2(node, p, propertyNames);
             for (HStyleRuleResult2 rule : validRules) {
                 HStyleMagnitude m2 = new HStyleMagnitude(distance, rule.rule.selector());
-                if (bestMag == null || m2.compareTo(bestMag) <= 0) {
+                acceptable.add(new HStyleRuleResult2(rule,distance));
+                if (bestMag == null || m2.compareTo(bestMag) < 0) {
                     bestMag = m2;
                     bestStyle = rule.property;
                 }
             }
+            /*
             if (bestMag != null) {
                 return NOptional.of(
                         new HStyleAndMagnitude(
@@ -93,8 +107,17 @@ public class HPropCalculator {
                         )
                 );
             }
+            */
             distance++;
             p = p.parent();
+        }
+        if (bestMag != null) {
+            return NOptional.of(
+                    new HStyleAndMagnitude(
+                            bestStyle,
+                            new HStyleMagnitude(distance, bestMag.getSelector())
+                    )
+            );
         }
         return NOptional.ofNamedEmpty("no style : " + Arrays.asList(propertyNames));
     }
@@ -136,7 +159,7 @@ public class HPropCalculator {
                 .map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
-    public <T> NOptional<T> computePropertyValue(HNode t, String ...s) {
+    public <T> NOptional<T> computePropertyValue(HNode t, String... s) {
         if (t != null) {
             return computeProperty(t, s).map(HProp::getValue).map(x -> {
                 try {
