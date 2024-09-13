@@ -28,3 +28,4 @@
 /app/halfa-viewer-backend/target
 /app/halfa-viewer-frontend-ng/.vscode/
 /app/halfa-viewer/new-project*
+/extensions/halfa-extension-plot2d/target
