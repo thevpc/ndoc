@@ -7,6 +7,7 @@ package net.thevpc.halfa.api.util;
 import java.awt.Color;
 import java.util.Arrays;
 
+import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -16,6 +17,13 @@ import net.thevpc.tson.TsonElementBase;
  * @author vpc
  */
 public class TsonUtils {
+
+    public static TsonElement toTson(ToTson[] r) {
+        if(r==null){
+            return Tson.ofNull();
+        }
+        return Tson.of(Tson.ofArray(Arrays.stream(r).map(x->x==null?Tson.ofNull():x.toTson()).toArray(TsonElement[]::new)).build());
+    }
 
     public static TsonElement toTson(Object r) {
         if (r == null) {

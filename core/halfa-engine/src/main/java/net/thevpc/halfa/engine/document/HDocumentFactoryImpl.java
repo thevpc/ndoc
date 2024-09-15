@@ -9,6 +9,8 @@ import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.nuts.util.NAssert;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 public class HDocumentFactoryImpl implements HDocumentFactory {
     private HEngineImpl engine;
@@ -111,9 +113,9 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     }
 
     @Override
-    public HNode ofAssign(String name, Object value) {
+    public HNode ofAssign(String name, TsonElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, name)
+                .setProperty(HPropName.NAME, Tson.of(name))
                 .setProperty(HPropName.VALUE, value)
                 ;
     }
@@ -141,8 +143,8 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
     @Override
     public HNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, cols)
-                .setProperty(HPropName.ROWS, rows)
+                .setProperty(HPropName.COLUMNS, Tson.of(cols))
+                .setProperty(HPropName.ROWS, Tson.of(rows))
                 ;
     }
 
@@ -168,12 +170,12 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
 
     @Override
     public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, text);
+        return ofPlain().setProperty(HPropName.VALUE, Tson.of(text));
     }
 
     @Override
     public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, text);
+        return ofText().setProperty(HPropName.VALUE, Tson.of(text));
     }
 
     @Override
@@ -299,7 +301,7 @@ public class HDocumentFactoryImpl implements HDocumentFactory {
 
     @Override
     public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, value);
+        return ofEquation().setProperty(HPropName.VALUE, Tson.of(value));
     }
 
     @Override

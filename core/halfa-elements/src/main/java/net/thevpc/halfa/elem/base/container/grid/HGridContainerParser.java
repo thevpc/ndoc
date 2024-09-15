@@ -15,6 +15,7 @@ import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
@@ -32,34 +33,34 @@ public class HGridContainerParser extends HNodeParserBase {
         switch (id) {
             case "vgrid":
             case "column": {
-                p.setProperty(HPropName.COLUMNS, 1);
-                p.setProperty(HPropName.ROWS, -1);
+                p.setProperty(HPropName.COLUMNS, Tson.of(1));
+                p.setProperty(HPropName.ROWS, Tson.of(-1));
                 break;
             }
             case "hgrid":
             case "row": {
-                p.setProperty(HPropName.COLUMNS, -1);
-                p.setProperty(HPropName.ROWS, 1);
+                p.setProperty(HPropName.COLUMNS, Tson.of(-1));
+                p.setProperty(HPropName.ROWS, Tson.of(1));
                 break;
             }
         }
     }
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case UPLET: {
-                NOptional<Int2> d = ObjEx.of(e).asInt2();
+                NOptional<Int2> d = ObjEx.of(currentArg).asInt2();
                 if (d.isPresent()) {
                     Int2 dd = d.get();
-                    node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(dd.getX()).asInt().get()));
-                    node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(dd.getY()).asInt().get()));
+                    node.setProperty(HPropName.COLUMNS, ObjEx.of(dd.getX()).asTsonInt().get());
+                    node.setProperty(HPropName.ROWS, ObjEx.of(dd.getY()).asTsonInt().get());
                     return true;
                 }
                 return false;
             }
             case PAIR: {
-                TsonPair pp = e.toPair();
+                TsonPair pp = currentArg.toPair();
                 TsonElement k = pp.key();
                 TsonElement v = pp.value();
                 ObjEx ph = ObjEx.of(k);
@@ -69,14 +70,14 @@ public class HGridContainerParser extends HNodeParserBase {
                     switch (HUtils.uid(n.get())) {
                         case "columns": {
                             if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("hgrid") || HUtils.uid(id).equals("row")) {
-                                node.setProperty(HProp.ofInt(HPropName.COLUMNS, ObjEx.of(v).asInt().get()));
+                                node.setProperty(HPropName.COLUMNS, ObjEx.of(v).asTsonInt().get());
                                 return true;
                             }
                             break;
                         }
                         case "rows": {
                             if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("vgrid") || HUtils.uid(id).equals("column")) {
-                                node.setProperty(HProp.ofInt(HPropName.ROWS, ObjEx.of(v).asInt().get()));
+                                node.setProperty(HPropName.ROWS, ObjEx.of(v).asTsonInt().get());
                                 return true;
                             }
                             break;
@@ -86,6 +87,6 @@ public class HGridContainerParser extends HNodeParserBase {
                 }
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 }

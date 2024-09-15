@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.renderer.common.elem2d;
+package net.thevpc.halfa.engine.renderer.elem2d;
 
 import net.thevpc.halfa.api.model.elem2d.Element2DPrimitive;
 import net.thevpc.halfa.api.model.elem2d.HElement2D;

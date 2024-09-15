@@ -6,8 +6,11 @@ import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
+import net.thevpc.halfa.api.style.HProp;
+import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.engine.parser.nodes.*;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
+import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
@@ -32,6 +35,7 @@ public class DefaultHDocumentItemParserFactory
 
     static {
         register(new ImportHITemNamedObjectParser());
+//        register(new DefineHITemNamedObjectParser());
         register(new StylesHITemNamedObjectParser());
     }
 
@@ -103,14 +107,23 @@ public class DefaultHDocumentItemParserFactory
                 NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
                     String nnn = NStringUtils.trim(nn.get());
-                    if (nnn.equals("styles")) {
+                    HITemNamedObjectParser pp = allParsers.get(nnn);
+                    if (pp != null) {
                         return NCallableSupport.of(10, () -> {
-                            HITemNamedObjectParser pp = allParsers.get("styles");
-                            NOptional<HItem> styles = pp.parseItem("styles", v, context);
+                            NOptional<HItem> styles = pp.parseItem(nnn, v, context);
                             return styles.get();
                         });
                     }
                 }
+                for (HNodeParser ff : engine.nodeTypeFactories()) {
+                    NCallableSupport<HItem> uu = ff.parseNode(context);
+                    if (uu.isValid()) {
+                        return uu;
+                    }
+                }
+                break;
+            }
+            case BINOP: {
                 for (HNodeParser ff : engine.nodeTypeFactories()) {
                     NCallableSupport<HItem> uu = ff.parseNode(context);
                     if (uu.isValid()) {
@@ -147,12 +160,32 @@ public class DefaultHDocumentItemParserFactory
                         });
                     }
                 }
-                break;
+                if (c.type() == TsonElementType.FUNCTION || c.type() == TsonElementType.OBJECT) {
+                    HNode callNode = new DefaultHNode(HNodeType.CALL);
+                    callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
+                    callNode.setProperty(HPropName.VALUE, c);
+                    return NCallableSupport.of(10, () -> callNode);
+                    //search for declaration!!
+//                    String uid = HUtils.uid(ee.name());
+
+//                    HNode currNode = context.node().parent();
+//                    while (currNode != null) {
+//                        for (HNode objectDefNode : currNode.children()) {
+//                            if (HNodeType.DEFINE.equals(objectDefNode.getName()) && uid.equals(HUtils.uid(String.valueOf(objectDefNode.getPropertyValue(HPropName.NAME).get())))) {
+//                                return NCallableSupport.of(10, () -> inlineNodeDefinitionCall(objectDefNode, c, context));
+//                            }
+//                        }
+//                        currNode = currNode.parent();
+//                    }
+                }
+                context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
+                throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
             }
         }
         context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
         throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
+
 
     private boolean isRootBloc(HNodeFactoryParseContext context) {
         HNode[] nodes = context.nodePath();

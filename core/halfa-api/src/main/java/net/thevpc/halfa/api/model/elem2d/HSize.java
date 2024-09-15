@@ -4,10 +4,14 @@
  */
 package net.thevpc.halfa.api.model.elem2d;
 
+import net.thevpc.tson.ToTson;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+
 /**
  * @author vpc
  */
-public class HSize {
+public class HSize implements ToTson {
 
     private double value;
     private boolean percent;
@@ -25,4 +29,8 @@ public class HSize {
         this.percent = percent;
     }
 
+    @Override
+    public TsonElement toTson() {
+        return Tson.parseNumber(value + "%");
+    }
 }

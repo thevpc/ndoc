@@ -1,13 +1,10 @@
 package net.thevpc.halfa.extension.shapes2d.donut;
 
 import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.elem2d.HPoint2D;
-import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.api.style.HPropUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
@@ -22,10 +19,10 @@ public class HDonutImpl extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(currentArg).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();
@@ -64,7 +61,7 @@ public class HDonutImpl extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 
     @Override

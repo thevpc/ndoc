@@ -14,7 +14,7 @@ public class HProperties {
         return map.containsKey(k);
     }
 
-    public void set(String s, Object value) {
+    public void set(String s, TsonElement value) {
         map.put(s, new HProp(s, value));
     }
 
@@ -84,7 +84,7 @@ public class HProperties {
 
     @Override
     public String toString() {
-        return "Styles" + map.values().toString();
+        return "Props" + map.values().toString();
     }
 
     public int size() {

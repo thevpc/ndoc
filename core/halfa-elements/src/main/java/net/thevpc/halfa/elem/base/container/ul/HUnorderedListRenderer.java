@@ -11,6 +11,8 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.base.renderer.ConvertedHNodeRenderer;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +45,10 @@ public class HUnorderedListRenderer extends ConvertedHNodeRenderer {
             all.add(child.addStyleClasses("ul-item"));
         }
         HNode newNode = f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HProp.ofInt(HPropName.COLUMNS, 2))
-                .setProperty(HProp.ofInt(HPropName.ROWS, 2))
+                .setProperty(HPropName.COLUMNS, Tson.of(2))
+                .setProperty(HPropName.ROWS, Tson.of(2))
                 .setProperty(HPropName.ORIGIN, HAlign.TOP_LEFT)
-                .setProperty(HProps.columnsWeight(1, 20))
+                .setProperty(HPropName.COLUMNS_WEIGHT,Tson.of(new double[]{1, 20}))
                 .setProperties(p.props().toArray(new HProp[0]));
         for (String s : new String[]{
                 HPropName.GRID_COLOR
@@ -73,7 +75,7 @@ public class HUnorderedListRenderer extends ConvertedHNodeRenderer {
                 , HPropName.FONT_STRIKE
                 , HPropName.FONT_STRIKE
         }) {
-            Object v = ctx.computePropertyValue(p, s).orNull();
+            TsonElement v = ctx.computePropertyValue(p, s).orNull();
             if (v != null) {
                 newNode.setProperty(s, v);
             }
@@ -81,7 +83,7 @@ public class HUnorderedListRenderer extends ConvertedHNodeRenderer {
         if(HValueByName.isDebug(p, ctx)){
             Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
             if(v==null){
-                newNode.setProperty(HPropName.DRAW_GRID, true);
+                newNode.setProperty(HPropName.DRAW_GRID, Tson.of(true));
             }
         }
         return newNode;

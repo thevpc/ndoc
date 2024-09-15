@@ -33,14 +33,14 @@ public class HEquationParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case STRING: {
-                node.setProperty(HProp.ofString(HPropName.VALUE, e.toStr().raw()));
+                node.setProperty(HProp.ofString(HPropName.VALUE, currentArg.toStr().raw()));
                 return true;
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 
     @Override

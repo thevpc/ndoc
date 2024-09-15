@@ -13,6 +13,7 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -23,70 +24,74 @@ import java.util.Objects;
 public class HProp implements HItem, ToTson {
 
     private String name;
-    private Object value;
+    private TsonElement value;
 
     public static HProp ofDouble(String name, Double value) {
-        return new HProp(name, value);
+        return new HProp(name, Tson.of(value));
     }
 
     public static HProp ofInt(String name, Integer value) {
-        return new HProp(name, value);
+        return new HProp(name, Tson.of(value));
     }
 
     public static HProp ofBoolean(String name, Boolean value) {
-        return new HProp(name, value);
+        return new HProp(name, Tson.of(value));
     }
 
     public static HProp ofString(String name, String value) {
-        return new HProp(name, value);
+        return new HProp(name, Tson.of(value));
     }
 
-    public static HProp ofObject(String name, Object value) {
+    public static HProp ofObject(String name, TsonElement value) {
         return new HProp(name, value);
     }
 
     public static HProp ofStringArray(String name, String[] value) {
-        return new HProp(name, value);
+        return new HProp(name, Tson.of(value));
     }
 
     public static HProp ofDouble2(String name, double x, double y) {
-        return new HProp(name, new Double2(x, y));
+        return new HProp(name, Tson.ofUplet(Tson.of(x), Tson.of(y)).build());
     }
 
     public static HProp ofHPoint2D(String name, double x, double y) {
-        return new HProp(name, new HPoint2D(x, y));
+        return new HProp(name, Tson.ofUplet(Tson.of(x), Tson.of(y)).build());
     }
 
     public static HProp ofDouble2(String name, Double2 d) {
-        return new HProp(name, d);
+        return new HProp(name, d==null?null:d.toTson());
     }
 
     public static HProp ofHPoint2D(String name, HPoint2D d) {
-        return new HProp(name, d);
+        return new HProp(name, d==null?null:d.toTson());
     }
 
     public static HProp ofHPoint3D(String name, HPoint3D d) {
-        return new HProp(name, d);
+        return new HProp(name, d==null?null:d.toTson());
     }
 
     public static HProp ofDouble2Array(String name, Double2... d) {
-        return new HProp(name, d);
+        return new HProp(name, Tson.ofArray(Arrays.stream(d).map(x->x.toTson()).toArray(TsonElementBase[]::new)).build());
     }
     public static HProp ofDoubleArray (String name, double[] d) {
-        return new HProp(name, d);
+        return new HProp(name, Tson.of(d));
     }
 
     public static HProp ofHPoint2DArray(String name, HPoint2D... d) {
-        return new HProp(name, d);
+        return new HProp(name, Tson.ofArray(Arrays.stream(d).map(x->x.toTson()).toArray(TsonElementBase[]::new)).build());
     }
 
     public static HProp ofHPoint3DArray(String name, HPoint3D... d) {
-        return new HProp(name, d);
+        return new HProp(name, Tson.ofArray(Arrays.stream(d).map(x->x.toTson()).toArray(TsonElementBase[]::new)).build());
     }
 
-    public HProp(String name, Object value) {
+    public HProp(String name, TsonElement value) {
         this.name = name;
         this.value = value;
+    }
+    public HProp(String name, ToTson value) {
+        this.name = name;
+        this.value = value==null?null:value.toTson();
     }
 
 
@@ -94,7 +99,7 @@ public class HProp implements HItem, ToTson {
         return name;
     }
 
-    public Object getValue() {
+    public TsonElement getValue() {
         return value;
     }
 

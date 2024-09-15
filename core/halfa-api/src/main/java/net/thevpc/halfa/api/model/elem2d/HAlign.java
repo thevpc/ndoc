@@ -1,11 +1,15 @@
 package net.thevpc.halfa.api.model.elem2d;
 
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.ToTson;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
-public enum HAlign {
+public enum HAlign implements ToTson {
     TOP_LEFT,
     TOP_RIGHT,
     TOP,
@@ -54,5 +58,10 @@ public enum HAlign {
         }
         e = NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(e));
         return NOptional.ofNamedEmpty("HAlign " + e);
+    }
+
+    @Override
+    public TsonElement toTson() {
+        return Tson.of(HUtils.uid(name()));
     }
 }

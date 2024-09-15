@@ -5,6 +5,7 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
@@ -12,6 +13,7 @@ import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
+import net.thevpc.tson.Tson;
 
 import java.awt.*;
 
@@ -28,7 +30,7 @@ public class HalfaExampleTestGrid {
                 .add(f.ofPage()
                         .add(
                                 f.ofGrid(3, 2)
-                                        .setProperty(HProps.columnsWeight(1, 2, 3, 4, 5, 6))
+                                        .setProperty(HPropName.COLUMNS_WEIGHT, Tson.of(new double[]{1, 2, 3, 4, 5, 6}))
                                         .add(f.ofRectangle()
                                                 .setProperty(HProps.backgroundColor(Color.BLUE))
                                                 .setProperty(HProps.colspan(4))

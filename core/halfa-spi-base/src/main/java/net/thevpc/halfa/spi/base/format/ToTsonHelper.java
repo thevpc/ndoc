@@ -157,9 +157,9 @@ public class ToTsonHelper {
         if(propNames!=null) {
             for (String propName : propNames) {
                 if(propName!=null) {
-                    Object v = node.getPropertyValue(propName).orNull();
+                    TsonElement v = node.getPropertyValue(propName).orNull();
                     if (v != null) {
-                        addChild(Tson.ofPair(propName, HUtils.toTson(v)));
+                        addChild(Tson.ofPair(propName, v));
                     }
                 }
             }

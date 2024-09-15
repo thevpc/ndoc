@@ -12,6 +12,7 @@ import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.image.ImageObserver;
 import java.util.List;
@@ -50,7 +51,7 @@ public interface HNodeRendererContext {
 
     HDocumentFactory documentFactory();
 
-    <T> NOptional<T> computePropertyValue(HNode t, String s, String... synonyms);
+    NOptional<TsonElement> computePropertyValue(HNode t, String s, String... synonyms);
 
     List<HProp> computeProperties(HNode t);
 

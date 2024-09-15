@@ -37,7 +37,6 @@ public class HNodeType {
     public static final String PARALLELOGRAM="parallelogram";
     public static final String FILLER="filler";
     public static final String VOID="void";
-    public static final String ASSIGN="assign";
     public static final String CYLINDER="cylinder";
     public static final String SOURCE="source";
     public static final String UNNAMED="unnamed";
@@ -45,4 +44,10 @@ public class HNodeType {
 
     public static final String ARROW = "arrow";
     public static final String PLOT2D = "plot2d";
+
+    public static final String ASSIGN="assign";
+    public static final String CALL="call";
+    public static final String DEFINE="define";
+
+    public static final String IF = "if";
 }

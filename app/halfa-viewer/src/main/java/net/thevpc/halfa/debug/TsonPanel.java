@@ -28,7 +28,8 @@ public abstract class TsonPanel extends JPanel {
                 txt = e.toString();
             }
         } catch (Exception ex) {
-            txt = ex.toString();
+            txt = "ERROR EVALUATION TSON : "+ex.toString();
+            ex.printStackTrace();
         }
         String finalTxt = txt;
         if (SwingUtilities.isEventDispatchThread()) {

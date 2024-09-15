@@ -2,6 +2,7 @@ package net.thevpc.halfa;
 
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.tson.TsonElement;
 
 public interface HDocumentFactory {
 
@@ -39,7 +40,7 @@ public interface HDocumentFactory {
 
     HNode ofAssign();
 
-    HNode ofAssign(String name, Object value);
+    HNode ofAssign(String name, TsonElement value);
 
     HNode ofFlow();
 

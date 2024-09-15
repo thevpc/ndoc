@@ -1,4 +1,3 @@
-net.thevpc.halfa.engine.parser.nodes.assign.HCtrlAssignParser
 net.thevpc.halfa.engine.parser.nodes.HScene3DParser
 net.thevpc.halfa.engine.parser.nodes.HPageGroupParser
 net.thevpc.halfa.engine.parser.nodes.HPageParser

@@ -11,6 +11,7 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.tson.Tson;
 
 public class HSphereRenderer extends HNodeRendererBase {
     HProperties sphereDefaultStyles = new HProperties();
@@ -18,8 +19,8 @@ public class HSphereRenderer extends HNodeRendererBase {
 
     public HSphereRenderer() {
         super(HNodeType.SPHERE, HNodeType.ELLIPSOID);
-        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, true);
-        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, false);
+        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, Tson.ofTrue());
+        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, Tson.ofTrue());
     }
 
     public void renderMain(HNode p, HNodeRendererContext ctx) {

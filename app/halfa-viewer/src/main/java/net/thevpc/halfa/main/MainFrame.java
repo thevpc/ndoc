@@ -1,7 +1,7 @@
 package net.thevpc.halfa.main;
 
-import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.halfa.main.components.EntryComponent;
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.nuts.NSession;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ public class MainFrame extends JFrame {
         serviceHelper = new ServiceHelper(this);
         setTitle("HD Viewer Application");
         this.setIconImage(
-                ImageUtils.resizeImage(
+                HImageUtils.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
                         16, 16)
         );

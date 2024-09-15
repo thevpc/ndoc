@@ -6,13 +6,9 @@ package net.thevpc.halfa.spi.eval;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.api.model.node.HNodeType;
-import net.thevpc.halfa.api.style.HPropName;
-import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonArray;
@@ -28,13 +24,13 @@ import net.thevpc.tson.TsonName;
 public class HNodeEval implements ObjectEvalContext {
 
     private HNode node;
-    private List<HNodeEvalFunctions> functions = new ArrayList<>();
+    private List<HNodeEvalFunctionFactory> functions = new ArrayList<>();
 
     public HNodeEval(HNode node) {
         this.node = node;
     }
 
-    public void addFunctions(HNodeEvalFunctions f) {
+    public void addFunctions(HNodeEvalFunctionFactory f) {
         if (f != null) {
             functions.add(f);
         }
@@ -42,28 +38,32 @@ public class HNodeEval implements ObjectEvalContext {
 
     public TsonElement evalVar(String varName) {
         HNode nn = (node);
-        HNode stop = null;
+//        HNode stop = null;
         while (nn != null) {
-            for (HNode cc : nn.children()) {
-                if (cc == stop) {
-                    break;
-                }
-                if (HNodeType.ASSIGN.equals(cc.type())) {
-                    String oName = cc.getName();
-                    if (Objects.equals(oName, varName)) {
-                        Object pp = cc.getPropertyValue(HPropName.VALUE).orNull();
-                        return eval(TsonUtils.toTson(pp));
-                    }
-                }
+            NOptional<TsonElement> var = nn.getVar(varName);
+            if (var.isPresent()) {
+                return var.get();
             }
-            stop = nn;
+//            for (HNode cc : nn.children()) {
+//                if (cc == stop) {
+//                    break;
+//                }
+//                if (HNodeType.ASSIGN.equals(cc.type())) {
+//                    String oName = cc.getName();
+//                    if (Objects.equals(oName, varName)) {
+//                        Object pp = cc.getPropertyValue(HPropName.VALUE).orNull();
+//                        return eval(TsonUtils.toTson(pp));
+//                    }
+//                }
+//            }
+//            stop = nn;
             nn = nn.parent();
         }
         return null;
     }
 
     public NOptional<TsonElement> evalFunction(String name, TsonElement[] args) {
-        for (HNodeEvalFunctions function : functions) {
+        for (HNodeEvalFunctionFactory function : functions) {
             NOptional<TsonElement> a = function.evalFunction(name, args);
             if (a.isPresent()) {
                 return a;
@@ -79,7 +79,7 @@ public class HNodeEval implements ObjectEvalContext {
         if (indices.length == 0) {
             return element;
         }
-        Object u = eval(indices[0]);
+        TsonElement u = eval(indices[0]);
         NOptional<Integer> i = ObjEx.of(u).asInt();
         if (i.isPresent()) {
             int ii = i.get();
@@ -126,7 +126,7 @@ public class HNodeEval implements ObjectEvalContext {
                     if (!oo.isEmpty()) {
                         return oo.get();
                     }
-                    return Tson.ofFunction(ff.name(), r.toArray(new TsonElement[0])).build();
+                    return element;//Tson.ofFunction(ff.name(), r.toArray(new Object[0])).build();
                 }
 
                 case ARRAY: {
@@ -147,4 +147,16 @@ public class HNodeEval implements ObjectEvalContext {
         return element;
     }
 
+    public static boolean asBoolean(TsonElement e) {
+        switch (e.type()) {
+            case BOOLEAN:
+                return e.toBoolean().value();
+            default: {
+                if (e.isNumber()) {
+                    return e.toNumber().doubleValue() != 0;
+                }
+                return !e.isNull();
+            }
+        }
+    }
 }

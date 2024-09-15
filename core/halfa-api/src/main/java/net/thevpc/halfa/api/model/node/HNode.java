@@ -6,6 +6,9 @@ import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HStyleRule;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.ToTson;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonObject;
 
 import java.util.List;
 import java.util.Set;
@@ -45,9 +48,13 @@ public interface HNode extends HItem {
 
     List<HProp> props();
 
-    NOptional<Object> getPropertyValue(String... propertyNames);
+    NOptional<TsonElement> getVar(String property);
 
-    NOptional<HProp> getProperty(String ... propertyNames);
+    HNode setVar(String name, TsonElement value);
+
+    NOptional<TsonElement> getPropertyValue(String... propertyNames);
+
+    NOptional<HProp> getProperty(String... propertyNames);
 
     List<HProp> getProperties();
 
@@ -56,7 +63,9 @@ public interface HNode extends HItem {
 
     HNode setProperty(HProp s);
 
-    HNode setProperty(String name, Object value);
+    HNode setProperty(String name, TsonElement value);
+
+    HNode setProperty(String name, ToTson value);
 
     HNode setProperties(HProp... props);
 

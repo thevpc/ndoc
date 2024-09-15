@@ -75,4 +75,5 @@ public class HPropName {
     public static final String DASH = "dash" ;
 
     public static final String TRANSPARENT_COLOR = "transparent-color";
+    public static final String ARGS = "args";
 }

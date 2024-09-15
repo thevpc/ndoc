@@ -7,12 +7,12 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 
 public class HVoidRenderer extends HNodeRendererBase {
-    HProperties defaultStyles = new HProperties();
 
     public HVoidRenderer() {
         super(
                 HNodeType.VOID,
-                HNodeType.ASSIGN
+                HNodeType.ASSIGN,
+                HNodeType.DEFINE
         );
     }
 

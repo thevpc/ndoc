@@ -17,10 +17,7 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
-import net.thevpc.tson.TsonElementHeader;
+import net.thevpc.tson.*;
 
 public abstract class HNodeParserBase implements HNodeParser {
 
@@ -74,28 +71,27 @@ public abstract class HNodeParserBase implements HNodeParser {
         return false;
     }
 
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
-                if (sp.isPresent()) {
-                    ObjEx.SimplePair spp = sp.get();
-                    if (HStyleParser.isCommonStyleProperty(spp.getNameId())) {
-                        //will be processed later
-                        node.setProperty(spp.getNameId(), spp.getValue().raw());
+                if(currentArg.isSimplePair()){
+                    TsonPair p = currentArg.toPair();
+                    String sid = HUtils.uid(p.key().stringValue());
+                    if (HStyleParser.isCommonStyleProperty(sid)) {
+                        node.setProperty(sid, p.value());
                         return true;
                     }
                 }
                 break;
             }
             case NAME: {
-                ObjEx h = ObjEx.of(e);
+                ObjEx h = ObjEx.of(currentArg);
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String pid = HUtils.uid(u.get());
                     if (HStyleParser.isCommonStyleProperty(pid)) {
                         //will be processed later
-                        node.setProperty(pid, Tson.of(true));
+                        node.setProperty(pid, Tson.ofTrue());
                         return true;
                     }
                 }
@@ -199,6 +195,36 @@ public abstract class HNodeParserBase implements HNodeParser {
 
     }
 
+    protected boolean processArgumentAsCommonStyleProperty(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context){
+        if (HStyleParser.isCommonStyleProperty(id)) {
+            ObjEx es = ObjEx.of(currentArg);
+            if (es.isFunction()) {
+                context.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                        context.source(),
+                        currentArg,
+                        es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
+                ), context.source());
+                // empty result
+                return false;
+            }
+            context.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context.source(), currentArg, tsonElement), context.source());
+            return false;
+        } else {
+            context.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context.source(), currentArg, tsonElement), context.source());
+            return false;
+        }
+    }
+
+    protected boolean processArguments(String id, TsonElement tsonElement, HNode node, TsonElement[] arguments, HDocumentFactory f, HNodeFactoryParseContext context) {
+        for (int i = 0; i < arguments.length; i++) {
+            TsonElement currentArg = arguments[i];
+            if (!processArgument(id, tsonElement, node, currentArg, arguments, i, f, context)) {
+                return processArgumentAsCommonStyleProperty(id, tsonElement, node, currentArg, arguments, i, f, context);
+            }
+        }
+        return true;
+    }
+
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
         HEngine engine = context.engine();
         HDocumentFactory f = context.documentFactory();
@@ -212,26 +238,9 @@ public abstract class HNodeParserBase implements HNodeParser {
                 ObjEx ee = ObjEx.of(tsonElement);
                 HParseHelper.fillAnnotations(tsonElement, p);
                 processImplicitStyles(id, p, f, context2);
-                for (TsonElement e : ee.args()) {
-                    if (!processArg(id, p, e, f, context2)) {
-                        if (HStyleParser.isCommonStyleProperty(id)) {
-                            ObjEx es = ObjEx.of(e);
-                            if (es.isFunction()) {
-                                context2.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
-                                        context2.source(),
-                                        e,
-                                        es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
-                                ), context2.source());
-                                // empty result
-                                return NOptional.of(new HItemList());
-                            }
-                            context2.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement), context2.source());
-                            return NOptional.of(new HItemList());
-                        } else {
-                            context2.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", context2.source(), e, tsonElement), context2.source());
-                            return NOptional.of(new HItemList());
-                        }
-                    }
+                if(!processArguments(id, tsonElement, p, ee.args().toArray(new TsonElement[0]), f, context2)){
+                    context2.messages().addError(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), ee.args(), tsonElement), context2.source());
+                    return NOptional.of(new HItemList());
                 }
                 for (TsonElement e : ee.body()) {
                     NOptional<HItem> u = engine.newNode(e, context2);

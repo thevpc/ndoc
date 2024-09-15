@@ -53,12 +53,10 @@ public class HEngineImpl implements HEngine {
     private Map<String, String> nodeTypeAliases;
     private HDocumentFactory factory;
     private HPropCalculator hPropCalculator = new HPropCalculator();
-    private HDocumentCompiler hDocumentCompiler;
     private HNodeRendererManager rendererManager;
 
     public HEngineImpl(NSession session) {
         this.session = session;
-        hDocumentCompiler = new HDocumentCompiler(this, session);
     }
 
 
@@ -219,7 +217,7 @@ public class HEngineImpl implements HEngine {
 
 
     public HDocumentLoadingResult compileDocument(HDocument document, HMessageList messages) {
-        return hDocumentCompiler.compile(document, messages);
+        return new HDocumentCompiler(this, messages,session).compile(document);
     }
 
     public boolean validateNode(HNode node) {
@@ -492,7 +490,7 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HResource computeSource(HNode node) {
-        return hDocumentCompiler.computeSource(node);
+        return new HDocumentCompiler(this, new HMessageListImpl(session, null),session).computeSource(node);
     }
 
     @Override

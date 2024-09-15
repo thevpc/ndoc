@@ -1,4 +1,4 @@
-package net.thevpc.halfa.engine.renderer.common.elem2d;
+package net.thevpc.halfa.engine.renderer.elem2d;
 
 import java.awt.*;
 import java.awt.geom.Path2D;

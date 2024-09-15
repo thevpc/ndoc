@@ -36,4 +36,6 @@ public interface HNodeFactoryParseContext {
 
     HDocumentFactory documentFactory();
 
+    TsonElement asPathRef(TsonElement element);
+
 }

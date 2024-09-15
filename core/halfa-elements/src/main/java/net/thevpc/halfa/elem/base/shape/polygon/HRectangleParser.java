@@ -22,10 +22,10 @@ public class HRectangleParser extends HNodeParserBase {
 
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case PAIR: {
-                TsonPair pp = e.toPair();
+                TsonPair pp = currentArg.toPair();
                 TsonElement k = pp.key();
                 TsonElement v = pp.value();
                 ObjEx ph = ObjEx.of(k);
@@ -37,7 +37,7 @@ public class HRectangleParser extends HNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            node.setProperty(new HProp(uid, v));
+                            node.setProperty(uid, v);
                             return true;
                         }
                     }
@@ -45,7 +45,7 @@ public class HRectangleParser extends HNodeParserBase {
                 break;
             }
             case NAME: {
-                ObjEx h = ObjEx.of(e);
+                ObjEx h = ObjEx.of(currentArg);
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
@@ -62,6 +62,6 @@ public class HRectangleParser extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 }

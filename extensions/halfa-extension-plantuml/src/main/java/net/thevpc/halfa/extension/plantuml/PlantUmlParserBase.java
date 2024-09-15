@@ -8,10 +8,13 @@ import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
+import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonPair;
 
 public abstract class PlantUmlParserBase extends HNodeParserBase {
     public PlantUmlParserBase(String id,String mode) {
@@ -44,47 +47,55 @@ public abstract class PlantUmlParserBase extends HNodeParserBase {
     @Override
     public void onStartParsingItem(String id, HNode node, TsonElement tsonElement, HNodeFactoryParseContext context) {
         super.onStartParsingItem(id, node, tsonElement, context);
-        node.setProperty(HPropName.MODE,id);
+        node.setProperty(HPropName.MODE, Tson.of(id));
     }
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case STRING: {
-                node.setProperty(HPropName.VALUE, e);
+                node.setProperty(HPropName.VALUE, currentArg);
                 return true;
             }
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
-                if (sp.isPresent()) {
-                    ObjEx.SimplePair spp = sp.get();
-                    ObjEx v = spp.getValue();
-                    switch (spp.getNameId()) {
+                if(currentArg.isSimplePair()) {
+                    TsonPair p = currentArg.toPair();
+                    String sid = HUtils.uid(p.key().stringValue());
+                    switch (sid) {
                         case HPropName.VALUE:
                         case "content": {
-                            node.setProperty(HPropName.VALUE, v.raw());
+                            node.setProperty(HPropName.VALUE, p.value());
                             return true;
                         }
                         case HPropName.FILE: {
-                            NPath nPath = context.resolvePath(v.asStringOrName().get().trim());
+                            String path = p.value().stringValue().trim();
+                            NPath nPath = context.resolvePath(path);
                             context.document().resources().add(nPath);
                             try {
-                                node.setProperty(HPropName.VALUE, nPath.readString().trim());
+                                node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
                             } catch (Exception ex) {
-                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath));
+                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", path, nPath));
                             }
                             return true;
                         }
                         case HPropName.MODE: {
-                            node.setProperty(HPropName.MODE, v.raw());
+                            node.setProperty(HPropName.MODE, p.value());
                             return true;
                         }
+                    }
+                }
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(currentArg).asSimplePair();
+                if (sp.isPresent()) {
+                    ObjEx.SimplePair spp = sp.get();
+                    ObjEx v = spp.getValue();
+                    switch (spp.getNameId()) {
+
                     }
                 }
                 break;
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 
     @Override

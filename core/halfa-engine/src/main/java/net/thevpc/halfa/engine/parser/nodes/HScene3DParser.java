@@ -16,10 +16,10 @@ public class HScene3DParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArg(String id, HNode node, TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (e.type()) {
+    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
+        switch (currentArg.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = ObjEx.of(e).asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(currentArg).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();
@@ -39,7 +39,7 @@ public class HScene3DParser extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArg(id, node, e, f, context);
+        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
     }
 
 }

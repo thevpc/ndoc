@@ -15,6 +15,7 @@ import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
 import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
 
 
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
@@ -33,7 +34,6 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
-import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
 import net.thevpc.nuts.util.NLiteral;
 
 public class DocumentView {
@@ -72,7 +72,7 @@ public class DocumentView {
         frame = new JFrame();
         frame.setTitle("H Document Viewer");
         frame.setIconImage(
-                ImageUtils.resizeImage(
+                HImageUtils.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
                         16, 16)
         );

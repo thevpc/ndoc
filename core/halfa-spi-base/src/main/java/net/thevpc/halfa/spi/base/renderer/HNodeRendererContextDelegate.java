@@ -20,6 +20,7 @@ import java.util.List;
 
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.spi.eval.HNodeEval;
+import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonElementBase;
 
 public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
@@ -138,57 +139,37 @@ public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
     }
 
     @Override
-    public <T> NOptional<T> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<TsonElement> computePropertyValue(HNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<Object> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<TsonElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
-            Object y = r.get();
+            TsonElement y = r.get();
             HNodeEval ne = new HNodeEval(t);
-            if (y instanceof TsonElementBase || y instanceof String) {
-                y = ne.eval(TsonUtils.toTson(y));
-            }
+            y = ne.eval(y);
             if (y != null) {
-                return NOptional.of((T) y);
+                return NOptional.of(y);
             }
         }
         return (NOptional) r;
     }
 
-    private <T> NOptional<T> computePropertyValueImpl(HNode t, String... all) {
-        NOptional<T> y = null;
+    private NOptional<TsonElement> computePropertyValueImpl(HNode t, String... all) {
+        NOptional y = null;
         if (t != null) {
-            y = engine().computeProperty(t, all).map(HProp::getValue).map(x -> {
-                try {
-                    return (T) x;
-                } catch (ClassCastException e) {
-                    return null;
-                }
-            }).filter(x -> x != null);
+            y = engine().computeProperty(t, all).map(HProp::getValue).filter(x -> x != null);
             if (y.isPresent()) {
                 return y;
             }
         }
         if (this.defaultStyles != null) {
-            NOptional<T> u = this.defaultStyles.get(all).map(HProp::getValue).map(x -> {
-                try {
-                    return (T) x;
-                } catch (ClassCastException e) {
-                    return null;
-                }
-            }).filter(x -> x != null);
+            NOptional<TsonElement> u = this.defaultStyles.get(all).map(HProp::getValue).filter(x -> x != null);
             if (u.isPresent()) {
                 return u;
             }
         }
         if (basePart != null) {
             for (String s : all) {
-                y = basePart.getProperty(s).map(HProp::getValue).map(x -> {
-                    try {
-                        return (T) x;
-                    } catch (ClassCastException e) {
-                        return null;
-                    }
-                }).filter(x -> x != null);
+                y = basePart.getProperty(s).map(HProp::getValue).filter(x -> x != null);
                 if (y.isPresent()) {
                     return y;
                 }

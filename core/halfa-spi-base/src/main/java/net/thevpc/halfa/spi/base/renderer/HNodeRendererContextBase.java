@@ -23,6 +23,7 @@ import java.util.Map;
 
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.spi.eval.HNodeEval;
+import net.thevpc.tson.TsonElement;
 
 public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseBase {
 
@@ -123,32 +124,26 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     }
 
     @Override
-    public <T> NOptional<T> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<TsonElement> computePropertyValue(HNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<Object> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<TsonElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
             HNodeEval ne = new HNodeEval(t);
-            Object u = ne.eval(TsonUtils.toTson(y));
+            TsonElement u = ne.eval(TsonUtils.toTson(y));
             if (u != null) {
-                return NOptional.of((T) u);
+                return NOptional.of(u);
             }
         }
         return (NOptional) r;
     }
 
-    private <T> NOptional<T> computePropertyValueImpl(HNode t, String... all) {
+    private NOptional<TsonElement> computePropertyValueImpl(HNode t, String... all) {
         if (t != null) {
             for (String s : all) {
                 NOptional<HProp> o = engine().computeProperty(t, s);
                 if (o.isPresent()) {
-                    NOptional<T> oo = o.map(HProp::getValue).map(x -> {
-                        try {
-                            return (T) x;
-                        } catch (ClassCastException e) {
-                            return null;
-                        }
-                    }).filter(x -> x != null);
+                    NOptional<TsonElement> oo = o.map(HProp::getValue).filter(x -> x != null);
                     if (oo.isPresent()) {
                         return oo;
                     }

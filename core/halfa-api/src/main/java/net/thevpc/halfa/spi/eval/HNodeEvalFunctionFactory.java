@@ -10,8 +10,8 @@ import net.thevpc.tson.TsonElement;
 /**
  * @author vpc
  */
-public interface HNodeEvalFunctions {
+public interface HNodeEvalFunctionFactory {
 
-    public NOptional<TsonElement> evalFunction(String varName, TsonElement[] vars);
+    NOptional<TsonElement> evalFunction(String varName, TsonElement[] vars);
 
 }

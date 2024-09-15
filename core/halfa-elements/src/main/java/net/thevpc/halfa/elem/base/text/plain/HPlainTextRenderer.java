@@ -12,6 +12,8 @@ import net.thevpc.halfa.spi.renderer.text.HRichTextTokenType;
 import net.thevpc.halfa.spi.renderer.text.HTextBaseRenderer;
 import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 
@@ -24,7 +26,8 @@ public class HPlainTextRenderer extends HTextBaseRenderer {
     public HTextRendererBuilder createRichTextHelper(HNode p, HNodeRendererContext ctx) {
         Paint fg = HValueByName.getForegroundColor(p, ctx,true);
         HTextRendererBuilder helper = new HTextRendererBuilderImpl(fg);
-        String message = NStringUtils.trim((String) (p.getPropertyValue(HPropName.VALUE).orElse("")));
+        TsonElement d = p.getPropertyValue(HPropName.VALUE).orElse(Tson.of(""));
+        String message = NStringUtils.trim(d.toStr().value());
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {
             allLines[i] = allLines[i].trim();

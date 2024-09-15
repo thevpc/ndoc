@@ -12,6 +12,7 @@ import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
 import java.util.*;
@@ -41,6 +42,43 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         this.session = session;
         this.source = source;
         this.nodePath.addAll(nodePath);
+    }
+
+    private boolean isVarName(String name) {
+        return name.matches("[$][a-zA-Z][a-zA-Z0-9_-]*]]");
+    }
+
+    @Override
+    public TsonElement asPathRef(TsonElement element) {
+        if (element.isAnyString()) {
+            String pathString = element.stringValue();
+            if (isVarName(pathString)) {
+                return element;
+            }
+            if(!pathString.trim().isEmpty()) {
+                for (int i = nodePath.size() - 1; i >= 0; i--) {
+                    HResource resource = engine().computeSource(nodePath.get(i));
+                    if (resource instanceof NPathHResource) {
+                        NPath base;
+                        if (resource instanceof NPathHResource) {
+                            NPath sp = ((NPathHResource) resource).getPath();
+                            if (sp.isRegularFile()) {
+                                sp = sp.getParent();
+                            }
+                            if (sp != null) {
+                                base = sp.resolve(pathString);
+                            } else {
+                                base = NPath.of(pathString, session());
+                            }
+                        } else {
+                            base = NPath.of(pathString, session());
+                        }
+                        return Tson.of(base.toString());
+                    }
+                }
+            }
+        }
+        return element;
     }
 
     @Override
@@ -114,7 +152,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             return null;
         }
         if (GitHelper.isGithubFolder(path)) {
-            return resolvePath(GitHelper.resolveGithubPath(path,messages, session));
+            return resolvePath(GitHelper.resolveGithubPath(path, messages, session));
         }
         HResource src = source;
         if (src == null) {

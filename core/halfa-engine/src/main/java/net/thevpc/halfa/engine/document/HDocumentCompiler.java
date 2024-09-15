@@ -12,32 +12,46 @@ import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.api.util.TsonUtils;
+import net.thevpc.halfa.engine.control.IfHNodeFlowControlProcessorFactory;
 import net.thevpc.halfa.engine.parser.HDocumentLoadingResultImpl;
+import net.thevpc.halfa.spi.HNodeFlowControlProcessor;
+import net.thevpc.halfa.spi.HNodeFlowControlProcessorContext;
+import net.thevpc.halfa.spi.base.model.DefaultHNode;
+import net.thevpc.halfa.spi.eval.HNodeEval;
 import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class HDocumentCompiler {
 
     private HEngine engine;
     private NSession session;
+    private HMessageList messages;
+    private IfHNodeFlowControlProcessorFactory flowControlProcessorFactory = new IfHNodeFlowControlProcessorFactory();
 
-    public HDocumentCompiler(HEngine engine, NSession session) {
+    public HDocumentCompiler(HEngine engine, HMessageList messages, NSession session) {
         this.engine = engine;
         this.session = session;
+        this.messages = messages;
     }
 
-    public HDocumentLoadingResult compile(HDocument document, HMessageList messages) {
+    public HDocumentLoadingResult compile(HDocument document) {
         HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(engine.computeSource(document.root()), messages, session);
         result.setDocument(document);
         HNode root = document.root();
         processUuid(root);
+        root = processCalls(root, result);
         root = processInheritance(root, result);
-        root = removeTemplates(root, result);
+        root = processControlFlow(root, result, new MyHNodeFlowControlProcessorContext(document, messages));
+        root = removeDeclarations(root, result);
         processRootPages(root);
         return result;
     }
@@ -109,14 +123,48 @@ public class HDocumentCompiler {
         }
     }
 
-    protected HNode removeTemplates(HNode node, HDocumentLoadingResultImpl result) {
+    protected HNode processControlFlow(HNode root, HDocumentLoadingResultImpl result, HNodeFlowControlProcessorContext context) {
+        HNode oldRoot = root;
+        HNode[] multiRoot = processControlFlowCurrent(new HNode[]{root}, result, context);
+        if (multiRoot.length == 0) {
+            root = new DefaultHNode(HNodeType.PAGE);
+            root.setSource(oldRoot.source());
+        } else {
+            root = new DefaultHNode(HNodeType.PAGE_GROUP);
+            root.setSource(oldRoot.source());
+            root.setChildren(multiRoot);
+        }
+        return root;
+    }
+
+    protected HNode[] processControlFlowCurrent(HNode[] nodes, HDocumentLoadingResultImpl result, HNodeFlowControlProcessorContext context) {
+        List<HNode> curr = new ArrayList<>(Arrays.asList(nodes));
+        for (HNodeFlowControlProcessor a : flowControlProcessorFactory.list()) {
+            List<HNode> result2 = new ArrayList<>();
+            for (int i = 0; i < curr.size(); i++) {
+                HNode cc = curr.get(i);
+                if (cc != null) {
+                    HNode[] p = a.process(cc, context);
+                    if (p == null) {
+                        result2.add(cc);
+                    } else {
+                        result2.addAll(Arrays.stream(p).filter(Objects::nonNull).collect(Collectors.toList()));
+                    }
+                }
+            }
+            curr = result2;
+        }
+        return curr.toArray(new HNode[0]);
+    }
+
+    protected HNode removeDeclarations(HNode node, HDocumentLoadingResultImpl result) {
         List<HNode> children = node.children();
         for (int i = children.size() - 1; i >= 0; i--) {
             HNode child = children.get(i);
-            if (child.isTemplate()) {
+            if (child.isTemplate() || HNodeType.DEFINE.equals(child.type())) {
                 children.remove(i);
             } else {
-                removeTemplates(child, result);
+                removeDeclarations(child, result);
             }
         }
         return node;
@@ -133,7 +181,7 @@ public class HDocumentCompiler {
         try {
             aa = findAncestor(node, a);
         } catch (Exception ex) {
-            result.messages().addError(NMsg.ofC("invalid ancestor % for %s : %s", a, HUtils.strSnapshot(node), ex),
+            result.messages().addError(NMsg.ofC("invalid ancestor %s for %s : %s", a, HUtils.strSnapshot(node), ex),
                     null,
                     engine.computeSource(node)
             );
@@ -170,6 +218,79 @@ public class HDocumentCompiler {
         }
     }
 
+    protected HNode processCalls(HNode node, HDocumentLoadingResultImpl result) {
+        if (HNodeType.CALL.equals(node.type())) {
+            String uid = node.getName();
+            TsonElement callDeclaration = node.getPropertyValue(HPropName.VALUE).get();
+            //                    String uid = HUtils.uid(ee.name());
+
+            HNode currNode = node.parent();
+            while (currNode != null) {
+                for (HNode objectDefNode : currNode.children()) {
+                    if (HNodeType.DEFINE.equals(objectDefNode.type()) && uid.equals(HUtils.uid(objectDefNode.getName()))) {
+                        return inlineNodeDefinitionCall(objectDefNode, callDeclaration, session);
+                    }
+                }
+                currNode = currNode.parent();
+            }
+
+        }
+        List<HNode> newChildren=new ArrayList<>();
+        for (HNode child : node.children()) {
+            newChildren.add(processCalls(child, result));
+        }
+        node.setChildren(newChildren.toArray(new HNode[0]));
+        return node;
+    }
+
+    private HNode inlineNodeDefinitionCall(HNode objectDefNode, TsonElement callFunction, NSession session) {
+        HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
+        TsonArray objectDefArgsItem = (TsonArray) objectDefNode.getPropertyValue("args").orNull();
+        TsonElement[] objectDefArgs = objectDefArgsItem==null?new TsonElement[0] :objectDefArgsItem.all().toArray(new TsonElement[0]);
+        inlinedNode.setSource(objectDefNode.source());
+        inlinedNode.setStyleClasses(objectDefNode.getStyleClasses());
+        inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
+                HPropName.NAME.equals(x.getName())
+                        && !HPropName.ARGS.equals(x.getName())
+        ).toArray(HProp[]::new));
+        inlinedNode.setRules(objectDefNode.rules());
+        TsonElementList passedArgs = callFunction.toContainer().args();
+        TsonElement[] passedArgsArr = passedArgs == null ? new TsonElement[0] : passedArgs.toList().toArray(new TsonElement[0]);
+        inlinedNode.children().add(newAssign("args", Tson.ofArray(passedArgsArr).build()));
+        for (int i = 0; i < passedArgsArr.length; i++) {
+            TsonElement passedArg = passedArgsArr[i];
+            if (passedArg.isSimplePair()) {
+                TsonPair pair = passedArg.toPair();
+                inlinedNode.children().add(newAssign(pair.key().toStr().stringValue(), pair.value()));
+            } else {
+                if (i < objectDefArgs.length) {
+                    String paramName = objectDefArgs[i].toStr().stringValue();
+                    inlinedNode.children().add(newAssign(paramName, passedArg));
+                } else {
+                    NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
+                    messages.addError(message, objectDefNode.source());
+                    throw new NIllegalArgumentException(session, message);
+                }
+            }
+        }
+        //n.setParent(context.node().parent());
+        inlinedNode.setParent(objectDefNode.parent());
+        if(objectDefNode.children()!=null) {
+            for (HNode newBodyElement : objectDefNode.children()) {
+                inlinedNode.children().add(newBodyElement.copy());
+            }
+        }
+//        inlinedNode.toString();
+        return inlinedNode;
+    }
+
+    private HNode newAssign(String name, TsonElement value) {
+        HNode n = new DefaultHNode(HNodeType.ASSIGN);
+        n.setProperty(HPropName.NAME, Tson.of(name));
+        n.setProperty(HPropName.VALUE, value);
+        return n;
+    }
+
     protected HNode processInheritance(HNode node, HDocumentLoadingResultImpl result) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
@@ -181,7 +302,7 @@ public class HDocumentCompiler {
             for (String a : t) {
                 prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
-            node.setProperty(HPropName.ANCESTORS, newAncestors.toArray(new String[0]));
+            node.setProperty(HPropName.ANCESTORS, Tson.of(newAncestors.toArray(new String[0])));
             for (HProp p : inheritedProps.toList()) {
                 NOptional<HProp> u = node.getProperty(p.getName());
                 if (!u.isPresent()) {
@@ -222,7 +343,7 @@ public class HDocumentCompiler {
         while (parent != null) {
             List<HNode> r = new ArrayList<>();
             for (HNode x : parent.children()) {
-                if(x.isTemplate()) {
+                if (x.isTemplate()) {
                     if (Objects.equals(HUtils.uid(x.getName()), finalName)) {
                         r.add(x);
                     }
@@ -256,5 +377,26 @@ public class HDocumentCompiler {
             node = node.parent();
         }
         return null;
+    }
+
+    private static class MyHNodeFlowControlProcessorContext implements HNodeFlowControlProcessorContext {
+        private HDocument document;
+        private HMessageList messages;
+
+        public MyHNodeFlowControlProcessorContext(HDocument document, HMessageList messages) {
+            this.document = document;
+            this.messages = messages;
+        }
+
+        @Override
+        public TsonElement evalExpression(HNode node, TsonElement expression) {
+            HNodeEval ne = new HNodeEval(node);
+            return ne.eval(TsonUtils.toTson(expression));
+        }
+
+        @Override
+        public TsonElement resolveVarValue(HNode node, String varName) {
+            return evalExpression(node, Tson.name("$" + varName));
+        }
     }
 }

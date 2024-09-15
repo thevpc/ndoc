@@ -12,6 +12,7 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
+import net.thevpc.tson.TsonElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public abstract class HTextBaseRenderer extends HNodeRendererBase {
                             )
                             .stream().map(x
                                             -> {
-                                        Object n = finalCtx.computePropertyValue(p, x).orNull();
+                                        TsonElement n = finalCtx.computePropertyValue(p, x).orNull();
                                         if (n == null) {
                                             return n;
                                         }

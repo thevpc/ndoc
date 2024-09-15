@@ -1,0 +1,5 @@
+define: my-custom(text){
+    text($text,font-size:20)
+}
+
+my-custom(textsd:"Hello")

@@ -28,16 +28,17 @@ public class ObjEx {
     private String name;
     private List<TsonElement> args = new ArrayList<>();
     private List<TsonElement> children = new ArrayList<>();
-    private static Map<String,Color> predifinedColors = new HashMap<>();
+    private static Map<String, Color> predifinedColors = new HashMap<>();
 
-    private static NOptional<Color> getRegisteredColor(String name){
+    private static NOptional<Color> getRegisteredColor(String name) {
         Color u = predifinedColors.get(NNameFormat.LOWER_KEBAB_CASE.format(name));
-        return NOptional.of(u,s->NMsg.ofC("color %s",name));
+        return NOptional.of(u, s -> NMsg.ofC("color %s", name));
     }
 
-    private static void registerColor(String name,Color color){
-        predifinedColors.put(NNameFormat.LOWER_KEBAB_CASE.format(name),color);
+    private static void registerColor(String name, Color color) {
+        predifinedColors.put(NNameFormat.LOWER_KEBAB_CASE.format(name), color);
     }
+
     static {
         registerColor("Black", new Color(0, 0, 0));
         registerColor("Maroon", new Color(128, 0, 0));
@@ -534,8 +535,8 @@ public class ObjEx {
                     }
                 }
                 NOptional<Color> color = getRegisteredColor(s);
-                if(color.isPresent()){
-                  return color;
+                if (color.isPresent()) {
+                    return color;
                 }
                 switch (NNameFormat.LOWER_KEBAB_CASE.format(s.toLowerCase())) {
                     case "red": {
@@ -647,6 +648,10 @@ public class ObjEx {
 
     public NOptional<Integer> asIntOrBoolean() {
         return asInt().orElseUse(() -> asBoolean().map(x -> x ? 1 : 0));
+    }
+
+    public NOptional<TsonElement> asTsonInt() {
+        return asInt().map(x -> Tson.of(x));
     }
 
     public NOptional<Integer> asInt() {

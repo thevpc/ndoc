@@ -4,7 +4,7 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.engine.renderer.common.elem2d.ImageUtils;
+import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
 
@@ -64,7 +64,7 @@ public class HDebugFrame extends JFrame {
         setContentPane(debugPanel = new HDebugPanel(engine));
         setMinimumSize(new Dimension(400, 600));
         this.setIconImage(
-                ImageUtils.resizeImage(
+                HImageUtils.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/halfa/halfa.png")).getImage(),
                         16, 16)
         );
