@@ -53,9 +53,9 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
 
         // insert a border
         icon.setInsets(new Insets(0, 0, 0, 0));
-        if (error) {
-            return null;
-        }
+//        if (error) {
+//            return null;
+//        }
         return new HTextRendererBuilder.ImagePainter() {
             @Override
             public void paint(HGraphics g, double x, double y) {
