@@ -7,16 +7,18 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByType;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 
@@ -31,8 +33,8 @@ public class HImageRenderer extends HNodeRendererBase {
     public void renderMain(HNode p, HNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         Bounds2 b = selfBounds(p, ctx);
-        int w = HUtils.intOf(b.getWidth());
-        int h = HUtils.intOf(b.getHeight());
+        int w = net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth());
+        int h = net.thevpc.halfa.api.util.HUtils.intOf(b.getHeight());
         if (w <= 0 || h <= 0) {
             return;
         }
@@ -47,7 +49,7 @@ public class HImageRenderer extends HNodeRendererBase {
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
         Object img = p.getPropertyValue(HPropName.VALUE).orNull();
-        NOptional<String> imgStr = ObjEx.of(img).asStringOrName();
+        NOptional<TsonElement> imgStr = ObjEx.of(img).asTsonStringOrName();
         if (imgStr.isPresent()) {
             img = ctx.resolvePath(imgStr.get(), p);
         }
@@ -59,7 +61,7 @@ public class HImageRenderer extends HNodeRendererBase {
 
         if (!ctx.isDry()) {
             if (HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                g.fillRect((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
 
             HNodeRendererUtils.applyForeground(p, g, ctx, false);
@@ -77,6 +79,8 @@ public class HImageRenderer extends HNodeRendererBase {
 
                     }
                 } else {
+                    int descent = g.getFontMetrics().getAscent();
+                    g.drawString("Image not found "+imgPath, x, y+descent,new HTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
                     HResource src = ctx.engine().computeSource(p);
                     ctx.messages().addError(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),

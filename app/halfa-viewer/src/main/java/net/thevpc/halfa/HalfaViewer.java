@@ -10,8 +10,6 @@ import net.thevpc.nuts.Nuts;
  */
 public class HalfaViewer {
 
-
-
     public static void main(String[] args) {
         FlatLightLaf.setup(new com.formdev.flatlaf.FlatDarculaLaf());
         NSession session = Nuts.openWorkspace();

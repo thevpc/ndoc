@@ -11,6 +11,7 @@ import net.thevpc.halfa.api.model.elem3d.primitives.Element3DLine;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DPolygon;
 import net.thevpc.halfa.api.model.elem3d.primitives.Element3DPolyline;
 import net.thevpc.halfa.api.util.Colors;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.engine.renderer.elem2d.Element2DUIFactory;
 import net.thevpc.halfa.engine.renderer.elem2d.ShapeFactory;
 import net.thevpc.halfa.engine.renderer.elem3d.Light3DImpl;
@@ -21,7 +22,7 @@ import net.thevpc.halfa.spi.HImageTypeRendererFactory;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HGraphicsImageDrawer;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -38,6 +39,7 @@ import java.awt.geom.QuadCurve2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
 
@@ -245,8 +247,8 @@ public class HGraphicsImpl implements HGraphics {
             }
             case DIAMOND_FULL:
             case DIAMOND: {
-                xPoints = new int[]{0, -(int) (arrowWidth/2),-(int) (arrowWidth), -(int) arrowWidth};
-                yPoints = new int[]{0, -(int) (arrowHeight/2), 0                ,  (int) arrowHeight};
+                xPoints = new int[]{0, -(int) (arrowWidth / 2), -(int) (arrowWidth), -(int) arrowWidth};
+                yPoints = new int[]{0, -(int) (arrowHeight / 2), 0, (int) arrowHeight};
                 Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
                 if (type == HArrowType.DIAMOND_FULL) {
                     g.fill(arrowHead);
@@ -258,18 +260,18 @@ public class HGraphicsImpl implements HGraphics {
             case OVAL_FULL:
             case OVAL: {
                 if (type == HArrowType.OVAL_FULL) {
-                    fillOval(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                    fillOval(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
                 } else {
-                    drawOval(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                    drawOval(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
                 }
                 break;
             }
             case RECTANGLE:
             case RECTANGLE_FULL: {
                 if (type == HArrowType.RECTANGLE_FULL) {
-                    fillRect(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                    fillRect(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
                 } else {
-                    drawRect(arrowWidth/2,arrowHeight/2,arrowWidth/2,arrowHeight/2);
+                    drawRect(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
                 }
                 break;
             }
@@ -393,16 +395,16 @@ public class HGraphicsImpl implements HGraphics {
     @Override
     public void fillRect(Bounds2 a) {
         fillRect(
-                HUtils.doubleOf(a.getMinX()), HUtils.intOf(a.getMinY()),
-                HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                net.thevpc.halfa.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.halfa.api.util.HUtils.intOf(a.getMinY()),
+                net.thevpc.halfa.api.util.HUtils.intOf(a.getWidth()), net.thevpc.halfa.api.util.HUtils.intOf(a.getHeight())
         );
     }
 
     @Override
     public void drawRect(Bounds2 a) {
         drawRect(
-                HUtils.doubleOf(a.getMinX()), HUtils.intOf(a.getMinY()),
-                HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                net.thevpc.halfa.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.halfa.api.util.HUtils.intOf(a.getMinY()),
+                net.thevpc.halfa.api.util.HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
         );
     }
 
@@ -422,7 +424,48 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
+    public void drawString(String str, double x, double y, HTextOptions options) {
+        if (str == null || str.length() == 0) {
+            return;
+        }
+        Paint oldPaint = g.getPaint();
+        Font oldFont = g.getFont();
+        Stroke oldStroke = g.getStroke();
+        if (options.getStroke() != null) {
+            g.setStroke(options.getStroke());
+        }
+        if (options.getFont() != null) {
+            g.setFont(options.getFont());
+        }
+        HPoint2D sht = options.getShadowTranslation();
+        if (options.getShadowColor() != null && sht != null && !sht.equals(new HPoint2D(0, 0))) {
+            if (options.isStyled()) {
+                AttributedString attrStr = options.createShadowAttributedString(str,g);
+                g.drawString(attrStr.getIterator(), (float) (x + sht.getX()), (float) (y + sht.getY()));
+            } else {
+                g.setPaint(options.getShadowColor());
+                g.drawString(str, (float) (x + sht.getX()), (float) (y + sht.getY()));
+            }
+        }
+        {
+            if (options.isStyled()) {
+                AttributedString attrStr = options.createAttributedString(str,g);
+                g.drawString(attrStr.getIterator(), (float) (x), (float) (y));
+            } else {
+                g.setPaint(options.getForegroundColor());
+                g.drawString(str, (float) (x), (float) (y));
+            }
+        }
+        g.setPaint(oldPaint);
+        g.setFont(oldFont);
+        g.setStroke(oldStroke);
+    }
+
+    @Override
     public void drawString(AttributedCharacterIterator iterator, double x, double y) {
+        if (iterator == null) {
+            return;
+        }
         g.drawString(iterator, (float) x, (float) y);
     }
 

@@ -2,7 +2,6 @@ package net.thevpc.halfa.elem.base.text.text;
 
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.Double2;
-import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem2d.Shadow;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
@@ -63,7 +62,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
         if (!text.isEmpty()) {
             HRichTextToken r = new HRichTextToken(
                     HRichTextTokenType.IMAGE_PAINTER,
-                    text.toString()
+                    text
             );
             double fontSize = HValueByName.getFontSize(node, ctx);
             r.imagePainter = this.createLatex(text, fontSize);
@@ -92,7 +91,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
                 this.nextLine();
             }
             HRichTextToken c = new HRichTextToken(HRichTextTokenType.PLAIN, a.get(j));
-            g.setFont(c.font);
+            g.setFont(c.textOptions.font);
             c.bounds = g.getStringBounds(c.text);
             this.currRow().addToken(
                     c
@@ -131,7 +130,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             for (int j = 0; j < row.tokens.size(); j++) {
                 HRichTextToken c = row.tokens.get(j);
                 c.xOffset = maxX;
-                g.setFont(c.font);
+                g.setFont(c.textOptions.font);
 //                if (c.attributedString == null) {
 //                    c.bounds = g.getStringBounds(c.text);
 //                } else {
@@ -214,89 +213,39 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
         double x = selfBounds.getX();
         double y = selfBounds.getY();
         HGraphics g = ctx.graphics();
-        Font plainFont = HValueByName.getFont(p, ctx);
+        HTextOptions textOptions=new HTextOptions()
+                .setFont(HValueByName.getFont(p, ctx))
+                .setForegroundColor(HValueByName.getForegroundColor(p, ctx, true))
+                ;
+
+
         HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        Paint foreground = HValueByName.getForegroundColor(p, ctx, true);
         NOptional<Shadow> shadowOptional = HValueByName.readStyleAsShadow(p, HPropName.SHADOW, ctx);
+        int ascent = g.getFontMetrics(textOptions.getFont()).getAscent();
         if (shadowOptional.isPresent()) {
             Shadow shadow = shadowOptional.get();
-            HPoint2D translation = shadow.getTranslation();
-            if (translation == null) {
-                translation = new HPoint2D(0, 0);
-            }
-            Paint shadowColor = shadow.getColor();
-            if (shadowColor == null) {
-                if (foreground instanceof Color) {
-                    shadowColor = ((Color) foreground).darker();
+            textOptions.setShadowColor(shadow.getColor());
+            if (textOptions.getShadowColor() == null) {
+                if (textOptions.getForegroundColor() instanceof Color) {
+                    textOptions.setShadowColor(((Color) textOptions.getForegroundColor()).darker());
                 } else {
-                    shadowColor = foreground;
+                    textOptions.setShadowColor(textOptions.getForegroundColor());
                 }
             }
-            for (HRichTextRow row : this.rows) {
-                for (HRichTextToken col : row.tokens) {
-                    g.setPaint(foreground);
-                    int ascent = g.getFontMetrics(plainFont).getAscent();
-                    switch (col.type) {
-                        case PLAIN: {
-                            if (shadowColor != null) {
-                                g.setPaint(shadowColor);
-                            }
-                            if(defaultColor!=null) {
-                                g.setPaint(defaultColor);
-                            }
-                            g.drawString(col.text
-                                    , x + col.xOffset + translation.getX()
-                                    , (y + row.yOffset) + ascent + translation.getY()
-                            );
-                            break;
-                        }
-                        case STYLED: {
-                            col.attributedShadowString.addAttribute(TextAttribute.FOREGROUND, shadowColor);
-                            g.drawString(col.attributedShadowString.getIterator()
-                                    , x + col.xOffset + translation.getX()
-                                    , (y + row.yOffset) + ascent + translation.getY()
-                            );
-                            break;
-                        }
-                        default:
-                            throw new AssertionError();
-                    }
-                }
-            }
+            textOptions.setShadowTranslation(shadow.getTranslation());
         }
         for (HRichTextRow row : this.rows) {
             for (HRichTextToken col : row.tokens) {
-                g.setPaint(foreground);
-                g.setFont(plainFont);
                 switch (col.type) {
-                    case PLAIN: {
-                        int ascent = g.getFontMetrics(plainFont).getAscent();
-                        g.drawString(col.text, x + col.xOffset
-                                , (y + row.yOffset) + ascent
+                    case PLAIN:
+                    case STYLED:
+                    {
+                        g.drawString(
+                                col.text
+                                , x + col.xOffset
+                                , (y + row.yOffset) + ascent,
+                                textOptions.copy().copyNonNullFrom(col.textOptions)
                         );
-                        if (debug) {
-                            g.drawRect(
-                                    x + col.xOffset,
-                                    y + row.yOffset,
-                                    col.bounds.getWidth(),
-                                    col.bounds.getHeight()
-                            );
-                        }
-                        break;
-                    }
-                    case STYLED: {
-                        int ascent = g.getFontMetrics(col.font).getAscent();
-                        g.drawString(col.attributedString.getIterator(), x + col.xOffset
-                                , (y + row.yOffset) + ascent
-                        );
-                        if (debug) {
-                            g.drawRect(
-                                    x + col.xOffset,
-                                    y + row.yOffset,
-                                    col.bounds.getWidth(),
-                                    col.bounds.getHeight()
-                            );
-                        }
                         break;
                     }
                     case IMAGE_PAINTER: {
@@ -311,6 +260,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
                                     col.bounds.getHeight()
                             );
                         }
+                        break;
                     }
                 }
             }

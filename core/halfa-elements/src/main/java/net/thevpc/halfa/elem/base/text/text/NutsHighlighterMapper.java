@@ -10,8 +10,6 @@ import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.awt.*;
-import java.awt.font.TextAttribute;
-import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
 
@@ -54,7 +52,7 @@ public class NutsHighlighterMapper {
                         result.currRow();
                         HRichTextToken col = new HRichTextToken(HRichTextTokenType.PLAIN, np.getText());
                         col.tok = nText;
-                        g.setFont(col.font);
+                        g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);
                         result.addToken(col);
                     }
@@ -73,47 +71,50 @@ public class NutsHighlighterMapper {
                         }
                         HRichTextToken col = new HRichTextToken(HRichTextTokenType.STYLED, t.getText());
                         col.tok = nText;
-                        col.attributedString = new AttributedString(col.text);
-                        col.attributedShadowString = new AttributedString(col.text);
-                        g.setFont(col.font);
+//                        col.attributedString = new AttributedString(col.text);
+//                        col.attributedShadowString = new AttributedString(col.text);
+                        g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);
                         result.addToken(col);
                         // Set attributes
                         NTextStyles styles = s.getStyles();
-                        int fontStyle = 0;
+//                        int fontStyle = 0;
                         int strLen = t.getText().length();
-                        String fontFamily = null;
-                        double fontSize = 0;
+//                        String fontFamily = null;
+//                        double fontSize = 0;
                         for (NTextStyle nTextStyle : styles.toArray()) {
                             switch (nTextStyle.getType()) {
                                 case BOLD: {
-                                    fontStyle |= Font.BOLD;
+                                    col.textOptions.setBold(true);
                                     break;
                                 }
                                 case ITALIC: {
-                                    fontStyle |= Font.ITALIC;
+                                    col.textOptions.setItalic(true);
                                     break;
                                 }
                                 case UNDERLINED: {
-                                    col.attributedString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 0, strLen);
-                                    col.attributedShadowString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 0, strLen);
+                                    col.textOptions.underlined =true;
+                                    break;
+                                }
+                                case STRIKED: {
+                                    col.textOptions.strikeThrough=true;
                                     break;
                                 }
 
                                 case FORE_TRUE_COLOR: {
-                                    col.attributedString.addAttribute(TextAttribute.FOREGROUND, new Color(nTextStyle.getVariant()), 0, strLen);
+                                    col.textOptions.foregroundColor =new Color(nTextStyle.getVariant());
                                     break;
                                 }
                                 case BACK_TRUE_COLOR: {
-                                    col.attributedString.addAttribute(TextAttribute.BACKGROUND, new Color(nTextStyle.getVariant()), 0, strLen);
+                                    col.textOptions.backgroundColor =new Color(nTextStyle.getVariant());
                                     break;
                                 }
                                 case FORE_COLOR: {
-                                    col.attributedString.addAttribute(TextAttribute.FOREGROUND, getCodeColorPalette(nTextStyle.getVariant()), 0, strLen);
+                                    col.textOptions.foregroundColor =getCodeColorPalette(nTextStyle.getVariant());
                                     break;
                                 }
                                 case BACK_COLOR: {
-                                    col.attributedString.addAttribute(TextAttribute.FOREGROUND, getCodeColorPalette(nTextStyle.getVariant()), 0, strLen);
+                                    col.textOptions.backgroundColor =getCodeColorPalette(nTextStyle.getVariant());
                                     break;
                                 }
                                 case PLAIN: {
@@ -142,7 +143,6 @@ public class NutsHighlighterMapper {
                                 case REVERSED:
                                 case SECONDARY:
                                 case SEPARATOR:
-                                case STRIKED:
                                 case STRING:
                                 case SUCCESS:
                                 case TITLE:
@@ -151,39 +151,26 @@ public class NutsHighlighterMapper {
                                 case WARN: {
                                     TextPartStyle ss = resolveCodeStyle(nTextStyle, p, ctx, cache);
                                     if (ss.foreground != null) {
-                                        col.attributedString.addAttribute(TextAttribute.FOREGROUND, ss.foreground, 0, strLen);
+                                        col.textOptions.foregroundColor =ss.foreground;
                                     }
                                     if (ss.background != null) {
-                                        col.attributedString.addAttribute(TextAttribute.BACKGROUND, ss.background, 0, strLen);
+                                        col.textOptions.backgroundColor =ss.background;
                                     }
                                     if (ss.bold) {
-                                        fontStyle |= Font.BOLD;
+                                        col.textOptions.setBold(true);
                                     }
                                     if (ss.italic) {
-                                        fontStyle |= Font.ITALIC;
+                                        col.textOptions.setItalic(true);
                                     }
                                     if (ss.fontSize >= 1) {
-                                        fontSize = ss.fontSize;
+                                        col.textOptions.setFontSize(ss.fontSize<=0?null:(float)ss.fontSize);
                                     }
-                                    fontFamily = ss.fontFamily;
+                                    col.textOptions.setFontFamily(ss.fontFamily);
                                     break;
                                 }
 
                             }
                         }
-                        Font baseFont = g.getFont();
-                        double baseFontSize = baseFont.getSize();
-                        if (fontSize < 1) {
-                            fontSize = baseFontSize;
-                        }
-                        if (fontFamily != null) {
-                            baseFont = new Font(fontFamily, Font.PLAIN, (int) fontSize);
-                        } else if (fontSize != baseFontSize) {
-                            baseFont = baseFont.deriveFont((float) baseFontSize);
-                        }
-                        col.font = baseFont.deriveFont(fontStyle);
-                        col.attributedString.addAttribute(TextAttribute.FONT, col.font);
-                        col.attributedShadowString.addAttribute(TextAttribute.FONT, col.font);
                     }
                     break;
                 }

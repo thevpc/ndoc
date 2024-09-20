@@ -6,11 +6,11 @@ import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.eval.HParseHelper;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.nuts.NCallableSupport;
@@ -76,7 +76,7 @@ public abstract class HNodeParserBase implements HNodeParser {
             case PAIR: {
                 if(currentArg.isSimplePair()){
                     TsonPair p = currentArg.toPair();
-                    String sid = HUtils.uid(p.key().stringValue());
+                    String sid = net.thevpc.halfa.api.util.HUtils.uid(p.key().stringValue());
                     if (HStyleParser.isCommonStyleProperty(sid)) {
                         node.setProperty(sid, p.value());
                         return true;
@@ -88,7 +88,7 @@ public abstract class HNodeParserBase implements HNodeParser {
                 ObjEx h = ObjEx.of(currentArg);
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
-                    String pid = HUtils.uid(u.get());
+                    String pid = net.thevpc.halfa.api.util.HUtils.uid(u.get());
                     if (HStyleParser.isCommonStyleProperty(pid)) {
                         //will be processed later
                         node.setProperty(pid, Tson.ofTrue());
@@ -148,7 +148,7 @@ public abstract class HNodeParserBase implements HNodeParser {
     }
 
     private boolean acceptTypeName(String id) {
-        String oid = HUtils.uid(id);
+        String oid = net.thevpc.halfa.api.util.HUtils.uid(id);
         if (id.equals(oid)) {
             return true;
         }
@@ -182,7 +182,7 @@ public abstract class HNodeParserBase implements HNodeParser {
     public String resolveEffectiveId(String id){
         String nId = getNodeId();
         if(!NBlankable.isBlank(nId)){
-            return HUtils.uid(nId);
+            return net.thevpc.halfa.api.util.HUtils.uid(nId);
         }
         return HUtils.uid(id);
     }

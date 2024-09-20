@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.renderer.elem2d;
 
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;

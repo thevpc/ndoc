@@ -3,13 +3,13 @@ package net.thevpc.halfa.engine.renderer;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
@@ -37,7 +37,7 @@ public class HNodeRendererManagerImpl implements HNodeRendererManager {
                     NOptional<HNodeParser> f = engine.nodeTypeFactory(type);
                     if (f.isPresent()) {
                         HNodeParser ntf = f.get();
-                        this.renderers.put(HUtils.uid(ntf.id()), renderer);
+                        this.renderers.put(net.thevpc.halfa.api.util.HUtils.uid(ntf.id()), renderer);
                         String[] aliases = ntf.aliases();
                         if (aliases != null) {
                             for (String alias : aliases) {

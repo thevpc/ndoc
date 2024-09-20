@@ -3,12 +3,11 @@ package net.thevpc.halfa.elem.base.shape.polygon;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
-import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -31,7 +30,7 @@ public class HRectangleParser extends HNodeParserBase {
                 ObjEx ph = ObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
-                    String uid = HUtils.uid(n.get());
+                    String uid = net.thevpc.halfa.api.util.HUtils.uid(n.get());
                     switch (uid) {
                         case HPropName.ROUND_CORNER:
                         case HPropName.THEED:

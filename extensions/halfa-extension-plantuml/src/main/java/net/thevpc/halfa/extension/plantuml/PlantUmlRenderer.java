@@ -6,13 +6,13 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
@@ -104,14 +104,14 @@ public class PlantUmlRenderer extends HNodeRendererBase {
 
             if (!ctx.isDry()) {
                 if (HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                    g.fillRect((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                    g.fillRect((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth()), net.thevpc.halfa.api.util.HUtils.intOf(b.getHeight()));
                 }
 
                 HNodeRendererUtils.applyForeground(p, g, ctx, false);
                 if (image != null) {
                     // would resize?
-                    int w = HUtils.intOf(b.getWidth());
-                    int h = HUtils.intOf(b.getHeight());
+                    int w = net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth());
+                    int h = net.thevpc.halfa.api.util.HUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
                         BufferedImage resized = HImageUtils.resize(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);

@@ -1,6 +1,7 @@
 package net.thevpc.halfa.api.util;
 
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NOptional;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -12,6 +13,11 @@ public class NPathHResource extends DefaultHResource {
 
     public NPathHResource(NPath path) {
         this.path = path;
+    }
+
+    @Override
+    public NOptional<NPath> path() {
+        return NOptional.of(path);
     }
 
     public NPath getPath() {

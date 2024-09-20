@@ -1,17 +1,25 @@
 package net.thevpc.halfa.api.util;
 
+import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NOptional;
+
 import java.io.InputStream;
 import java.util.Objects;
 
 class NInputStreamHResource extends DefaultHResource {
-    private InputStream path;
+    private InputStream inputStream;
 
-    public NInputStreamHResource(InputStream path) {
-        this.path = path;
+    @Override
+    public NOptional<NPath> path() {
+        return NOptional.ofNamedEmpty("path");
+    }
+
+    public NInputStreamHResource(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     public Object state() {
-        return path;
+        return inputStream;
     }
 
     @Override
@@ -20,11 +28,11 @@ class NInputStreamHResource extends DefaultHResource {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         NInputStreamHResource that = (NInputStreamHResource) o;
-        return Objects.equals(path, that.path);
+        return Objects.equals(inputStream, that.inputStream);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), path);
+        return Objects.hash(super.hashCode(), inputStream);
     }
 }

@@ -3,13 +3,17 @@ package net.thevpc.halfa.spi.base.renderer;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.util.HSizeRef;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
 
 public abstract class HNodeRendererContextBaseBase implements HNodeRendererContext {
     public void render(HNode p) {
@@ -26,7 +30,7 @@ public abstract class HNodeRendererContextBaseBase implements HNodeRendererConte
         if (path.isAbsolute()) {
             return path;
         }
-        return resolvePath(path.toString(), node);
+        return resolvePath(Tson.of(path.toString()), node);
     }
 
     @Override
@@ -51,26 +55,10 @@ public abstract class HNodeRendererContextBaseBase implements HNodeRendererConte
 
 
     @Override
-    public NPath resolvePath(String path, HNode node) {
-        if (NBlankable.isBlank(path)) {
-            return null;
-        }
+    public NPath resolvePath(TsonElement path, HNode node) {
         Object src = engine().computeSource(node);
-        NPath base;
-        if (src instanceof NPathHResource) {
-            NPath sp = ((NPathHResource) src).getPath();
-            if (sp.isRegularFile()) {
-                sp = sp.getParent();
-            }
-            if (sp != null) {
-                base = sp.resolve(path);
-            } else {
-                base = NPath.of(path, session());
-            }
-        } else {
-            base = NPath.of(path, session());
-        }
-        return base;
+        NPath sp = (src instanceof HResource)?((HResource) src).path().orNull():null;
+        return HUtils.resolvePath(path, src,session());
     }
 
     @Override

@@ -5,13 +5,13 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.eval.HValueByType;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.HUtils;
 
 import java.awt.*;
 
@@ -36,7 +36,7 @@ public class HArcRenderer extends HNodeRendererBase {
             if(stroke!=null){
                 g.setStroke(stroke);
             }
-            g.drawArc((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
+            g.drawArc((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
                     (int) startAngle,
                     (int) endAngle
             );

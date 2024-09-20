@@ -2,7 +2,7 @@ package net.thevpc.halfa.engine.document;
 
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.*;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;

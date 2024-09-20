@@ -6,13 +6,13 @@ import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.model.HSizeRequirements;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -110,7 +110,7 @@ public class HEquationRenderer extends HNodeRendererBase {
             double y = selfBounds.getY();
             if (!ctx.isDry()) {
                 if (HNodeRendererUtils.applyBackgroundColor((HNode) p, g, ctx)) {
-                    g.fillRect((int) x, (int) y, HUtils.intOf(selfBounds.getWidth()), HUtils.intOf(selfBounds.getHeight()));
+                    g.fillRect((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(selfBounds.getWidth()), HUtils.intOf(selfBounds.getHeight()));
                 }
             }
         } else {

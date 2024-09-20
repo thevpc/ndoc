@@ -1,12 +1,12 @@
 package net.thevpc.halfa.spi.renderer;
 
 import net.thevpc.halfa.api.model.HArrow;
-import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HElement3D;
 import net.thevpc.halfa.api.model.elem3d.Light3D;
 import net.thevpc.halfa.api.model.elem3d.Matrix3D;
 import net.thevpc.halfa.api.model.elem3d.Projection3D;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.tson.TsonElement;
@@ -69,9 +69,11 @@ public interface HGraphics {
 
     void drawString(AttributedCharacterIterator iterator, double x, double y);
 
-    void drawString(String str, double x, double i);
+    void drawString(String str, double x, double y);
 
-    void debugString(String str, double x, double i);
+    void drawString(String str, double x, double y, HTextOptions options);
+
+    void debugString(String str, double x, double y);
 
     Color getColor();
 

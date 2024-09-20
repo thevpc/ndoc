@@ -5,8 +5,8 @@ import net.thevpc.halfa.api.model.HArrowType;
 import net.thevpc.halfa.api.model.elem2d.*;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.util.DefaultColorPalette;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NNameFormat;
@@ -334,7 +334,7 @@ public class ObjEx {
                     case OBJECT:
                     case ARRAY:
                     case UPLET: {
-                        name = HUtils.uid(te.name());
+                        name = net.thevpc.halfa.api.util.HUtils.uid(te.name());
                         TsonElementList a = te.args();
                         if (a != null) {
                             args.addAll(a.toList());
@@ -391,13 +391,13 @@ public class ObjEx {
         for (TsonElement arg : args()) {
             NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(HUtils.uid(sp.get().name), sp.get().value);
+                a.put(net.thevpc.halfa.api.util.HUtils.uid(sp.get().name), sp.get().value);
             }
         }
         for (TsonElement arg : body()) {
             NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(HUtils.uid(sp.get().name), sp.get().value);
+                a.put(net.thevpc.halfa.api.util.HUtils.uid(sp.get().name), sp.get().value);
             }
         }
         return a;
@@ -408,7 +408,7 @@ public class ObjEx {
         for (TsonElement arg : args()) {
             NOptional<SimplePair> sp = ObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(HUtils.uid(sp.get().name), sp.get().value);
+                a.put(net.thevpc.halfa.api.util.HUtils.uid(sp.get().name), sp.get().value);
             }
         }
         return a;
@@ -709,6 +709,18 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("boolean from " + element);
     }
 
+    public NOptional<TsonElement> asTsonStringOrName() {
+        if (element instanceof String) {
+            return NOptional.of(Tson.of((String)element));
+        }
+        if (element instanceof TsonElement) {
+            if(((TsonElement) element).isAnyString()){
+                return NOptional.of((TsonElement) element);
+            }
+        }
+        return NOptional.ofNamedEmpty("string from " + element);
+    }
+
     public NOptional<String> asStringOrName() {
         if (element instanceof String) {
             return NOptional.of((String) element);
@@ -748,13 +760,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asIntArray();
+                    return ObjEx.of(te.toArray().body().toArray()).asIntArray();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asIntArray();
+                    return ObjEx.of(te.toObject().body().toArray()).asIntArray();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asIntArray();
+                    return ObjEx.of(te.toUplet().args().toArray()).asIntArray();
                 }
             }
         }
@@ -814,16 +826,16 @@ public class ObjEx {
                     if (te.toArray().header() != null) {
                         return NOptional.of(new TsonElement[]{te});
                     }
-                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toArray().body().toArray());
                 }
                 case OBJECT: {
                     if (te.toObject().header() != null) {
                         return NOptional.of(new TsonElement[]{te});
                     }
-                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toArray().body().toArray());
                 }
                 case UPLET: {
-                    return NOptional.of(te.toUplet().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toUplet().args().toArray());
                 }
             }
         }
@@ -868,13 +880,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asDoubleArray();
+                    return ObjEx.of(te.toArray().body().toArray()).asDoubleArray();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asDoubleArray();
+                    return ObjEx.of(te.toObject().body().toArray()).asDoubleArray();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asDoubleArray();
+                    return ObjEx.of(te.toUplet().args().toArray()).asDoubleArray();
                 }
             }
         }
@@ -918,13 +930,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return NOptional.of(te.toArray().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toArray().body().toArray());
                 }
                 case OBJECT: {
-                    return NOptional.of(te.toObject().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toObject().body().toArray());
                 }
                 case UPLET: {
-                    return NOptional.of(te.toUplet().all().toArray(new TsonElement[0]));
+                    return NOptional.of(te.toUplet().args().toArray());
                 }
             }
         }
@@ -981,13 +993,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asStringArray();
+                    return ObjEx.of(te.toArray().body().toArray()).asStringArray();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asStringArray();
+                    return ObjEx.of(te.toObject().body().toArray()).asStringArray();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asStringArray();
+                    return ObjEx.of(te.toUplet().args().toArray()).asStringArray();
                 }
             }
         }
@@ -1015,13 +1027,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asBooleanArray();
+                    return ObjEx.of(te.toArray().body().toArray()).asBooleanArray();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asBooleanArray();
+                    return ObjEx.of(te.toObject().body().toArray()).asBooleanArray();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asBooleanArray();
+                    return ObjEx.of(te.toUplet().args().toArray()).asBooleanArray();
                 }
             }
         }
@@ -1394,13 +1406,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asDouble2Array();
+                    return ObjEx.of(te.toArray().body().toArray()).asDouble2Array();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asDouble2Array();
+                    return ObjEx.of(te.toObject().body().toArray()).asDouble2Array();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asDouble2Array();
+                    return ObjEx.of(te.toUplet().args().toArray()).asDouble2Array();
                 }
             }
         }
@@ -1428,13 +1440,13 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    return ObjEx.of(te.toArray().all().toArray(new TsonElement[0])).asDouble3Array();
+                    return ObjEx.of(te.toArray().body().toArray()).asDouble3Array();
                 }
                 case OBJECT: {
-                    return ObjEx.of(te.toObject().all().toArray(new TsonElement[0])).asDouble3Array();
+                    return ObjEx.of(te.toObject().body().toArray()).asDouble3Array();
                 }
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().all().toArray(new TsonElement[0])).asDouble3Array();
+                    return ObjEx.of(te.toUplet().args().toArray()).asDouble3Array();
                 }
             }
         }

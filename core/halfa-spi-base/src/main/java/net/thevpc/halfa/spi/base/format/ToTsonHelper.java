@@ -5,7 +5,7 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HStyleRule;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
@@ -26,7 +26,7 @@ public class ToTsonHelper {
 
     public static ToTsonHelper of(HNode node, HEngine engine) {
         return new ToTsonHelper(
-                HUtils.uid(node.type())
+                net.thevpc.halfa.api.util.HUtils.uid(node.type())
                 , node, engine);
     }
 
@@ -109,7 +109,7 @@ public class ToTsonHelper {
 
     public ToTsonHelper addNonNullPairChild(String name,Object value) {
         if(value!=null){
-            addChild(Tson.ofPair(name, HUtils.toTson(name)));
+            addChild(Tson.ofPair(name, net.thevpc.halfa.api.util.HUtils.toTson(name)));
         }
         return this;
     }

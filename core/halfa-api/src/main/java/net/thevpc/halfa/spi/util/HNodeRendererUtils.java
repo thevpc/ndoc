@@ -5,6 +5,7 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.SizeD;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -161,8 +162,8 @@ public class HNodeRendererUtils {
         if (force || HValueByName.isDebug(t, ctx)) {
             g.setColor(HValueByName.getDebugColor(t, ctx));
             g.drawRect(
-                    HUtils.doubleOf(a.getMinX()), HUtils.doubleOf(a.getMinY()),
-                    HUtils.doubleOf(a.getWidth()), HUtils.doubleOf(a.getHeight())
+                    net.thevpc.halfa.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.halfa.api.util.HUtils.doubleOf(a.getMinY()),
+                    net.thevpc.halfa.api.util.HUtils.doubleOf(a.getWidth()), net.thevpc.halfa.api.util.HUtils.doubleOf(a.getHeight())
             );
             Double2 origin = HValueByName.getOrigin(t, ctx,new Double2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
@@ -197,8 +198,8 @@ public class HNodeRendererUtils {
                 Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);
                 g.drawRect(
-                        HUtils.intOf(a.getMinX()), HUtils.intOf(a.getMinY()),
-                        HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                        net.thevpc.halfa.api.util.HUtils.intOf(a.getMinX()), net.thevpc.halfa.api.util.HUtils.intOf(a.getMinY()),
+                        net.thevpc.halfa.api.util.HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
                 );
                 g.setStroke(s);
             }

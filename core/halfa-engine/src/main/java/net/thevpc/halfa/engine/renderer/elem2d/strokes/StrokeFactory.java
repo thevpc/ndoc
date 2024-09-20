@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.elem2d.strokes;
 
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HGraphics;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
@@ -18,7 +18,7 @@ public class StrokeFactory {
 
     public static Stroke createStroke(String name, TsonElement e, HGraphics g) {
         ObjEx o = ObjEx.of(e);
-        switch (HUtils.uid(name)) {
+        switch (net.thevpc.halfa.api.util.HUtils.uid(name)) {
             case "basic":
             case "simple":
             case "regular":
@@ -71,7 +71,7 @@ public class StrokeFactory {
                 NOptional<ObjEx.SimplePair> sp = o.asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair ke = sp.get();
-                    switch (HUtils.uid(ke.getName())) {
+                    switch (net.thevpc.halfa.api.util.HUtils.uid(ke.getName())) {
                         case "advance": {
                             advance = ke.getValue().asDouble().orElse(advance);
                             break;
@@ -93,7 +93,7 @@ public class StrokeFactory {
         if (o.asDouble().isPresent()) {
             width = o.asDouble().get();
         } else if (o.asName().isPresent()) {
-            switch (HUtils.uid(o.asName().get())) {
+            switch (net.thevpc.halfa.api.util.HUtils.uid(o.asName().get())) {
                 case "dash":
                 case "dashed": {
                     dash = DASH_NORMAL;
@@ -126,7 +126,7 @@ public class StrokeFactory {
                         case "cap": {
                             String s = ke.getValue().asStringOrName().orElse(null);
                             if (s != null) {
-                                switch (HUtils.uid(s)) {
+                                switch (net.thevpc.halfa.api.util.HUtils.uid(s)) {
                                     case "square": {
                                         cap = BasicStroke.CAP_SQUARE;
                                         break;

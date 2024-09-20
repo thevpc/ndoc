@@ -120,7 +120,7 @@ public class HNodeEval implements ObjectEvalContext {
                 }
                 case FUNCTION: {
                     TsonFunction ff = ee.toFunction();
-                    List<TsonElement> r = ff.all()
+                    List<TsonElement> r = ff.args().toList()
                             .stream().map(x -> eval(x)).collect(Collectors.toList());
                     NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
                     if (!oo.isEmpty()) {
@@ -137,7 +137,7 @@ public class HNodeEval implements ObjectEvalContext {
                         if (u != null && u.startsWith("$")) {
                             String varName = u.substring(1);
                             TsonElement arrVal = evalVar(varName);
-                            return evalArray(arrVal, r.all().toArray(new TsonElement[0]));
+                            return evalArray(arrVal, r.body().toArray());
                         }
                     }
                     break;

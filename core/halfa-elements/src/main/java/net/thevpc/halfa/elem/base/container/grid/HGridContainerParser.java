@@ -8,11 +8,10 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.elem2d.Int2;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
@@ -67,16 +66,16 @@ public class HGridContainerParser extends HNodeParserBase {
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
 
-                    switch (HUtils.uid(n.get())) {
+                    switch (net.thevpc.halfa.api.util.HUtils.uid(n.get())) {
                         case "columns": {
-                            if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("hgrid") || HUtils.uid(id).equals("row")) {
+                            if (net.thevpc.halfa.api.util.HUtils.uid(id).equals("grid") || net.thevpc.halfa.api.util.HUtils.uid(id).equals("hgrid") || net.thevpc.halfa.api.util.HUtils.uid(id).equals("row")) {
                                 node.setProperty(HPropName.COLUMNS, ObjEx.of(v).asTsonInt().get());
                                 return true;
                             }
                             break;
                         }
                         case "rows": {
-                            if (HUtils.uid(id).equals("grid") || HUtils.uid(id).equals("vgrid") || HUtils.uid(id).equals("column")) {
+                            if (net.thevpc.halfa.api.util.HUtils.uid(id).equals("grid") || net.thevpc.halfa.api.util.HUtils.uid(id).equals("vgrid") || HUtils.uid(id).equals("column")) {
                                 node.setProperty(HPropName.ROWS, ObjEx.of(v).asTsonInt().get());
                                 return true;
                             }

@@ -6,9 +6,9 @@ import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NSession;
@@ -70,7 +70,7 @@ public class HCtrlAssignParser extends HNodeParserBase {
                 break;
             }
         }
-        return NCallableSupport.invalid(s->NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+        return NCallableSupport.invalid(s->NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
     }
 
     @Override

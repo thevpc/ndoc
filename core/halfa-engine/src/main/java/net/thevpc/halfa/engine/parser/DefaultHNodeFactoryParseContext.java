@@ -6,6 +6,7 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.engine.parser.util.GitHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
@@ -58,22 +59,13 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             if(!pathString.trim().isEmpty()) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
                     HResource resource = engine().computeSource(nodePath.get(i));
-                    if (resource instanceof NPathHResource) {
-                        NPath base;
-                        if (resource instanceof NPathHResource) {
-                            NPath sp = ((NPathHResource) resource).getPath();
-                            if (sp.isRegularFile()) {
-                                sp = sp.getParent();
+                    if (resource!=null) {
+                        if(resource.path().isPresent()) {
+                            NPath nPath = HUtils.resolvePath(element, resource, session());
+                            if(nPath!=null) {
+                                return Tson.of(nPath.toString());
                             }
-                            if (sp != null) {
-                                base = sp.resolve(pathString);
-                            } else {
-                                base = NPath.of(pathString, session());
-                            }
-                        } else {
-                            base = NPath.of(pathString, session());
                         }
-                        return Tson.of(base.toString());
                     }
                 }
             }
@@ -168,20 +160,6 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
                 }
             }
         }
-        NPath base;
-        if (src instanceof NPathHResource) {
-            NPath sp = ((NPathHResource) src).getPath();
-            if (sp.isRegularFile()) {
-                sp = sp.getParent();
-            }
-            if (sp != null) {
-                base = sp.resolve(path);
-            } else {
-                base = NPath.of(path, session);
-            }
-        } else {
-            base = NPath.of(path, session);
-        }
-        return base;
+        return HUtils.resolvePath(Tson.of(path),src,session());
     }
 }

@@ -26,7 +26,7 @@ public interface HTextRendererBuilder {
 
     public void setCode(String rawText);
 
-    public interface ImagePainter {
+    interface ImagePainter {
         void paint(HGraphics g, double x, double y);
 
         Double2 size();

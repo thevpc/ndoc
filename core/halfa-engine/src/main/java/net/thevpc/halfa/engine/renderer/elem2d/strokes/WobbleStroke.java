@@ -1,6 +1,6 @@
 package net.thevpc.halfa.engine.renderer.elem2d.strokes;
 
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.tson.TsonElement;
 

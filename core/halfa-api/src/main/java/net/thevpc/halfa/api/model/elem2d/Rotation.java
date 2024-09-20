@@ -1,10 +1,8 @@
 package net.thevpc.halfa.api.model.elem2d;
 
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonNumber;
 
 public class Rotation implements ToTson {
     private TsonElement angle;

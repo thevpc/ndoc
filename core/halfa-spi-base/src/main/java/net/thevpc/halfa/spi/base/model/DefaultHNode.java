@@ -8,7 +8,7 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.style.*;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
@@ -59,7 +59,7 @@ public class DefaultHNode implements HNode {
             return new String[0];
         }
         return Arrays.stream(v1).filter(x -> !NBlankable.isBlank(x))
-                .map(HUtils::uid)
+                .map(net.thevpc.halfa.api.util.HUtils::uid)
                 .distinct()
                 .toArray(String[]::new)
                 ;

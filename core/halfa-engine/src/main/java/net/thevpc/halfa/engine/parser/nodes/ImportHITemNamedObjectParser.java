@@ -28,7 +28,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case FUNCTION: {
-                List<TsonElement> u = tsonElement.toFunction().all();
+                List<TsonElement> u = tsonElement.toFunction().args().toList();
                 if (u.isEmpty()) {
                     context.messages().addError(NMsg.ofC("missing path argument : %s", tsonElement), context.source());
                     return NOptional.ofError(s -> NMsg.ofC("missing path argument : %s", tsonElement));

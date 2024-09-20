@@ -7,12 +7,8 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
-import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.engine.renderer.elem2d.text.util.TextUtils;
-import net.thevpc.halfa.engine.renderer.screen.components.PizzaProgressLayer;
-import net.thevpc.halfa.engine.renderer.screen.components.HDocumentLayer;
-import net.thevpc.halfa.engine.renderer.screen.components.PageIndexSimpleLayer;
-import net.thevpc.halfa.engine.renderer.screen.components.SourceNameSimpleLayer;
+import net.thevpc.halfa.engine.renderer.screen.components.*;
 
 
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
@@ -34,6 +30,7 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NLiteral;
 
 public class DocumentView {
@@ -57,6 +54,7 @@ public class DocumentView {
     private HMessageList messages;
     private HDocumentRendererListener listener;
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
+    private boolean isShown;
 
     public DocumentView(HDocumentRendererSupplier documentSupplier,
                         HEngine engine, HDocumentRendererListener listener,
@@ -79,7 +77,7 @@ public class DocumentView {
         contentPane = new ContentPanel();
 //        contentPane.setFocusTraversalKeysEnabled(false);
         frame.setContentPane(contentPane);
-        reloadDocument();
+        reloadDocumentAsync();
         frame.setSize(PageView.REF_SIZE);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         prepareContentPane();
@@ -87,9 +85,20 @@ public class DocumentView {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                animate();
+            }
+        }, 10, 10);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
                 checkResourcesChanged();
             }
         }, 3000, 1000);
+    }
+
+    private void animate() {
+        this.contentPane.invalidate();
+        this.contentPane.repaint();
     }
 
     private void checkResourcesChanged() {
@@ -107,12 +116,16 @@ public class DocumentView {
             if (document != null) {
                 HResourceMonitor r = document.resources();
                 if (r.changed()) {
-                    reloadDocument();
+                    reloadDocumentAsync();
                 }
             }
         } finally {
             this.inCheckResourcesChanged = false;
         }
+    }
+
+    public boolean isLoading() {
+        return inLoadDocument;
     }
 
     public NSession session() {
@@ -126,8 +139,11 @@ public class DocumentView {
     public String getPageSourceName() {
         Object s = getPageSource();
         if (s != null) {
-            if (s instanceof NPathHResource) {
-                return ((NPathHResource) s).getPath().getName();
+            if (s instanceof HResource) {
+                NPath path = ((HResource) s).path().orNull();
+                if (path != null) {
+                    return path.getName();
+                }
             }
         }
         return null;
@@ -169,6 +185,7 @@ public class DocumentView {
             layers.add(new PizzaProgressLayer());
             layers.add(new PageIndexSimpleLayer());
             layers.add(new SourceNameSimpleLayer());
+            layers.add(new RuntimeProgressLayer());
         }
 
         @Override
@@ -228,7 +245,7 @@ public class DocumentView {
                         break;
                     }
                     case KeyEvent.VK_F5: {
-                        reloadDocument();
+                        reloadDocumentAsync();
                         break;
                     }
                     case KeyEvent.VK_LEFT:
@@ -276,30 +293,32 @@ public class DocumentView {
         }
 
         HResource source = document.root().source();
-        if (Desktop.isDesktopSupported() && source instanceof NPathHResource) {
-            NPathHResource pp = (NPathHResource) source;
-            File file = pp.getPath().toFile().orNull();
-            if (file != null) {
-                JMenuItem openProject = new JMenuItem(
-                    file.isDirectory()?"Open Project in Explorer":"Open Project"
-                );
-                openProject.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (Desktop.isDesktopSupported()) {
-                            try {
-                                Desktop.getDesktop().open(file);
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
+        if (Desktop.isDesktopSupported() && source != null) {
+            NPath path = source.path().orNull();
+            if (path != null) {
+                File file = path.toFile().orNull();
+                if (file != null) {
+                    JMenuItem openProject = new JMenuItem(
+                            file.isDirectory() ? "Open Project in Explorer" : "Open Project"
+                    );
+                    openProject.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (Desktop.isDesktopSupported()) {
+                                try {
+                                    Desktop.getDesktop().open(file);
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
+                            } else {
+                                System.out.println("Desktop is not supported on this system.");
                             }
-                        } else {
-                            System.out.println("Desktop is not supported on this system.");
                         }
-                    }
-                });
-                popupMenu.add(openProject);
+                    });
+                    popupMenu.add(openProject);
+                    someMenus = true;
+                }
             }
-            someMenus = true;
         }
         if (someMenus) {
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -307,10 +326,24 @@ public class DocumentView {
     }
 
 
-    private boolean reloadDocument() {
+    private void reloadDocumentAsync() {
+        if (inLoadDocument) {
+            return;
+        }
+        new Thread(() -> {
+            reloadDocumentSync();
+            if (!isShown) {
+                isShown = true;
+                show();
+            }
+        }).start();
+    }
+
+    private boolean reloadDocumentSync() {
         if (inLoadDocument) {
             return false;
         }
+        listener.onStartLoadingDocument();
         this.inLoadDocument = true;
         try {
             PageView oldPage = this.currentShowingPage;
@@ -325,11 +358,13 @@ public class DocumentView {
             try {
                 HDocument rawDocument = documentSupplier.get(rendererContext);
                 HResource source = rawDocument.root().source();
-                if (source == null) {
-                    frame.setTitle("H Document Viewer");
-                } else {
-                    frame.setTitle(String.valueOf(source));
-                }
+                SwingUtilities.invokeLater(() -> {
+                    if (source == null) {
+                        frame.setTitle("H Document Viewer");
+                    } else {
+                        frame.setTitle(String.valueOf(source));
+                    }
+                });
                 listener.onChangedRawDocument(rawDocument);
                 HDocument compiledDocument = engine.compileDocument(rawDocument.copy(), messages).get();
                 listener.onChangedCompiledDocument(compiledDocument);
@@ -378,6 +413,7 @@ public class DocumentView {
             }
         } finally {
             this.inLoadDocument = false;
+            listener.onEndLoadingDocument();
         }
         return true;
     }
@@ -408,11 +444,11 @@ public class DocumentView {
         if (pv != null) {
             listener.onChangedPage(pv.getPage());
             this.currentShowingPage.onShow();
-            contentPane.doShow(pv.id());
+            SwingUtilities.invokeLater(() -> contentPane.doShow(pv.id()));
         } else {
             listener.onChangedPage(null);
         }
-        frame.setVisible(true);
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 
     public int getPagesCount() {

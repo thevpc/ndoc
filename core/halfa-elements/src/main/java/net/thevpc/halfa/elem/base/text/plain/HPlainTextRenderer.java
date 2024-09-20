@@ -33,7 +33,7 @@ public class HPlainTextRenderer extends HTextBaseRenderer {
             allLines[i] = allLines[i].trim();
             HRichTextToken c = new HRichTextToken(HRichTextTokenType.PLAIN, allLines[i]);
             HGraphics g = ctx.graphics();
-            g.setFont(c.font);
+            g.setFont(c.textOptions.font);
             c.bounds = g.getStringBounds(c.text);
             helper.nextLine().addToken(c);
         }

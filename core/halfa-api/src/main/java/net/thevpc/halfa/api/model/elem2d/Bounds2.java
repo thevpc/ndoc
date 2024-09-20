@@ -1,6 +1,6 @@
 package net.thevpc.halfa.api.model.elem2d;
 
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 
 public class Bounds2 {
     private Double x;
@@ -77,15 +77,15 @@ public class Bounds2 {
             return new Bounds2(x, y, w, h);
         }
 
-        Double xx1 = HUtils.min(getMinX(), s.getMinX());
-        Double yy1 = HUtils.min(getMinY(), s.getMinY());
-        Double xx2 = HUtils.max(getMaxX(), s.getMaxX());
-        Double yy2 = HUtils.max(getMaxY(), s.getMaxY());
+        Double xx1 = net.thevpc.halfa.api.util.HUtils.min(getMinX(), s.getMinX());
+        Double yy1 = net.thevpc.halfa.api.util.HUtils.min(getMinY(), s.getMinY());
+        Double xx2 = net.thevpc.halfa.api.util.HUtils.max(getMaxX(), s.getMaxX());
+        Double yy2 = net.thevpc.halfa.api.util.HUtils.max(getMaxY(), s.getMaxY());
         return new Bounds2(
                 xx1,
                 yy1,
-                HUtils.doubleOf(xx2) - HUtils.doubleOf(xx1),
-                HUtils.doubleOf(yy2) - HUtils.doubleOf(yy1)
+                net.thevpc.halfa.api.util.HUtils.doubleOf(xx2) - net.thevpc.halfa.api.util.HUtils.doubleOf(xx1),
+                net.thevpc.halfa.api.util.HUtils.doubleOf(yy2) - HUtils.doubleOf(yy1)
         );
     }
 

@@ -5,6 +5,7 @@ import net.thevpc.halfa.api.resources.HResourceMonitor;
 import net.thevpc.halfa.api.util.DefaultHResource;
 import net.thevpc.halfa.api.util.HResourceFactory;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NOptional;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -13,6 +14,10 @@ import java.util.stream.Collectors;
 
 public class HResourceMonitorImpl extends DefaultHResource implements HResourceMonitor {
     private Set<HResource> resources = new HashSet<>();
+    @Override
+    public NOptional<NPath> path() {
+        return NOptional.ofNamedEmpty("path");
+    }
 
     public HResourceMonitorImpl() {
     }

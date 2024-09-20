@@ -8,10 +8,10 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
@@ -44,7 +44,7 @@ public class HImageParser extends HNodeParserBase {
                 case PAIR: {
                     if (currentArg.isSimplePair()) {
                         TsonPair p = currentArg.toPair();
-                        String sid = HUtils.uid(p.key().stringValue());
+                        String sid = net.thevpc.halfa.api.util.HUtils.uid(p.key().stringValue());
                         switch (sid) {
                             case HPropName.VALUE:
                             case HPropName.FILE: {

@@ -6,10 +6,10 @@ import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
@@ -18,10 +18,8 @@ import java.awt.image.ImageObserver;
 import java.util.Arrays;
 import java.util.List;
 
-import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.spi.eval.HNodeEval;
 import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
 
 public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
 

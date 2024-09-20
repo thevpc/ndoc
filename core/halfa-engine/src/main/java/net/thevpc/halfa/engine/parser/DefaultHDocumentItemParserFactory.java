@@ -6,19 +6,19 @@ import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
-import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.engine.parser.nodes.*;
 import net.thevpc.halfa.engine.parser.styles.StylesHITemNamedObjectParser;
 import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
 
@@ -163,7 +163,31 @@ public class DefaultHDocumentItemParserFactory
                 if (c.type() == TsonElementType.FUNCTION || c.type() == TsonElementType.OBJECT) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
                     callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
-                    callNode.setProperty(HPropName.VALUE, c);
+                    //inline current file path in the TsonElements
+                    TsonElement functionTsonDeclaration=c;
+                    if(context.source()!=null) {
+                        NPath sourcePath = context.source().path().orNull();
+                        if (sourcePath != null) {
+                            functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration,sourcePath.toString());
+                            if(c.type() == TsonElementType.FUNCTION){
+                                TsonFunctionBuilder fb=(TsonFunctionBuilder)functionTsonDeclaration.builder();
+                                for (int i = 0; i < fb.args().size(); i++) {
+                                    fb.args().set(i,HUtils.addCompilerDeclarationPath(fb.args().get(i),sourcePath.toString()));
+                                }
+                                functionTsonDeclaration=fb.build();
+                            }else if(c.type() == TsonElementType.OBJECT){
+                                TsonObjectBuilder fb=(TsonObjectBuilder)functionTsonDeclaration.builder();
+                                TsonElementHeaderBuilder<TsonObjectBuilder> header = fb.header();
+                                if(header!=null){
+                                    for (int i = 0; i < header.args().size(); i++) {
+                                        header.args().set(i,HUtils.addCompilerDeclarationPath(header.args().get(i),sourcePath.toString()));
+                                    }
+                                }
+                                functionTsonDeclaration=fb.build();
+                            }
+                        }
+                    }
+                    callNode.setProperty(HPropName.VALUE, functionTsonDeclaration);
                     return NCallableSupport.of(10, () -> callNode);
                     //search for declaration!!
 //                    String uid = HUtils.uid(ee.name());
@@ -203,14 +227,14 @@ public class DefaultHDocumentItemParserFactory
         TsonElement c = context.element();
 //        HEngine engine = context.engine();
         for (TsonAnnotation a : c.annotations()) {
-            String nn = a.getName();
+            String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 return false;
             }
             boolean foundHalfa = false;
             boolean foundVersion = false;
             boolean foundOther = false;
-            for (TsonElement cls : a.all()) {
+            for (TsonElement cls : a.args()) {
                 switch (cls.type()) {
                     case STRING: {
                         if (cls.toStr().value().equalsIgnoreCase("halfa")) {
@@ -278,7 +302,7 @@ public class DefaultHDocumentItemParserFactory
         HashSet<String> allStyles = null;
         ObjEx ee = ObjEx.of(c);
         for (TsonAnnotation a : c.annotations()) {
-            String nn = a.getName();
+            String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 if (allAncestors == null) {
                     allAncestors = new HashSet<>();
@@ -287,7 +311,7 @@ public class DefaultHDocumentItemParserFactory
             }
             // add classes as well
 
-            for (TsonElement cls : a.all()) {
+            for (TsonElement cls : a.args()) {
                 if (allStyles == null) {
                     allStyles = new HashSet<>();
                 }

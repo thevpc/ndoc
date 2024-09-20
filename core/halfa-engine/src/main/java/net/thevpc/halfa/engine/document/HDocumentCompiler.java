@@ -12,6 +12,7 @@ import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HStyleRule;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.api.util.TsonUtils;
 import net.thevpc.halfa.engine.control.IfHNodeFlowControlProcessorFactory;
 import net.thevpc.halfa.engine.parser.HDocumentLoadingResultImpl;
@@ -19,7 +20,6 @@ import net.thevpc.halfa.spi.HNodeFlowControlProcessor;
 import net.thevpc.halfa.spi.HNodeFlowControlProcessorContext;
 import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.spi.eval.HNodeEval;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
@@ -181,7 +181,7 @@ public class HDocumentCompiler {
         try {
             aa = findAncestor(node, a);
         } catch (Exception ex) {
-            result.messages().addError(NMsg.ofC("invalid ancestor %s for %s : %s", a, HUtils.strSnapshot(node), ex),
+            result.messages().addError(NMsg.ofC("invalid ancestor %s for %s : %s", a, net.thevpc.halfa.api.util.HUtils.strSnapshot(node), ex),
                     null,
                     engine.computeSource(node)
             );
@@ -210,7 +210,7 @@ public class HDocumentCompiler {
             inheritedRules.addAll(Arrays.asList(aa.rules()));
         } else {
             result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("missing ancestor '%s' for %s", a,
-                            HUtils.strSnapshot(node)
+                            net.thevpc.halfa.api.util.HUtils.strSnapshot(node)
                     ), null,
                     engine.computeSource(node)
             );
@@ -227,7 +227,7 @@ public class HDocumentCompiler {
             HNode currNode = node.parent();
             while (currNode != null) {
                 for (HNode objectDefNode : currNode.children()) {
-                    if (HNodeType.DEFINE.equals(objectDefNode.type()) && uid.equals(HUtils.uid(objectDefNode.getName()))) {
+                    if (HNodeType.DEFINE.equals(objectDefNode.type()) && uid.equals(net.thevpc.halfa.api.util.HUtils.uid(objectDefNode.getName()))) {
                         return inlineNodeDefinitionCall(objectDefNode, callDeclaration, session);
                     }
                 }
@@ -246,7 +246,7 @@ public class HDocumentCompiler {
     private HNode inlineNodeDefinitionCall(HNode objectDefNode, TsonElement callFunction, NSession session) {
         HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
         TsonArray objectDefArgsItem = (TsonArray) objectDefNode.getPropertyValue("args").orNull();
-        TsonElement[] objectDefArgs = objectDefArgsItem==null?new TsonElement[0] :objectDefArgsItem.all().toArray(new TsonElement[0]);
+        TsonElement[] objectDefArgs = objectDefArgsItem==null?new TsonElement[0] :objectDefArgsItem.body().toArray();
         inlinedNode.setSource(objectDefNode.source());
         inlinedNode.setStyleClasses(objectDefNode.getStyleClasses());
         inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
@@ -256,18 +256,22 @@ public class HDocumentCompiler {
         inlinedNode.setRules(objectDefNode.rules());
         TsonElementList passedArgs = callFunction.toContainer().args();
         TsonElement[] passedArgsArr = passedArgs == null ? new TsonElement[0] : passedArgs.toList().toArray(new TsonElement[0]);
-        inlinedNode.children().add(newAssign("args", Tson.ofArray(passedArgsArr).build()));
+        inlinedNode.children().add(newAssign(HPropName.ARGS, Tson.ofArray(passedArgsArr).build()));
         for (int i = 0; i < passedArgsArr.length; i++) {
             TsonElement passedArg = passedArgsArr[i];
             if (passedArg.isSimplePair()) {
                 TsonPair pair = passedArg.toPair();
-                inlinedNode.children().add(newAssign(pair.key().toStr().stringValue(), pair.value()));
+                TsonElement value = pair.value();
+                if(HUtils.getCompilerDeclarationPath(value)==null){
+                    value=HUtils.addCompilerDeclarationPath(value,HUtils.getCompilerDeclarationPath(pair));
+                }
+                inlinedNode.children().add(newAssign(pair.key().toStr().stringValue(), value));
             } else {
                 if (i < objectDefArgs.length) {
                     String paramName = objectDefArgs[i].toStr().stringValue();
                     inlinedNode.children().add(newAssign(paramName, passedArg));
                 } else {
-                    NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
+                    NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.halfa.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
                     messages.addError(message, objectDefNode.source());
                     throw new NIllegalArgumentException(session, message);
                 }
@@ -339,7 +343,7 @@ public class HDocumentCompiler {
     protected HNode findAncestor(HNode node, String name) {
         HNode temp = null;
         HNode parent = node.parent();
-        String finalName = HUtils.uid(name);
+        String finalName = net.thevpc.halfa.api.util.HUtils.uid(name);
         while (parent != null) {
             List<HNode> r = new ArrayList<>();
             for (HNode x : parent.children()) {
@@ -355,7 +359,7 @@ public class HDocumentCompiler {
                 for (int i = 0; i < r.size(); i++) {
                     HNode hNode = r.get(i);
                     HResource n = engine.computeSource(hNode);
-                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(HUtils.strSnapshot(hNode));
+                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(net.thevpc.halfa.api.util.HUtils.strSnapshot(hNode));
                 }
                 throw new IllegalArgumentException(sb.toString());
             }

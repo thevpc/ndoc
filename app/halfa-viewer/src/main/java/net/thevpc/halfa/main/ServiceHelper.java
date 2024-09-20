@@ -2,10 +2,6 @@ package net.thevpc.halfa.main;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.document.HMessageType;
-import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.config.HalfaViewerConfigManager;
 import net.thevpc.halfa.config.UserConfig;
 import net.thevpc.halfa.config.UserConfigManager;
@@ -19,7 +15,6 @@ import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import javax.swing.*;
@@ -27,10 +22,7 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
-import java.util.function.Function;
 
 public class ServiceHelper {
 
@@ -52,58 +44,14 @@ public class ServiceHelper {
     HEngine engine;
     UserConfigManager usersConfigManager;
     HalfaViewerConfigManager configManager;
-    private List<HDocumentRendererListener> registeredHDocumentRendererListener = new ArrayList<>();
-    private List<HMessageList> registeredMessages = new ArrayList<>();
-    HDocumentRendererListener currListener = new HDocumentRendererListener() {
-        @Override
-        public void onChangedCompiledDocument(HDocument compiledDocument) {
-            for (HDocumentRendererListener r : registeredHDocumentRendererListener) {
-                r.onChangedCompiledDocument(compiledDocument);
-            }
-        }
+    HDocumentRendererListenerList currListeners = new HDocumentRendererListenerList();
 
-        @Override
-        public void onChangedRawDocument(HDocument rawDocument) {
-            for (HDocumentRendererListener r : registeredHDocumentRendererListener) {
-                r.onChangedRawDocument(rawDocument);
-            }
-        }
-
-        @Override
-        public void onChangedPage(HNode page) {
-            for (HDocumentRendererListener r : registeredHDocumentRendererListener) {
-                r.onChangedPage(page);
-            }
-        }
-
-        @Override
-        public void onCloseView() {
-            for (HDocumentRendererListener r : registeredHDocumentRendererListener) {
-                r.onCloseView();
-            }
-        }
-
-        @Override
-        public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
-            for (HDocumentRendererListener eventListener : registeredHDocumentRendererListener) {
-                eventListener.onSaveDocument(document, config);
-            }
-        }
-    };
-
-    private HMessageList currentMessageList = new HMessageList() {
-        @Override
-        public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
-            for (HMessageList r : registeredMessages) {
-                r.addMessage(type, message, error, source);
-            }
-        }
-    };
+    private HMessageListList currentMessages = new HMessageListList();
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         engine = new HEngineImpl(mainFrame.getSession());
-        registeredHDocumentRendererListener.add(new HDocumentRendererListener() {
+        currListeners.add(new HDocumentRendererListener() {
 
             @Override
             public void onSaveDocument(HDocument document, HDocumentStreamRendererConfig config) {
@@ -121,13 +69,13 @@ public class ServiceHelper {
 
     public void showDebug() {
         HDebugFrame debugFrame = new HDebugFrame(engine);
-        registeredMessages.add(debugFrame.messages());
-        registeredHDocumentRendererListener.add(debugFrame.rendererListener());
+        currentMessages.add(debugFrame.messages());
+        currListeners.add(debugFrame.rendererListener());
         debugFrame.setOnClose(new Runnable() {
             @Override
             public void run() {
-                registeredMessages.remove(debugFrame.messages());
-                registeredHDocumentRendererListener.remove(debugFrame.rendererListener());
+                currentMessages.remove(debugFrame.messages());
+                currListeners.remove(debugFrame.rendererListener());
             }
         });
         debugFrame.run();
@@ -144,8 +92,8 @@ public class ServiceHelper {
     public void openProject(NPath path) {
         configManager.markAccessed(path);
         HDocumentScreenRenderer renderer = engine.newScreenRenderer();
-        renderer.setMessages(currentMessageList);
-        renderer.addRendererListener(currListener);
+        renderer.setMessages(currentMessages);
+        renderer.addRendererListener(currListeners);
         renderer.renderPath(path);
     }
 

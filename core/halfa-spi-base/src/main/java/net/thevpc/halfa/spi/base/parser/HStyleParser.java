@@ -2,8 +2,8 @@ package net.thevpc.halfa.spi.base.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.style.*;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
@@ -90,7 +90,7 @@ public class HStyleParser {
         if (NBlankable.isBlank(s)) {
             return false;
         }
-        s = HUtils.uid(s);
+        s = net.thevpc.halfa.api.util.HUtils.uid(s);
         return COMMON_STYLE_PROPS.contains(s);
     }
 
@@ -118,21 +118,21 @@ public class HStyleParser {
                 List<String> names = new ArrayList<>();
                 List<String> classes = new ArrayList<>();
                 List<String> types = new ArrayList<>();
-                for (TsonElement child : e.toUplet().all()) {
+                for (TsonElement child : e.toUplet().args()) {
                     switch (child.type()) {
                         case PAIR: {
                             ObjEx h = ObjEx.of(e.toPair().key());
                             NOptional<String> k = h.asStringOrName();
                             if (k.isPresent()) {
-                                switch (HUtils.uid(k.get())) {
+                                switch (net.thevpc.halfa.api.util.HUtils.uid(k.get())) {
                                     case "class": {
                                         ObjEx h2 = ObjEx.of(e.toPair().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", HUtils.shortName(context.source()), e), context.source());
-                                            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", HUtils.shortName(context.source()), e));
+                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+                                            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
                                         }
                                     }
                                     case "name": {
@@ -141,9 +141,9 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", HUtils.shortName(context.source()), e), context.source());
+                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
                                             return NOptional.ofEmpty(
-                                                    NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", HUtils.shortName(context.source()), e)
+                                                    NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e)
                                             );
                                         }
                                     }
@@ -153,18 +153,18 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", HUtils.shortName(context.source()), e), context.source());
-                                            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", HUtils.shortName(context.source()), e));
+                                            context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+                                            return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
                                         }
                                     }
                                     default: {
-                                        context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", HUtils.shortName(context.source()), e), context.source());
-                                        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", HUtils.shortName(context.source()), e));
+                                        context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+                                        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
                                     }
                                 }
                             } else {
-                                context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", HUtils.shortName(context.source()), e), context.source());
-                                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", HUtils.shortName(context.source()), e));
+                                context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+                                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
                             }
                         }
                         case NAME: {
@@ -203,8 +203,8 @@ public class HStyleParser {
                 ));
             }
             default: {
-                context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s", HUtils.shortName(context.source()), e), context.source());
-                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", HUtils.shortName(context.source()), e));
+                context.messages().addError(NMsg.ofC("[%s] invalid style rule selector %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+                return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
             }
         }
     }
@@ -220,7 +220,7 @@ public class HStyleParser {
                 switch (v.type()) {
                     case OBJECT: {
                         List<HProp> styles = new ArrayList<>();
-                        for (TsonElement el : v.toObject().all()) {
+                        for (TsonElement el : v.toObject().body()) {
                             NOptional<HProp[]> s = parseStyle(el, f, context);
                             if (!s.isPresent()) {
                                 s = parseStyle(el, f, context);
@@ -238,8 +238,8 @@ public class HStyleParser {
                 break;
             }
         }
-        context.messages().addError(NMsg.ofC("[%s] invalid style rule %s", HUtils.shortName(context.source()), e), context.source());
-        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule %s", HUtils.shortName(context.source()), e));
+        context.messages().addError(NMsg.ofC("[%s] invalid style rule %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e), context.source());
+        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
     }
 
 
@@ -249,7 +249,7 @@ public class HStyleParser {
                 ObjEx h = ObjEx.of(e.toPair().key());
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
-                    String uid = HUtils.uid(u.get());
+                    String uid = net.thevpc.halfa.api.util.HUtils.uid(u.get());
                     return NOptional.of(new HProp[]{new HProp(uid, e.toPair().value())});
                 }
                 break;
@@ -265,7 +265,7 @@ public class HStyleParser {
             }
         }
         //context.messages().addError(NMsg.ofC("[%s] invalid style %s. expected key:value format", context.source(), e),context.source());
-        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style %s. expected key:value format", HUtils.shortName(context.source()), e));
+        return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style %s. expected key:value format", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), e));
     }
 
 }

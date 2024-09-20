@@ -8,7 +8,7 @@ import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.elem2d.HPoint2D;
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.model.node.HItem;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.tson.ToTson;
 import net.thevpc.tson.Tson;
@@ -173,6 +173,6 @@ public class HProp implements HItem, ToTson {
     }
 
     public TsonElement toTson() {
-        return Tson.ofPair(HUtils.toTson(name), HUtils.toTson(value));
+        return Tson.ofPair(net.thevpc.halfa.api.util.HUtils.toTson(name), HUtils.toTson(value));
     }
 }

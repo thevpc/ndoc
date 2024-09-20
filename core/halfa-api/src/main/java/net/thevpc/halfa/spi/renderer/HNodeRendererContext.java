@@ -57,7 +57,7 @@ public interface HNodeRendererContext {
 
     NPath resolvePath(NPath path, HNode node);
 
-    NPath resolvePath(String path, HNode node);
+    NPath resolvePath(TsonElement path, HNode node);
 
     HNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles);
 

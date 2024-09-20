@@ -5,10 +5,10 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
@@ -58,9 +58,9 @@ public class HCylinderImpl extends HNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", HUtils.toTson(ellipseHeight.getValue())),
-                        topColor == null ? null : Tson.ofPair("top-color", HUtils.toTson(topColor.getValue())),
-                        segmentCount == null ? null : Tson.ofPair("segment-count", HUtils.toTson(segmentCount.getValue()))
+                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", net.thevpc.halfa.api.util.HUtils.toTson(ellipseHeight.getValue())),
+                        topColor == null ? null : Tson.ofPair("top-color", net.thevpc.halfa.api.util.HUtils.toTson(topColor.getValue())),
+                        segmentCount == null ? null : Tson.ofPair("segment-count", net.thevpc.halfa.api.util.HUtils.toTson(segmentCount.getValue()))
 
                 )
                 .build();

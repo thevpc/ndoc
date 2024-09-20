@@ -23,6 +23,5 @@ public class ScreenDocumentRenderer extends AbstractHDocumentRenderer implements
     @Override
     public void renderSupplier(HDocumentRendererSupplier document) {
         DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages, session);
-        dv.show();
     }
 }

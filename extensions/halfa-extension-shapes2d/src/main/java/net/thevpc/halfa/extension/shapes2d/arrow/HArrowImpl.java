@@ -5,10 +5,10 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
@@ -60,9 +60,9 @@ public class HArrowImpl extends HNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : Tson.ofPair("width", HUtils.toTson(width.getValue())),
-                height == null ? null : Tson.ofPair("height", HUtils.toTson(height.getValue())),
-                points == null ? null : Tson.ofPair("points", HUtils.toTson(points.getValue()))
+                width == null ? null : Tson.ofPair("width", net.thevpc.halfa.api.util.HUtils.toTson(width.getValue())),
+                height == null ? null : Tson.ofPair("height", net.thevpc.halfa.api.util.HUtils.toTson(height.getValue())),
+                points == null ? null : Tson.ofPair("points", net.thevpc.halfa.api.util.HUtils.toTson(points.getValue()))
         ).build();
     }
 

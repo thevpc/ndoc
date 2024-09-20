@@ -5,7 +5,7 @@
 package net.thevpc.halfa.spi.eval;
 
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.spi.util.HUtils;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonAnnotation;
@@ -48,7 +48,7 @@ public class HParseHelper {
 
     public static boolean fillAnnotations(TsonElement e, HNode p) {
         for (TsonAnnotation a : e.annotations()) {
-            String nn = a.getName();
+            String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 HashSet<String> o = new HashSet<>(Arrays.asList(p.getAncestors()));
                 o.add(HUtils.uid(nn));
@@ -56,7 +56,7 @@ public class HParseHelper {
             }
             // add classes as well
             Set<String> allClasses = new HashSet<>();
-            for (TsonElement cls : a.all()) {
+            for (TsonElement cls : a.args()) {
                 NOptional<String[]> ss = ObjEx.of(cls).asStringArrayOrString();
                 if (ss.isPresent()) {
                     allClasses.addAll(Arrays.asList(ss.get()));

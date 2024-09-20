@@ -11,6 +11,9 @@ import java.awt.geom.Rectangle2D;
 
 public class PizzaProgressLayer implements HDocumentLayer {
     public void draw(DocumentView doc, Dimension size, HGraphics g) {
+        if (doc.isLoading()) {
+            return;
+        }
         double w2 = 100;
         double w1 = 50;
         g.setColor(Color.GRAY);

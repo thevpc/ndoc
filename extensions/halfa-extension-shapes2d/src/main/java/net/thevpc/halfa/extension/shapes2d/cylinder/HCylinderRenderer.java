@@ -7,13 +7,13 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProperties;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.nuts.util.NOptional;
 
 
@@ -78,9 +78,9 @@ public class HCylinderRenderer extends HNodeRendererBase {
                 AffineTransform t = g.getTransform();
                 g.shear(-1, 0);
 
-                g.fillRect((int) (x + translation.getX()), (int) (y + ellipse_height / 2 + translation.getY()), HUtils.intOf(width), HUtils.intOf(height - ellipse_height));
-                g.fillOval((int) (x + translation.getX()), (int) (arcY - ellipse_height / 2 + translation.getY()), HUtils.intOf(width), HUtils.intOf(ellipse_height));
-                g.fillOval((int) (x + translation.getX()), (int) (y + translation.getY()), HUtils.intOf(width), HUtils.intOf(ellipse_height));
+                g.fillRect((int) (x + translation.getX()), (int) (y + ellipse_height / 2 + translation.getY()), net.thevpc.halfa.api.util.HUtils.intOf(width), net.thevpc.halfa.api.util.HUtils.intOf(height - ellipse_height));
+                g.fillOval((int) (x + translation.getX()), (int) (arcY - ellipse_height / 2 + translation.getY()), net.thevpc.halfa.api.util.HUtils.intOf(width), net.thevpc.halfa.api.util.HUtils.intOf(ellipse_height));
+                g.fillOval((int) (x + translation.getX()), (int) (y + translation.getY()), net.thevpc.halfa.api.util.HUtils.intOf(width), net.thevpc.halfa.api.util.HUtils.intOf(ellipse_height));
 
                 g.setTransform(t);
 
@@ -92,7 +92,7 @@ public class HCylinderRenderer extends HNodeRendererBase {
                 HNodeRendererUtils.withStroke(p, g, ctx, () -> {
                     g.setColor(sideColor);
                     g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
-                    g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, HUtils.intOf(width), HUtils.intOf(finalEllipse_height));
+                    g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, net.thevpc.halfa.api.util.HUtils.intOf(width), net.thevpc.halfa.api.util.HUtils.intOf(finalEllipse_height));
 
                     g.setColor(sideColor.darker());
                     Area rightButtomArc = new Area(new Arc2D.Double(x, (int) arcY - finalEllipse_height / 2, width, finalEllipse_height, -90, -180, Arc2D.PIE));
@@ -127,17 +127,17 @@ public class HCylinderRenderer extends HNodeRendererBase {
 
             if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                 HNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                    g.drawOval((int) x, (int) y, HUtils.doubleOf(width), HUtils.intOf(finalEllipse_height));
+                    g.drawOval((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.doubleOf(width), net.thevpc.halfa.api.util.HUtils.intOf(finalEllipse_height));
 
                     g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
                     g.drawLine((int) (x + width), (int) (y + finalEllipse_height / 2), (int) (x + width), (int) (arcY));
 
-                    g.drawArc((int) x, (int) arcY - finalEllipse_height / 2, HUtils.intOf(width), HUtils.intOf(finalEllipse_height), 0, -180);
+                    g.drawArc((int) x, (int) arcY - finalEllipse_height / 2, net.thevpc.halfa.api.util.HUtils.intOf(width), HUtils.intOf(finalEllipse_height), 0, -180);
 
                     double segmentHeight = (height - finalEllipse_height) / (segmentCount + 1);
                     for (int i = 1; i <= segmentCount; i++) {
                         double segY = y + i * segmentHeight;
-                        g.drawArc(x, segY, HUtils.doubleOf(width), HUtils.doubleOf(finalEllipse_height), 0, -180);
+                        g.drawArc(x, segY, net.thevpc.halfa.api.util.HUtils.doubleOf(width), net.thevpc.halfa.api.util.HUtils.doubleOf(finalEllipse_height), 0, -180);
                     }
                 });
             }

@@ -5,12 +5,12 @@ import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProperties;
 import net.thevpc.halfa.api.style.HPropName;
+import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererBase;
-import net.thevpc.halfa.spi.util.HUtils;
 import net.thevpc.tson.Tson;
 
 public class HSphereRenderer extends HNodeRendererBase {
@@ -43,11 +43,11 @@ public class HSphereRenderer extends HNodeRendererBase {
         boolean someBG = false;
         if (!ctx.isDry()) {
             if (someBG = HNodeRendererUtils.applyBackgroundColor((HNode) p, g, ctx)) {
-                g.fillSphere((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), 45, 50f);
+                g.fillSphere((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth()), net.thevpc.halfa.api.util.HUtils.intOf(b.getHeight()), 45, 50f);
             }
             if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                 HNodeRendererUtils.withStroke(p, g, ctx,()->{
-                    g.drawOval((int) x, (int) y, HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                    g.drawOval((int) x, (int) y, net.thevpc.halfa.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
                 });
             }
         }
