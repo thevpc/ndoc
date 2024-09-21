@@ -1,0 +1,12 @@
+page{
+    styles:{
+        "*":{
+            font-size:14%g
+        }
+    }
+    """
+        hello
+
+        world
+    """
+}
