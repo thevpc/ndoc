@@ -1,6 +1,5 @@
 package net.thevpc.halfa.extension.shapes2d.donut;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
@@ -9,7 +8,6 @@ import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -19,40 +17,40 @@ public class HDonutImpl extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case PAIR: {
-                NOptional<ObjEx.SimplePair> sp = ObjEx.of(currentArg).asSimplePair();
+                NOptional<ObjEx.SimplePair> sp = ObjEx.of(info.currentArg).asSimplePair();
                 if (sp.isPresent()) {
                     ObjEx.SimplePair spp = sp.get();
                     ObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "inner-radius": {
-                            node.setProperty(HProp.ofDouble(HPropName.INNER_RADIUS, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(HPropName.INNER_RADIUS, v.asDouble().get()));
                             return true;
                         }
                         case "start-angle": {
-                            node.setProperty(HProp.ofDouble(HPropName.START_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(HPropName.START_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "extent-angle": {
-                            node.setProperty(HProp.ofDouble(HPropName.EXTENT_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(HPropName.EXTENT_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "slice-count": {
-                            node.setProperty(HProp.ofInt(HPropName.SLICE_COUNT, v.asInt().get()));
+                            info.node.setProperty(HProp.ofInt(HPropName.SLICE_COUNT, v.asInt().get()));
                             return true;
                         }
                         case "dash": {
-                            node.setProperty(HProp.ofDouble(HPropName.DASH, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(HPropName.DASH, v.asDouble().get()));
                             return true;
                         }
                         case "slices": {
-                            node.setProperty(HProp.ofDoubleArray(HPropName.SLICES, v.asDoubleArray().get()));
+                            info.node.setProperty(HProp.ofDoubleArray(HPropName.SLICES, v.asDoubleArray().get()));
                             return true;
                         }
                         case "colors": {
-                            node.setProperty(HProp.ofStringArray(HPropName.COLORS, v.asStringArray().get()));
+                            info.node.setProperty(HProp.ofStringArray(HPropName.COLORS, v.asStringArray().get()));
                             return true;
                         }
 
@@ -61,7 +59,7 @@ public class HDonutImpl extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
     }
 
     @Override

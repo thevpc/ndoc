@@ -2,11 +2,13 @@ package net.thevpc.halfa.extension.latex.eq;
 
 import net.thevpc.halfa.api.model.elem2d.Double2;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.util.Colors;
 import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.text.HRichTextToken;
 import net.thevpc.halfa.spi.renderer.text.HRichTextTokenType;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.halfa.spi.HTextRendererFlavor;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -23,14 +25,14 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
     }
 
     @Override
-    public void buildText(String text, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+    public void buildText(String text, HTextOptions options, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
         if (!text.isEmpty()) {
             HRichTextToken r = new HRichTextToken(
                     HRichTextTokenType.IMAGE_PAINTER,
                     text.toString()
             );
             double fontSize = HValueByName.getFontSize(p, ctx);
-            r.imagePainter = this.createLatex(text, fontSize);
+            r.imagePainter = this.createLatex(text, fontSize,options);
             Double2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
@@ -38,7 +40,7 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
     }
 
 
-    public HTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize) {
+    public HTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize,HTextOptions options) {
         TeXFormula formula;
         boolean error = false;
         try {
@@ -56,6 +58,13 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
 //        if (error) {
 //            return null;
 //        }
+        Color foregroundColor=null;
+        if(options.foregroundColorIndex!=null){
+            foregroundColor=Colors.resolveDefaultColorByIndex(options.foregroundColorIndex,null);
+        }else if(options.foregroundColor instanceof Color){
+            foregroundColor=(Color) options.foregroundColor;
+        }
+        Color finalForegroundColor = foregroundColor;
         return new HTextRendererBuilder.ImagePainter() {
             @Override
             public void paint(HGraphics g, double x, double y) {
@@ -64,7 +73,7 @@ public class HTextRendererFlavorLatexEquation implements HTextRendererFlavor {
                 FontMetrics fontMetrics = g.getFontMetrics(plainFont);
                 double xx = x;
                 double yy = y;//+ascent-descent;
-                icon.setForeground(g.getColor());
+                icon.setForeground(finalForegroundColor ==null?g.getColor(): finalForegroundColor);
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
                 //g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
             }

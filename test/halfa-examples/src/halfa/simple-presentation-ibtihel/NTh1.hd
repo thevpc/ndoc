@@ -8,7 +8,7 @@ page{
 
             polygon(points:[(0,0),(0,100),(100,100),(100,0)],background-color:white)
 
-            image("../images/hasht.gif", position:(65,15),size:(50,70),preserve-aspect-ratio)
+            image("images/hasht.gif", position:(65,15),size:(50,70),preserve-aspect-ratio)
             polygon(points:[(0,0),(50,0),(70,100),(0,100)],background-color:"#00215E")
             polygon(points:[(50,5),(53,5),(70,95),(67,95)],stroke:5,color:gray)
             polygon(points:[(50,0),(53,0),(70,90),(67,90)],background-color:"#FC4100")

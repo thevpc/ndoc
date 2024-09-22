@@ -1,6 +1,5 @@
 package net.thevpc.halfa.elem.base.line.cubiccurve;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
@@ -8,7 +7,6 @@ import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
@@ -19,10 +17,10 @@ public class HCubicCurveParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case PAIR: {
-                TsonPair pp = currentArg.toPair();
+                TsonPair pp = info.currentArg.toPair();
                 TsonElement k = pp.key();
                 TsonElement v = pp.value();
                 ObjEx ph = ObjEx.of(k);
@@ -37,14 +35,14 @@ public class HCubicCurveParser extends HNodeParserBase {
                         case HPropName.CTRL1:
                         case HPropName.CTRL2:
                         {
-                            node.setProperty(uid, v);
+                            info.node.setProperty(uid, v);
                             return true;
                         }
                     }
                 }
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
     }
 
     @Override

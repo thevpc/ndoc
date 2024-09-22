@@ -86,14 +86,6 @@ public class HStyleParser {
         );
     }
 
-    public static boolean isCommonStyleProperty(String s) {
-        if (NBlankable.isBlank(s)) {
-            return false;
-        }
-        s = net.thevpc.halfa.api.util.HUtils.uid(s);
-        return COMMON_STYLE_PROPS.contains(s);
-    }
-
 
     public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(TsonElement e, HDocumentFactory f, HNodeFactoryParseContext context) {
         switch (e.type()) {

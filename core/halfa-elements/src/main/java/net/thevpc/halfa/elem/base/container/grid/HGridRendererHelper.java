@@ -2,6 +2,7 @@ package net.thevpc.halfa.elem.base.container.grid;
 
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.Double2;
+import net.thevpc.halfa.api.model.elem2d.SizeD;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
@@ -15,10 +16,12 @@ import net.thevpc.halfa.spi.eval.ObjEx;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HGridRendererHelper {
     boolean drawBackground = true;
     boolean drawGrid = true;
+    boolean NEWIMPL = false;
     java.util.List<HNode> children;
 
     public HGridRendererHelper(List<HNode> children) {
@@ -26,13 +29,22 @@ public class HGridRendererHelper {
     }
 
     public Bounds2 computeBound(HNode p, HNodeRendererContext ctx, Bounds2 expectedBounds) {
-        HGridRendererHelper.ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
-        for (HPagePartExtInfo ee : r.effPositions) {
-            if (ee.colRow != null) {
-                expectedBounds = ee.bounds.expand(expectedBounds);
+        if (NEWIMPL) {
+            for (HNodeGridBagLayout.HNodeGridNode ee : computePositions2(p, expectedBounds, ctx)) {
+                if (ee.visible) {
+                    expectedBounds = ee.bounds.expand(expectedBounds);
+                }
             }
+            return expectedBounds;
+        } else {
+            HGridRendererHelper.ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
+            for (HPagePartExtInfo ee : r.effPositions) {
+                if (ee.colRow != null) {
+                    expectedBounds = ee.bounds.expand(expectedBounds);
+                }
+            }
+            return expectedBounds;
         }
-        return expectedBounds;
     }
 
     public static class ComputePositionsResult {
@@ -51,28 +63,168 @@ public class HGridRendererHelper {
         HGraphics g = ctx.graphics();
 
         if (drawBackground) {
-            if(HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+            if (HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                 g.fillRect(expectedBounds);
             }
         }
 
-        HGridRendererHelper.ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
-        for (HGridRendererHelper.HPagePartExtInfo ee : r.effPositions) {
-            if (ee.colRow != null) {
-                HNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
-                if (!ctx.isDry()) {
-                    if (HValueByName.isDebug(p, ctx)) {
-                        g.setColor(HValueByName.getDebugColor(p, ctx));
-                        g.setFont(new Font("Verdana", Font.PLAIN, 8));
-                        g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
+        if (NEWIMPL) {
+            HNodeGridBagLayout.HNodeGridNode[] hNodeGridNodes = computePositions2(p, expectedBounds, ctx);
+            for (HNodeGridBagLayout.HNodeGridNode ee : hNodeGridNodes) {
+                if (ee.node != null && ee.visible) {
+                    HNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
+                    if (!ctx.isDry()) {
+                        if (HValueByName.isDebug(p, ctx)) {
+                            g.setColor(HValueByName.getDebugColor(p, ctx));
+                            g.setFont(new Font("Verdana", Font.PLAIN, 8));
+                            g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
+                        }
                     }
+                    ctx3.render((HNode) ee.node);
                 }
-                ctx3.render(ee.node);
+            }
+
+        } else {
+
+            HGridRendererHelper.ComputePositionsResult r = computePositions(p, expectedBounds, ctx);
+            for (HGridRendererHelper.HPagePartExtInfo ee : r.effPositions) {
+                if (ee.colRow != null) {
+                    HNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
+                    if (!ctx.isDry()) {
+                        if (HValueByName.isDebug(p, ctx)) {
+                            g.setColor(HValueByName.getDebugColor(p, ctx));
+                            g.setFont(new Font("Verdana", Font.PLAIN, 8));
+                            g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
+                        }
+                    }
+                    ctx3.render(ee.node);
+                }
+            }
+            drawGrid(p, r, ctx);
+        }
+        HNodeRendererUtils.paintBorderLine(p, ctx, g, expectedBounds);
+    }
+
+    private int[] resolveColsAndRows(HNode t, HNodeRendererContext ctx) {
+        int minColumns = 0;
+        int minRows = 0;
+        for (int i = 0; i < children.size(); i++) {
+            HNode cc = children.get(i);
+            int colspan = HValueByName.getColSpan(cc, ctx);
+            int rowspan = HValueByName.getRowSpan(cc, ctx);
+            if (colspan > minColumns) {
+                minColumns = colspan;
+            }
+            if (rowspan > minRows) {
+                minRows = rowspan;
             }
         }
+        int cols = HValueByName.getColumns(t, ctx);
+        int rows = HValueByName.getRows(t, ctx);
+        if (cols < 0) {
+            cols = -1;
+        }
+        if (rows < 0) {
+            rows = -1;
+        }
+        if (cols <= 0 && rows <= 0) {
+            int cc = (int) Math.floor(Math.sqrt(children.size()));
+            cols = cc;
+            rows = cc;
+        } else if (cols < 0 && rows > 0) {
+            cols = (int) Math.floor(children.size() / rows);
+        } else if (cols > 0 && rows < 0) {
+            rows = (int) Math.floor(children.size() / cols);
+        } else {
 
-        drawGrid(p, r, ctx);
-        HNodeRendererUtils.paintBorderLine(p, ctx, g, expectedBounds);
+        }
+        if (cols < minColumns) {
+            cols = minColumns;
+        }
+        if (rows < minRows) {
+            rows = minRows;
+        }
+        {
+            // try initial flagMap and add required rows
+            FlagMMap flagmap = new FlagMMap(rows, cols);
+            for (int i = 0; i < children.size(); i++) {
+                HNode cc = children.get(i);
+                int colspan = HValueByName.getColSpan(cc, ctx);
+                int rowspan = HValueByName.getRowSpan(cc, ctx);
+                flagmap.firstFreeAddRow(colspan, rowspan);
+            }
+            rows = flagmap.map.length;
+        }
+
+        return new int[]{cols, rows};
+    }
+
+    private HNodeGridBagLayout.HNodeGridNode[] computePositions2(HNode p, Bounds2 expectedBounds, HNodeRendererContext ctx) {
+        java.util.List<HNodeGridBagLayout.HNodeGridNode> childrenNodes = new ArrayList<>();
+        int[] colsAndRows = resolveColsAndRows(p, ctx);
+        // try initial flagMap and add required rows
+        int columns = colsAndRows[0];
+        int rows = colsAndRows[1];
+        FlagMMap flagmap = new FlagMMap(rows, columns);
+
+        for (int i = 0; i < children.size(); i++) {
+            HNode cc = children.get(i);
+            HNodeGridBagLayout.HNodeGridNode n = new HNodeGridBagLayout.HNodeGridNode(cc);
+            n.index = i;
+            HSizeRequirements hSizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
+            n.setMinimumSize(new SizeD(hSizeRequirements.minX, hSizeRequirements.minY));
+            n.setPreferredSize(new SizeD(hSizeRequirements.preferredX,  hSizeRequirements.preferredY));
+            int colSpan = HValueByName.getColSpan(cc, ctx);
+            int rowSpan = HValueByName.getRowSpan(cc, ctx);
+            n.setGridwidth(colSpan);
+            n.setGridheight(rowSpan);
+            Point pos = flagmap.firstFreeAddRow(colSpan, rowSpan);
+            if (pos == null) {
+                throw new IllegalArgumentException("unexpected null");
+            }
+            n.setGridx(pos.x);
+            n.setGridy(pos.y);
+            double xw = 0;
+            double yw = 0;
+            WeightInfo wi = loadWeightInfo(columns, rows, p, ctx);
+            for (int ix = pos.x; ix < pos.x + colSpan; ix++) {
+                for (int iy = pos.y; iy < pos.y + rowSpan; iy++) {
+                    xw += wi.colsWeight[ix];
+                    yw += wi.rowsWeight[iy];
+                }
+            }
+            n.setWeightx(xw);
+            n.setWeighty(yw);
+            n.setFill(HNodeGridBagLayout.Fill.BOTH);
+            n.setAnchor(HNodeGridBagLayout.Anchor.NORTHWEST);
+            childrenNodes.add(n);
+        }
+//        childrenNodes.add(
+//                new HNodeGridBagLayout.HNodeGridNode(null)
+//                        .setMinimumSize(new Dimension(20,10))
+//                        .setPreferredSize(new Dimension(10,200))
+//                        .setWeighty(10)
+//                        .setGridy(10)
+//                        .setFill(HNodeGridBagLayout.Fill.VERTICAL)
+//                        .setGridx(0)
+//                        .setGridy(rows+1)
+//        );
+//        childrenNodes.add(
+//                new HNodeGridBagLayout.HNodeGridNode(null)
+//                        .setFill(HNodeGridBagLayout.Fill.HORIZONTAL)
+//                        .setWeighty(Double.MAX_VALUE)
+//                        .setGridx(columns)
+//                        .setGridy(rows)
+//        );
+        HNodeGridBagLayout.HNodeGridNode[] childrenNodesArray = childrenNodes.toArray(new HNodeGridBagLayout.HNodeGridNode[0]);
+        HNodeGridBagLayout ll = new HNodeGridBagLayout(
+                new Insets(0, 0, 0, 0),
+                false,
+                expectedBounds,
+                childrenNodesArray
+        );
+        ll.doLayout();
+        return childrenNodesArray;
     }
 
     private ComputePositionsResult computePositions(HNode t, Bounds2 expectedBounds, HNodeRendererContext ctx) {

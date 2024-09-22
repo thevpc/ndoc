@@ -342,7 +342,7 @@ public class HValueByName {
     }
 
     public static boolean isDebug(HNode p, HNodeRendererContext ctx) {
-        return getDebugLevel(p, ctx) > 0;
+        return /*true || */getDebugLevel(p, ctx) > 0;
     }
 
     public static int getDebugLevel(HNode p, HNodeRendererContext ctx) {

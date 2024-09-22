@@ -1,13 +1,10 @@
 package net.thevpc.halfa.elem.base.shape.polygon;
 
-import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -21,10 +18,10 @@ public class HRectangleParser extends HNodeParserBase {
 
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case PAIR: {
-                TsonPair pp = currentArg.toPair();
+                TsonPair pp = info.currentArg.toPair();
                 TsonElement k = pp.key();
                 TsonElement v = pp.value();
                 ObjEx ph = ObjEx.of(k);
@@ -36,7 +33,7 @@ public class HRectangleParser extends HNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            node.setProperty(uid, v);
+                            info.node.setProperty(uid, v);
                             return true;
                         }
                     }
@@ -44,7 +41,7 @@ public class HRectangleParser extends HNodeParserBase {
                 break;
             }
             case NAME: {
-                ObjEx h = ObjEx.of(currentArg);
+                ObjEx h = ObjEx.of(info.currentArg);
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
@@ -53,7 +50,7 @@ public class HRectangleParser extends HNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            node.setProperty(uid, Tson.of(true));
+                            info.node.setProperty(uid, Tson.of(true));
                             return true;
                         }
                     }
@@ -61,6 +58,6 @@ public class HRectangleParser extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
     }
 }

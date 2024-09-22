@@ -9,6 +9,8 @@ import java.text.AttributedString;
 
 public class HTextOptions implements Cloneable {
     public Paint backgroundColor;
+    public Integer foregroundColorIndex;
+    public Integer backgroundColorIndex;
     public Paint foregroundColor;
     public Boolean bold;
     public Boolean italic;
@@ -20,6 +22,24 @@ public class HTextOptions implements Cloneable {
     public Paint shadowColor;
     public HPoint2D shadowTranslation;
     public Stroke stroke;
+
+    public Integer getBackgroundColorIndex() {
+        return backgroundColorIndex;
+    }
+
+    public HTextOptions setBackgroundColorIndex(Integer backgroundColorIndex) {
+        this.backgroundColorIndex = backgroundColorIndex;
+        return this;
+    }
+
+    public Integer getForegroundColorIndex() {
+        return foregroundColorIndex;
+    }
+
+    public HTextOptions setForegroundColorIndex(Integer foregroundColorIndex) {
+        this.foregroundColorIndex = foregroundColorIndex;
+        return this;
+    }
 
     public Boolean getBold() {
         return bold;
@@ -237,6 +257,18 @@ public class HTextOptions implements Cloneable {
             }
             if (other.underlined != null) {
                 this.underlined = other.underlined;
+            }
+            if (other.italic != null) {
+                this.italic = other.italic;
+            }
+            if (other.bold != null) {
+                this.bold = other.bold;
+            }
+            if (other.fontSize != null) {
+                this.fontSize = other.fontSize;
+            }
+            if (other.fontFamily != null) {
+                this.fontFamily = other.fontFamily;
             }
             if (other.strikeThrough != null) {
                 this.strikeThrough = other.strikeThrough;

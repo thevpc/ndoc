@@ -54,6 +54,8 @@ include("realisationHashtable.hd")
 include("realisationAVL.hd")
 include("realisationForme.hd")
 include("conclusion.hd")
+include("DonutChart.hd")
+include("fichier1.hd")
 
 page{
                       polygon(points:[(0,15),(100,15),(100,85),(0,85)],background-color:"#00215E")

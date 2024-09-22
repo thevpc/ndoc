@@ -12,6 +12,9 @@ import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.text.NText;
+import net.thevpc.nuts.text.NTextStyle;
+import net.thevpc.nuts.text.NTextStyles;
+import net.thevpc.nuts.text.NTexts;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -19,7 +22,6 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 import java.awt.*;
-import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,14 +37,14 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
     private Map<String, HTextRendererFlavor> flavors;
     private Paint defaultColor;
 
-    public HTextRendererBuilderImpl(Map<String, HTextRendererFlavor> flavors,Paint defaultColor) {
+    public HTextRendererBuilderImpl(Map<String, HTextRendererFlavor> flavors, Paint defaultColor) {
         this.flavors = flavors;
         this.defaultColor = defaultColor;
     }
 
     public HTextRendererBuilderImpl(Paint defaultColor) {
         this.flavors = new HashMap<>();
-        this.defaultColor=defaultColor;
+        this.defaultColor = defaultColor;
     }
 
     public void appendNText(String lang, String rawText, NText text, HNode node, HNodeRendererContext ctx) {
@@ -50,12 +52,54 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
     }
 
     @Override
-    public void appendCustom(String lang, String rawText, HNode node, HNodeRendererContext ctx) {
+    public void appendText(String rawText, HTextOptions options, HNode node, HNodeRendererContext ctx) {
+        if (rawText == null || rawText.isEmpty()) {
+            return;
+        }
+        if (options == null || !options.isStyled()) {
+            appendPlain(rawText, ctx);
+            return;
+        }
+        NTexts nTexts = NTexts.of(ctx.session());
+        List<NTextStyle> styles = new ArrayList<>();
+        if (options.bold != null && options.bold) {
+            styles.add(NTextStyle.bold());
+        }
+        if (options.italic != null && options.italic) {
+            styles.add(NTextStyle.italic());
+        }
+        if (options.underlined != null && options.underlined) {
+            styles.add(NTextStyle.underlined());
+        }
+        if (options.strikeThrough != null && options.strikeThrough) {
+            styles.add(NTextStyle.striked());
+        }
+        if (options.foregroundColor instanceof Color) {
+            styles.add(NTextStyle.foregroundColor(((Color) options.foregroundColor).getRGB()));
+        }
+        if (options.foregroundColorIndex != null) {
+            styles.add(NTextStyle.primary(options.foregroundColorIndex));
+        }
+        if (options.backgroundColor instanceof Color) {
+            styles.add(NTextStyle.backgroundTrueColor(((Color) options.backgroundColor).getRGB()));
+        }
+        if (options.backgroundColorIndex != null) {
+            styles.add(NTextStyle.primary(options.backgroundColorIndex));
+        }
+        NText nText = nTexts.ofStyled(rawText, NTextStyles.of(styles.toArray(new NTextStyle[0])));
+        appendNText("", rawText, nText, node, ctx);
+    }
+
+    @Override
+    public void appendCustom(String lang, String rawText, HTextOptions options, HNode node, HNodeRendererContext ctx) {
+        if (rawText == null || rawText.isEmpty()) {
+            return;
+        }
         HTextRendererFlavor hTextRendererFlavor = flavors.get(lang);
         if (hTextRendererFlavor == null) {
             throw new IllegalArgumentException("unsupported flavor for language " + lang);
         }
-        hTextRendererFlavor.buildText(rawText, node, ctx, this);
+        hTextRendererFlavor.buildText(rawText, options, node, ctx, this);
     }
 
     public void appendEq(String text, HNode node, HNodeRendererContext ctx) {
@@ -83,7 +127,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             end++;
         }
 
-        List<String> a = NStringUtils.split(text, "\n",false,true);
+        List<String> a = NStringUtils.split(text, "\n", false, false);
 
         HGraphics g = ctx.graphics();
         for (int j = 0; j < a.size(); j++) {
@@ -213,10 +257,9 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
         double x = selfBounds.getX();
         double y = selfBounds.getY();
         HGraphics g = ctx.graphics();
-        HTextOptions textOptions=new HTextOptions()
+        HTextOptions textOptions = new HTextOptions()
                 .setFont(HValueByName.getFont(p, ctx))
-                .setForegroundColor(HValueByName.getForegroundColor(p, ctx, true))
-                ;
+                .setForegroundColor(HValueByName.getForegroundColor(p, ctx, true));
 
 
         HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
@@ -238,8 +281,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             for (HRichTextToken col : row.tokens) {
                 switch (col.type) {
                     case PLAIN:
-                    case STYLED:
-                    {
+                    case STYLED: {
                         g.drawString(
                                 col.text
                                 , x + col.xOffset

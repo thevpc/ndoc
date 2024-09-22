@@ -7,6 +7,7 @@ import net.thevpc.halfa.spi.eval.HValueByName;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.text.HTextBaseRenderer;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.halfa.spi.HTextRendererFlavor;
 import net.thevpc.nuts.util.NStringUtils;
@@ -44,7 +45,7 @@ public class HTextRenderer extends HTextBaseRenderer {
         }
         Paint fg = HValueByName.getForegroundColor(p, ctx,true);
         HTextRendererBuilderImpl builder = new HTextRendererBuilderImpl(flavors,fg);
-        f.buildText(text, p, ctx, builder);
+        f.buildText(text, new HTextOptions(), p, ctx, builder);
         return builder;
     }
 

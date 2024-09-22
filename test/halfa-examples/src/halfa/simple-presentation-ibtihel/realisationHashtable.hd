@@ -6,7 +6,7 @@ styles{.H2:{
                      }
           }
 page{
-                 image("../images/hash_swing.gif",position:(50,5),size:(80,90),preserve-aspect-ratio)
+                 image("images/hash_swing.gif",position:(50,5),size:(80,90),preserve-aspect-ratio)
                  polygon(points:[(0,0),(45,0),(45,100),(0,100)],background-color:"#00215E")
 
                 @(H2)text("

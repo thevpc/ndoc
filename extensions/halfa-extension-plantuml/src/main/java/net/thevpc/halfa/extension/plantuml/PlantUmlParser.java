@@ -1,12 +1,11 @@
 package net.thevpc.halfa.extension.plantuml;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
-import net.thevpc.halfa.spi.base.parser.HStyleParser;
+import net.thevpc.halfa.spi.base.parser.HParserUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.io.NPath;
@@ -43,42 +42,42 @@ public class PlantUmlParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case STRING: {
-                node.setProperty(HPropName.VALUE, currentArg);
+                info.node.setProperty(HPropName.VALUE, info.currentArg);
                 return true;
             }
             case NAME: {
-                if (!HStyleParser.isCommonStyleProperty(currentArg.toName().value())) {
-                    node.setProperty(HPropName.MODE, currentArg);
+                if (!HParserUtils.isCommonStyleProperty(info.currentArg.toName().value())) {
+                    info.node.setProperty(HPropName.MODE, info.currentArg);
                     return true;
                 }
                 break;
             }
             case PAIR: {
-                if(currentArg.isSimplePair()) {
-                    TsonPair p = currentArg.toPair();
+                if(info.currentArg.isSimplePair()) {
+                    TsonPair p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
                         case HPropName.VALUE:
                         case "content": {
-                            node.setProperty(HPropName.VALUE, p.value());
+                            info.node.setProperty(HPropName.VALUE, p.value());
                             return true;
                         }
                         case HPropName.FILE: {
                             String path = p.value().stringValue().trim();
-                            NPath nPath = context.resolvePath(path);
-                            context.document().resources().add(nPath);
+                            NPath nPath = info.context.resolvePath(path);
+                            info.context.document().resources().add(nPath);
                             try {
-                                node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
                             } catch (Exception ex) {
-                                context.messages().addError(NMsg.ofC("unable to load source file %s as %s", path, nPath));
+                                info.context.messages().addError(NMsg.ofC("unable to load source file %s as %s", path, nPath));
                             }
                             return true;
                         }
                         case HPropName.MODE: {
-                            node.setProperty(HPropName.MODE, p.value());
+                            info.node.setProperty(HPropName.MODE, p.value());
                             return true;
                         }
                     }
@@ -86,7 +85,7 @@ public class PlantUmlParser extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
     }
 
     @Override

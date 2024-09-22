@@ -95,7 +95,7 @@ public class HImageRenderer extends HNodeRendererBase {
         if (p.isRegularFile()) {
             return p;
         }
-        for (String ext : new String[]{"png", "jpg", "gif", "jpeg"}) {
+        for (String ext : new String[]{"png", "jpg", "gif", "jpeg","svg"}) {
             String n = p.getName();
             String nLowered = n.toLowerCase();
             if (nLowered.endsWith(".")) {

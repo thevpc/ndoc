@@ -8,9 +8,11 @@ import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.text.NText;
 
 public interface HTextRendererBuilder {
+    void appendText(String rawText, HTextOptions options, HNode node, HNodeRendererContext ctx);
+
     void appendNText(String lang, String rawText, NText text, HNode node, HNodeRendererContext ctx);
 
-    void appendCustom(String lang, String rawText, HNode node, HNodeRendererContext ctx);
+    void appendCustom(String lang, String rawText, HTextOptions options, HNode node, HNodeRendererContext ctx);
 
     public void appendEq(String text, HNode node, HNodeRendererContext ctx);
 

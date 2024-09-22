@@ -95,28 +95,48 @@ public class EntryComponent extends JPanel {
     }
 
     private JComponent createButtons(){
-        JPanel p=new JPanel(new GridLayout(-1,1));
+        JPanel p=new JPanel(new GridBagLayout());
 
         JButton newProjectButton = new JButton("New Project...");
         newProjectButton.addActionListener(e->{
             serviceHelper.showNewProject();
             reload();
         });
-        p.add(newProjectButton);
-
-        JButton newFileButton = new JButton("New File...");
-        newFileButton.addActionListener(e->{
-            serviceHelper.showNewFile();
-            reload();
-        });
-        p.add(newFileButton);
+        {
+            GridBagConstraints g = new GridBagConstraints();
+            g.gridx = 0;
+            g.gridy = 0;
+            g.fill = GridBagConstraints.BOTH;
+            g.weighty = 1;
+            g.weightx = 1;
+            g.anchor = GridBagConstraints.NORTH;
+            g.insets = new Insets(20,20,20,20);
+            p.add(newProjectButton,g);
+        }
+//        JButton newFileButton = new JButton("New File...");
+//        newFileButton.addActionListener(e->{
+//            serviceHelper.showNewFile();
+//            reload();
+//        });
+//        p.add(newFileButton);
 
         JButton openExisting = new JButton("Open existing...");
         openExisting.addActionListener(e->{
             serviceHelper.showOpenFile();
             reload();
         });
-        p.add(openExisting);
+        {
+            GridBagConstraints g = new GridBagConstraints();
+            g.gridx = 0;
+            g.gridy = 1;
+            g.fill = GridBagConstraints.BOTH;
+            g.weighty = 1;
+            g.weightx = 1;
+            g.anchor = GridBagConstraints.NORTH;
+            g.insets = new Insets(20,20,20,20);
+
+            p.add(openExisting,g);
+        }
         return p;
     }
 
@@ -127,7 +147,7 @@ public class EntryComponent extends JPanel {
         g.gridx=0;
         g.gridy=0;
         g.anchor=GridBagConstraints.WEST;
-        center.add(new JLabel("Recent Project..."), g);
+        center.add(new JLabel("Recent Projects..."), g);
 
         g = new GridBagConstraints();
         g.gridx=0;

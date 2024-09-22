@@ -1,6 +1,5 @@
 package net.thevpc.halfa.extension.shapes2d.cylinder;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HProp;
@@ -8,7 +7,6 @@ import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
@@ -20,23 +18,23 @@ public class HCylinderImpl extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case PAIR: {
-                if(currentArg.isSimplePair()){
-                    TsonPair pair = currentArg.toPair();
+                if(info.currentArg.isSimplePair()){
+                    TsonPair pair = info.currentArg.toPair();
                     switch (HUtils.uid(pair.key().stringValue())) {
                         case "ellipse-height": {
-                            node.setProperty(HPropName.ELLIPSE_H, pair.value());
+                            info.node.setProperty(HPropName.ELLIPSE_H, pair.value());
                             return true;
                         }
 
                         case "top-color": {
-                            node.setProperty(HPropName.TOP_COLOR, pair.value());
+                            info.node.setProperty(HPropName.TOP_COLOR, pair.value());
                             return true;
                         }
                         case "segment-count": {
-                            node.setProperty(HPropName.SEGMENT_COUNT, pair.value());
+                            info.node.setProperty(HPropName.SEGMENT_COUNT, pair.value());
                             return true;
                         }
 
@@ -45,7 +43,7 @@ public class HCylinderImpl extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
 
     }
 

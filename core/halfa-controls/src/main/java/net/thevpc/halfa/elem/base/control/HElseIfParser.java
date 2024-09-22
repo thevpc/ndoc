@@ -4,12 +4,8 @@
  */
 package net.thevpc.halfa.elem.base.control;
 
-import net.thevpc.halfa.HDocumentFactory;
-import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 /**
  * @author vpc
@@ -19,11 +15,11 @@ public class HElseIfParser extends HNodeParserBase {
         super(true, "elseif");
     }
 
-    protected boolean processArguments(String id, TsonElement tsonElement, HNode node, TsonElement[] arguments, HDocumentFactory f, HNodeFactoryParseContext context) {
-        if(arguments.length==1){
-            node.setProperty("condition", arguments[0]);
+    protected boolean processArguments(ParseArgumentInfo info) {
+        if(info.arguments.length==1){
+            info.node.setProperty("condition", info.arguments[0]);
         }else{
-            node.setProperty("condition", Tson.ofArray(arguments).build());
+            info.node.setProperty("condition", Tson.ofArray(info.arguments).build());
         }
         return true;
     }

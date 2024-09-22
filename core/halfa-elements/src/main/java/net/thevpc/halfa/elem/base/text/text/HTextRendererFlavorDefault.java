@@ -1,15 +1,17 @@
 package net.thevpc.halfa.elem.base.text.text;
 
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.halfa.spi.renderer.text.HTextRendererBuilder;
 import net.thevpc.halfa.spi.HTextRendererFlavor;
 import net.thevpc.halfa.spi.base.parser.HTextUtils;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
-import net.thevpc.nuts.text.NTextStyle;
-import net.thevpc.nuts.text.NTextStyles;
-import net.thevpc.nuts.text.NTexts;
 import net.thevpc.nuts.util.NStringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class HTextRendererFlavorDefault implements HTextRendererFlavor {
     @Override
@@ -17,207 +19,183 @@ public class HTextRendererFlavorDefault implements HTextRendererFlavor {
         return "";
     }
 
-    public enum Mode {
-        PLAIN,
-        EQ,
-    }
 
     @Override
-    public void buildText(String text, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+    public void buildText(String text, HTextOptions options, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
         NReservedSimpleCharQueue cq = new NReservedSimpleCharQueue(HTextUtils.trimBloc(text).toCharArray());
         while (cq.hasNext()) {
-            readAny(cq, p, ctx, builder);
+            SpecialToken a = readAny(cq);
+            consumeSpecialTokenType(a, p, ctx, builder);
+        }
+    }
+
+    private void consumeSpecialTokenType(SpecialToken a, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+        if (a == null) {
+            return;
+        }
+        switch (a.type) {
+            case LIST: {
+                for (SpecialToken child : ((SpecialTokenList) a).children) {
+                    consumeSpecialTokenType(child, p, ctx, builder);
+                }
+                break;
+            }
+            case TXT: {
+                SpecialTokenTxt tt = (SpecialTokenTxt) a;
+                builder.appendText(tt.image, tt.options, p, ctx);
+                break;
+            }
+            case EQ: {
+                SpecialTokenEq tt = (SpecialTokenEq) a;
+                    builder.appendCustom("latex-equation", tt.image, tt.options, p, ctx);
+                break;
+            }
         }
     }
 
 
-    private void readAny(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+    private SpecialToken readAny(NReservedSimpleCharQueue cq) {
         if (cq.hasNext()) {
             switch (cq.peek()) {
                 case '$': {
-                    readEq(cq, p, ctx, builder);
-                    break;
+                    return readEq(cq);
                 }
                 case '*': {
                     if (cq.peek(3).equals("***")) {
-                        readBoldItalic(cq, p, ctx, builder);
+                        return readBoldItalic(cq);
                     } else if (cq.peek(2).equals("**")) {
-                        readBold(cq, p, ctx, builder);
+                        return readBold(cq);
                     } else {
-                        readPlain(cq, p, ctx, builder);
+                        return readPlain(cq);
                     }
-                    break;
                 }
                 case '#': {
                     for (int i = 10; i >= 1; i--) {
                         String r = NStringUtils.repeat('#', i);
                         if (cq.peek(i).equals(r)) {
-                            readColor(i,cq, p, ctx, builder);
-                            break;
+                            return readColor(i, cq);
                         }
                     }
                     break;
                 }
                 case '_': {
                     if (cq.peek(2).equals("__")) {
-                        readItalic(cq, p, ctx, builder);
+                        return readItalic(cq);
                     } else {
-                        readPlain(cq, p, ctx, builder);
+                        return readPlain(cq);
                     }
-                    break;
                 }
                 default: {
-                    readPlain(cq, p, ctx, builder);
+                    return readPlain(cq);
                 }
             }
         }
+        return null;
     }
 
-    private void readBold(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
-        if (!cq.read(2).equals("**")) {
-            throw new IllegalArgumentException("expected **");
+    private SpecialToken readBold(NReservedSimpleCharQueue cq) {
+        return readBounded("**", new String[]{"***"}, tt -> {
+            HTextOptions o = ((SpecialTokenTxtOptions) tt).options;
+            if(o.bold==null) {
+                o.bold = true;
+            }
+        }, cq);
+    }
+
+    private SpecialToken readItalic(NReservedSimpleCharQueue cq) {
+        return readBounded("__", tt -> {
+            HTextOptions o = ((SpecialTokenTxtOptions) tt).options;
+            if(o.italic==null) {
+                o.italic = true;
+            }
+        }, cq);
+    }
+
+
+    private SpecialToken readBoldItalic(NReservedSimpleCharQueue cq) {
+        return readBounded("***", tt -> {
+            HTextOptions o = ((SpecialTokenTxtOptions) tt).options;
+            if(o.bold==null) {
+                o.bold = true;
+            }
+            if(o.italic==null) {
+                o.italic = true;
+            }
+        }, cq);
+    }
+
+    private SpecialToken readColor(int col, NReservedSimpleCharQueue cq) {
+        String bounds = NStringUtils.repeat('#', col);
+        return readBounded(bounds,new String[]{bounds+"#"}, tt -> {
+            HTextOptions o = ((SpecialTokenTxtOptions) tt).options;
+            if(o.foregroundColorIndex==null) {
+                o.foregroundColorIndex = col;
+            }
+        }, cq);
+    }
+
+    private SpecialToken readBounded(String bounds,Consumer<SpecialToken> a, NReservedSimpleCharQueue cq) {
+        return readBounded(bounds,new String[0], a, cq);
+    }
+
+    private SpecialToken readBounded(String bounds, String[] subs,Consumer<SpecialToken> a, NReservedSimpleCharQueue cq) {
+        if (!cq.read(bounds.length()).equals(bounds)) {
+            throw new IllegalArgumentException("expected " + bounds.length());
         }
-        StringBuilder sb = new StringBuilder();
-        boolean stop = false;
-        while (!stop && cq.hasNext()) {
-            switch (cq.peek()) {
-                case '*': {
-                    if (cq.peek(2).equals("**")) {
-                        cq.skip(2);
-                        stop = true;
-                        break;
-                    } else {
-                        sb.append(cq.read());
+        List<SpecialToken> sbs = new ArrayList<>();
+        while (cq.hasNext()) {
+            boolean subbed=false;
+            for (String sb : subs) {
+                if (cq.peek(sb.length()).equals(sb)) {
+                    SpecialToken u = readAny(cq);
+                    for (SpecialToken tt : flatten(u)) {
+                        switch (tt.type) {
+                            case EQ:
+                            case TXT: {
+                                a.accept(tt);
+                                break;
+                            }
+                        }
+                        sbs.add(tt);
                     }
+                    subbed=true;
                     break;
                 }
-                default: {
-                    sb.append(cq.read());
-                }
             }
-        }
-        String s = sb.toString();
-        if (s.length() > 0) {
-            if (s.trim().isEmpty()) {
-                builder.appendPlain(s, ctx);
-            } else {
-                NTexts nTexts = NTexts.of(ctx.session());
-                builder.appendNText("", s, nTexts.ofStyled(s, NTextStyle.bold()), p, ctx);
-            }
-        }
-    }
-
-    private void readItalic(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
-        if (!cq.read(2).equals("__")) {
-            throw new IllegalArgumentException("expected __");
-        }
-        StringBuilder sb = new StringBuilder();
-        boolean stop = false;
-        while (!stop && cq.hasNext()) {
-            switch (cq.peek()) {
-                case '_': {
-                    if (cq.peek(2).equals("__")) {
-                        cq.skip(2);
-                        stop = true;
-                        break;
-                    } else {
-                        sb.append(cq.read());
-                    }
+            if(!subbed) {
+                if (cq.peek(bounds.length()).equals(bounds)) {
+                    cq.skip(bounds.length());
                     break;
-                }
-                default: {
-                    sb.append(cq.read());
-                }
-            }
-        }
-        String s = sb.toString();
-        if (s.length() > 0) {
-            if (s.trim().isEmpty()) {
-                builder.appendPlain(s, ctx);
-            } else {
-                NTexts nTexts = NTexts.of(ctx.session());
-                builder.appendNText("", s, nTexts.ofStyled(s, NTextStyle.italic()), p, ctx);
-            }
-        }
-    }
-
-    private void readColor(int col, NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
-        String sep = NStringUtils.repeat('#', col);
-        if (!cq.read(col).equals(sep)) {
-            throw new IllegalArgumentException("expected " + sep);
-        }
-        StringBuilder sb = new StringBuilder();
-        boolean stop = false;
-        while (!stop && cq.hasNext()) {
-            switch (cq.peek()) {
-                case '#': {
-                    if (cq.peek(col).equals(sep)) {
-                        cq.skip(col);
-                        stop = true;
-                        break;
-                    } else {
-                        sb.append(cq.read());
+                } else {
+                    SpecialToken u = readAny(cq);
+                    for (SpecialToken tt : flatten(u)) {
+                        switch (tt.type) {
+                            case EQ:
+                            case TXT: {
+                                a.accept(tt);
+                                break;
+                            }
+                        }
+                        sbs.add(tt);
                     }
-                    break;
-                }
-                default: {
-                    sb.append(cq.read());
                 }
             }
         }
-        String s = sb.toString();
-        if (s.length() > 0) {
-            if (s.trim().isEmpty()) {
-                builder.appendPlain(s, ctx);
-            } else {
-                NTexts nTexts = NTexts.of(ctx.session());
-                builder.appendNText("", s, nTexts.ofStyled(s, NTextStyle.primary(col)), p, ctx);
-            }
+        if (sbs.size() == 1) {
+            return sbs.get(0);
         }
+        return new SpecialTokenList(sbs);
     }
 
-    private void readBoldItalic(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
-        if (!cq.read(3).equals("***")) {
-            throw new IllegalArgumentException("expected ***");
-        }
-        StringBuilder sb = new StringBuilder();
-        boolean stop = false;
-        while (!stop && cq.hasNext()) {
-            switch (cq.peek()) {
-                case '*': {
-                    if (cq.peek(2).equals("***")) {
-                        cq.skip(2);
-                        stop = true;
-                        break;
-                    } else {
-                        sb.append(cq.read());
-                    }
-                    break;
-                }
-                default: {
-                    sb.append(cq.read());
-                }
-            }
-        }
-        String s = sb.toString();
-        if (s.length() > 0) {
-            if (s.trim().isEmpty()) {
-                builder.appendPlain(s, ctx);
-            } else {
-                NTexts nTexts = NTexts.of(ctx.session());
-                builder.appendNText("", s, nTexts.ofStyled(s, NTextStyles.of(NTextStyle.bold(), NTextStyle.italic())), p, ctx);
-            }
-        }
-    }
 
-    private void readPlain(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+
+    private SpecialToken readPlain(NReservedSimpleCharQueue cq) {
         StringBuilder sb = new StringBuilder();
         boolean stop = false;
         while (!stop && cq.hasNext()) {
             switch (cq.peek()) {
                 case '$':
-                case '#':
-                {
+                case '#': {
                     stop = true;
                     break;
                 }
@@ -266,11 +244,12 @@ public class HTextRendererFlavorDefault implements HTextRendererFlavor {
             }
         }
         if (sb.length() > 0) {
-            builder.appendPlain(sb.toString(), ctx);
+            return new SpecialTokenTxt(sb.toString());
         }
+        return null;
     }
 
-    private void readEq(NReservedSimpleCharQueue cq, HNode p, HNodeRendererContext ctx, HTextRendererBuilder builder) {
+    private SpecialToken readEq(NReservedSimpleCharQueue cq) {
         if (cq.peek() != '$') {
             throw new IllegalArgumentException("Unexpected");
         }
@@ -281,13 +260,9 @@ public class HTextRendererFlavorDefault implements HTextRendererFlavor {
                 case '$': {
                     cq.skip(1);
                     if (sb.length() > 0) {
-                        if (!sb.toString().trim().isEmpty()) {
-                            builder.appendCustom("latex-equation", sb.toString(), p, ctx);
-                        }
-                        return;
+                        return new SpecialTokenEq(sb.toString());
                     } else {
-                        builder.appendPlain("$$", ctx);
-                        return;
+                        return new SpecialTokenTxt("$$");
                     }
                 }
                 case '\\': {
@@ -313,8 +288,79 @@ public class HTextRendererFlavorDefault implements HTextRendererFlavor {
                 }
             }
         }
-        if (!sb.toString().trim().isEmpty()) {
-            builder.appendCustom("latex-equation", sb.toString(), p, ctx);
+        return new SpecialTokenEq(sb.toString());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private List<SpecialToken> flatten(SpecialToken a) {
+        List<SpecialToken> aa = new ArrayList<>();
+        if (a != null) {
+            switch (a.type) {
+                case TXT:
+                case EQ: {
+                    aa.add(a);
+                    break;
+                }
+                case LIST: {
+                    for (SpecialToken child : ((SpecialTokenList) a).children) {
+                        aa.addAll(flatten(child));
+                    }
+                    break;
+                }
+            }
+        }
+        return aa;
+    }
+
+    private enum SpecialTokenType {
+        LIST,
+        TXT,
+        EQ,
+    }
+
+    private static class SpecialToken {
+        SpecialTokenType type;
+    }
+
+    private static class SpecialTokenList extends SpecialToken {
+        {
+            type = SpecialTokenType.LIST;
+        }
+
+        List<SpecialToken> children = new ArrayList<>();
+
+        public SpecialTokenList(List<SpecialToken> children) {
+            this.children = children;
         }
     }
+
+    private static class SpecialTokenTxtOptions extends SpecialToken {
+        HTextOptions options = new HTextOptions();
+    }
+
+    private static class SpecialTokenTxt extends SpecialTokenTxtOptions {
+        {
+            type = SpecialTokenType.TXT;
+        }
+
+        String image;
+
+        public SpecialTokenTxt(String image) {
+            this.image = image;
+        }
+    }
+
+    private static class SpecialTokenEq extends SpecialTokenTxtOptions {
+        {
+            type = SpecialTokenType.EQ;
+        }
+
+        String image;
+
+        public SpecialTokenEq(String image) {
+            this.image = image;
+        }
+    }
+
 }

@@ -39,4 +39,12 @@ public class HSizeRequirements {
         this.preferredY = b.getMaxY();
     }
 
+    @Override
+    public String toString() {
+        return "HSizeRequirements{"
+                + "min=(" + minX +","+minY+")"
+                + " max=(" + maxX +","+maxY+")"
+                + " pref=(" + preferredX +","+preferredY+")"
+                +'}';
+    }
 }

@@ -1,6 +1,7 @@
 package net.thevpc.halfa.elem.base.text.text;
 
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.api.util.Colors;
 import net.thevpc.halfa.spi.util.HNodeRendererUtils;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.renderer.HGraphics;
@@ -192,11 +193,7 @@ public class NutsHighlighterMapper {
         {
             ObjEx e = ObjEx.of(ctx.computePropertyValue(node, prefix + "color").orNull());
             Color[] colors = e.asColorArrayOrColor().orNull();
-            if (colors == null || colors.length == 0) {
-                colors = DEFAULT_CODE_PALETTE;
-            }
-            int i = nTextStyle.getVariant() % colors.length;
-            ss.foreground = colors[i];
+            ss.foreground = Colors.resolveDefaultColorByIndex(nTextStyle.getVariant(),colors);
         }
         {
             ObjEx e = ObjEx.of(ctx.computePropertyValue(node, prefix + "background").orNull());

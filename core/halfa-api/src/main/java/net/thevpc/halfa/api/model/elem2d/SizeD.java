@@ -16,4 +16,9 @@ public class SizeD {
     public double getHeight() {
         return height;
     }
+
+    @Override
+    public String toString() {
+        return "(" +width+","+height+")";
+    }
 }

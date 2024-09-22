@@ -79,6 +79,7 @@ public class MainFrame extends JFrame {
         JMenu menu = new JMenu("File");
         menu.add(createMenuItemOpenFile());
         menu.add(createMenuItemNewFolder());
+        menu.add(createMenuItemNewFile());
         menu.addSeparator();
         menu.add(createMenuItemExit());
         return menu;
@@ -104,6 +105,15 @@ public class MainFrame extends JFrame {
         JMenuItem menu = new JMenuItem("New Project....");
         menu.addActionListener(e -> {
             serviceHelper.showNewProject();
+            entryComponent.reload();
+        });
+        return menu;
+    }
+
+    private JMenuItem createMenuItemNewFile() {
+        JMenuItem menu = new JMenuItem("New File....");
+        menu.addActionListener(e -> {
+            serviceHelper.showNewFile();
             entryComponent.reload();
         });
         return menu;

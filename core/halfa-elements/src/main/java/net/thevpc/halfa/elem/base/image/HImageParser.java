@@ -4,14 +4,12 @@
  */
 package net.thevpc.halfa.elem.base.image;
 
-import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.base.format.ToTsonHelper;
-import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
@@ -29,14 +27,14 @@ public class HImageParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArguments(String id, TsonElement tsonElement, HNode node, TsonElement[] arguments, HDocumentFactory f, HNodeFactoryParseContext context) {
+    protected boolean processArguments(ParseArgumentInfo info) {
         Set<Integer> processed = new HashSet<>();
         boolean found = false;
-        for (int i = 0; i < arguments.length; i++) {
-            TsonElement currentArg = arguments[i];
+        for (int i = 0; i < info.arguments.length; i++) {
+            TsonElement currentArg = info.arguments[i];
             switch (currentArg.type()) {
                 case STRING: {
-                    node.setProperty(HPropName.VALUE, context.asPathRef(currentArg));
+                    info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
                     processed.add(i);
                     found = true;
                     break;
@@ -48,14 +46,14 @@ public class HImageParser extends HNodeParserBase {
                         switch (sid) {
                             case HPropName.VALUE:
                             case HPropName.FILE: {
-                                node.setProperty(sid, context.asPathRef(p.value()));
+                                info.node.setProperty(sid, info.context.asPathRef(p.value()));
                                 processed.add(i);
                                 found = true;
                                 break;
                             }
                             case "content":
                             case "src": {
-                                node.setProperty(HPropName.VALUE, context.asPathRef(p.value()));
+                                info.node.setProperty(HPropName.VALUE, info.context.asPathRef(p.value()));
                                 processed.add(i);
                                 found = true;
                                 break;
@@ -67,12 +65,12 @@ public class HImageParser extends HNodeParserBase {
             }
         }
         if (!found) {
-            for (int i = 0; i < arguments.length; i++) {
+            for (int i = 0; i < info.arguments.length; i++) {
                 if (!processed.contains(i)) {
-                    TsonElement currentArg = arguments[i];
+                    TsonElement currentArg = info.arguments[i];
                     switch (currentArg.type()) {
                         case NAME: {
-                            node.setProperty(HPropName.VALUE, context.asPathRef(currentArg));
+                            info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
                             processed.add(i);
                             found = true;
                             break;
@@ -81,11 +79,12 @@ public class HImageParser extends HNodeParserBase {
                 }
             }
         }
-        for (int i = 0; i < arguments.length; i++) {
+        for (int i = 0; i < info.arguments.length; i++) {
             if (!processed.contains(i)) {
-                TsonElement currentArg = arguments[i];
-                if (!processArgument(id, tsonElement, node, currentArg, arguments, i, f, context)) {
-                    return processArgumentAsCommonStyleProperty(id, tsonElement, node, currentArg, arguments, i, f, context);
+                info.currentArg = info.arguments[i];
+                info.currentArgIndex = i;
+                if (!processArgument(info)) {
+                    return processArgumentAsCommonStyleProperty(info);
                 }
             }
         }
@@ -93,19 +92,19 @@ public class HImageParser extends HNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(String id, TsonElement tsonElement, HNode node, TsonElement currentArg, TsonElement[] allArguments, int currentArgIndex, HDocumentFactory f, HNodeFactoryParseContext context) {
-        switch (currentArg.type()) {
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
             case STRING:
             case NAME: {
                 break;
             }
             case PAIR: {
-                if (currentArg.isSimplePair()) {
-                    TsonPair p = currentArg.toPair();
+                if (info.currentArg.isSimplePair()) {
+                    TsonPair p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
                         case HPropName.TRANSPARENT_COLOR: {
-                            node.setProperty(sid, p.value());
+                            info.node.setProperty(sid, p.value());
                             return true;
                         }
                         case HPropName.VALUE:
@@ -119,7 +118,7 @@ public class HImageParser extends HNodeParserBase {
                 break;
             }
         }
-        return super.processArgument(id, tsonElement, node, currentArg, allArguments, currentArgIndex, f, context);
+        return super.processArgument(info);
     }
 
 
