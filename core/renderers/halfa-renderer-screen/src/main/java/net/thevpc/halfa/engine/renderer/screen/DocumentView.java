@@ -11,6 +11,7 @@ import net.thevpc.halfa.engine.renderer.elem2d.text.util.TextUtils;
 import net.thevpc.halfa.engine.renderer.screen.components.*;
 
 
+import net.thevpc.halfa.engine.renderer.screen.utils.JPopupMenuHelper;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Timer;
 
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NLiteral;
 
 public class DocumentView {
@@ -268,61 +270,52 @@ public class DocumentView {
 
 
     private void showPopupMenu(MouseEvent e) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        boolean someMenus = false;
-        if (Desktop.isDesktopSupported()) {
-            JMenuItem saveAsPdfMenuItem = new JMenuItem("Save as PDF");
-            saveAsPdfMenuItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    PdfConfigDialog configDialog = new PdfConfigDialog((Frame) SwingUtilities.getWindowAncestor((Component) e.getSource()));
-                    configDialog.setVisible(true);
-                    if (configDialog.isConfirmed()) {
-                        HDocumentStreamRendererConfig config = configDialog.getConfig();
+        JPopupMenuHelper popupMenu = new JPopupMenuHelper();
+        popupMenu.addMenuItem("Save as PDF", ev -> {
+            PdfConfigDialog configDialog = new PdfConfigDialog((Frame) SwingUtilities.getWindowAncestor((Component) e.getSource()));
+            configDialog.setVisible(true);
+            if (configDialog.isConfirmed()) {
+                HDocumentStreamRendererConfig config = configDialog.getConfig();
 
-                        if (document != null && listener != null) {
-                            listener.onSaveDocument(document, config);
-                        } else {
-                            System.err.println("saveDocumentListener is null or document is null");
-                        }
-                    }
+                if (document != null && listener != null) {
+                    listener.onSaveDocument(document, config);
+                } else {
+                    System.err.println("saveDocumentListener is null or document is null");
                 }
-            });
-            popupMenu.add(saveAsPdfMenuItem);
-            someMenus = true;
-        }
+            }
+        });
 
         HResource source = document.root().source();
-        if (Desktop.isDesktopSupported() && source != null) {
+        if (source != null) {
             NPath path = source.path().orNull();
             if (path != null) {
                 File file = path.toFile().orNull();
                 if (file != null) {
-                    JMenuItem openProject = new JMenuItem(
-                            file.isDirectory() ? "Open Project in Explorer" : "Open Project"
-                    );
-                    openProject.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (Desktop.isDesktopSupported()) {
+                    popupMenu.addMenuItem(file.isDirectory() ? "Open Project in Explorer" : "Open Project",
+                            ev -> {
                                 try {
                                     Desktop.getDesktop().open(file);
                                 } catch (IOException ex) {
                                     ex.printStackTrace();
                                 }
-                            } else {
-                                System.out.println("Desktop is not supported on this system.");
-                            }
-                        }
-                    });
-                    popupMenu.add(openProject);
-                    someMenus = true;
+                            });
                 }
             }
         }
-        if (someMenus) {
-            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
+        popupMenu.addSeparator().addMenuItem("First Page", ev -> {
+            firstPage();
+        });
+        popupMenu.addMenuItem("Last Page", ev -> {
+            lastPage();
+        });
+        popupMenu.addMenuItem("Goto Page...", ev -> {
+            String s = JOptionPane.showInputDialog("Page Number?");
+            Integer v = NLiteral.of(s).asInt().orElse(-1);
+            if (v > 0) {
+                showPage(v - 1);
+            }
+        });
+        popupMenu.show(e);
     }
 
 
@@ -460,6 +453,12 @@ public class DocumentView {
     }
 
     public void showPage(int index) {
+        int count = getPagesCount();
+        if (index >= count) {
+            index = count - 1;
+        } else if (index < 0) {
+            index = 0;
+        }
         PageView pageView = pageViews.get(index);
         this.showPage(pageView);
     }
