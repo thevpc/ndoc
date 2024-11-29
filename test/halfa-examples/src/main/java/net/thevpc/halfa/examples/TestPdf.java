@@ -13,7 +13,7 @@ public class TestPdf {
     public static void main(String[] args) {
         NSession session = Nuts.openWorkspace();
         HEngine e = new HEngineImpl(session);
-        NPath file = NPath.of("documentation/halfa-doc", session).toAbsolute().normalize();
+        NPath file = NPath.of("documentation/halfa-doc").toAbsolute().normalize();
         HDocument doc = e.loadDocument(file, new HMessageListImpl(session, null)).get();
         HDocumentStreamRenderer renderer = e.newStreamRenderer("pdf");
         renderer.setOutput(file.resolve("output.pdf"));

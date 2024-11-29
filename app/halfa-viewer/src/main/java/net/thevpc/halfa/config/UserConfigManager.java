@@ -5,7 +5,6 @@ import net.thevpc.nuts.NLocations;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonDocument;
 import net.thevpc.tson.TsonElement;
@@ -22,7 +21,7 @@ public class UserConfigManager {
 
     public UserConfigManager(NSession session) {
         this.session = session;
-        this.userConfigFile = NLocations.of(session).getStoreLocation(NId.of("net.thevpc.nuts:nuts").get(), NStoreType.CONF).resolve("user-config.tson");
+        this.userConfigFile = NLocations.of().getStoreLocation(NId.of("net.thevpc.nuts:nuts").get(), NStoreType.CONF).resolve("user-config.tson");
     }
 
 

@@ -118,7 +118,7 @@ public class GifResizer {
 
         NPath appFolder = session.getAppFolder(NStoreType.CACHE);
         if(appFolder==null){
-            appFolder=NPath.ofUserHome(session).resolve(".cache/hadra");
+            appFolder=NPath.ofUserHome().resolve(".cache/hadra");
         }
         NPath n = appFolder.resolve("gif-resizer").mkdirs().resolve(name + ".gif");
         if(n.isRegularFile()){

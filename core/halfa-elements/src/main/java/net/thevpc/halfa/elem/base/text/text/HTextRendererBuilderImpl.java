@@ -60,7 +60,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             appendPlain(rawText, ctx);
             return;
         }
-        NTexts nTexts = NTexts.of(ctx.session());
+        NTexts nTexts = NTexts.of();
         List<NTextStyle> styles = new ArrayList<>();
         if (options.bold != null && options.bold) {
             styles.add(NTextStyle.bold());

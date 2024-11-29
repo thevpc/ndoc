@@ -36,7 +36,7 @@ public class HItemListParser {
                         pg.add(u.get());
                     } else {
                         return NOptional.ofError(
-                                s -> NMsg.ofC("Error parsing page group : %s", e)
+                                () -> NMsg.ofC("Error parsing page group : %s", e)
                         );
                     }
                 }

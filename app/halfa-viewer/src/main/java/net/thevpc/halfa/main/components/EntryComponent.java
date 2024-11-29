@@ -29,7 +29,7 @@ public class EntryComponent extends JPanel {
                 if(value instanceof HalfaProject){
                     HalfaProject pr = (HalfaProject) value;
                     String path = pr.getPath();
-                    NPath p = NPath.of(path, session);
+                    NPath p = NPath.of(path);
                     valid=p.exists();
                     showObj="<html><b><span style='color:#00ffff'>"+p.getName()+"</span></b> (<small>"+path+"</small>), last accessed <b>"+pr.getLastAccess()+"</b>";
                 }
@@ -47,7 +47,7 @@ public class EntryComponent extends JPanel {
                         serviceHelper.showOpenFile();
                     }else if(selectedValue instanceof HalfaProject){
                         serviceHelper.openProject(
-                                NPath.of(((HalfaProject) selectedValue).getPath(),session)
+                                NPath.of(((HalfaProject) selectedValue).getPath())
                         );
                     }
                     reload();

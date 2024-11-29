@@ -18,7 +18,7 @@ public class HalfaExampleFromFolder {
     public static void main(String[] args) {
         NSession session = Nuts.openWorkspace();
         HEngine e = new HEngineImpl(session);
-        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\halfa\\test\\halfa-examples\\src\\halfa\\ibtihel", session).toAbsolute().normalize();
+        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\halfa\\test\\halfa-examples\\src\\halfa\\ibtihel").toAbsolute().normalize();
         e.newScreenRenderer().renderPath(file);
     }
 }

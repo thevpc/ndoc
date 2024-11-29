@@ -89,7 +89,7 @@ public class HEngineImpl implements HEngine {
         return NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        s -> NMsg.ofC("support for node '%s' ", element))
+                        () -> NMsg.ofC("support for node '%s' ", element))
                 .toOptional();
     }
 
@@ -122,8 +122,8 @@ public class HEngineImpl implements HEngine {
         return NCallableSupport.resolve(
                         documentRendererFactories().stream()
                                 .map(x -> x.<HDocumentStreamRenderer>createDocumentRenderer(ctx)),
-                        s -> NMsg.ofC("missing StreamRenderer %s", type))
-                .call(session);
+                        () -> NMsg.ofC("missing StreamRenderer %s", type))
+                .call();
     }
 
     private List<HDocumentRendererFactory> documentRendererFactories() {
@@ -337,7 +337,7 @@ public class HEngineImpl implements HEngine {
                 for (NPath nPath : all) {
                     NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath, document, messages);
                     if (!d.isPresent()) {
-                        return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
+                        return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
                     updateSource(d.get(), HResourceFactory.of(path));
                     if (node == null) {
@@ -354,10 +354,10 @@ public class HEngineImpl implements HEngine {
                 }
                 return NOptional.of(node);
             } else {
-                return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
+                return NOptional.ofError(() -> NMsg.ofC("invalid file %s", path));
             }
         }
-        return NOptional.ofError(s -> NMsg.ofC("file does not exist %s", path));
+        return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
     private NOptional<TsonDocument> loadTsonDocument(InputStream is) {

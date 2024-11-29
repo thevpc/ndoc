@@ -110,7 +110,7 @@ public class ServiceHelper {
         if (r == JFileChooser.APPROVE_OPTION) {
             File sf = f.getSelectedFile();
             if (sf != null) {
-                openProject(NPath.of(sf, session));
+                openProject(NPath.of(sf));
             }
         }
     }
@@ -121,7 +121,7 @@ public class ServiceHelper {
         if (projectPanel.showDialog(mainFrame.getContentPane())) {
             String selectedTemplate = projectPanel.getSelectedTemplate();
             String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, engine.getDefaultTemplateUrl());
-            NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."), session);
+            NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."));
             NPath newProjectPath;
             String baseName = NStringUtils.trim(projectPanel.getSelectedProjectName());
             if (NBlankable.isBlank(baseName)) {
@@ -145,7 +145,7 @@ public class ServiceHelper {
                 }
             }
             Map<String, String> propValues = projectPanel.getPropValues();
-            engine.createProject(newProjectPath, NPath.of(templateBootUrl, session), propValues::get);
+            engine.createProject(newProjectPath, NPath.of(templateBootUrl), propValues::get);
             UserConfig newUserConfig = projectPanel.getUserConfig();
             UserConfig oldUser = usersConfig().loadUserConfig(newUserConfig.getId());
             if (oldUser != null && Objects.equals(newUserConfig, oldUser)) {
@@ -179,7 +179,7 @@ public class ServiceHelper {
                     if (!sf.getName().endsWith(".hd")) {
                         sf = new File(sf.getParent(), sf.getName() + ".hd");
                     }
-                    NPath.of(sf, session).writeString("//Hadra Document File\n");
+                    NPath.of(sf).writeString("//Hadra Document File\n");
                 }
             }
         }
@@ -207,7 +207,7 @@ public class ServiceHelper {
                         sf = new File(sf.getParent(), sf.getName() + ".pdf");
                     }
                 }
-                NPath outputPdfPath = NPath.of(sf, session);
+                NPath outputPdfPath = NPath.of(sf);
 
                 HDocumentStreamRenderer renderer = engine.newPdfRenderer();
                 renderer.setStreamRendererConfig(config);

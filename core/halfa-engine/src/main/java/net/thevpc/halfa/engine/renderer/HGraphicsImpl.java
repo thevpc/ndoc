@@ -561,7 +561,7 @@ public class HGraphicsImpl implements HGraphics {
             NOptional<HGraphicsImageDrawer> tr = NCallableSupport.resolve(
                             imageTypeRendererFactories.stream()
                                     .map(n -> n.resolveRenderer(nPath, options, HGraphicsImpl.this)),
-                            s -> NMsg.ofC("support for image %s ", nPath))
+                            () -> NMsg.ofC("support for image %s ", nPath))
                     .toOptional();
             if (tr.isPresent()) {
                 putCache(new Object[]{nPath}, o = tr.get());

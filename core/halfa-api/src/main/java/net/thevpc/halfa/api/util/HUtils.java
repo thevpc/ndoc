@@ -62,7 +62,7 @@ public class HUtils {
         String compilerDeclarationPath = getCompilerDeclarationPath(path);
         NPath referencePath = null;
         if (compilerDeclarationPath != null) {
-            referencePath = NPath.of(compilerDeclarationPath, session);
+            referencePath = NPath.of(compilerDeclarationPath);
         } else {
             if (source != null) {
                 if (source instanceof NPath) {
@@ -80,10 +80,10 @@ public class HUtils {
             if (referencePath != null) {
                 base = referencePath.resolve(pathString);
             } else {
-                base = NPath.of(pathString, session);
+                base = NPath.of(pathString);
             }
         } else {
-            base = NPath.of(pathString, session);
+            base = NPath.of(pathString);
         }
         return base;
     }

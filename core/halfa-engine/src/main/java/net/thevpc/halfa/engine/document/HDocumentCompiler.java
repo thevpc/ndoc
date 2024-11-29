@@ -273,7 +273,7 @@ public class HDocumentCompiler {
                 } else {
                     NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.halfa.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
                     messages.addError(message, objectDefNode.source());
-                    throw new NIllegalArgumentException(session, message);
+                    throw new NIllegalArgumentException(message);
                 }
             }
         }

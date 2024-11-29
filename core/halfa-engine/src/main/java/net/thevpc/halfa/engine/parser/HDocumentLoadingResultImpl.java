@@ -23,7 +23,7 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
 
     @Override
     public HDocument get() {
-        return document().get(session);
+        return document().get();
     }
 
     @Override

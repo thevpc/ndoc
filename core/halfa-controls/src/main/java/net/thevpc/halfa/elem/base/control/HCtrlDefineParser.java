@@ -49,7 +49,7 @@ public class HCtrlDefineParser extends HNodeParserBase {
                                 if (!o.isPresent()) {
                                     NMsg nMsg = NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c);
                                     context.messages().addError(nMsg);
-                                    throw new NIllegalArgumentException(context.session(), nMsg);
+                                    throw new NIllegalArgumentException(nMsg);
                                 }
                                 HItem hItem = o.get();
                                 if (hItem instanceof HItemList) {
@@ -67,7 +67,7 @@ public class HCtrlDefineParser extends HNodeParserBase {
                 break;
             }
         }
-        return NCallableSupport.invalid(s -> NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
+        return NCallableSupport.invalid(() -> NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
     }
 
     @Override

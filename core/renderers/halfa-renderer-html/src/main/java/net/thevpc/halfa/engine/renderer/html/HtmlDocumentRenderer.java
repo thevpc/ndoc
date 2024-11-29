@@ -49,13 +49,13 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
         HDocument d = document.get(rendererContext);
         Object o = output;
         if (o == null) {
-            o = NPath.of("document.pdf", session);
+            o = NPath.of("document.pdf");
         }
         if (o instanceof NPath) {
             try (OutputStream os = ((NPath) o).getOutputStream()) {
                 renderStream(d, os);
             } catch (IOException ex) {
-                throw new NIOException(session, ex);
+                throw new NIOException(ex);
             }
         } else if (o instanceof OutputStream) {
             renderStream(d, (OutputStream) o);

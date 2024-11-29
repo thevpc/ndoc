@@ -7,7 +7,6 @@ import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
-import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class DocumentController {
     @GetMapping(value = "/images", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getDocumentImages(@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd", session)
+            NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd")
                     .toAbsolute()
                     .normalize();
 

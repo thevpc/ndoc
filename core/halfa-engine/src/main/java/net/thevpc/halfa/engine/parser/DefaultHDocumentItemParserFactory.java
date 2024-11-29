@@ -203,11 +203,11 @@ public class DefaultHDocumentItemParserFactory
 //                    }
                 }
                 context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-                throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+                throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
             }
         }
         context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+        throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
 

@@ -19,7 +19,7 @@ public class ScreenDocumentStreamRendererFactory implements HDocumentRendererFac
             case "screen":
                 return NCallableSupport.of(10, () -> new ScreenDocumentRenderer(context.engine(), context.session()));
             default:
-                return NCallableSupport.invalid(s -> NMsg.ofPlain("factory"));
+                return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
         }
     }
 

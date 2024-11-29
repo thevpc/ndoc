@@ -18,7 +18,7 @@ public class PdfDocumentStreamRendererFactory implements HDocumentRendererFactor
                     return new PdfDocumentRenderer(context.engine(), context.session(), config);
                 });
             default:
-                return NCallableSupport.invalid(s -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
+                return NCallableSupport.invalid(() -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
         }
     }
 }

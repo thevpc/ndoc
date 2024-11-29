@@ -36,7 +36,7 @@
 //                String name = object.name();
 //                if(NBlankable.isBlank(name)) {
 //                    context.messages().addError(NMsg.ofC("missing definition name : %s", tsonElement), context.source());
-//                    return NOptional.ofError(s -> NMsg.ofC("missing definition name : %s", tsonElement));
+//                    return NOptional.ofError(() -> NMsg.ofC("missing definition name : %s", tsonElement));
 //                }
 //                TsonElementList definitionArguments = object.args();
 //                TsonElementList definitionBody = object.body();
