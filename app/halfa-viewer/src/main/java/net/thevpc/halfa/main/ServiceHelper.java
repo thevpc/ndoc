@@ -12,7 +12,6 @@ import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NStringUtils;
@@ -50,7 +49,7 @@ public class ServiceHelper {
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        engine = new HEngineImpl(mainFrame.getSession());
+        engine = new HEngineImpl();
         currListeners.add(new HDocumentRendererListener() {
 
             @Override
@@ -59,8 +58,8 @@ public class ServiceHelper {
             }
 
         });
-        configManager = new HalfaViewerConfigManager(mainFrame.getSession());
-        usersConfigManager = new UserConfigManager(mainFrame.getSession());
+        configManager = new HalfaViewerConfigManager();
+        usersConfigManager = new UserConfigManager();
     }
 
     public HEngine engine() {
@@ -98,7 +97,6 @@ public class ServiceHelper {
     }
 
     public void showOpenFile() {
-        NSession session = mainFrame.getSession();
         NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
         f.setFileFilter(HD_FILTER);
@@ -110,18 +108,17 @@ public class ServiceHelper {
         if (r == JFileChooser.APPROVE_OPTION) {
             File sf = f.getSelectedFile();
             if (sf != null) {
-                openProject(NPath.of(sf, session));
+                openProject(NPath.of(sf));
             }
         }
     }
 
     public void showNewProject() {
-        NSession session = mainFrame.getSession();
-        NewProjectPanel projectPanel = new NewProjectPanel(this, session);
+        NewProjectPanel projectPanel = new NewProjectPanel(this);
         if (projectPanel.showDialog(mainFrame.getContentPane())) {
             String selectedTemplate = projectPanel.getSelectedTemplate();
             String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, engine.getDefaultTemplateUrl());
-            NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."), session);
+            NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."));
             NPath newProjectPath;
             String baseName = NStringUtils.trim(projectPanel.getSelectedProjectName());
             if (NBlankable.isBlank(baseName)) {
@@ -145,7 +142,7 @@ public class ServiceHelper {
                 }
             }
             Map<String, String> propValues = projectPanel.getPropValues();
-            engine.createProject(newProjectPath, NPath.of(templateBootUrl, session), propValues::get);
+            engine.createProject(newProjectPath, NPath.of(templateBootUrl), propValues::get);
             UserConfig newUserConfig = projectPanel.getUserConfig();
             UserConfig oldUser = usersConfig().loadUserConfig(newUserConfig.getId());
             if (oldUser != null && Objects.equals(newUserConfig, oldUser)) {
@@ -160,8 +157,6 @@ public class ServiceHelper {
     }
 
     public void showNewFile() {
-        NSession session = mainFrame.getSession();
-
         NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
         f.setFileFilter(HD_FILTER);
@@ -179,7 +174,7 @@ public class ServiceHelper {
                     if (!sf.getName().endsWith(".hd")) {
                         sf = new File(sf.getParent(), sf.getName() + ".hd");
                     }
-                    NPath.of(sf, session).writeString("//Hadra Document File\n");
+                    NPath.of(sf).writeString("//Hadra Document File\n");
                 }
             }
         }
@@ -194,7 +189,6 @@ public class ServiceHelper {
     }
 
     public void doSavePDf(HDocument document, HDocumentStreamRendererConfig config) {
-        NSession session = mainFrame.getSession();
         JFileChooser f = new JFileChooser();
         f.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -207,7 +201,7 @@ public class ServiceHelper {
                         sf = new File(sf.getParent(), sf.getName() + ".pdf");
                     }
                 }
-                NPath outputPdfPath = NPath.of(sf, session);
+                NPath outputPdfPath = NPath.of(sf);
 
                 HDocumentStreamRenderer renderer = engine.newPdfRenderer();
                 renderer.setStreamRendererConfig(config);

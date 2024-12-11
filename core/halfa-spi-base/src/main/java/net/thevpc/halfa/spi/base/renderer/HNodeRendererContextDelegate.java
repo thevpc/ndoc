@@ -10,7 +10,6 @@ import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
 
@@ -83,11 +82,6 @@ public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
     @Override
     public boolean isDry() {
         return dry;
-    }
-
-    @Override
-    public NSession session() {
-        return base.session();
     }
 
     @Override

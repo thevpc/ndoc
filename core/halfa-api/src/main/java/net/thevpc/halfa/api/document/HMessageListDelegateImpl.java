@@ -1,20 +1,16 @@
 package net.thevpc.halfa.api.document;
 
 import net.thevpc.halfa.api.resources.HResource;
-import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.reserved.NReservedLangUtils;
 import net.thevpc.nuts.util.NMsg;
 
 import java.time.Instant;
 
 public class HMessageListDelegateImpl implements HMessageList {
-    private NSession session;
     private HResource defaultSource;
     private HMessageList other;
     private int errorCount;
 
-    public HMessageListDelegateImpl(NSession session, HResource defaultSource, HMessageList other) {
-        this.session = session;
+    public HMessageListDelegateImpl(HResource defaultSource, HMessageList other) {
         this.defaultSource = defaultSource;
         this.other = other;
     }

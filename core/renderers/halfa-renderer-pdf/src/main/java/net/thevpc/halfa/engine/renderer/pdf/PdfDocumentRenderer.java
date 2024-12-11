@@ -29,7 +29,6 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -43,8 +42,8 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
 
-    public PdfDocumentRenderer(HEngine engine, NSession session, HDocumentStreamRendererConfig config) {
-        super(engine, session);
+    public PdfDocumentRenderer(HEngine engine, HDocumentStreamRendererConfig config) {
+        super(engine);
         this.config = config;
 
     }
@@ -54,13 +53,13 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         HDocument document = documentSupplier.get(rendererContext);
         Object outputTarget = output;
         if (outputTarget == null) {
-            outputTarget = NPath.of("document.pdf", session);
+            outputTarget = NPath.of("document.pdf");
         }
         if (outputTarget instanceof NPath) {
             try (OutputStream os = ((NPath) outputTarget).getOutputStream()) {
                 renderStream(document, os, config);
             } catch (IOException ex) {
-                throw new NIOException(session, ex);
+                throw new NIOException(ex);
             }
         } else if (outputTarget instanceof OutputStream) {
             renderStream(document, (OutputStream) outputTarget, config);
@@ -75,7 +74,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             pdfDocument.open();
             addContent(pdfDocument, config);
 
-            HMessageList messages = this.messages != null ? this.messages : new HMessageListImpl(session, engine.computeSource(document.root()));
+            HMessageList messages = this.messages != null ? this.messages : new HMessageListImpl(engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
             int imagesPerPage = config.getGridX() * config.getGridY();
@@ -125,8 +124,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
                         new HNodeRendererConfig((int) cellWidth, (int) cellHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
-                                .setMessages(messages),
-                        session
+                                .setMessages(messages)
                 ));
                 img.scaleToFit(cellWidth, cellHeight);
 
@@ -192,7 +190,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             }
 
         } catch (Exception ex) {
-            throw new NIOException(session, ex);
+            throw new NIOException(ex);
         } finally {
             if (pdfDocument.isOpen()) {
                 pdfDocument.close();
@@ -310,7 +308,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             }
             mergePdfFiles(all, out);
         } catch (IOException | DocumentException ex) {
-            throw new NIOException(session, ex);
+            throw new NIOException(ex);
         }
     }
 
@@ -328,7 +326,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             //perhaps I need to store to disk
             return () -> new ByteArrayInputStream(bos2.toByteArray());
         } catch (DocumentException e) {
-            throw new NIllegalArgumentException(session, NMsg.ofC("invalid parse %s", "file"), e);
+            throw new NIllegalArgumentException( NMsg.ofC("invalid parse %s", "file"), e);
         }
     }
 

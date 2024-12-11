@@ -7,10 +7,8 @@ import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.util.HUtils;
-import net.thevpc.halfa.api.util.NPathHResource;
 import net.thevpc.halfa.engine.parser.util.GitHelper;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.tson.Tson;
@@ -23,7 +21,6 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
     private final HDocument document;
     private final TsonElement element;
     private final HEngine engine;
-    private final NSession session;
     private final List<HNode> nodePath = new ArrayList<>();
     private final HResource source;
 
@@ -31,8 +28,8 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             HDocument document
             , TsonElement element
             , HEngine engine
-            , NSession session
-            , List<HNode> nodePath
+            ,
+            List<HNode> nodePath
             , HResource source
             , HMessageList messages
     ) {
@@ -40,7 +37,6 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         this.document = document;
         this.element = element;
         this.engine = engine;
-        this.session = session;
         this.source = source;
         this.nodePath.addAll(nodePath);
     }
@@ -61,7 +57,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
                     HResource resource = engine().computeSource(nodePath.get(i));
                     if (resource!=null) {
                         if(resource.path().isPresent()) {
-                            NPath nPath = HUtils.resolvePath(element, resource, session());
+                            NPath nPath = HUtils.resolvePath(element, resource);
                             if(nPath!=null) {
                                 return Tson.of(nPath.toString());
                             }
@@ -90,7 +86,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
         List<HNode> nodePath2 = new ArrayList<>();
         nodePath2.addAll(Arrays.asList(nodePath()));
         nodePath2.add(node);
-        return new DefaultHNodeFactoryParseContext(document(), element, engine(), session, nodePath2, source, messages);
+        return new DefaultHNodeFactoryParseContext(document(), element, engine(), nodePath2, source, messages);
     }
 
     @Override
@@ -100,11 +96,6 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
 
     public HResource source() {
         return source;
-    }
-
-    @Override
-    public NSession session() {
-        return session;
     }
 
     @Override
@@ -144,7 +135,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             return null;
         }
         if (GitHelper.isGithubFolder(path)) {
-            return resolvePath(GitHelper.resolveGithubPath(path, messages, session));
+            return resolvePath(GitHelper.resolveGithubPath(path, messages));
         }
         HResource src = source;
         if (src == null) {
@@ -160,6 +151,6 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
                 }
             }
         }
-        return HUtils.resolvePath(Tson.of(path),src,session());
+        return HUtils.resolvePath(Tson.of(path),src);
     }
 }

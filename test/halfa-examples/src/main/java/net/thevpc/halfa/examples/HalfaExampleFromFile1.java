@@ -8,7 +8,6 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentStreamRenderer;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
@@ -18,14 +17,14 @@ import net.thevpc.nuts.io.NPath;
 public class HalfaExampleFromFile1 {
 
     public static void main(String[] args) {
-        NSession session = Nuts.openWorkspace();
-        HEngine e = new HEngineImpl(session);
-        NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd", session).toAbsolute().normalize();
+        Nuts.openWorkspace().setSharedInstance();
+        HEngine e = new HEngineImpl();
+        NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd").toAbsolute().normalize();
         System.out.println(file);
         HDocument doc = e.loadDocument(file, null).get();
         System.out.println(e.toTson(doc));
         HDocumentStreamRenderer renderer = e.newStreamRenderer("pdf");
-        renderer.setOutput(NPath.ofUserHome(session).resolve("example.pdf"));
+        renderer.setOutput(NPath.ofUserHome().resolve("example.pdf"));
         renderer.render(doc);
     }
 }

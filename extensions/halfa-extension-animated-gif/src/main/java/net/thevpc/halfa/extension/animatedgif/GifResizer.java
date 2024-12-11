@@ -34,7 +34,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.madgag.gif.fmsware.GifDecoder;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.NApp;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -81,7 +81,6 @@ public class GifResizer {
 
     public static FutureTask<NPath> transformWithCache(byte[] source, String suffix,
                                                        GifFrameTransformer transform,
-                                                       NSession session,
                                                        Map<String,FutureTask<NPath>> pendingCache
                                                        ) {
         Color t = transform.transparentColor();
@@ -116,9 +115,9 @@ public class GifResizer {
             }
         }
 
-        NPath appFolder = session.getAppFolder(NStoreType.CACHE);
+        NPath appFolder = NApp.of().getFolder(NStoreType.CACHE);
         if(appFolder==null){
-            appFolder=NPath.ofUserHome(session).resolve(".cache/hadra");
+            appFolder=NPath.ofUserHome().resolve(".cache/hadra");
         }
         NPath n = appFolder.resolve("gif-resizer").mkdirs().resolve(name + ".gif");
         if(n.isRegularFile()){

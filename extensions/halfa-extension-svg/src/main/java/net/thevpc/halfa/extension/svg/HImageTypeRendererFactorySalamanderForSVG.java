@@ -26,7 +26,7 @@ public class HImageTypeRendererFactorySalamanderForSVG implements HImageTypeRend
                     }
             );
         }
-        return NCallableSupport.invalid(session -> NMsg.ofC("not supported %s", path));
+        return NCallableSupport.invalid(() -> NMsg.ofC("not supported %s", path));
     }
 
     private static SVGIcon createSVGIconFromBytes(byte[] svgBytes) {

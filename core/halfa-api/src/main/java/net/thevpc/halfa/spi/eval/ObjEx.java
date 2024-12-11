@@ -32,7 +32,7 @@ public class ObjEx {
 
     private static NOptional<Color> getRegisteredColor(String name) {
         Color u = predifinedColors.get(NNameFormat.LOWER_KEBAB_CASE.format(name));
-        return NOptional.of(u, s -> NMsg.ofC("color %s", name));
+        return NOptional.of(u, () -> NMsg.ofC("color %s", name));
     }
 
     private static void registerColor(String name, Color color) {

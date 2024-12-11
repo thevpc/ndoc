@@ -7,8 +7,6 @@ import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
-import net.thevpc.halfa.spi.util.PagesHelper;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,26 +26,24 @@ import java.util.List;
 public class DocumentController {
 
     private final HEngine engine;
-    private final NSession session;
 
     @Autowired
-    public DocumentController(HEngine engine, NSession session) {
+    public DocumentController(HEngine engine) {
         this.engine = engine;
-        this.session = session;
     }
 
     @GetMapping(value = "/images", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getDocumentImages(@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd", session)
+            NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd")
                     .toAbsolute()
                     .normalize();
 
             int sizeWidth = 1200;
             int sizeHeight = 1000;
-            HEngine e = new HEngineImpl(session);
+            HEngine e = new HEngineImpl();
             HDocument doc = e.loadDocument(file, null).get();
-            HMessageList messages = new HMessageListImpl(session, engine.computeSource(doc.root()));
+            HMessageList messages = new HMessageListImpl(engine.computeSource(doc.root()));
 
             List<HNode> pages = doc.pages();
 
@@ -57,7 +53,6 @@ public class DocumentController {
                         new HNodeRendererConfig(sizeWidth, sizeHeight)
                                 .withAnimate(false)
                                 .setMessages(messages)
-                        , session
                 );
                 return ResponseEntity
                         .ok()

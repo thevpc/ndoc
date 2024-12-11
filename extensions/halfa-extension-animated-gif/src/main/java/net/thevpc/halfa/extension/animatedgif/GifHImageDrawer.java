@@ -45,7 +45,7 @@ class GifHImageDrawer implements HGraphicsImageDrawer {
                             public Dimension size() {
                                 return size;
                             }
-                        }, g.session(),pendingCache)
+                        }, pendingCache)
                 ;
         if(location.isDone() || options.isDisableAnimation()) {
             ImageIcon ii = null;

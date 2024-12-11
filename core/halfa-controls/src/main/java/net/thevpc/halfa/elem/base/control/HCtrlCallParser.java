@@ -50,7 +50,7 @@ public class HCtrlCallParser extends HNodeParserBase {
                 });
             }
         }
-        return NCallableSupport.invalid(s -> NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
+        return NCallableSupport.invalid(() -> NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
     }
 
 

@@ -58,11 +58,8 @@
 			<artifactId>halfa-controls</artifactId>
 			<version>0.8.5.0</version>
 		</dependency>
-		<dependency>
-			<groupId>net.thevpc.nuts</groupId>
-			<artifactId>nuts-runtime</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
+		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.5.0</version></dependency>
+		<dependency><groupId>net.thevpc.nuts.lib</groupId><artifactId>nlib-spring-boot</artifactId><version>0.8.5.0</version></dependency>
 
 		<dependency>
 			<groupId>net.thevpc.halfa</groupId>

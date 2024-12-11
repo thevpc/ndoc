@@ -31,7 +31,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 List<TsonElement> u = tsonElement.toFunction().args().toList();
                 if (u.isEmpty()) {
                     context.messages().addError(NMsg.ofC("missing path argument : %s", tsonElement), context.source());
-                    return NOptional.ofError(s -> NMsg.ofC("missing path argument : %s", tsonElement));
+                    return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
                 }
                 HNode putInto = context.node();
                 List<HItem> loaded = new ArrayList<>();
@@ -75,7 +75,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                     loaded.add(se.get());
                 } else {
                     context.messages().addError(NMsg.ofC("invalid include. error loading : %s", nPath), context.source());
-                    return NOptional.ofError(s -> NMsg.ofC("invalid include. error loading : %s", nPath));
+                    return NOptional.ofError(() -> NMsg.ofC("invalid include. error loading : %s", nPath));
                 }
             }
         }

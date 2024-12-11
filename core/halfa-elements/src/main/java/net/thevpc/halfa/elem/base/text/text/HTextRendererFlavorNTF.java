@@ -20,8 +20,8 @@ public class HTextRendererFlavorNTF implements HTextRendererFlavor {
         String lang = "ntf";
         String codeStr = text;
         codeStr = HTextUtils.trimBloc(codeStr);
-        NTexts ttt = NTexts.of(ctx.session());
-        NText ncode = ttt.parse(codeStr);
+        NTexts ttt = NTexts.of();
+        NText ncode = ttt.of(codeStr);
         NutsHighlighterMapper.highlightNutsText(lang, codeStr, ncode, p, ctx,builder);
     }
 }

@@ -21,7 +21,6 @@ import net.thevpc.halfa.spi.HNodeFlowControlProcessorContext;
 import net.thevpc.halfa.spi.base.model.DefaultHNode;
 import net.thevpc.halfa.spi.eval.HNodeEval;
 import net.thevpc.nuts.NIllegalArgumentException;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -33,18 +32,16 @@ import java.util.stream.Collectors;
 public class HDocumentCompiler {
 
     private HEngine engine;
-    private NSession session;
     private HMessageList messages;
     private IfHNodeFlowControlProcessorFactory flowControlProcessorFactory = new IfHNodeFlowControlProcessorFactory();
 
-    public HDocumentCompiler(HEngine engine, HMessageList messages, NSession session) {
+    public HDocumentCompiler(HEngine engine, HMessageList messages) {
         this.engine = engine;
-        this.session = session;
         this.messages = messages;
     }
 
     public HDocumentLoadingResult compile(HDocument document) {
-        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(engine.computeSource(document.root()), messages, session);
+        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(engine.computeSource(document.root()), messages);
         result.setDocument(document);
         HNode root = document.root();
         processUuid(root);
@@ -228,7 +225,7 @@ public class HDocumentCompiler {
             while (currNode != null) {
                 for (HNode objectDefNode : currNode.children()) {
                     if (HNodeType.DEFINE.equals(objectDefNode.type()) && uid.equals(net.thevpc.halfa.api.util.HUtils.uid(objectDefNode.getName()))) {
-                        return inlineNodeDefinitionCall(objectDefNode, callDeclaration, session);
+                        return inlineNodeDefinitionCall(objectDefNode, callDeclaration);
                     }
                 }
                 currNode = currNode.parent();
@@ -243,7 +240,7 @@ public class HDocumentCompiler {
         return node;
     }
 
-    private HNode inlineNodeDefinitionCall(HNode objectDefNode, TsonElement callFunction, NSession session) {
+    private HNode inlineNodeDefinitionCall(HNode objectDefNode, TsonElement callFunction) {
         HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
         TsonArray objectDefArgsItem = (TsonArray) objectDefNode.getPropertyValue("args").orNull();
         TsonElement[] objectDefArgs = objectDefArgsItem==null?new TsonElement[0] :objectDefArgsItem.body().toArray();
@@ -273,7 +270,7 @@ public class HDocumentCompiler {
                 } else {
                     NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.halfa.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
                     messages.addError(message, objectDefNode.source());
-                    throw new NIllegalArgumentException(session, message);
+                    throw new NIllegalArgumentException( message);
                 }
             }
         }

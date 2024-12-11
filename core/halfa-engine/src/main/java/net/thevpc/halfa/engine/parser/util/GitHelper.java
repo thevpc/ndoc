@@ -24,11 +24,11 @@ public class GitHelper {
                 ;
     }
 
-    public static NPath resolveGithubPath(String githubPath, HMessageList messages, NSession session) {
+    public static NPath resolveGithubPath(String githubPath, HMessageList messages) {
         NPath userConfHome;
-        NPath appCacheFolder = session.getAppCacheFolder();
+        NPath appCacheFolder = NApp.of().getCacheFolder();
         if (appCacheFolder == null) {
-            userConfHome = NLocations.of(session).getStoreLocation(NId.of("net.thevpc.halfa:halfa").get(), NStoreType.CACHE).resolve("github");
+            userConfHome = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.halfa:halfa"), NStoreType.CACHE).resolve("github");
         } else {
             userConfHome = appCacheFolder.resolve("halfa/github");
         }
@@ -39,7 +39,7 @@ public class GitHelper {
                 String user = matcher.group("user");
                 String repo = matcher.group("repo");
                 String path = NStringUtils.trim(matcher.group("path"));
-                cloneOrPull(userConfHome, user, repo, "git@github.com:" + user + "/" + repo + ".git", messages, session);
+                cloneOrPull(userConfHome, user, repo, "git@github.com:" + user + "/" + repo + ".git", messages);
                 return userConfHome.resolve(user + "/" + repo + "/" + path);
             }
         } else if (githubPath.startsWith("git@")) {
@@ -49,7 +49,7 @@ public class GitHelper {
                 String user = matcher.group("user");
                 String repo = matcher.group("repo");
                 String path = NStringUtils.trim(matcher.group("path"));
-                cloneOrPull(userConfHome, user, repo, "git@github.com:" + user + "/" + repo + ".git", messages, session);
+                cloneOrPull(userConfHome, user, repo, "git@github.com:" + user + "/" + repo + ".git", messages);
                 return userConfHome.resolve(user + "/" + repo + "/" + path);
             }
         } else if (githubPath.startsWith("https://github.com")) {
@@ -60,19 +60,20 @@ public class GitHelper {
                 String user = matcher.group("user");
                 String repo = matcher.group("repo");
                 String path = NStringUtils.trim(matcher.group("path"));
-                cloneOrPull(userConfHome, user, repo, "https://github.com/" + user + "/" + repo + ".git", messages, session);
+                cloneOrPull(userConfHome, user, repo, "https://github.com/" + user + "/" + repo + ".git", messages);
                 return userConfHome.resolve(user + "/" + repo + "/" + path);
             }
         }
         throw new IllegalArgumentException("invalid github path : " + githubPath);
     }
 
-    private static void cloneOrPull(NPath userConfHome, String user, String repo, String githubPath, HMessageList messages, NSession session) {
+    private static void cloneOrPull(NPath userConfHome, String user, String repo, String githubPath, HMessageList messages) {
         userConfHome.resolve(user).mkdirs();
         NPath localRepo = userConfHome.resolve(user).resolve(repo);
         boolean pulling = false;
         boolean succeeded = false;
         String errorMessage = null;
+        NSession session = NSession.of();
         NChronometer c = NChronometer.startNow();
         try {
             if (localRepo.isDirectory()) {
@@ -80,13 +81,13 @@ public class GitHelper {
                 Instant last = (Instant) session.getProperty("resolveGithubPath.lastPull",NScopeType.WORKSPACE).orNull();
                 if (last == null || now.toEpochMilli() - last.toEpochMilli() > (1000 * 60 * 5)) {
                     pulling = true;
-                    NExecCmd.of(session)
+                    NExecCmd.of()
                             .addCommand("git", "pull")
                             .setDirectory(localRepo)
                             .failFast()
                             .run();
                 } else {
-                    NMsg message = NMsg.ofC("ignored pull repo %s to %s", NPath.of(githubPath, session), localRepo);
+                    NMsg message = NMsg.ofC("ignored pull repo %s to %s", NPath.of(githubPath), localRepo);
                     if (messages != null) {
                         messages.addWarning(message);
                     }
@@ -96,7 +97,7 @@ public class GitHelper {
                 }
                 session.setProperty("resolveGithubPath.lastPull", NScopeType.WORKSPACE, now);
             } else {
-                NExecCmd.of(session)
+                NExecCmd.of()
                         .addCommand("git", "clone", githubPath)
                         .setDirectory(userConfHome.resolve(user))
                         .failFast()
@@ -109,7 +110,7 @@ public class GitHelper {
         } finally {
             c.stop();
             if (!succeeded) {
-                NMsg message = NMsg.ofC("took %s and failed to %s repo %s to %s : %s", c, pulling ? "pull" : "clone", NPath.of(githubPath, session), localRepo, errorMessage);
+                NMsg message = NMsg.ofC("took %s and failed to %s repo %s to %s : %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo, errorMessage);
                 if (messages != null) {
                     messages.addError(message);
                 }
@@ -117,7 +118,7 @@ public class GitHelper {
                     session.out().println(message);
                 }
             } else {
-                NMsg message = NMsg.ofC("took %s to %s repo %s to %s", c, pulling ? "pull" : "clone", NPath.of(githubPath, session), localRepo);
+                NMsg message = NMsg.ofC("took %s to %s repo %s to %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo);
                 if (messages != null) {
                     messages.addWarning(message);
                 }

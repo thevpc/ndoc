@@ -28,5 +28,6 @@
         <module>app/halfa-viewer</module>
         <module>app/halfa-viewer-backend</module>
         <module>core/renderers/halfa-renderer-web</module>
+        <module>companions/nscoreboard</module>
     </modules>
 </project>

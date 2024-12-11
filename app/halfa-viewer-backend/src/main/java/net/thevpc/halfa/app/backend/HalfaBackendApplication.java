@@ -1,7 +1,6 @@
 package net.thevpc.halfa.app.backend;
 
 import net.thevpc.nuts.NApplication;
-import net.thevpc.nuts.NSession;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -28,7 +27,7 @@ public class HalfaBackendApplication implements NApplication {
 //	}
 
 	@Override
-	public void run(NSession session) {
+	public void run() {
 		//
 	}
 }

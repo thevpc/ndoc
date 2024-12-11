@@ -9,7 +9,6 @@ import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
@@ -31,21 +30,19 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     private HEngine engine;
     private Bounds2 globalBound;
     private Bounds2 bound;
-    private NSession session;
     private HMessageList messages;
     private Map<String, Object> capabilities = new HashMap<>();
 
-    public HNodeRendererContextBase(HEngine engine,HGraphics g, Dimension bound, Bounds2 globalBound, NSession session, HMessageList messages) {
+    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, Bounds2 globalBound, HMessageList messages) {
         this.engine=engine;
         this.bound = new Bounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
-        this.session = session;
         this.g3 = g;
         this.messages = messages;
     }
 
-    public HNodeRendererContextBase(HEngine engine,HGraphics g, Dimension bound, NSession session, HMessageList messages) {
-        this(engine,g, bound, new Bounds2(0, 0, bound.getWidth(), bound.getHeight()), session, messages);
+    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, HMessageList messages) {
+        this(engine,g, bound, new Bounds2(0, 0, bound.getWidth(), bound.getHeight()), messages);
     }
 
     @Override
@@ -103,11 +100,6 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     @Override
     public boolean isDry() {
         return false;
-    }
-
-    @Override
-    public NSession session() {
-        return session;
     }
 
     @Override

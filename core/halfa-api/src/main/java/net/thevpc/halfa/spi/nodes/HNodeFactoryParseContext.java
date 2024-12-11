@@ -6,15 +6,12 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.tson.TsonElement;
 
 public interface HNodeFactoryParseContext {
 
     HMessageList messages();
-
-    NSession session();
 
     HEngine engine();
 

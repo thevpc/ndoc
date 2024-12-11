@@ -2,28 +2,25 @@ package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.api.document.*;
 import net.thevpc.halfa.api.resources.HResource;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
     private HResource source;
     private HDocument document;
-    private NSession session;
     private HMessageListDelegateImpl messageList;
 
-    public HDocumentLoadingResultImpl(HResource source, HMessageList messageList, NSession session) {
+    public HDocumentLoadingResultImpl(HResource source, HMessageList messageList) {
         this.source = source;
-        this.session = session;
         if (messageList == null) {
-            messageList = new HMessageListImpl(session, source);
+            messageList = new HMessageListImpl(source);
         }
-        this.messageList = new HMessageListDelegateImpl(session, source, messageList);
+        this.messageList = new HMessageListDelegateImpl(source, messageList);
     }
 
     @Override
     public HDocument get() {
-        return document().get(session);
+        return document().get();
     }
 
     @Override

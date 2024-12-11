@@ -30,7 +30,6 @@ import net.thevpc.halfa.engine.renderer.HNodeRendererManagerImpl;
 import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
@@ -45,7 +44,6 @@ import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
  */
 public class HEngineImpl implements HEngine {
 
-    private NSession session;
     private List<HDocumentRendererFactory> documentRendererFactories;
     private List<HNodeParserFactory> nodeParserFactories;
 
@@ -55,14 +53,9 @@ public class HEngineImpl implements HEngine {
     private HPropCalculator hPropCalculator = new HPropCalculator();
     private HNodeRendererManager rendererManager;
 
-    public HEngineImpl(NSession session) {
-        this.session = session;
+    public HEngineImpl() {
     }
 
-
-    public NSession getSession() {
-        return session;
-    }
 
     @Override
     public HDocumentFactory documentFactory() {
@@ -81,15 +74,15 @@ public class HEngineImpl implements HEngine {
                 ctx.document()
                 , element
                 , this
-                , session
-                , Arrays.asList(ctx.nodePath())
+                ,
+                Arrays.asList(ctx.nodePath())
                 , ctx.source(),
                 ctx.messages()
         );
         return NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        s -> NMsg.ofC("support for node '%s' ", element))
+                        () -> NMsg.ofC("support for node '%s' ", element))
                 .toOptional();
     }
 
@@ -122,8 +115,8 @@ public class HEngineImpl implements HEngine {
         return NCallableSupport.resolve(
                         documentRendererFactories().stream()
                                 .map(x -> x.<HDocumentStreamRenderer>createDocumentRenderer(ctx)),
-                        s -> NMsg.ofC("missing StreamRenderer %s", type))
-                .call(session);
+                        () -> NMsg.ofC("missing StreamRenderer %s", type))
+                .call();
     }
 
     private List<HDocumentRendererFactory> documentRendererFactories() {
@@ -217,7 +210,7 @@ public class HEngineImpl implements HEngine {
 
 
     public HDocumentLoadingResult compileDocument(HDocument document, HMessageList messages) {
-        return new HDocumentCompiler(this, messages,session).compile(document);
+        return new HDocumentCompiler(this, messages).compile(document);
     }
 
     public boolean validateNode(HNode node) {
@@ -228,24 +221,24 @@ public class HEngineImpl implements HEngine {
     public HDocumentLoadingResult loadDocument(NPath path, HMessageList messages) {
         NAssert.requireNonNull(path, "path");
         if (GitHelper.isGithubFolder(path.toString())) {
-            path = GitHelper.resolveGithubPath(path.toString(), messages, session);
+            path = GitHelper.resolveGithubPath(path.toString(), messages);
         }
         HResource source = HResourceFactory.of(path);
-        HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages, session);
+        HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages);
         HMessageListDelegateImpl messages1 = r.messages();
         if (path.exists()) {
             if (path.isRegularFile()) {
                 HResource nPathResource = HResourceFactory.of(path);
                 NOptional<TsonDocument> f = loadTsonDocument(path);
                 if (!f.isPresent()) {
-                    messages1.addError(f.getMessage().apply(session), nPathResource);
+                    messages1.addError(f.getMessage().get(), nPathResource);
                 }
                 TsonDocument d = f.get();
                 NOptional<HDocument> dd = convertDocument(d, r);
                 if (dd.isPresent()) {
                     r.setDocument(dd.get());
                 } else if (r.isSuccessful()) {
-                    messages1.addError(dd.getMessage().apply(session), nPathResource);
+                    messages1.addError(dd.getMessage().get(), nPathResource);
                 }
                 if (r.get().root().source() == null) {
                     r.get().root().setSource(HResourceFactory.of(path));
@@ -337,7 +330,7 @@ public class HEngineImpl implements HEngine {
                 for (NPath nPath : all) {
                     NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath, document, messages);
                     if (!d.isPresent()) {
-                        return NOptional.ofError(s -> NMsg.ofC("invalid file %s", nPath));
+                        return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
                     updateSource(d.get(), HResourceFactory.of(path));
                     if (node == null) {
@@ -354,10 +347,10 @@ public class HEngineImpl implements HEngine {
                 }
                 return NOptional.of(node);
             } else {
-                return NOptional.ofError(s -> NMsg.ofC("invalid file %s", path));
+                return NOptional.ofError(() -> NMsg.ofC("invalid file %s", path));
             }
         }
-        return NOptional.ofError(s -> NMsg.ofC("file does not exist %s", path));
+        return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
     private NOptional<TsonDocument> loadTsonDocument(InputStream is) {
@@ -383,17 +376,17 @@ public class HEngineImpl implements HEngine {
     }
 
     public HDocumentLoadingResult loadDocument(InputStream is, HMessageList messages) {
-        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(HResourceFactory.of(is), messages, session);
+        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(HResourceFactory.of(is), messages);
         NOptional<TsonDocument> f = loadTsonDocument(is);
         if (!f.isPresent()) {
-            result.messages().addError(f.getMessage().apply(session));
+            result.messages().addError(f.getMessage().get());
         }
         TsonDocument d = f.get();
         NOptional<HDocument> dd = convertDocument(d, result);
         if (dd.isPresent()) {
             result.setDocument(dd.get());
         } else if (result.isSuccessful()) {
-            result.messages().addError(dd.getMessage().apply(session));
+            result.messages().addError(dd.getMessage().get());
         }
         return result;
     }
@@ -411,7 +404,7 @@ public class HEngineImpl implements HEngine {
         docd.root().setSource(source);
         HNodeFactoryParseContext newContext = new DefaultHNodeFactoryParseContext(
                 docd,
-                c, this, session,
+                c, this,
                 new ArrayList<>(),
                 result.source(),
                 result.messages()
@@ -422,7 +415,7 @@ public class HEngineImpl implements HEngine {
             docd.root().append(r.get());
             return NOptional.of(docd);
         }
-        result.messages().addError(NMsg.ofC("invalid %s", r.getMessage().apply(session)));
+        result.messages().addError(NMsg.ofC("invalid %s", r.getMessage().get()));
         return NOptional.of(docd);
     }
 
@@ -447,7 +440,6 @@ public class HEngineImpl implements HEngine {
                 document,
                 null,
                 this,
-                session,
                 parents,
                 source,
                 messages
@@ -490,7 +482,7 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HResource computeSource(HNode node) {
-        return new HDocumentCompiler(this, new HMessageListImpl(session, null),session).computeSource(node);
+        return new HDocumentCompiler(this, new HMessageListImpl(null)).computeSource(node);
     }
 
     @Override
@@ -503,7 +495,7 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HGraphics createGraphics(Graphics2D g2d) {
-        return new HGraphicsImpl(g2d, session);
+        return new HGraphicsImpl(g2d);
     }
 
     @Override
@@ -511,7 +503,7 @@ public class HEngineImpl implements HEngine {
         NAssert.requireNonNull(path, "path");
         NAssert.requireNonNull(projectUrl, "projectUrl");
         if (GitHelper.isGithubFolder(projectUrl.toString())) {
-            projectUrl = GitHelper.resolveGithubPath(path.toString(), null, session);
+            projectUrl = GitHelper.resolveGithubPath(path.toString(), null);
         }
         if (!projectUrl.exists()) {
             throw new IllegalArgumentException("invalid project " + projectUrl);

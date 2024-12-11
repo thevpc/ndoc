@@ -15,7 +15,6 @@ import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.*;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 
@@ -26,14 +25,14 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
 
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
 
-    public HtmlDocumentRenderer(HEngine engine, NSession session) {
-        super(engine, session);
+    public HtmlDocumentRenderer(HEngine engine) {
+        super(engine);
     }
 
     protected void renderStream(HDocument document, OutputStream os) {
         HMessageList messages2 = this.messages;
         if (messages2 == null) {
-            messages2 = new HMessageListImpl(session, engine.computeSource(document.root()));
+            messages2 = new HMessageListImpl(engine.computeSource(document.root()));
         }
         document = engine.compileDocument(document, messages2).get();
         PrintStream out = new PrintStream(os);
@@ -49,13 +48,13 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
         HDocument d = document.get(rendererContext);
         Object o = output;
         if (o == null) {
-            o = NPath.of("document.pdf", session);
+            o = NPath.of("document.pdf");
         }
         if (o instanceof NPath) {
             try (OutputStream os = ((NPath) o).getOutputStream()) {
                 renderStream(d, os);
             } catch (IOException ex) {
-                throw new NIOException(session, ex);
+                throw new NIOException(ex);
             }
         } else if (o instanceof OutputStream) {
             renderStream(d, (OutputStream) o);

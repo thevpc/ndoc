@@ -17,7 +17,6 @@ import net.thevpc.halfa.spi.HNodeParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
@@ -56,7 +55,6 @@ public class DefaultHDocumentItemParserFactory
         TsonElement c = context.element();
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
-        NSession session = context.session();
         switch (c.type()) {
             case STRING:
             case BIG_COMPLEX:
@@ -203,11 +201,11 @@ public class DefaultHDocumentItemParserFactory
 //                    }
                 }
                 context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-                throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+                throw new NIllegalArgumentException( NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
             }
         }
         context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-        throw new NIllegalArgumentException(session, NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+        throw new NIllegalArgumentException( NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
 
@@ -346,7 +344,7 @@ public class DefaultHDocumentItemParserFactory
                 } else {
                     throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s : %s", child,
                             node == null ? "document" : node.type(),
-                            u.getMessage().apply(null)
+                            u.getMessage().get()
                     ).toString());
                 }
             }

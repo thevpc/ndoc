@@ -6,7 +6,6 @@ import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.nuts.NSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,14 +18,12 @@ public class PageView extends JComponent {
     private String uuid;
     private HNodeRendererManager rendererManager;
     private HEngine engine;
-    private NSession session;
     private HMessageList messages;
 
     public PageView(HNode page, int index,
                     HEngine engine,
                     HNodeRendererManager rendererManager,
-                    HMessageList messages,
-                    NSession session
+                    HMessageList messages
     ) {
         this.page = page;
         this.index = index;
@@ -34,7 +31,6 @@ public class PageView extends JComponent {
         this.rendererManager = rendererManager;
         this.engine = engine;
         this.messages = messages;
-        this.session = session;
     }
 
     public HEngine engine() {
@@ -76,7 +72,7 @@ public class PageView extends JComponent {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         HNodeRendererContext ctx = new ScreenHPartRendererContext(this,
                 engine.createGraphics(g2d)
-                , size, session, messages);
+                , size, messages);
         render(page, ctx);
     }
 

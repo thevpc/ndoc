@@ -8,11 +8,9 @@ import net.thevpc.nuts.util.NMsg;
 import java.time.Instant;
 
 public class HMessageListImpl implements HMessageList {
-    private NSession session;
     private HResource defaultSource;
 
-    public HMessageListImpl(NSession session, HResource defaultSource) {
-        this.session = session;
+    public HMessageListImpl(HResource defaultSource) {
         this.defaultSource = defaultSource;
     }
 
@@ -25,13 +23,13 @@ public class HMessageListImpl implements HMessageList {
         if (source == null) {
             source = defaultSource;
         }
-        session.out().println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
+        NSession.of().out().println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
                 source == null ? null : source.shortName(),
                 message.getMessage()
         ));
         if (error != null) {
             for (String s : NReservedLangUtils.stacktraceToArray(error)) {
-                session.out().println(NMsg.ofC("\t%s", s));
+                NSession.of().out().println(NMsg.ofC("\t%s", s));
             }
         }
     }

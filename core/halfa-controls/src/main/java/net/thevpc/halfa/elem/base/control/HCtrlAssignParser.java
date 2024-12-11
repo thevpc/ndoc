@@ -11,7 +11,6 @@ import net.thevpc.halfa.spi.base.parser.HNodeParserBase;
 import net.thevpc.halfa.spi.eval.ObjEx;
 import net.thevpc.halfa.spi.nodes.HNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -31,7 +30,6 @@ public class HCtrlAssignParser extends HNodeParserBase {
         TsonElement c = context.element();
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
-        NSession session = context.session();
         switch (c.type()) {
             case PAIR: {
                 TsonPair p = c.toPair();
@@ -70,7 +68,7 @@ public class HCtrlAssignParser extends HNodeParserBase {
                 break;
             }
         }
-        return NCallableSupport.invalid(s->NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
+        return NCallableSupport.invalid(NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));
     }
 
     @Override

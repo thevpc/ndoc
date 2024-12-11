@@ -15,10 +15,6 @@ import net.thevpc.halfa.engine.renderer.screen.utils.JPopupMenuHelper;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
-import net.thevpc.nuts.NSession;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -32,7 +28,6 @@ import java.util.List;
 import java.util.Timer;
 
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NLiteral;
 
 public class DocumentView {
@@ -42,7 +37,6 @@ public class DocumentView {
     private HEngine engine;
     private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
-    private NSession session;
     private JFrame frame;
     private ContentPanel contentPane;
     private PageView currentShowingPage;
@@ -60,13 +54,11 @@ public class DocumentView {
 
     public DocumentView(HDocumentRendererSupplier documentSupplier,
                         HEngine engine, HDocumentRendererListener listener,
-                        HMessageList messages,
-                        NSession session) {
+                        HMessageList messages) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.engine = engine;
         this.messages = messages;
-        this.session = session;
         this.rendererManager = engine.renderManager();
 
         frame = new JFrame();
@@ -128,10 +120,6 @@ public class DocumentView {
 
     public boolean isLoading() {
         return inLoadDocument;
-    }
-
-    public NSession session() {
-        return session;
     }
 
     public HNodeRendererManager rendererManager() {
@@ -424,8 +412,7 @@ public class DocumentView {
                 node, index,
                 engine(),
                 rendererManager(),
-                messages(),
-                session()
+                messages()
         );
     }
 

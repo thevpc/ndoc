@@ -2,7 +2,6 @@ package net.thevpc.halfa.main;
 
 import net.thevpc.halfa.main.components.EntryComponent;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
-import net.thevpc.nuts.NSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +10,10 @@ import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
 
-    private NSession session;
     private ServiceHelper serviceHelper;
     private EntryComponent entryComponent;
 
-    public MainFrame(NSession session) {
-        this.session = session;
+    public MainFrame() {
         serviceHelper = new ServiceHelper(this);
         setTitle("HD Viewer Application");
         this.setIconImage(
@@ -32,9 +29,6 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public NSession getSession() {
-        return session;
-    }
 
     private JMenuBar createMenu() {
         JMenuBar jmb = new JMenuBar();
@@ -47,7 +41,7 @@ public class MainFrame extends JFrame {
     private JComponent createCenter() {
         JPanel jPanel = new JPanel(new BorderLayout());
         jPanel.add(createMenu(), BorderLayout.NORTH);
-        entryComponent = new EntryComponent(serviceHelper, session);
+        entryComponent = new EntryComponent(serviceHelper);
         jPanel.add(entryComponent, BorderLayout.CENTER);
         return jPanel;
     }

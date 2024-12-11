@@ -7,7 +7,6 @@ package net.thevpc.halfa.spi.renderer;
 import java.io.OutputStream;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 
 /**
@@ -18,8 +17,8 @@ public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentR
     protected Object output;
     protected HDocumentStreamRendererConfig config;
 
-    public AbstractHDocumentStreamRenderer(HEngine engine, NSession session) {
-        super(engine, session);
+    public AbstractHDocumentStreamRenderer(HEngine engine) {
+        super(engine);
     }
 
     @Override

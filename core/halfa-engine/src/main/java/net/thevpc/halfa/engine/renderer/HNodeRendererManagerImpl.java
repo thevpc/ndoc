@@ -10,7 +10,6 @@ import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
 import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.halfa.spi.renderer.HNodeRendererManager;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
@@ -63,7 +62,7 @@ public class HNodeRendererManagerImpl implements HNodeRendererManager {
 
 
     @Override
-    public BufferedImage renderImage(HNode node, HNodeRendererConfig config, NSession session) {
+    public BufferedImage renderImage(HNode node, HNodeRendererConfig config) {
         int sizeWidth = config.getWidth();
         int sizeHeight = config.getHeight();
         Dimension dimension=new Dimension(sizeWidth, sizeHeight);
@@ -75,7 +74,7 @@ public class HNodeRendererManagerImpl implements HNodeRendererManager {
 
         HGraphics hg = engine.createGraphics(g);
         HNodeRenderer renderer = getRenderer(node.type()).get();
-        renderer.render(node, new HNodeRendererContextBase(engine, hg, dimension, session, messages) {
+        renderer.render(node, new HNodeRendererContextBase(engine, hg, dimension, messages) {
             {
                 if (capabilities != null) {
                     for (Map.Entry<String, Object> cc : capabilities.entrySet()) {
@@ -89,8 +88,8 @@ public class HNodeRendererManagerImpl implements HNodeRendererManager {
     }
 
     @Override
-    public byte[] renderImageBytes(HNode node, HNodeRendererConfig config, NSession session) {
-        BufferedImage newImage = renderImage(node, config, session);
+    public byte[] renderImageBytes(HNode node, HNodeRendererConfig config) {
+        BufferedImage newImage = renderImage(node, config);
         String imageTypeOk="png";
         if(config.getCapabilities()!=null) {
             Object imageType = config.getCapabilities().get("imageType");

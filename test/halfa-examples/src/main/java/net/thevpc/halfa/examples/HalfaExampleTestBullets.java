@@ -10,7 +10,6 @@ import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
 
 import java.awt.*;
@@ -21,8 +20,8 @@ import java.awt.*;
 public class HalfaExampleTestBullets {
 
     public static void main(String[] args) {
-        NSession session = Nuts.openWorkspace();
-        HEngine e = new HEngineImpl(session);
+        Nuts.openWorkspace().setSharedInstance();
+        HEngine e = new HEngineImpl();
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()
                 .add(f.ofPage()

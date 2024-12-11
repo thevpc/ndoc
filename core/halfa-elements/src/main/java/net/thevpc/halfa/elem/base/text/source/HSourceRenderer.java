@@ -28,7 +28,7 @@ public class HSourceRenderer extends HTextBaseRenderer {
         String lang = NStringUtils.trim(ObjEx.of(p.getPropertyValue(HPropName.LANG)).asStringOrName().orElse(""));
         String codeStr = (ObjEx.of(p.getPropertyValue(HPropName.VALUE)).asStringOrName().orElse(""));
         codeStr = HTextUtils.trimBloc(codeStr);
-        NTexts ttt = NTexts.of(ctx.session());
+        NTexts ttt = NTexts.of();
         NTextCode ncode = ttt.ofCode(lang, codeStr);
         Paint fg = HValueByName.getForegroundColor(p, ctx,true);
         HTextRendererBuilderImpl result = new HTextRendererBuilderImpl(fg);

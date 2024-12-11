@@ -7,7 +7,6 @@ import net.thevpc.halfa.api.model.elem3d.Light3D;
 import net.thevpc.halfa.api.model.elem3d.Matrix3D;
 import net.thevpc.halfa.api.model.elem3d.Projection3D;
 import net.thevpc.halfa.spi.renderer.text.HTextOptions;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.tson.TsonElement;
 
@@ -21,8 +20,6 @@ import java.text.AttributedCharacterIterator;
 public interface HGraphics {
 
     HGraphics copy();
-
-    NSession session();
 
     Light3D getLight3D();
 

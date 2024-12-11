@@ -7,7 +7,6 @@ package net.thevpc.halfa.engine.renderer.screen;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.spi.renderer.AbstractHDocumentRenderer;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
-import net.thevpc.nuts.NSession;
 
 import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
 
@@ -16,12 +15,12 @@ import net.thevpc.halfa.spi.renderer.HDocumentRendererSupplier;
  */
 public class ScreenDocumentRenderer extends AbstractHDocumentRenderer implements HDocumentScreenRenderer {
 
-    public ScreenDocumentRenderer(HEngine engine, NSession session) {
-        super(engine, session);
+    public ScreenDocumentRenderer(HEngine engine) {
+        super(engine);
     }
 
     @Override
     public void renderSupplier(HDocumentRendererSupplier document) {
-        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages, session);
+        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages);
     }
 }

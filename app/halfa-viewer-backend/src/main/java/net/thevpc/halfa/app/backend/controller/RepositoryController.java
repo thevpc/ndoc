@@ -7,18 +7,12 @@ import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.app.backend.service.GitService;
 import net.thevpc.halfa.engine.HEngineImpl;
-import net.thevpc.halfa.spi.util.PagesHelper;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
@@ -31,13 +25,11 @@ import java.util.List;
 public class RepositoryController {
 
     private final HEngine engine;
-    private final NSession session;
     private final GitService gitService;
 
     @Autowired
-    public RepositoryController(HEngine engine, NSession session, GitService gitService) {
+    public RepositoryController(HEngine engine, GitService gitService) {
         this.engine = engine;
-        this.session = session;
         this.gitService = gitService;
     }
 
@@ -121,18 +113,18 @@ public class RepositoryController {
     public ResponseEntity<byte[]> getDocumentImages(
             @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("file:///home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd", session)
+            NPath file = NPath.of("file:///home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.hd")
                     .toAbsolute()
                     .normalize();
 
-            HEngine e = new HEngineImpl(session);
+            HEngine e = new HEngineImpl();
             HDocument doc = e.loadDocument(file, null).get();
-            HMessageList messages = new HMessageListImpl(session, engine.computeSource(doc.root()));
+            HMessageList messages = new HMessageListImpl(engine.computeSource(doc.root()));
 
             List<HNode> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
-                GitService gitService = new GitService(engine, session);
+                GitService gitService = new GitService(engine);
                 int sizeWidth = 1200;
                 int sizeHeight = 1000;
                 byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight, messages);

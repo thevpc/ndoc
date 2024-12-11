@@ -3,12 +3,8 @@ package net.thevpc.halfa.app.backend.service;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.spi.HNodeRenderer;
-import net.thevpc.halfa.spi.base.renderer.HNodeRendererContextBase;
-import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -17,10 +13,6 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,28 +21,26 @@ import java.nio.file.Files;
 public class GitService {
 
     private final HEngine engine;
-    private final NSession session;
 
     @Autowired
-    public GitService(HEngine engine, NSession session) {
+    public GitService(HEngine engine) {
         this.engine = engine;
-        this.session = session;
     }
 
     public NPath cloneRepositoryPath(String url, String cloneDirectoryPath) throws GitAPIException {
-        String n = NPath.of(url, session).getName();
+        String n = NPath.of(url).getName();
         String localFolderName = n + "-" + url.hashCode();
 
-        NPath baseFolder = NPath.ofUserHome(session).resolve(localFolderName);
+        NPath baseFolder = NPath.ofUserHome().resolve(localFolderName);
         if (baseFolder.isDirectory()) {
-            NExecCmd.of(session)
+            NExecCmd.of()
                     .system()
                     .setDirectory(baseFolder.resolve(n))
                     .addCommand("git", "pull")
                     .failFast()
                     .run();
         } else {
-            NExecCmd.of(session)
+            NExecCmd.of()
                     .system()
                     .setDirectory(baseFolder)
                     .addCommand("git", "clone", url)
@@ -92,7 +82,7 @@ public class GitService {
 //        return contents;
 //    }
     public String[] listRepositoryContents(String localPath) {
-        return NPath.of(localPath, session).list().stream().map(x -> x.getName()).toArray(String[]::new);
+        return NPath.of(localPath).list().stream().map(x -> x.getName()).toArray(String[]::new);
     }
 
     public String getFileContent(String localPath) throws IOException {
@@ -105,8 +95,7 @@ public class GitService {
                 page,
                 new HNodeRendererConfig((int) width, (int) height)
                         .withAnimate(false)
-                        .setMessages(messages),
-                session
+                        .setMessages(messages)
         );
     }
 

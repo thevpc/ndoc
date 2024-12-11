@@ -15,10 +15,10 @@ public class PdfDocumentStreamRendererFactory implements HDocumentRendererFactor
             case "pdf":
                 return NCallableSupport.of(10, () -> {
                     HDocumentStreamRendererConfig config = new HDocumentStreamRendererConfig();
-                    return new PdfDocumentRenderer(context.engine(), context.session(), config);
+                    return new PdfDocumentRenderer(context.engine(), config);
                 });
             default:
-                return NCallableSupport.invalid(s -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
+                return NCallableSupport.invalid(() -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
         }
     }
 }

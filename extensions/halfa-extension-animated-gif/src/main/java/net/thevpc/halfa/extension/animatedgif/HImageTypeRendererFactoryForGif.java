@@ -27,6 +27,6 @@ public class HImageTypeRendererFactoryForGif implements HImageTypeRendererFactor
                 );
             }
         }
-        return NCallableSupport.invalid(session -> NMsg.ofC("not supported %s", path));
+        return NCallableSupport.invalid(() -> NMsg.ofC("not supported %s", path));
     }
 }

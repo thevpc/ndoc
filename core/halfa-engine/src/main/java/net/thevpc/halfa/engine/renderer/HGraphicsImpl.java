@@ -24,7 +24,6 @@ import net.thevpc.halfa.spi.renderer.HGraphics;
 import net.thevpc.halfa.spi.renderer.HGraphicsImageDrawer;
 import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -54,7 +53,6 @@ public class HGraphicsImpl implements HGraphics {
     private Element3DUIFactory element3DUIFactory = new Element3DUIFactory();
     private List<HImageTypeRendererFactory> imageTypeRendererFactories = new ArrayList<>();
     private Map<Object, HGraphicsImageDrawer> imageCache = new HashMap<>();
-    private NSession session;
 
     private RenderState3D state = new RenderState3D() {
         @Override
@@ -68,31 +66,23 @@ public class HGraphicsImpl implements HGraphics {
         }
     };
 
-    public HGraphicsImpl(Graphics2D g, NSession session) {
+    public HGraphicsImpl(Graphics2D g) {
         this.g = g;
-        this.session = session;
         ServiceLoader<HImageTypeRendererFactory> sl = ServiceLoader.load(HImageTypeRendererFactory.class);
         for (HImageTypeRendererFactory s : sl) {
             imageTypeRendererFactories.add(s);
         }
     }
 
-    public HGraphicsImpl(Graphics2D g, NSession session, HImageTypeRendererFactory[] factories) {
+    public HGraphicsImpl(Graphics2D g, HImageTypeRendererFactory[] factories) {
         this.g = g;
-        this.session = session;
         this.imageTypeRendererFactories.addAll(Arrays.asList(factories));
-    }
-
-    @Override
-    public NSession session() {
-        return session;
     }
 
 
     @Override
     public HGraphics copy() {
         HGraphicsImpl hGraphics = new HGraphicsImpl((Graphics2D) g.create(),
-                session,
                 imageTypeRendererFactories.toArray(new HImageTypeRendererFactory[0])
         );
         hGraphics.transform3D = transform3D;
@@ -561,7 +551,7 @@ public class HGraphicsImpl implements HGraphics {
             NOptional<HGraphicsImageDrawer> tr = NCallableSupport.resolve(
                             imageTypeRendererFactories.stream()
                                     .map(n -> n.resolveRenderer(nPath, options, HGraphicsImpl.this)),
-                            s -> NMsg.ofC("support for image %s ", nPath))
+                            () -> NMsg.ofC("support for image %s ", nPath))
                     .toOptional();
             if (tr.isPresent()) {
                 putCache(new Object[]{nPath}, o = tr.get());

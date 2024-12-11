@@ -2,7 +2,6 @@ package net.thevpc.halfa.main.components;
 
 import net.thevpc.halfa.config.HalfaProject;
 import net.thevpc.halfa.main.ServiceHelper;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
@@ -14,11 +13,9 @@ public class EntryComponent extends JPanel {
     private JList recentFilesComponent;
     private DefaultListModel recentFilesComponentModel;
     private ServiceHelper serviceHelper;
-    private NSession session;
-    public EntryComponent(ServiceHelper serviceHelper, NSession session) {
+    public EntryComponent(ServiceHelper serviceHelper) {
         super(new GridBagLayout());
         this.serviceHelper=serviceHelper;
-        this.session=session;
         recentFilesComponentModel = new DefaultListModel();
         recentFilesComponent = new JList(recentFilesComponentModel);
         recentFilesComponent.setCellRenderer(new DefaultListCellRenderer(){
@@ -29,7 +26,7 @@ public class EntryComponent extends JPanel {
                 if(value instanceof HalfaProject){
                     HalfaProject pr = (HalfaProject) value;
                     String path = pr.getPath();
-                    NPath p = NPath.of(path, session);
+                    NPath p = NPath.of(path);
                     valid=p.exists();
                     showObj="<html><b><span style='color:#00ffff'>"+p.getName()+"</span></b> (<small>"+path+"</small>), last accessed <b>"+pr.getLastAccess()+"</b>";
                 }
@@ -47,7 +44,7 @@ public class EntryComponent extends JPanel {
                         serviceHelper.showOpenFile();
                     }else if(selectedValue instanceof HalfaProject){
                         serviceHelper.openProject(
-                                NPath.of(((HalfaProject) selectedValue).getPath(),session)
+                                NPath.of(((HalfaProject) selectedValue).getPath())
                         );
                     }
                     reload();

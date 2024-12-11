@@ -2,7 +2,6 @@ package net.thevpc.halfa.api.util;
 
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.resources.HResource;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
@@ -51,7 +50,7 @@ public class HUtils {
         return element.builder().addAnnotation("CompilerDeclarationPath", Tson.of(path)).build();
     }
 
-    public static NPath resolvePath(TsonElement path, Object source, NSession session) {
+    public static NPath resolvePath(TsonElement path, Object source) {
         if (NBlankable.isBlank(path)) {
             return null;
         }
@@ -62,7 +61,7 @@ public class HUtils {
         String compilerDeclarationPath = getCompilerDeclarationPath(path);
         NPath referencePath = null;
         if (compilerDeclarationPath != null) {
-            referencePath = NPath.of(compilerDeclarationPath, session);
+            referencePath = NPath.of(compilerDeclarationPath);
         } else {
             if (source != null) {
                 if (source instanceof NPath) {
@@ -80,10 +79,10 @@ public class HUtils {
             if (referencePath != null) {
                 base = referencePath.resolve(pathString);
             } else {
-                base = NPath.of(pathString, session);
+                base = NPath.of(pathString);
             }
         } else {
-            base = NPath.of(pathString, session);
+            base = NPath.of(pathString);
         }
         return base;
     }

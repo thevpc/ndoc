@@ -192,7 +192,7 @@ public abstract class HNodeParserBase implements HNodeParser {
             );
         }
         //context.messages().addError(NMsg.ofC("invalid %s : %s", id(), e), context.source());
-        return NCallableSupport.invalid(ss -> NMsg.ofC("invalid %s : %s", id(), e));
+        return NCallableSupport.invalid(() -> NMsg.ofC("invalid %s : %s", id(), e));
     }
 
     public String resolveEffectiveId(String id){
@@ -274,7 +274,7 @@ public abstract class HNodeParserBase implements HNodeParser {
                         p.append(u.get());
                     } else {
                         NOptional<HItem> finalU = u;
-                        context2.messages().addError(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().apply(context2.session())), context2.source());
+                        context2.messages().addError(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()), context2.source());
                         return NOptional.of(new HItemList());
                     }
                 }

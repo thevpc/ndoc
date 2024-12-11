@@ -1,12 +1,8 @@
 package net.thevpc.halfa.config;
 
-import net.thevpc.nuts.NId;
-import net.thevpc.nuts.NLocations;
-import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.NStoreType;
+import net.thevpc.nuts.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.*;
 
 import java.io.*;
@@ -15,19 +11,17 @@ import java.util.*;
 public class HalfaViewerConfigManager {
 
     private NPath viewerConfigFile;
-    private NSession session;
 
-    public HalfaViewerConfigManager(NSession session) {
-        this(null, session);
+    public HalfaViewerConfigManager() {
+        this(null);
     }
 
-    public HalfaViewerConfigManager(NPath viewerConfigFile, NSession session) {
-        this.session = session;
+    public HalfaViewerConfigManager(NPath viewerConfigFile) {
         String halfaViewerConfigName = "halfa-viewer-config.tson";
-        NPath appCacheFolder = session.getAppConfFolder();
+        NPath appCacheFolder = NApp.of().getConfFolder();
         if (viewerConfigFile == null) {
             if (appCacheFolder == null) {
-                viewerConfigFile = NLocations.of(session).getStoreLocation(NId.of("net.thevpc.halfa:halfa").get(), NStoreType.CACHE).resolve(halfaViewerConfigName);
+                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.halfa:halfa"), NStoreType.CACHE).resolve(halfaViewerConfigName);
             } else {
                 viewerConfigFile = appCacheFolder.resolve(halfaViewerConfigName);
             }
@@ -46,7 +40,7 @@ public class HalfaViewerConfigManager {
         if (config.getRecentProjects() != null) {
             for (HalfaProject a : config.getRecentProjects()) {
                 if (a != null && !NBlankable.isBlank(a.getPath())) {
-                    if (NPath.of(a.getPath(), session).equals(path)) {
+                    if (NPath.of(a.getPath()).equals(path)) {
                         found = a;
                     }
                     old.add(a);
@@ -73,7 +67,7 @@ public class HalfaViewerConfigManager {
         if (config.getRecentProjects() != null) {
             for (HalfaProject a : config.getRecentProjects()) {
                 if (a != null && !NBlankable.isBlank(a.getPath())) {
-                    if (NPath.of(a.getPath(), session).equals(path)) {
+                    if (NPath.of(a.getPath()).equals(path)) {
                         found = a;
                     }
                     old.add(a);
@@ -108,7 +102,7 @@ public class HalfaViewerConfigManager {
 
     public NPath[] getLastAccessedPaths() {
         HalfaViewerConfig config = loadViewerConfig();
-        return Arrays.stream(config.getRecentProjects()).map(x -> NPath.of(x.getPath(), session)).toArray(NPath[]::new);
+        return Arrays.stream(config.getRecentProjects()).map(x -> NPath.of(x.getPath())).toArray(NPath[]::new);
     }
 
     public HalfaProject[] getRecentProjects() {
@@ -119,7 +113,7 @@ public class HalfaViewerConfigManager {
     public NPath getLastAccessedPath() {
         HalfaViewerConfig config = loadViewerConfig();
         HalfaProject[] recentProjects = config.getRecentProjects();
-        return recentProjects.length == 0 ? null : NPath.of(recentProjects[0].getPath(), session);
+        return recentProjects.length == 0 ? null : NPath.of(recentProjects[0].getPath());
     }
 
     public HalfaViewerConfig loadViewerConfig() {

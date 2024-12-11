@@ -5,15 +5,14 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HDocumentLoadingResult;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.engine.HEngineImpl;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
 
 import java.io.ByteArrayInputStream;
 
 public class TestEngine {
     public static void main(String[] args) {
-        NSession session = Nuts.openWorkspace();
-        HEngine e=new HEngineImpl(session);
+        Nuts.openWorkspace().setSharedInstance();
+        HEngine e=new HEngineImpl();
         String document="\n" +
                 "$a=1\n" +
                 "if($a==1){\n" +
@@ -25,7 +24,7 @@ public class TestEngine {
                 "}\n"
                 ;
         System.out.println(document);
-        HMessageListImpl messages = new HMessageListImpl(session, null);
+        HMessageListImpl messages = new HMessageListImpl(null);
         HDocumentLoadingResult d = e.loadDocument(
                 new ByteArrayInputStream(document.getBytes()), messages
         );

@@ -16,9 +16,9 @@ public class HtmlDocumentStreamRendererFactory implements HDocumentRendererFacto
     public NCallableSupport<HDocumentRenderer> createDocumentRenderer(HDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "html":
-                return NCallableSupport.of(10, () -> new HtmlDocumentRenderer(context.engine(), context.session()));
+                return NCallableSupport.of(10, () -> new HtmlDocumentRenderer(context.engine()));
             default:
-                return NCallableSupport.invalid(s -> NMsg.ofPlain("factory"));
+                return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
         }
     }
 

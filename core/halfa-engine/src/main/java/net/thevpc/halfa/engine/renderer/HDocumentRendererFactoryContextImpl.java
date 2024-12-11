@@ -3,8 +3,6 @@ package net.thevpc.halfa.engine.renderer;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererFactoryContext;
-import net.thevpc.halfa.spi.renderer.HDocumentStreamRendererConfig;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.util.NStringUtils;
 
 public class HDocumentRendererFactoryContextImpl implements HDocumentRendererFactoryContext {
@@ -25,11 +23,5 @@ public class HDocumentRendererFactoryContextImpl implements HDocumentRendererFac
     public HEngine engine() {
         return hEngine;
     }
-
-    @Override
-    public NSession session() {
-        return hEngine.getSession();
-    }
-
 
 }

@@ -3,7 +3,6 @@ package net.thevpc.halfa.main.components;
 import net.thevpc.halfa.config.UserConfig;
 import net.thevpc.halfa.main.HadraUIHelper;
 import net.thevpc.halfa.main.ServiceHelper;
-import net.thevpc.nuts.NSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,14 +12,12 @@ public class NewProjectPanel extends JPanel {
     JTextField projectName;
     PathField rootFolder;
     ServiceHelper serviceHelper;
-    NSession session;
     NewProjectPropsPanel props;
     UserConfigPanel userConfPanel;
 
-    public NewProjectPanel(ServiceHelper serviceHelper, NSession session) {
+    public NewProjectPanel(ServiceHelper serviceHelper) {
         super(new GridBagLayout());
         this.serviceHelper = serviceHelper;
-        this.session = session;
 
         add(new JLabel("Project Name"), HadraUIHelper.forLabel(0, 0));
         add(projectName = new JTextField(), HadraUIHelper.forEditor(1, 0));

@@ -37,7 +37,7 @@ public class NutsHighlighterMapper {
         HGraphics g = ctx.graphics();
         HNodeRendererUtils.applyFont(p, g, ctx);
         //String[] allLines = code.trim().split("[\n]");
-        NTexts ttt = NTexts.of(ctx.session());
+        NTexts ttt = NTexts.of();
         NTextTransformConfig nTextTransformConfig = new NTextTransformConfig();
         nTextTransformConfig.setFlatten(true);
         nTextTransformConfig.setNormalize(true);

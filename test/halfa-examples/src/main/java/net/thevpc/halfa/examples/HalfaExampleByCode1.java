@@ -11,7 +11,6 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.elem2d.HAlign;
 import net.thevpc.halfa.engine.HEngineImpl;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.Nuts;
 
 /**
@@ -20,8 +19,8 @@ import net.thevpc.nuts.Nuts;
 public class HalfaExampleByCode1 {
 
     public static void main(String[] args) {
-        NSession session = Nuts.openWorkspace();
-        HEngine e = new HEngineImpl(session);
+        Nuts.openWorkspace().setSharedInstance();
+        HEngine e = new HEngineImpl();
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
