@@ -78,7 +78,7 @@ public class GitHelper {
         try {
             if (localRepo.isDirectory()) {
                 Instant now = Instant.now();
-                Instant last = (Instant) session.getProperty("resolveGithubPath.lastPull",NScopeType.WORKSPACE).orNull();
+                Instant last = (Instant) NApp.of().getProperty("resolveGithubPath.lastPull",NScopeType.WORKSPACE).orNull();
                 if (last == null || now.toEpochMilli() - last.toEpochMilli() > (1000 * 60 * 5)) {
                     pulling = true;
                     NExecCmd.of()
@@ -95,7 +95,7 @@ public class GitHelper {
                         session.out().println(message);
                     }
                 }
-                session.setProperty("resolveGithubPath.lastPull", NScopeType.WORKSPACE, now);
+                NApp.of().setProperty("resolveGithubPath.lastPull", NScopeType.WORKSPACE, now);
             } else {
                 NExecCmd.of()
                         .addCommand("git", "clone", githubPath)
