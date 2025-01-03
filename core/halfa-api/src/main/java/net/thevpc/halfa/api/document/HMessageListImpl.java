@@ -4,6 +4,7 @@ import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.reserved.NReservedLangUtils;
 import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NStringUtils;
 
 import java.time.Instant;
 
@@ -28,7 +29,7 @@ public class HMessageListImpl implements HMessageList {
                 message.getMessage()
         ));
         if (error != null) {
-            for (String s : NReservedLangUtils.stacktraceToArray(error)) {
+            for (String s : NStringUtils.stacktraceArray(error)) {
                 NSession.of().out().println(NMsg.ofC("\t%s", s));
             }
         }
