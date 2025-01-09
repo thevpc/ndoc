@@ -43,6 +43,7 @@ public abstract class HNodeRendererBase implements HNodeRenderer {
         Bounds2 selfBounds = selfBounds(p, ctx);
         HGraphics nv = null;
         try {
+            if (!ctx.isDry()) {
             //if (!ctx.isDry()) {
                 Rotation rotation = HValueByType.getRotation(p, ctx, HPropName.ROTATE).orNull();
                 if (rotation != null) {
@@ -71,7 +72,8 @@ public abstract class HNodeRendererBase implements HNodeRenderer {
                     }
                 }
             //}
-            renderMain(p, ctx);
+                renderMain(p, ctx);
+            }
         } finally {
             if (nv != null) {
                 nv.dispose();
