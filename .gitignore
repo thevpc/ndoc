@@ -30,3 +30,4 @@
 /app/halfa-viewer/new-project*
 /extensions/halfa-extension-plot2d/target
 /core/halfa-controls/target/
+extensions/halfa-extension-presenters/target
