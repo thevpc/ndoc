@@ -39,14 +39,14 @@ We have implemented multiple renderers so that the presentation can be rendered 
 - web served
 
 ## SCM firendly
-You can create a single file by slide for instance and track your slides individually, as they are plain text files
-if you render a folder it will recursively render all its files and subfolders. 
-This is quite a simpler way to organize your documentation.
-Files are simply ordered by name.
+You can create a separate file for each slide, making it easy to track them individually since they are plain text files.
+When you render a folder, all its files and subfolders are processed recursively.
+This provides a simpler and more structured way to organize your documentation.
+Files are ordered naturally by name.
 
 ## Where to start
-run halfa-viewer (under app) and open `GIHUB_ROOT/documentation/halfa-doc folder`
-This will display a presentation of halfa documentation written in halfa and rendered as a presentation
+Run halfa-viewer (located under app) and open the GITHUB_ROOT/documentation/halfa-doc folder.
+This will render a presentation of the Halfa documentation, written in Halfa and displayed as slides.
 
 You can play with files under halfa-doc to understand how this tool works
 
