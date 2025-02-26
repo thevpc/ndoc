@@ -13,9 +13,7 @@ halfa is a versatile presentation tool intended to replace :
 - asciidoctor (and its clones)
 - latex
 
-How is that ? it is
-
-## Text Based Documentation
+## How is that ?
 It helps writing very powerful documentation while being just a text based.
 It has a very simple yet very strong syntax
 ```tson
