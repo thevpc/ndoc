@@ -42,7 +42,7 @@ We have implemented multiple renderers so that the presentation can be rendered 
 - html file
 - web served
 
-## SCM firendly
+## SCM friendly
 You can create a separate file for each slide, making it easy to track them individually since they are plain text files.
 When you render a folder, all its files and subfolders are processed recursively.
 This provides a simpler and more structured way to organize your documentation.
