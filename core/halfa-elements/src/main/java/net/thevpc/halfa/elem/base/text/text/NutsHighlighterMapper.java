@@ -44,142 +44,154 @@ public class NutsHighlighterMapper {
         nTextTransformConfig.setProcessTitleNumbers(true);
         List<NText> flatten = ttt.flatten(parsedText, nTextTransformConfig).toList();
         for (NText nText : flatten) {
-            switch (nText.getType()) {
-                case PLAIN: {
-                    NTextPlain np = (NTextPlain) nText;
-                    if (np.getText().equals("\n")) {
-                        result.nextLine();
-                    } else {
+            processNTextRecursively(nText, result, ctx, new NTextStyle[0],p, cache);
+        }
+        result.computeBound(ctx);
+    }
+
+    private static void applyOptions(HTextOptions to, NTextStyle nTextStyle, HNode p, HNodeRendererContext ctx, Map<String, TextPartStyle> cache) {
+        switch (nTextStyle.getType()) {
+            case BOLD: {
+                to.setBold(true);
+                break;
+            }
+            case ITALIC: {
+                to.setItalic(true);
+                break;
+            }
+            case UNDERLINED: {
+                to.underlined = true;
+                break;
+            }
+            case STRIKED: {
+                to.strikeThrough = true;
+                break;
+            }
+
+            case FORE_TRUE_COLOR: {
+                to.foregroundColor = new Color(nTextStyle.getVariant());
+                break;
+            }
+            case BACK_TRUE_COLOR: {
+                to.backgroundColor = new Color(nTextStyle.getVariant());
+                break;
+            }
+            case FORE_COLOR: {
+                to.foregroundColor = getCodeColorPalette(nTextStyle.getVariant());
+                break;
+            }
+            case BACK_COLOR: {
+                to.backgroundColor = getCodeColorPalette(nTextStyle.getVariant());
+                break;
+            }
+            case PLAIN: {
+                break;
+            }
+            case BLINK: {
+                //should we add timer??
+                break;
+            }
+            case BOOLEAN:
+            case COMMENTS:
+            case CONFIG:
+            case DANGER:
+            case DATE:
+            case ERROR:
+            case FAIL:
+            case INFO:
+            case INPUT:
+            case KEYWORD:
+            case NUMBER:
+            case OPERATOR:
+            case OPTION:
+            case PALE:
+            case PATH:
+            case PRIMARY:
+            case REVERSED:
+            case SECONDARY:
+            case SEPARATOR:
+            case STRING:
+            case SUCCESS:
+            case TITLE:
+            case VAR:
+            case VERSION:
+            case WARN: {
+                TextPartStyle ss = resolveCodeStyle(nTextStyle, p, ctx, cache);
+                if (ss.foreground != null) {
+                    to.foregroundColor = ss.foreground;
+                }
+                if (ss.background != null) {
+                    to.backgroundColor = ss.background;
+                }
+                if (ss.bold) {
+                    to.setBold(true);
+                }
+                if (ss.italic) {
+                    to.setItalic(true);
+                }
+                if (ss.fontSize >= 1) {
+                    to.setFontSize(ss.fontSize <= 0 ? null : (float) ss.fontSize);
+                }
+                to.setFontFamily(ss.fontFamily);
+                break;
+            }
+
+        }
+    }
+
+    private static void processNTextRecursively(NText nText, HTextRendererBuilder result, HNodeRendererContext ctx, NTextStyle[] styles, HNode p, Map<String, TextPartStyle> cache) {
+        HGraphics g = ctx.graphics();
+        if(styles==null){
+            styles=new NTextStyle[0];
+        }
+        switch (nText.getType()) {
+            case PLAIN: {
+                if (result.isEmpty()) {
+                    result.nextLine();
+                }
+                NTextPlain np = (NTextPlain) nText;
+                if (np.getText().equals("\n")) {
+                    result.nextLine();
+                } else {
+                    if (styles.length==0) {
                         result.currRow();
                         HRichTextToken col = new HRichTextToken(HRichTextTokenType.PLAIN, np.getText());
                         col.tok = nText;
-                        g.setFont(col.textOptions.font);
+                        //g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);
                         result.addToken(col);
-                    }
-                    break;
-                }
-
-                case STYLED: {
-                    NTextStyled s = (NTextStyled) nText;
-                    if (result.isEmpty()) {
-                        result.nextLine();
-                    }
-                    for (NTextPlain t : toNTextPlains(s.getChild())) {
-                        if (t.getText().equals("\n")) {
-                            result.nextLine();
-                            continue;
-                        }
-                        HRichTextToken col = new HRichTextToken(HRichTextTokenType.STYLED, t.getText());
+                    } else {
+                        result.currRow();
+                        HRichTextToken col = new HRichTextToken(HRichTextTokenType.STYLED, np.getText());
                         col.tok = nText;
-//                        col.attributedString = new AttributedString(col.text);
-//                        col.attributedShadowString = new AttributedString(col.text);
-                        g.setFont(col.textOptions.font);
+                        //g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);
-                        result.addToken(col);
-                        // Set attributes
-                        NTextStyles styles = s.getStyles();
-//                        int fontStyle = 0;
-                        int strLen = t.getText().length();
-//                        String fontFamily = null;
-//                        double fontSize = 0;
-                        for (NTextStyle nTextStyle : styles.toArray()) {
-                            switch (nTextStyle.getType()) {
-                                case BOLD: {
-                                    col.textOptions.setBold(true);
-                                    break;
-                                }
-                                case ITALIC: {
-                                    col.textOptions.setItalic(true);
-                                    break;
-                                }
-                                case UNDERLINED: {
-                                    col.textOptions.underlined =true;
-                                    break;
-                                }
-                                case STRIKED: {
-                                    col.textOptions.strikeThrough=true;
-                                    break;
-                                }
-
-                                case FORE_TRUE_COLOR: {
-                                    col.textOptions.foregroundColor =new Color(nTextStyle.getVariant());
-                                    break;
-                                }
-                                case BACK_TRUE_COLOR: {
-                                    col.textOptions.backgroundColor =new Color(nTextStyle.getVariant());
-                                    break;
-                                }
-                                case FORE_COLOR: {
-                                    col.textOptions.foregroundColor =getCodeColorPalette(nTextStyle.getVariant());
-                                    break;
-                                }
-                                case BACK_COLOR: {
-                                    col.textOptions.backgroundColor =getCodeColorPalette(nTextStyle.getVariant());
-                                    break;
-                                }
-                                case PLAIN: {
-                                    break;
-                                }
-                                case BLINK: {
-                                    //should we add timer??
-                                    break;
-                                }
-                                case BOOLEAN:
-                                case COMMENTS:
-                                case CONFIG:
-                                case DANGER:
-                                case DATE:
-                                case ERROR:
-                                case FAIL:
-                                case INFO:
-                                case INPUT:
-                                case KEYWORD:
-                                case NUMBER:
-                                case OPERATOR:
-                                case OPTION:
-                                case PALE:
-                                case PATH:
-                                case PRIMARY:
-                                case REVERSED:
-                                case SECONDARY:
-                                case SEPARATOR:
-                                case STRING:
-                                case SUCCESS:
-                                case TITLE:
-                                case VAR:
-                                case VERSION:
-                                case WARN: {
-                                    TextPartStyle ss = resolveCodeStyle(nTextStyle, p, ctx, cache);
-                                    if (ss.foreground != null) {
-                                        col.textOptions.foregroundColor =ss.foreground;
-                                    }
-                                    if (ss.background != null) {
-                                        col.textOptions.backgroundColor =ss.background;
-                                    }
-                                    if (ss.bold) {
-                                        col.textOptions.setBold(true);
-                                    }
-                                    if (ss.italic) {
-                                        col.textOptions.setItalic(true);
-                                    }
-                                    if (ss.fontSize >= 1) {
-                                        col.textOptions.setFontSize(ss.fontSize<=0?null:(float)ss.fontSize);
-                                    }
-                                    col.textOptions.setFontFamily(ss.fontFamily);
-                                    break;
-                                }
-
-                            }
+                        for (NTextStyle nTextStyle : styles) {
+                            applyOptions(col.textOptions, nTextStyle, p, ctx, cache);
                         }
+                        result.addToken(col);
                     }
-                    break;
                 }
-                default:
-                    throw new IllegalArgumentException("unexpected text type " + nText.getType());
+                break;
+            }
+            case STYLED:{
+                NTextStyled ss=(NTextStyled)nText;
+                List<NTextStyle> newStyles=new ArrayList<>(Arrays.asList(styles));
+                newStyles.addAll(ss.getStyles().toList());
+                processNTextRecursively(ss.getChild(), result, ctx,newStyles.toArray(new NTextStyle[0]), p,cache);
+                break;
+            }
+            case LIST:{
+                NTextList list = (NTextList) nText;
+                for (NText nt : list.getChildren()) {
+                    processNTextRecursively(nt, result, ctx,styles, p,cache);
+                }
+                break;
+            }
+            default:{
+                throw new IllegalArgumentException("Unsupported text type: " + nText.getType());
             }
         }
-        result.computeBound(ctx);
     }
 
     private static TextPartStyle resolveCodeStyle(NTextStyle nTextStyle, HNode node, HNodeRendererContext ctx, Map<String, TextPartStyle> cache) {
@@ -193,7 +205,7 @@ public class NutsHighlighterMapper {
         {
             ObjEx e = ObjEx.of(ctx.computePropertyValue(node, prefix + "color").orNull());
             Color[] colors = e.asColorArrayOrColor().orNull();
-            ss.foreground = Colors.resolveDefaultColorByIndex(nTextStyle.getVariant(),colors);
+            ss.foreground = Colors.resolveDefaultColorByIndex(nTextStyle.getVariant(), colors);
         }
         {
             ObjEx e = ObjEx.of(ctx.computePropertyValue(node, prefix + "background").orNull());
@@ -246,6 +258,9 @@ public class NutsHighlighterMapper {
 
 
     protected static List<NTextPlain> toNTextPlains(NText a) {
+        if (a instanceof NTextStyled) {
+            return toNTextPlains(((NTextStyled) a).getChild());
+        }
         if (a instanceof NTextPlain) {
             return Arrays.asList((NTextPlain) a);
         }

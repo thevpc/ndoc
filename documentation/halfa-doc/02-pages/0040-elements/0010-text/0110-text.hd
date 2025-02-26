@@ -38,18 +38,24 @@
                 """
                     **Bold X**
                     __Italic Y__
-                    #Equation 1# =  $X^2=\sin(x) $
-                    ##Equation 2## =  $X^2=\sin(x) $
-                    ###Equation 3### =  $X^2=\sin(x) $
+                    #Equation 1# =
+                    $X^2=\sin(x) $
+                    ##Equation 2## =
+                    $X^2=\sin(x) $
+                    ###Equation 3### =
+                    $X^2=\sin(x) $
                 """
             }
             source(tson,
                 """
                     **Bold X**
                     __Italic Y__
-                    #Equation 1# =  $X^2=\sin(x) $
-                    ##Equation 2## =  $X^2=\sin(x) $
-                    ###Equation 3### =  $X^2=\sin(x) $
+                    #Equation 1# =
+                    $X^2=\sin(x) $
+                    ##Equation 2## =
+                    $X^2=\sin(x) $
+                    ###Equation 3### =
+                    $X^2=\sin(x) $
                 """)
 
 

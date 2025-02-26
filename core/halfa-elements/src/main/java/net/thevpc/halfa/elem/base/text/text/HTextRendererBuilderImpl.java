@@ -277,6 +277,7 @@ public class HTextRendererBuilderImpl implements HTextRendererBuilder {
             }
             textOptions.setShadowTranslation(shadow.getTranslation());
         }
+        Font oldFont= g.getFont();
         for (HRichTextRow row : this.rows) {
             for (HRichTextToken col : row.tokens) {
                 switch (col.type) {

@@ -117,10 +117,7 @@
 	</build>
 
 	<repositories>
-		<repository>
-			<id>thevpc</id>
-			<name>thevpc</name>
-			<url>https://thevpc.net/maven</url>
-		</repository>
+		<repository><id>thevpc</id><url>https://thevpc.net/maven</url></repository>
 	</repositories>
+
 </project>

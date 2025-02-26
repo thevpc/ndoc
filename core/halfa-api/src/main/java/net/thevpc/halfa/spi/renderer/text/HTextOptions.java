@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
-public class HTextOptions implements Cloneable {
+public class HTextOptions implements Cloneable, NBlankable {
     public Paint backgroundColor;
     public Integer foregroundColorIndex;
     public Integer backgroundColorIndex;
@@ -22,6 +22,51 @@ public class HTextOptions implements Cloneable {
     public Paint shadowColor;
     public HPoint2D shadowTranslation;
     public Stroke stroke;
+
+    @Override
+    public boolean isBlank() {
+        if (backgroundColor != null) {
+            return false;
+        }
+        if (foregroundColorIndex != null) {
+            return false;
+        }
+        if (backgroundColorIndex != null) {
+            return false;
+        }
+        if (bold != null) {
+            return false;
+        }
+        if (italic != null) {
+            return false;
+        }
+        if (fontSize != null) {
+            return false;
+        }
+        if (fontFamily != null) {
+            return false;
+        }
+        if (underlined != null) {
+            return false;
+        }
+        if (strikeThrough != null) {
+            return false;
+        }
+        if (font != null) {
+            return false;
+        }
+        if (shadowColor != null) {
+            return false;
+        }
+        if (shadowTranslation != null) {
+            return false;
+        }
+        if (stroke != null) {
+            return false;
+        }
+
+        return true;
+    }
 
     public Integer getBackgroundColorIndex() {
         return backgroundColorIndex;
@@ -155,6 +200,15 @@ public class HTextOptions implements Cloneable {
             return true;
         }
         if (strikeThrough != null) {
+            return true;
+        }
+        if (foregroundColorIndex != null) {
+            return true;
+        }
+        if (backgroundColorIndex != null) {
+            return true;
+        }
+        if (foregroundColor != null) {
             return true;
         }
         if (bold != null) {

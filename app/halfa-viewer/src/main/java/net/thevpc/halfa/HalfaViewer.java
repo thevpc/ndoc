@@ -3,6 +3,7 @@ package net.thevpc.halfa;
 import com.formdev.flatlaf.FlatLightLaf;
 import net.thevpc.halfa.main.MainFrame;
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.lib.nswing.NSwingUtils;
 
 import javax.swing.*;
 
@@ -17,9 +18,8 @@ public class HalfaViewer implements NApplication {
 
     @Override
     public void run() {
-        NWorkspace ws = NWorkspace.of();
-        ws.setSharedInstance();
-        SwingUtilities.invokeLater(ws::setSharedInstance);
+        NWorkspace ws = NWorkspace.of().setSharedInstance();
+        NSwingUtils.setSharedWorkspaceInstance();
         FlatLightLaf.setup(new com.formdev.flatlaf.FlatDarculaLaf());
         MainFrame mainFrame=new MainFrame();
         mainFrame.setVisible(true);

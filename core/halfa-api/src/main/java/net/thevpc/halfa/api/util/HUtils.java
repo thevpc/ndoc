@@ -2,6 +2,7 @@ package net.thevpc.halfa.api.util;
 
 import net.thevpc.halfa.api.model.elem3d.HPoint3D;
 import net.thevpc.halfa.api.resources.HResource;
+import net.thevpc.halfa.spi.renderer.text.HTextOptions;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
@@ -243,5 +244,20 @@ public class HUtils {
 
     public static String uid(String id) {
         return NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(id));
+    }
+
+    public static Color paintAsColor(Paint paint) {
+        if(paint instanceof Color) {
+            return (Color) paint;
+        }
+        return null;
+    }
+    public static Paint resolveForegroundColor(HTextOptions options) {
+        if(options.foregroundColorIndex!=null){
+            return Colors.resolveDefaultColorByIndex(options.foregroundColorIndex,null);
+        }else if(options.foregroundColor instanceof Color){
+            return options.foregroundColor;
+        }
+        return null;
     }
 }

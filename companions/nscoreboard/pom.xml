@@ -10,4 +10,8 @@
         <maven.compiler.release>17</maven.compiler.release>
         <exec.mainClass>net.thevpc.net.nscoreboard.NScoreboard</exec.mainClass>
     </properties>
+    <repositories>
+        <repository><id>thevpc</id><url>https://thevpc.net/maven</url></repository>
+    </repositories>
+
 </project>

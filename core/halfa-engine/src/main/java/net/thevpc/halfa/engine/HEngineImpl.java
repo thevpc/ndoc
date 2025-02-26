@@ -358,7 +358,7 @@ public class HEngineImpl implements HEngine {
         TsonDocument doc;
         try {
             doc = tr.readDocument(is);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             return NOptional.ofNamedError("error loading tson document", ex);
         }
         return NOptional.of(doc);
