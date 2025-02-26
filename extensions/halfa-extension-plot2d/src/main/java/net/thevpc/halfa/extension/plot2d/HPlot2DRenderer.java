@@ -19,7 +19,7 @@ public class HPlot2DRenderer extends HNodeRendererBase {
     DoubleToDoubleFunction f = x -> Math.sin(x);
 
     public HPlot2DRenderer() {
-        super(HNodeType.ARROW);
+        super(HNodeType.PLOT2D);
     }
 
     @Override

@@ -206,18 +206,19 @@ public class HGraphicsImpl implements HGraphics {
         if (arrowHeight <= 0) {
             arrowHeight = arrowWidth;
         }
-        if (arrowHeight <= 0) {
-            arrowHeight = 10;
-        }
-        if (arrowWidth <= 0) {
-            arrowWidth = 10;
-        }
+
         double angle = Math.atan2(direction.y, direction.x);
         AffineTransform originalTransform = g.getTransform();
         g.translate(origin.x, origin.y);
         g.rotate(angle);
         switch (type) {
             case SIMPLE: {
+                if (arrowHeight <= 0) {
+                    arrowHeight = 10;
+                }
+                if (arrowWidth <= 0) {
+                    arrowWidth = 10;
+                }
                 xPoints = new int[]{-(int) arrowWidth, 0, -(int) arrowWidth};
                 yPoints = new int[]{-(int) arrowHeight, 0, (int) arrowHeight};
                 g.drawPolyline(xPoints, yPoints, xPoints.length);
@@ -225,6 +226,12 @@ public class HGraphicsImpl implements HGraphics {
             }
             case TRIANGLE_FULL:
             case TRIANGLE: {
+                if (arrowHeight <= 0) {
+                    arrowHeight = 10;
+                }
+                if (arrowWidth <= 0) {
+                    arrowWidth = 10;
+                }
                 xPoints = new int[]{0, -(int) arrowWidth, -(int) arrowWidth};
                 yPoints = new int[]{0, -(int) arrowHeight, (int) arrowHeight};
                 Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
@@ -237,8 +244,18 @@ public class HGraphicsImpl implements HGraphics {
             }
             case DIAMOND_FULL:
             case DIAMOND: {
-                xPoints = new int[]{0, -(int) (arrowWidth / 2), -(int) (arrowWidth), -(int) arrowWidth};
-                yPoints = new int[]{0, -(int) (arrowHeight / 2), 0, (int) arrowHeight};
+                if (arrowHeight <= 0) {
+                    arrowHeight = 50;
+                }
+                if (arrowWidth <= 0) {
+                    arrowWidth = 50;
+                }
+                double xmin = -arrowWidth / 2;
+                double ymin = -arrowHeight / 2 + arrowHeight / 4;
+                double xlen = arrowWidth / 2;
+                double ylen = arrowHeight / 2;
+                xPoints = new int[]{(int) (xmin + xlen / 2), (int) (xmin + xlen), (int) (xmin + xlen / 2), (int) (xmin)};
+                yPoints = new int[]{(int) (ymin), (int) (ymin + ylen / 2), (int) (ymin + ylen), (int) (ymin + ylen / 2)};
                 Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
                 if (type == HArrowType.DIAMOND_FULL) {
                     g.fill(arrowHead);
@@ -249,19 +266,39 @@ public class HGraphicsImpl implements HGraphics {
             }
             case OVAL_FULL:
             case OVAL: {
+                if (arrowHeight <= 0) {
+                    arrowHeight = 30;
+                }
+                if (arrowWidth <= 0) {
+                    arrowWidth = 30;
+                }
+                double xmin = -arrowWidth / 2;
+                double ymin = -arrowHeight / 2 + arrowHeight / 4;
+                double xlen = arrowWidth / 2;
+                double ylen = arrowHeight / 2;
                 if (type == HArrowType.OVAL_FULL) {
-                    fillOval(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
+                    fillOval(xmin, ymin, xlen, ylen);
                 } else {
-                    drawOval(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
+                    drawOval(xmin, ymin, xlen, ylen);
                 }
                 break;
             }
             case RECTANGLE:
             case RECTANGLE_FULL: {
+                if (arrowHeight <= 0) {
+                    arrowHeight = 30;
+                }
+                if (arrowWidth <= 0) {
+                    arrowWidth = 30;
+                }
+                double xmin = -arrowWidth / 2;
+                double ymin = -arrowHeight / 2 + arrowHeight / 4;
+                double xlen = arrowWidth / 2;
+                double ylen = arrowHeight / 2;
                 if (type == HArrowType.RECTANGLE_FULL) {
-                    fillRect(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
+                    fillRect(xmin, ymin, xlen, ylen);
                 } else {
-                    drawRect(arrowWidth / 2, arrowHeight / 2, arrowWidth / 2, arrowHeight / 2);
+                    drawRect(xmin, ymin, xlen, ylen);
                 }
                 break;
             }
@@ -430,7 +467,7 @@ public class HGraphicsImpl implements HGraphics {
         HPoint2D sht = options.getShadowTranslation();
         if (options.getShadowColor() != null && sht != null && !sht.equals(new HPoint2D(0, 0))) {
             if (options.isStyled()) {
-                AttributedString attrStr = options.createShadowAttributedString(str,g);
+                AttributedString attrStr = options.createShadowAttributedString(str, g);
                 g.drawString(attrStr.getIterator(), (float) (x + sht.getX()), (float) (y + sht.getY()));
             } else {
                 g.setPaint(options.getShadowColor());
@@ -439,7 +476,7 @@ public class HGraphicsImpl implements HGraphics {
         }
         {
             if (options.isStyled()) {
-                AttributedString attrStr = options.createAttributedString(str,g);
+                AttributedString attrStr = options.createAttributedString(str, g);
                 g.drawString(attrStr.getIterator(), (float) (x), (float) (y));
             } else {
                 g.setPaint(options.getForegroundColor());
@@ -586,6 +623,11 @@ public class HGraphicsImpl implements HGraphics {
     }
 
     @Override
+    public void draw(Shape shape) {
+        g.draw(shape);
+    }
+
+    @Override
     public void setStroke(Stroke stroke) {
         g.setStroke(stroke);
     }
@@ -641,7 +683,7 @@ public class HGraphicsImpl implements HGraphics {
     }
 
 
-    ///////////////////////////////////////////////////////
+    /// ////////////////////////////////////////////////////
 
 
     private void draw3DElement3DLine(Element3DLine pr, HPoint2D origin) {

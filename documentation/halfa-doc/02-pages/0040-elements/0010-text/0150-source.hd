@@ -102,22 +102,24 @@
 
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:5%g}
+                    "*":{font-size:10%g}
                 }
                 source(
                     text
                     """
-                        text, ntf
-                        java, c#, c++,hadra
-                        xml,html,json,tson
+                        text, java,
+                        c#, c++
+                        xml,html,json
                         bash,fish,cmd
-                        sql,hd
+                        sql,
+                        hd, ntf,hadra,
+                        tson
                     """
-                    font-size:4%g,
+                    font-size:5%g,
                     font-family:Monospaced
                 )
             }
-            "Supported"
+            "Supported Languages"
 
         }
     }

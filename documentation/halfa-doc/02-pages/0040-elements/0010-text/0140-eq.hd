@@ -14,16 +14,26 @@
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:3.5%g}
+                    "*":{font-size:6%g}
                 }
-                eq("X^2=\sin(x)")
+                "$X^2=\sin(x)$"
+            }
+            source(tson,
+                """
+                "$X^2=\sin(x)$"
+                """)
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:3%g}
+                }
+                eq("X^2=\sin(x)",draw-contour:false)
             }
             source(tson,
                 """
                 eq("X^2=\sin(x)")
                 """)
-
-
         }
     }
 

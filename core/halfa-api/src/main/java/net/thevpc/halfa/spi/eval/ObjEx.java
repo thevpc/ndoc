@@ -1238,6 +1238,24 @@ public class ObjEx {
         return NOptional.ofNamedEmpty("Double3 from " + element);
     }
 
+    public NOptional<HPoint2D> asHPoint2DOrDouble() {
+        if (element instanceof HPoint2D) {
+            return NOptional.of((HPoint2D) element);
+        }
+        NOptional<double[]> d = asDoubleArray();
+        if (d.isPresent()) {
+            double[] dd = d.get();
+            if (dd.length == 2) {
+                return NOptional.of(new HPoint2D(dd[0], dd[1]));
+            }
+        }
+        NOptional<Double> dd = asDouble();
+        if(dd.isPresent()) {
+            return NOptional.of(new HPoint2D(dd.get(), dd.get()));
+        }
+        return NOptional.ofNamedEmpty("HPoint2D from " + element);
+    }
+
     public NOptional<HPoint2D> asHPoint2D() {
         if (element instanceof HPoint2D) {
             return NOptional.of((HPoint2D) element);

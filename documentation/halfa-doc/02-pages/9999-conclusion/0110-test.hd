@@ -1,0 +1,11 @@
+@normal page{
+    @header {
+        text("Test me"),
+    }
+    @body{
+        // write whatever you like here???
+        "open ##0110-test.hd## file and try to write some things there"
+
+    }
+
+}

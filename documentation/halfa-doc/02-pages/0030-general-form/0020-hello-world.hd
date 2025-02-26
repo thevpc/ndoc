@@ -1,0 +1,55 @@
+@normal page{
+    @header {
+        text("Hello World"),
+    }
+    @body{
+        grid((4,2),columns-weight:[1]){
+            styles:{
+                "*": {margin:2}
+            }
+
+            // Row
+            stack(background:white,draw-contour){
+                //rectangle(at:center, color:$palette[2])
+                text("Hello World")
+            }
+            source(tson, """ "Hello World" """)
+
+            // Row
+            stack(background:white,draw-contour){
+                //rectangle(at:center, color:$palette[2])
+                """
+                    - Hello ##World##
+                    - Hello ###World###
+                    - Hello ####World####
+                """
+            }
+            source(tson, """
+                    "
+                        - Hello ##World##
+                        - Hello ###World###
+                        - Hello ####World####
+                    "
+             """)
+
+            // Row
+            stack(background:white,draw-contour){
+                //rectangle(at:center, color:$palette[2])
+                ul{
+                    "Hello ##World##"
+                    "Hello ###World###"
+                    "Hello ####World####"
+                }
+            }
+            source(tson, """
+                    ul{
+                        "Hello ##World##"
+                        "Hello ###World###"
+                        "Hello ####World####"
+                    }
+             """)
+
+        }
+    }
+
+}

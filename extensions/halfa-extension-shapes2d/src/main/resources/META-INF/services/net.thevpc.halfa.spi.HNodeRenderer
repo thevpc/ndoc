@@ -1,3 +1,4 @@
 net.thevpc.halfa.extension.shapes2d.cylinder.HCylinderRenderer
 net.thevpc.halfa.extension.shapes2d.donut.HDonutRenderer
+net.thevpc.halfa.extension.shapes2d.pie.HPieRenderer
 net.thevpc.halfa.extension.shapes2d.arrow.HArrowRenderer

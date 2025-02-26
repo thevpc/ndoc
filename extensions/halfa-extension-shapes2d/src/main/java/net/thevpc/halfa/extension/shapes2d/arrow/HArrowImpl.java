@@ -35,8 +35,12 @@ public class HArrowImpl extends HNodeParserBase {
                             info.node.setProperty(HPropName.HEIGHT, p.value());
                             return true;
                         }
-                        case "points": {
-                            info.node.setProperty(HProp.ofObject("points", p.value()));
+                        case "base": {
+                            info.node.setProperty("base", p.value());
+                            return true;
+                        }
+                        case "hat": {
+                            info.node.setProperty("hat", p.value());
                             return true;
                         }
                     }
@@ -52,7 +56,8 @@ public class HArrowImpl extends HNodeParserBase {
     public TsonElement toTson(HNode item) {
         HProp width = item.getProperty(HPropName.WIDTH).orNull();
         HProp height = item.getProperty(HPropName.HEIGHT).orNull();
-        HProp points = item.getProperty(HPropName.POINTS).orNull();
+        HProp base = item.getProperty("base").orNull();
+        HProp hat = item.getProperty("hat").orNull();
 
         return ToTsonHelper.of(
                 item,
@@ -60,7 +65,8 @@ public class HArrowImpl extends HNodeParserBase {
         ).addChildren(
                 width == null ? null : Tson.ofPair("width", net.thevpc.halfa.api.util.HUtils.toTson(width.getValue())),
                 height == null ? null : Tson.ofPair("height", net.thevpc.halfa.api.util.HUtils.toTson(height.getValue())),
-                points == null ? null : Tson.ofPair("points", net.thevpc.halfa.api.util.HUtils.toTson(points.getValue()))
+                base == null ? null : Tson.ofPair("base", net.thevpc.halfa.api.util.HUtils.toTson(base.getValue())),
+                hat == null ? null : Tson.ofPair("hat", net.thevpc.halfa.api.util.HUtils.toTson(base.getValue()))
         ).build();
     }
 

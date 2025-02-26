@@ -12,15 +12,11 @@
             }
             // Row
             stack(background:white,draw-contour){
-                    arrow(at: center, size: (20, 100), points: [0, 25, 0, 25, 150, 25, 150, 0, 200, 50, 150, 103, 150, 75, 0, 75, 10, 50],color:red)
+                    arrow(at: center,color:$palette[2],rotate:-45)
             }
             source(tson,
                 """
-                    arrow(at: center,
-                        size: (20, 100),
-                        points: [0, 25, 0, 25, 150, 25, 150, 0, 200,
-                        50, 150, 103, 150, 75, 0, 75, 10, 50],
-                        color:red)
+                    arrow(at: center,rotate:-45)
                 """
             )
 
@@ -52,6 +48,18 @@
                 start-angle:0,extent-angle:270)
               donut (inner-radius:30)
               donut (inner-radius:80)
+                """
+            )
+
+            // Row
+            stack(background:white,draw-contour){
+              pie (origin:center,position:(50,15),size:40,stroke:5,background-color:"#00215E",start-angle:0,extent-angle:270)
+              pie (origin:center,position:(50,75),size:40,stroke:5)
+            }
+            source(tson,
+                """
+              pie()
+              pie(start-angle:0,extent-angle:270)
                 """
             )
         }

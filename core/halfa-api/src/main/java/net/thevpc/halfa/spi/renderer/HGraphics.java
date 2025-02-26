@@ -106,6 +106,8 @@ public interface HGraphics {
 
     void fill(Shape shape);
 
+    void draw(Shape shape);
+
     void setStroke(Stroke stroke);
 
     Stroke getStroke();

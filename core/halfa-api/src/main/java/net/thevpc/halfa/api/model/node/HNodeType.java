@@ -41,6 +41,7 @@ public class HNodeType {
     public static final String SOURCE="source";
     public static final String UNNAMED="unnamed";
     public static final String DONUT="donut";
+    public static final String PIE="pie";
 
     public static final String ARROW = "arrow";
     public static final String PLOT2D = "plot2d";

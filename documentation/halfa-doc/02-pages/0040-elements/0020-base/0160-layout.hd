@@ -1,0 +1,73 @@
+@normal page{
+    @header {
+        text("Layout"),
+    }
+    @body{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+            }
+            // Row
+            stack(background:white,draw-contour){
+                stack{
+                    rectangle(at:top, size:(50,50), background:$palette[4], color:$palette[2], margin:10)
+                    triangle(at:left, size:(50,50), background:$palette[5], color:$palette[5], margin:10)
+                }
+            }
+            source(tson, """
+                stack{
+                    rectangle(at:top, size:(50,50),
+                        background:$palette[4])
+                    triangle(at:left, size:(50,50),
+                        background:$palette[5])
+                }
+            """)
+
+            // Row
+            stack(background:white,draw-contour){
+                grid((2,2)){
+                    rectangle(at:top, size:(50,50), background:$palette[4], color:$palette[2], margin:10)
+                    triangle(at:left, size:(50,50), background:$palette[5], color:$palette[5], margin:10)
+                    "Hello"
+                }
+            }
+            source(tson, """
+                grid((2,2)){
+                    rectangle(at:top, size:(50,50),
+                        background:$palette[4])
+                    triangle(at:left, size:(50,50),
+                        background:$palette[5])
+                    "Hello"
+                }
+            """)
+
+            // Row
+            stack(background:white,draw-contour){
+                grid((3,2),columns-weight:[1,4],rows-weight:[1,4]){
+                    rectangle(background:$palette[4], color:$palette[2], margin:10)
+                    triangle(background:$palette[5], color:$palette[5], margin:10)
+                    rectangle(background:$palette[4], color:$palette[2], margin:10)
+                    triangle(background:$palette[5], color:$palette[5], margin:10)
+                    rectangle(background:$palette[4], color:$palette[2], margin:10)
+                    triangle(background:$palette[5], color:$palette[5], margin:10)
+                }
+            }
+            source(tson, """
+                grid((3,2),
+                    columns-weight:[1,4],
+                    rows-weight:[1,4]){
+                        rectangle()
+                        triangle()
+                        rectangle()
+                        triangle()
+                        rectangle()
+                        triangle()
+                }
+             """)
+
+
+
+        }
+    }
+
+}

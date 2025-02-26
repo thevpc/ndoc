@@ -4,13 +4,13 @@
     }
     @body{
         ul{
-        "Text Based, declarative syntax"
-        "Human readable, simply writable"
-        "Easier maintenance for long-lived docs"
-        "Full Control on rendering"
-        "Multi file"
-        "SCM Friendly (GIT,...) "
-        "Supports Latex, UML, and much more"
+        "Text-based, declarative, and intuitive syntax"
+        "Readable by humans, writable with ease"
+        "Designed for long-lived documents with effortless maintenance"
+        "Unmatched control over rendering"
+        "Seamless multi-file support"
+        "Version-control friendly (Git & more)"
+        "Integrates with LaTeX, UML, and beyond"
         }
     }
 }
