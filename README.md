@@ -7,6 +7,10 @@ only grows in Tunisia, Morocco, Algeria, Spain and Portugal.
 For centuries, it's been used to produce ropes, sandals, baskets, hats, mats and fine paper. 
 The weed grows up to three feet high on rocky soil in high plains.
 
+![](documentation/website/splash.png)
+
+Download documentation here : [halfa-doc.pdf](documentation/website/halfa-doc.pdf)
+
 ## What it does
 halfa is a versatile presentation tool intended to replace :
 - powerpoint (and its clones)
