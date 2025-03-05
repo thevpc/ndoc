@@ -108,6 +108,6 @@
         </plugins>
     </build>
     <repositories>
-        <repository><id>thevpc</id><url>https://thevpc.net/maven</url></repository>
+        <repository><id>thevpc</id><url>https://maven.thevpc.net</url></repository>
     </repositories>
 </project>

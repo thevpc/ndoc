@@ -183,7 +183,7 @@ public class HUtils {
             return ((ToTson) o).toTson();
         }
         if (o instanceof Enum) {
-            return Tson.name(
+            return Tson.ofName(
                     NNameFormat.LOWER_KEBAB_CASE.format(((Enum<?>) o).name())
             );
         }

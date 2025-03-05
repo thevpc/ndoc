@@ -216,12 +216,12 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         }
         if (!types.isEmpty()) {
             for (String name : types) {
-                c.add(Tson.name(NNameFormat.LOWER_KEBAB_CASE.format(name)));
+                c.add(Tson.ofName(NNameFormat.LOWER_KEBAB_CASE.format(name)));
             }
         }
         if (!classes.isEmpty()) {
             for (String name : names) {
-                c.add(Tson.name("." + name));
+                c.add(Tson.ofName("." + name));
             }
         }
         if (c.isEmpty()) {

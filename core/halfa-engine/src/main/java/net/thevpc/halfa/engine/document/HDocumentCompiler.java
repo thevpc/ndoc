@@ -397,7 +397,7 @@ public class HDocumentCompiler {
 
         @Override
         public TsonElement resolveVarValue(HNode node, String varName) {
-            return evalExpression(node, Tson.name("$" + varName));
+            return evalExpression(node, Tson.ofName("$" + varName));
         }
     }
 }

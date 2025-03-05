@@ -256,7 +256,7 @@ public class DefaultHDocumentItemParserFactory
                     }
                     default: {
                         if (cls.type().isNumber()) {
-                            BigDecimal bi = cls.toNumber().getBigDecimal();
+                            BigDecimal bi = cls.toNumber().bigDecimalValue();
                             foundVersion = true;
                         } else {
                             foundOther = true;
