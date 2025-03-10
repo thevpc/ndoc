@@ -16,7 +16,7 @@ import net.thevpc.nuts.io.NPath;
 public class HalfaExampleFromFile2 {
 
     public static void main(String[] args) {
-        Nuts.openWorkspace().setSharedInstance();
+        Nuts.openWorkspace().share();
         HEngine e = new HEngineImpl();
         NPath file = NPath.of("src/halfa/test1.hd").toAbsolute().normalize();
         HDocument doc = e.loadDocument(file, null).get();

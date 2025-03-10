@@ -5,20 +5,18 @@ import net.thevpc.halfa.main.MainFrame;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.lib.nswing.NSwingUtils;
 
-import javax.swing.*;
-
 /**
  * @author vpc
  */
 public class HalfaViewer implements NApplication {
 
     public static void main(String[] args) {
-        new HalfaViewer().run(args);
+        new HalfaViewer().main(NMainArgs.of(args));
     }
 
     @Override
     public void run() {
-        NWorkspace ws = NWorkspace.of().setSharedInstance();
+        NWorkspace.of().share();
         NSwingUtils.setSharedWorkspaceInstance();
         FlatLightLaf.setup(new com.formdev.flatlaf.FlatDarculaLaf());
         MainFrame mainFrame=new MainFrame();

@@ -10,7 +10,7 @@ import net.thevpc.nuts.io.NPath;
 
 public class TestPdf {
     public static void main(String[] args) {
-        Nuts.openWorkspace().setSharedInstance();
+        Nuts.openWorkspace().share();
         HEngine e = new HEngineImpl();
         NPath file = NPath.of("documentation/halfa-doc").toAbsolute().normalize();
         HDocument doc = e.loadDocument(file, new HMessageListImpl(null)).get();

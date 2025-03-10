@@ -20,7 +20,7 @@ import java.awt.*;
 public class HalfaExampleTestBullets {
 
     public static void main(String[] args) {
-        Nuts.openWorkspace().setSharedInstance();
+        Nuts.openWorkspace().share();
         HEngine e = new HEngineImpl();
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()

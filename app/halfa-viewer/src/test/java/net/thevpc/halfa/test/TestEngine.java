@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 
 public class TestEngine {
     public static void main(String[] args) {
-        Nuts.openWorkspace().setSharedInstance();
+        Nuts.openWorkspace().share();
         HEngine e=new HEngineImpl();
         String document="\n" +
                 "$a=1\n" +
