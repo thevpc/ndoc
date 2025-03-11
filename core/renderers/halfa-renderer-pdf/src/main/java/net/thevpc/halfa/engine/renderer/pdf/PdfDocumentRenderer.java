@@ -77,7 +77,14 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             HMessageList messages = this.messages != null ? this.messages : new HMessageListImpl(engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
-            int imagesPerPage = config.getGridX() * config.getGridY();
+            if(imagesPerRow<=0){
+                imagesPerRow=1;
+            }
+            int imagesPerColumn = config.getGridY();
+            if(imagesPerColumn<=0){
+                imagesPerColumn=1;
+            }
+            int imagesPerPage = imagesPerRow * imagesPerColumn;
             List<HNode> pages = document.pages();
             int imageCount = 0;
 
@@ -101,10 +108,10 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             }
 
             float totalMarginWidth = (imagesPerRow - 1) * margin;
-            float totalMarginHeight = (config.getGridY() - 1) * margin;
+            float totalMarginHeight = (imagesPerColumn - 1) * margin;
 
             float cellWidth = (usableWidth - totalMarginWidth) / imagesPerRow;
-            float cellHeight = (usableHeight - totalMarginHeight) / config.getGridY();
+            float cellHeight = (usableHeight - totalMarginHeight) / imagesPerColumn;
 
             PdfPTable table = null;
 
@@ -296,7 +303,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
 //    }
 
     @Override
-    public void renderNode(HNode part, OutputStream out) {
+    public HDocumentStreamRenderer renderNode(HNode part, OutputStream out) {
         try {
             HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
             List<Supplier<InputStream>> all = new ArrayList<>();
@@ -310,6 +317,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         } catch (IOException | DocumentException ex) {
             throw new NIOException(ex);
         }
+        return this;
     }
 
     public Supplier<InputStream> renderPage(HNode part, HDocumentStreamRenderer htmlRenderer) {

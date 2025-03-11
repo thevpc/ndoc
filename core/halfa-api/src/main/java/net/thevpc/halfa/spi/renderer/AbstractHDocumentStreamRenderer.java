@@ -22,8 +22,9 @@ public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentR
     }
 
     @Override
-    public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
+    public HDocumentStreamRenderer setStreamRendererConfig(HDocumentStreamRendererConfig config) {
         this.config=config;
+        return this;
     }
 
     @Override
@@ -32,12 +33,14 @@ public abstract class AbstractHDocumentStreamRenderer extends AbstractHDocumentR
     }
 
     @Override
-    public void setOutput(OutputStream outputStream) {
+    public HDocumentStreamRenderer setOutput(OutputStream outputStream) {
         this.output = outputStream;
+        return this;
     }
 
     @Override
-    public void setOutput(NPath path) {
+    public HDocumentStreamRenderer setOutput(NPath path) {
         this.output = path;
+        return this;
     }
 }

@@ -69,19 +69,7 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
     }
 
     @Override
-    public void setStreamRendererConfig(HDocumentStreamRendererConfig config) {
-       this.config=config;
-
-
-    }
-
-    @Override
-    public HDocumentStreamRendererConfig getStreamRendererConfig() {
-        return config;
-    }
-
-    @Override
-    public void renderNode(HNode part, OutputStream out) {
+    public HDocumentStreamRenderer renderNode(HNode part, OutputStream out) {
         switch (part.type()) {
             case HNodeType.PAGE_GROUP:
                 break;
@@ -96,6 +84,7 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
             default:
                 throw new IllegalArgumentException("invalid type " + part);
         }
+        return this;
     }
 
 //    public void render(HDocumentPart part, PrintStream out) {
