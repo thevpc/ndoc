@@ -60,7 +60,7 @@
         <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.5.0</version></dependency>
         <dependency><groupId>net.thevpc.halfa</groupId><artifactId>halfa-spi-base</artifactId><version>0.8.5.0</version></dependency>
         <dependency><groupId>net.thevpc.nuts.lib</groupId><artifactId>nlib-swing</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>com.formdev</groupId><artifactId>flatlaf</artifactId><version>3.4.1</version></dependency>
+        <dependency><groupId>com.formdev</groupId><artifactId>flatlaf</artifactId><version>3.5.4</version></dependency>
         <dependency><groupId>net.thevpc.halfa</groupId><artifactId>halfa-extension-plantuml</artifactId><version>0.8.5.0</version></dependency>
         <dependency><groupId>net.thevpc.halfa</groupId><artifactId>halfa-extension-animated-gif</artifactId><version>0.8.5.0</version></dependency>
         <dependency><groupId>net.thevpc.halfa</groupId><artifactId>halfa-extension-svg</artifactId><version>0.8.5.0</version></dependency>
