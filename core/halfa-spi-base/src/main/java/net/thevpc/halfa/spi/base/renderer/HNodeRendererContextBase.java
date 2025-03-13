@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.base.renderer;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
@@ -30,19 +30,19 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     private HEngine engine;
     private Bounds2 globalBound;
     private Bounds2 bound;
-    private HMessageList messages;
+    private HLogger log;
     private Map<String, Object> capabilities = new HashMap<>();
 
-    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, Bounds2 globalBound, HMessageList messages) {
+    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, Bounds2 globalBound, HLogger log) {
         this.engine=engine;
         this.bound = new Bounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.g3 = g;
-        this.messages = messages;
+        this.log = log;
     }
 
-    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, HMessageList messages) {
-        this(engine,g, bound, new Bounds2(0, 0, bound.getWidth(), bound.getHeight()), messages);
+    public HNodeRendererContextBase(HEngine engine, HGraphics g, Dimension bound, HLogger log) {
+        this(engine,g, bound, new Bounds2(0, 0, bound.getWidth(), bound.getHeight()), log);
     }
 
     @Override
@@ -93,8 +93,8 @@ public abstract class HNodeRendererContextBase extends HNodeRendererContextBaseB
     }
 
     @Override
-    public HMessageList messages() {
-        return messages;
+    public HLogger log() {
+        return log;
     }
 
     @Override

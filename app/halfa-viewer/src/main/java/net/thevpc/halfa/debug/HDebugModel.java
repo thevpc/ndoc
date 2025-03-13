@@ -2,7 +2,7 @@ package net.thevpc.halfa.debug;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 
 public class HDebugModel {
@@ -10,7 +10,7 @@ public class HDebugModel {
     private HDocument rawDocument;
     private HNode currentPage;
     private HDocument compiledDocument;
-    private HMessageList messageList;
+    private HLogger messageList;
 
     public HEngine getEngine() {
         return engine;
@@ -48,11 +48,11 @@ public class HDebugModel {
         return compiledDocument;
     }
 
-    public HMessageList messages() {
+    public HLogger messages() {
         return messageList;
     }
 
-    public HDebugModel setMessageList(HMessageList messageList) {
+    public HDebugModel setMessageList(HLogger messageList) {
         this.messageList = messageList;
         return this;
     }

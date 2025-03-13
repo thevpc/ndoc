@@ -3,7 +3,7 @@ package net.thevpc.halfa.engine.parser;
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.util.HUtils;
@@ -17,7 +17,7 @@ import net.thevpc.tson.TsonElement;
 import java.util.*;
 
 public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext {
-    private final HMessageList messages;
+    private final HLogger messages;
     private final HDocument document;
     private final TsonElement element;
     private final HEngine engine;
@@ -31,7 +31,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
             ,
             List<HNode> nodePath
             , HResource source
-            , HMessageList messages
+            , HLogger messages
     ) {
         this.messages = messages;
         this.document = document;
@@ -70,7 +70,7 @@ public class DefaultHNodeFactoryParseContext implements HNodeFactoryParseContext
     }
 
     @Override
-    public HMessageList messages() {
+    public HLogger messages() {
         return messages;
     }
 

@@ -2,7 +2,7 @@ package net.thevpc.halfa.debug;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.base.renderer.HImageUtils;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
@@ -110,7 +110,7 @@ public class HDebugFrame extends JFrame {
         });
     }
 
-    public HMessageList messages() {
+    public HLogger messages() {
         return model().messages();
     }
 

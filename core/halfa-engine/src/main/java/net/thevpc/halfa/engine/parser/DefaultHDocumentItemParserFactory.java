@@ -2,6 +2,7 @@ package net.thevpc.halfa.engine.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -162,26 +163,26 @@ public class DefaultHDocumentItemParserFactory
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
                     callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
-                    TsonElement functionTsonDeclaration=c;
-                    if(context.source()!=null) {
+                    TsonElement functionTsonDeclaration = c;
+                    if (context.source() != null) {
                         NPath sourcePath = context.source().path().orNull();
                         if (sourcePath != null) {
-                            functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration,sourcePath.toString());
-                            if(c.type() == TsonElementType.FUNCTION){
-                                TsonFunctionBuilder fb=(TsonFunctionBuilder)functionTsonDeclaration.builder();
+                            functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
+                            if (c.type() == TsonElementType.FUNCTION) {
+                                TsonFunctionBuilder fb = (TsonFunctionBuilder) functionTsonDeclaration.builder();
                                 for (int i = 0; i < fb.args().size(); i++) {
-                                    fb.args().set(i,HUtils.addCompilerDeclarationPath(fb.args().get(i),sourcePath.toString()));
+                                    fb.args().set(i, HUtils.addCompilerDeclarationPath(fb.args().get(i), sourcePath.toString()));
                                 }
-                                functionTsonDeclaration=fb.build();
-                            }else if(c.type() == TsonElementType.OBJECT){
-                                TsonObjectBuilder fb=(TsonObjectBuilder)functionTsonDeclaration.builder();
+                                functionTsonDeclaration = fb.build();
+                            } else if (c.type() == TsonElementType.OBJECT) {
+                                TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
                                 TsonElementHeaderBuilder<TsonObjectBuilder> header = fb.header();
-                                if(header!=null){
+                                if (header != null) {
                                     for (int i = 0; i < header.args().size(); i++) {
-                                        header.args().set(i,HUtils.addCompilerDeclarationPath(header.args().get(i),sourcePath.toString()));
+                                        header.args().set(i, HUtils.addCompilerDeclarationPath(header.args().get(i), sourcePath.toString()));
                                     }
                                 }
-                                functionTsonDeclaration=fb.build();
+                                functionTsonDeclaration = fb.build();
                             }
                         }
                     }
@@ -200,12 +201,12 @@ public class DefaultHDocumentItemParserFactory
 //                        currNode = currNode.parent();
 //                    }
                 }
-                context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-                throw new NIllegalArgumentException( NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+                context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+                throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
             }
         }
-        context.messages().addError(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c), context.source());
-        throw new NIllegalArgumentException( NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+        context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+        throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
 

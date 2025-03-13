@@ -1,5 +1,6 @@
 package net.thevpc.halfa.extension.plantuml;
 
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HPropName;
@@ -16,8 +17,8 @@ import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
 public abstract class PlantUmlParserBase extends HNodeParserBase {
-    public PlantUmlParserBase(String id,String mode) {
-        super(false, id,mode);
+    public PlantUmlParserBase(String id, String mode) {
+        super(false, id, mode);
         setNodeId("plantuml");
     }
 
@@ -57,7 +58,7 @@ public abstract class PlantUmlParserBase extends HNodeParserBase {
                 return true;
             }
             case PAIR: {
-                if(info.currentArg.isSimplePair()) {
+                if (info.currentArg.isSimplePair()) {
                     TsonPair p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
@@ -73,7 +74,9 @@ public abstract class PlantUmlParserBase extends HNodeParserBase {
                             try {
                                 info.node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
                             } catch (Exception ex) {
-                                info.context.messages().addError(NMsg.ofC("unable to load source file %s as %s", path, nPath));
+                                info.context.messages().log(
+                                        HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                );
                             }
                             return true;
                         }

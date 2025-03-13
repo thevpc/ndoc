@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.document.HDocumentLoadingResult;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -37,23 +37,24 @@ public interface HEngine {
 
     NOptional<HItem> newNode(TsonElement element, HNodeFactoryParseContext ctx);
 
-    HDocumentStreamRenderer newStreamRenderer(String type);
+    NOptional<HDocumentStreamRenderer> newStreamRenderer(String type);
 
-    HDocumentStreamRenderer newPdfRenderer();
+    NOptional<HDocumentStreamRenderer> newPdfRenderer();
+    NOptional<HDocumentStreamRenderer> newHtmlRenderer();
 
-    HDocumentScreenRenderer newScreenRenderer();
+    NOptional<HDocumentScreenRenderer> newScreenRenderer();
 
-    HDocumentRenderer newRenderer(String type);
+    NOptional<HDocumentRenderer> newRenderer(String type);
 
-    HDocumentLoadingResult compileDocument(HDocument document, HMessageList messages);
+    HDocumentLoadingResult compileDocument(HDocument document, HLogger messages);
 
     boolean validateNode(HNode node);
 
-    HDocumentLoadingResult loadDocument(NPath of, HMessageList messages);
+    HDocumentLoadingResult loadDocument(NPath of, HLogger messages);
 
-    NOptional<HItem> loadNode(HNode into, NPath of, HDocument document, HMessageList messages);
+    NOptional<HItem> loadNode(HNode into, NPath of, HDocument document, HLogger messages);
 
-    HDocumentLoadingResult loadDocument(InputStream is, HMessageList messages);
+    HDocumentLoadingResult loadDocument(InputStream is, HLogger messages);
 
     TsonElement toTson(HDocument doc);
 

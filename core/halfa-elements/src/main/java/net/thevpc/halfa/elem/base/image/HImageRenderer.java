@@ -1,5 +1,6 @@
 package net.thevpc.halfa.elem.base.image;
 
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.elem2d.HImageOptions;
 import net.thevpc.halfa.api.model.node.HNodeType;
@@ -73,18 +74,18 @@ public class HImageRenderer extends HNodeRendererBase {
                         g.drawImage(vp, x, y, options);
                     } catch (Exception ex) {
                         HResource src = ctx.engine().computeSource(p);
-                        ctx.messages().addError(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
+                        ctx.log().log(HMsg.of(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
                                 src == null ? null : src.shortName(),
-                                vp, ex), src);
+                                vp, ex).asSevere(), src));
 
                     }
                 } else {
                     int descent = g.getFontMetrics().getAscent();
                     g.drawString("Image not found "+imgPath, x, y+descent,new HTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
                     HResource src = ctx.engine().computeSource(p);
-                    ctx.messages().addError(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                    ctx.log().log(HMsg.of(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
-                            img), src);
+                            img).asSevere(), src));
                 }
             }
         }

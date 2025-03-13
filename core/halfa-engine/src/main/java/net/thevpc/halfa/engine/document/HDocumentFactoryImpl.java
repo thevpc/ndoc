@@ -7,15 +7,15 @@ import net.thevpc.halfa.api.style.HProp;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
 public class HDocumentFactoryImpl implements HDocumentFactory {
-    private HEngineImpl engine;
+    private DefaultHEngine engine;
 
-    public HDocumentFactoryImpl(HEngineImpl engine) {
+    public HDocumentFactoryImpl(DefaultHEngine engine) {
         this.engine = engine;
     }
 

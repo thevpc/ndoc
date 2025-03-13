@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.renderer;
 
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.nuts.io.NPath;
 
 public interface HDocumentRenderer {
@@ -14,7 +14,7 @@ public interface HDocumentRenderer {
 
     void addRendererListener(HDocumentRendererListener listener);
 
-    HMessageList getMessages();
+    HLogger log();
 
-    HDocumentRenderer setMessages(HMessageList messages);
+    HDocumentRenderer setLogger(HLogger logger);
 }

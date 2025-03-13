@@ -2,7 +2,7 @@ package net.thevpc.halfa.spi.renderer;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
         }
     };
     protected final HEngine engine;
-    protected HMessageList messages;
+    protected HLogger messages;
 
     public AbstractHDocumentRenderer(HEngine engine) {
         this.engine = engine;
@@ -74,13 +74,13 @@ public abstract class AbstractHDocumentRenderer implements HDocumentRenderer {
     }
 
     @Override
-    public HMessageList getMessages() {
+    public HLogger log() {
         return messages;
     }
 
     @Override
-    public HDocumentRenderer setMessages(HMessageList messages) {
-        this.messages = messages;
+    public HDocumentRenderer setLogger(HLogger logger) {
+        this.messages = logger;
         return this;
     }
 

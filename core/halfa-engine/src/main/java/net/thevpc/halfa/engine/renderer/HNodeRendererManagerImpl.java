@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.util.HUtils;
 import net.thevpc.halfa.spi.HNodeParser;
@@ -67,7 +67,7 @@ public class HNodeRendererManagerImpl implements HNodeRendererManager {
         int sizeHeight = config.getHeight();
         Dimension dimension=new Dimension(sizeWidth, sizeHeight);
         Map<String, Object> capabilities=config.getCapabilities();
-        HMessageList messages=config.getMessages();
+        HLogger messages=config.getMessages();
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

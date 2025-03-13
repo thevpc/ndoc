@@ -2,6 +2,7 @@ package net.thevpc.halfa.elem.base.control;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -47,8 +48,9 @@ public class HCtrlDefineParser extends HNodeParserBase {
                             for (TsonElement element : definitionBody) {
                                 NOptional<HItem> o = context.engine().newNode(element, context);
                                 if (!o.isPresent()) {
-                                    NMsg nMsg = NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c);
-                                    context.messages().addError(nMsg);
+                                    NMsg nMsg = NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c)
+                                            .asSevere();
+                                    context.messages().log(HMsg.of(nMsg));
                                     throw new NIllegalArgumentException(nMsg);
                                 }
                                 HItem hItem = o.get();

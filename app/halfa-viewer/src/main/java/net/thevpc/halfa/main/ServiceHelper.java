@@ -6,7 +6,7 @@ import net.thevpc.halfa.config.HalfaViewerConfigManager;
 import net.thevpc.halfa.config.UserConfig;
 import net.thevpc.halfa.config.UserConfigManager;
 import net.thevpc.halfa.debug.HDebugFrame;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.halfa.main.components.NewProjectPanel;
 import net.thevpc.halfa.spi.renderer.HDocumentRendererListener;
 import net.thevpc.halfa.spi.renderer.HDocumentScreenRenderer;
@@ -49,7 +49,7 @@ public class ServiceHelper {
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        engine = new HEngineImpl();
+        engine = new DefaultHEngine();
         currListeners.add(new HDocumentRendererListener() {
 
             @Override
@@ -90,8 +90,8 @@ public class ServiceHelper {
 
     public void openProject(NPath path) {
         configManager.markAccessed(path);
-        HDocumentScreenRenderer renderer = engine.newScreenRenderer();
-        renderer.setMessages(currentMessages);
+        HDocumentScreenRenderer renderer = engine.newScreenRenderer().get();
+        renderer.setLogger(currentMessages);
         renderer.addRendererListener(currListeners);
         renderer.renderPath(path);
     }
@@ -203,7 +203,7 @@ public class ServiceHelper {
                 }
                 NPath outputPdfPath = NPath.of(sf);
 
-                HDocumentStreamRenderer renderer = engine.newPdfRenderer();
+                HDocumentStreamRenderer renderer = engine.newPdfRenderer().get();
                 renderer.setStreamRendererConfig(config);
                 renderer.setOutput(outputPdfPath);
                 renderer.render(document);

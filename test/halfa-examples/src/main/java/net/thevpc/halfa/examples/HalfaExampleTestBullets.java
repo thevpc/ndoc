@@ -8,7 +8,7 @@ import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 
@@ -21,7 +21,7 @@ public class HalfaExampleTestBullets {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        HEngine e = new HEngineImpl();
+        HEngine e = new DefaultHEngine();
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
@@ -45,7 +45,7 @@ public class HalfaExampleTestBullets {
                         ));
 
 
-        HDocumentRenderer renderer = e.newScreenRenderer();
+        HDocumentRenderer renderer = e.newScreenRenderer().get();
         renderer.render(d);
     }
 

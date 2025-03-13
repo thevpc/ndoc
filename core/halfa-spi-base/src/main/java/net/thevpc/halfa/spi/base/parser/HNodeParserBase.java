@@ -2,6 +2,7 @@ package net.thevpc.halfa.spi.base.parser;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -215,18 +216,18 @@ public abstract class HNodeParserBase implements HNodeParser {
         if (HParserUtils.isCommonStyleProperty(info.id)) {
             ObjEx es = ObjEx.of(info.currentArg);
             if (es.isFunction()) {
-                info.context.messages().addError(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.context.source(),
                         info.currentArg,
                         es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
-                ), info.context.source());
+                ).asSevere(), info.context.source()));
                 // empty result
                 return false;
             }
-            info.context.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement), info.context.source());
+            info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
             return false;
         } else {
-            info.context.messages().addError(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement), info.context.source());
+            info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
             return false;
         }
     }
@@ -264,7 +265,7 @@ public abstract class HNodeParserBase implements HNodeParser {
                 info.f=f;
                 info.context=context2;
                 if(!processArguments(info)){
-                    context2.messages().addError(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), ee.args(), tsonElement), context2.source());
+                    context2.messages().log(HMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), ee.args(), tsonElement).asSevere(), context2.source()));
                     return NOptional.of(new HItemList());
                 }
                 processImplicitStyles(info);
@@ -274,7 +275,7 @@ public abstract class HNodeParserBase implements HNodeParser {
                         p.append(u.get());
                     } else {
                         NOptional<HItem> finalU = u;
-                        context2.messages().addError(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()), context2.source());
+                        context2.messages().log(HMsg.of(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source()));
                         return NOptional.of(new HItemList());
                     }
                 }

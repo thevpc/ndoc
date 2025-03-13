@@ -1,7 +1,7 @@
 package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.HNodeRenderer;
 import net.thevpc.halfa.spi.renderer.HNodeRendererContext;
@@ -18,12 +18,12 @@ public class PageView extends JComponent {
     private String uuid;
     private HNodeRendererManager rendererManager;
     private HEngine engine;
-    private HMessageList messages;
+    private HLogger messages;
 
     public PageView(HNode page, int index,
                     HEngine engine,
                     HNodeRendererManager rendererManager,
-                    HMessageList messages
+                    HLogger messages
     ) {
         this.page = page;
         this.index = index;

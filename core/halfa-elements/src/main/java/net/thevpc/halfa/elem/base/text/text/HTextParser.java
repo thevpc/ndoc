@@ -4,6 +4,7 @@
  */
 package net.thevpc.halfa.elem.base.text.text;
 
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
@@ -84,7 +85,8 @@ public class HTextParser extends HNodeParserBase {
                                 try {
                                     value= Tson.of(nPath.readString().trim());
                                 } catch (Exception ex) {
-                                    info.context.messages().addError(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath));
+                                    info.context.messages().log(
+                                           HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
                                 }
                                 break;
                             }

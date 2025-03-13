@@ -2,11 +2,11 @@ package net.thevpc.halfa.app.backend.controller;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.document.HMessageListImpl;
+import net.thevpc.halfa.api.document.HLogger;
+import net.thevpc.halfa.api.document.HLoggerImpl;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.app.backend.service.GitService;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,9 +117,9 @@ public class RepositoryController {
                     .toAbsolute()
                     .normalize();
 
-            HEngine e = new HEngineImpl();
+            HEngine e = new DefaultHEngine();
             HDocument doc = e.loadDocument(file, null).get();
-            HMessageList messages = new HMessageListImpl(engine.computeSource(doc.root()));
+            HLogger messages = new HLoggerImpl(engine.computeSource(doc.root()));
 
             List<HNode> pages = doc.pages();
 

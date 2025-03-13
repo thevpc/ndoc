@@ -4,11 +4,11 @@
  */
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 
 /**
  * @author vpc
  */
 public interface HDocumentRendererContext {
-    HMessageList messages();
+    HLogger messages();
 }

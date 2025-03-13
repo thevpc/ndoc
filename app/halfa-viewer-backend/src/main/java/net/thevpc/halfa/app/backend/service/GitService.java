@@ -1,7 +1,7 @@
 package net.thevpc.halfa.app.backend.service;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
@@ -90,7 +90,7 @@ public class GitService {
         return new String(Files.readAllBytes(file.toPath()));
     }
 
-    public byte[] createPageImage(HNode page, int width,int height,HMessageList messages) throws IOException {
+    public byte[] createPageImage(HNode page, int width, int height, HLogger messages) throws IOException {
         return engine.renderManager().renderImageBytes(
                 page,
                 new HNodeRendererConfig((int) width, (int) height)

@@ -3,7 +3,7 @@ package net.thevpc.halfa.engine.renderer.screen;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.halfa.api.resources.HResourceMonitor;
@@ -47,14 +47,14 @@ public class DocumentView {
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
     private Throwable currentThrowable;
-    private HMessageList messages;
+    private HLogger messages;
     private HDocumentRendererListener listener;
     private HDocumentRendererContext rendererContext = new HDocumentRendererContextImpl();
     private boolean isShown;
 
     public DocumentView(HDocumentRendererSupplier documentSupplier,
                         HEngine engine, HDocumentRendererListener listener,
-                        HMessageList messages) {
+                        HLogger messages) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.engine = engine;
@@ -160,7 +160,7 @@ public class DocumentView {
         return s;
     }
 
-    public HMessageList messages() {
+    public HLogger messages() {
         return messages;
     }
 
@@ -478,7 +478,7 @@ public class DocumentView {
         }
 
         @Override
-        public HMessageList messages() {
+        public HLogger messages() {
             return messages;
         }
     }

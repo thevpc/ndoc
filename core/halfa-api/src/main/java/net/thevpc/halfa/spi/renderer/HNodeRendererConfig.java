@@ -1,6 +1,6 @@
 package net.thevpc.halfa.spi.renderer;
 
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.nuts.util.NAssert;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ public class HNodeRendererConfig {
     private int width;
     private int height;
     private Map<String, Object> capabilities;
-    private HMessageList messages;
+    private HLogger messages;
 
     public HNodeRendererConfig() {
     }
@@ -46,11 +46,11 @@ public class HNodeRendererConfig {
         return this;
     }
 
-    public HMessageList getMessages() {
+    public HLogger getMessages() {
         return messages;
     }
 
-    public HNodeRendererConfig setMessages(HMessageList messages) {
+    public HNodeRendererConfig setMessages(HLogger messages) {
         this.messages = messages;
         return this;
     }

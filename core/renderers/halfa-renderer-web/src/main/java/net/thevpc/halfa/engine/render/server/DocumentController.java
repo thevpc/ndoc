@@ -5,7 +5,7 @@ import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HMessageList;
 import net.thevpc.halfa.api.document.HMessageListImpl;
 import net.thevpc.halfa.api.model.node.HNode;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.halfa.spi.renderer.HNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class DocumentController {
 
             int sizeWidth = 1200;
             int sizeHeight = 1000;
-            HEngine e = new HEngineImpl();
+            HEngine e = new DefaultHEngine();
             HDocument doc = e.loadDocument(file, null).get();
             HMessageList messages = new HMessageListImpl(engine.computeSource(doc.root()));
 

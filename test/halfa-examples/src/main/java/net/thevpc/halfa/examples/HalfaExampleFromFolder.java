@@ -5,7 +5,7 @@
 package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
@@ -16,8 +16,8 @@ public class HalfaExampleFromFolder {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        HEngine e = new HEngineImpl();
+        HEngine e = new DefaultHEngine();
         NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\halfa\\test\\halfa-examples\\src\\halfa\\ibtihel").toAbsolute().normalize();
-        e.newScreenRenderer().renderPath(file);
+        e.newScreenRenderer().get().renderPath(file);
     }
 }

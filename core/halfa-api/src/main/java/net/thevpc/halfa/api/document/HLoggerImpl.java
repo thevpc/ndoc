@@ -1,36 +1,43 @@
 package net.thevpc.halfa.api.document;
 
 import net.thevpc.halfa.api.resources.HResource;
-import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.reserved.NReservedLangUtils;
+import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.time.Instant;
+import java.util.logging.Level;
 
-public class HMessageListImpl implements HMessageList {
+public class HLoggerImpl implements HLogger {
     private HResource defaultSource;
 
-    public HMessageListImpl(HResource defaultSource) {
+    public HLoggerImpl() {
+
+    }
+    public HLoggerImpl(HResource defaultSource) {
         this.defaultSource = defaultSource;
     }
 
     @Override
-    public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
+    public void log(HMsg msg) {
         Instant time = Instant.now();
+        NMsg nmsg=msg.message();
+        Level type=nmsg.getLevel();
+        Throwable error=msg.error();
+        HResource source=msg.source();
         if (type == null) {
-            type = HMessageType.INFO;
+            type = Level.INFO;
         }
         if (source == null) {
             source = defaultSource;
         }
-        NSession.of().out().println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
+        NOut.println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
                 source == null ? null : source.shortName(),
-                message.getMessage()
+                nmsg
         ));
         if (error != null) {
             for (String s : NStringUtils.stacktraceArray(error)) {
-                NSession.of().out().println(NMsg.ofC("\t%s", s));
+                NOut.println(NMsg.ofC("\t%s", s));
             }
         }
     }

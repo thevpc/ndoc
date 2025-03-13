@@ -1,7 +1,7 @@
 package net.thevpc.halfa.spi.base.renderer;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
@@ -50,8 +50,8 @@ public class HNodeRendererContextDelegate extends HNodeRendererContextBaseBase {
     }
 
     @Override
-    public HMessageList messages() {
-        return base.messages();
+    public HLogger log() {
+        return base.log();
     }
 
     @Override

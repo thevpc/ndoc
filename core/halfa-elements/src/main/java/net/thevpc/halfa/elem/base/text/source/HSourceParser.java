@@ -1,5 +1,6 @@
 package net.thevpc.halfa.elem.base.text.source;
 
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.style.HPropName;
 import net.thevpc.halfa.api.util.HUtils;
@@ -29,9 +30,9 @@ public class HSourceParser extends HNodeParserBase {
                 return true;
             }
             case PAIR: {
-                if(info.currentArg.isSimplePair()){
+                if (info.currentArg.isSimplePair()) {
                     TsonPair p = info.currentArg.toPair();
-                    switch (HUtils.uid(p.key().stringValue())){
+                    switch (HUtils.uid(p.key().stringValue())) {
                         case "value":
                         case "code":
                         case "content": {
@@ -45,7 +46,9 @@ public class HSourceParser extends HNodeParserBase {
                             try {
                                 info.node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
                             } catch (Exception ex) {
-                                info.context.messages().addError(NMsg.ofC("unable to load source file %s as %s", path, nPath));
+                                info.context.messages().log(
+                                        HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                );
                             }
                             return true;
                         }

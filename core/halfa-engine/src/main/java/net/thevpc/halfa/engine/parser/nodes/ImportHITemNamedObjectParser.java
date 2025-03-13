@@ -1,5 +1,6 @@
 package net.thevpc.halfa.engine.parser.nodes;
 
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.model.node.HNode;
@@ -30,7 +31,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case FUNCTION: {
                 List<TsonElement> u = tsonElement.toFunction().args().toList();
                 if (u.isEmpty()) {
-                    context.messages().addError(NMsg.ofC("missing path argument : %s", tsonElement), context.source());
+                    context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
                     return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
                 }
                 HNode putInto = context.node();
@@ -56,14 +57,14 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 break;
             }
         }
-        context.messages().addError(NMsg.ofC("missing include elements from %s", tsonElement), context.source());
+        context.messages().log(HMsg.of(NMsg.ofC("missing include elements from %s", tsonElement).asSevere(), context.source()));
         return NOptional.ofNamedEmpty("include elements");
     }
 
     public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, HNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
-        if(spp.isDirectory()){
-            spp=spp.resolve(HEngineUtils.HALFA_EXT_STAR_STAR);
+        if (spp.isDirectory()) {
+            spp = spp.resolve(HEngineUtils.HALFA_EXT_STAR_STAR);
         }
         context.document().resources().add(spp);
         List<NPath> list = spp.walkGlob().toList();
@@ -74,12 +75,12 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 if (se.isPresent()) {
                     loaded.add(se.get());
                 } else {
-                    context.messages().addError(NMsg.ofC("invalid include. error loading : %s", nPath), context.source());
+                    context.messages().log(HMsg.of(NMsg.ofC("invalid include. error loading : %s", nPath).asSevere(), context.source()));
                     return NOptional.ofError(() -> NMsg.ofC("invalid include. error loading : %s", nPath));
                 }
             }
         }
-        return null;
+        return NOptional.of(new HItemList().addAll(loaded));
     }
 }
 

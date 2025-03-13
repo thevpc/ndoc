@@ -42,7 +42,7 @@ import net.thevpc.halfa.spi.nodes.HNodeParserFactory;
 /**
  * @author vpc
  */
-public class HEngineImpl implements HEngine {
+public class DefaultHEngine implements HEngine {
 
     private List<HDocumentRendererFactory> documentRendererFactories;
     private List<HNodeParserFactory> nodeParserFactories;
@@ -53,7 +53,7 @@ public class HEngineImpl implements HEngine {
     private HPropCalculator hPropCalculator = new HPropCalculator();
     private HNodeRendererManager rendererManager;
 
-    public HEngineImpl() {
+    public DefaultHEngine() {
     }
 
 
@@ -87,36 +87,48 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public HDocumentStreamRenderer newPdfRenderer() {
+    public NOptional<HDocumentStreamRenderer> newPdfRenderer() {
         return newStreamRenderer("pdf");
     }
 
     @Override
-    public HDocumentScreenRenderer newScreenRenderer() {
-        HDocumentRenderer u = newRenderer("screen");
-        if (u instanceof HDocumentScreenRenderer) {
-            return (HDocumentScreenRenderer) u;
-        }
-        throw new IllegalArgumentException("resolved renderer is not a valid screen renderer");
+    public NOptional<HDocumentStreamRenderer> newHtmlRenderer() {
+        return newStreamRenderer("html");
     }
 
     @Override
-    public HDocumentStreamRenderer newStreamRenderer(String type) {
-        HDocumentRenderer u = newRenderer(type);
-        if (u instanceof HDocumentStreamRenderer) {
-            return (HDocumentStreamRenderer) u;
+    public NOptional<HDocumentScreenRenderer> newScreenRenderer() {
+        NOptional<HDocumentRenderer> u = newRenderer("screen");
+        if (u.isPresent()) {
+            if (u.get() instanceof HDocumentScreenRenderer) {
+                return NOptional.of((HDocumentScreenRenderer) u.get());
+            }
+            return NOptional.ofEmpty(NMsg.ofC("support for stream renderer is not of HDocumentScreenRenderer type"));
         }
-        throw new IllegalArgumentException("resolved renderer is not a valid stream renderer");
+        return NOptional.ofNamedEmpty("screen renderer");
     }
 
     @Override
-    public HDocumentRenderer newRenderer(String type) {
+    public NOptional<HDocumentStreamRenderer> newStreamRenderer(String type) {
+        NOptional<HDocumentRenderer> u = newRenderer(type);
+        if (u.isPresent()) {
+            if (u.get() instanceof HDocumentStreamRenderer) {
+                return NOptional.of((HDocumentStreamRenderer) u.get());
+            }
+            return NOptional.ofEmpty(NMsg.ofC("support for stream renderer '%s' is not of HDocumentStreamRenderer type", type));
+        }
+
+        return NOptional.ofNamedEmpty(type + " renderer");
+    }
+
+    @Override
+    public NOptional<HDocumentRenderer> newRenderer(String type) {
         HDocumentRendererFactoryContext ctx = new HDocumentRendererFactoryContextImpl(this, type);
         return NCallableSupport.resolve(
                         documentRendererFactories().stream()
                                 .map(x -> x.<HDocumentStreamRenderer>createDocumentRenderer(ctx)),
                         () -> NMsg.ofC("missing StreamRenderer %s", type))
-                .call();
+                .toOptional();
     }
 
     private List<HDocumentRendererFactory> documentRendererFactories() {
@@ -209,7 +221,7 @@ public class HEngineImpl implements HEngine {
     }
 
 
-    public HDocumentLoadingResult compileDocument(HDocument document, HMessageList messages) {
+    public HDocumentLoadingResult compileDocument(HDocument document, HLogger messages) {
         return new HDocumentCompiler(this, messages).compile(document);
     }
 
@@ -218,27 +230,27 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public HDocumentLoadingResult loadDocument(NPath path, HMessageList messages) {
+    public HDocumentLoadingResult loadDocument(NPath path, HLogger messages) {
         NAssert.requireNonNull(path, "path");
         if (GitHelper.isGithubFolder(path.toString())) {
             path = GitHelper.resolveGithubPath(path.toString(), messages);
         }
         HResource source = HResourceFactory.of(path);
         HDocumentLoadingResultImpl r = new HDocumentLoadingResultImpl(source, messages);
-        HMessageListDelegateImpl messages1 = r.messages();
+        HLoggerDelegateImpl messages1 = r.messages();
         if (path.exists()) {
             if (path.isRegularFile()) {
                 HResource nPathResource = HResourceFactory.of(path);
                 NOptional<TsonDocument> f = loadTsonDocument(path);
                 if (!f.isPresent()) {
-                    messages1.addError(f.getMessage().get(), nPathResource);
+                    messages1.log(HMsg.of(f.getMessage().get().asSevere(), nPathResource));
                 }
                 TsonDocument d = f.get();
                 NOptional<HDocument> dd = convertDocument(d, r);
                 if (dd.isPresent()) {
                     r.setDocument(dd.get());
                 } else if (r.isSuccessful()) {
-                    messages1.addError(dd.getMessage().get(), nPathResource);
+                    messages1.log(HMsg.of(dd.getMessage().get().asSevere(), nPathResource));
                 }
                 if (r.get().root().source() == null) {
                     r.get().root().setSource(HResourceFactory.of(path));
@@ -249,7 +261,9 @@ public class HEngineImpl implements HEngine {
                 document.resources().add(path.resolve(HEngineUtils.HALFA_EXT_STAR));
                 List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x)).toList();
                 if (all.isEmpty()) {
-                    messages1.addError(NMsg.ofC("invalid folder (no valid enclosed files) %s", path));
+                    messages1.log(
+                            HMsg.of(NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere())
+                    );
                     return r;
                 }
                 NPath main = null;
@@ -274,11 +288,11 @@ public class HEngineImpl implements HEngine {
                     try {
                         d = loadNode(document.root(), nPath, document, messages1);
                     } catch (Exception ex) {
-                        messages1.addError(NMsg.ofC("unable to load %s : %s", nPath, ex), nPathResource);
+                        messages1.log(HMsg.of(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), nPathResource));
                     }
                     if (d != null) {
                         if (!d.isPresent()) {
-                            messages1.addError(NMsg.ofC("invalid file %s", nPath), nPathResource);
+                            messages1.log(HMsg.of(NMsg.ofC("invalid file %s", nPath).asSevere(), nPathResource));
                             return r;
                         }
                         updateSource(d.get(), nPathResource);
@@ -291,11 +305,11 @@ public class HEngineImpl implements HEngine {
                 r.setDocument(document);
                 return r;
             } else {
-                messages1.addError(NMsg.ofC("invalid file %s", path));
+                messages1.log(HMsg.of(NMsg.ofC("invalid file %s", path).asSevere()));
                 return r;
             }
         }
-        messages1.addError(NMsg.ofC("file does not exist %s", path));
+        messages1.log(HMsg.of(NMsg.ofC("file does not exist %s", path).asSevere()));
         return r;
     }
 
@@ -315,7 +329,7 @@ public class HEngineImpl implements HEngine {
     }
 
     @Override
-    public NOptional<HItem> loadNode(HNode into, NPath path, HDocument document, HMessageList messages) {
+    public NOptional<HItem> loadNode(HNode into, NPath path, HDocument document, HLogger messages) {
         if (path.exists()) {
             if (path.isRegularFile()) {
                 NOptional<HItem> d = loadNode0(into, path, document, messages);
@@ -375,18 +389,18 @@ public class HEngineImpl implements HEngine {
         return NOptional.of(doc);
     }
 
-    public HDocumentLoadingResult loadDocument(InputStream is, HMessageList messages) {
+    public HDocumentLoadingResult loadDocument(InputStream is, HLogger messages) {
         HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(HResourceFactory.of(is), messages);
         NOptional<TsonDocument> f = loadTsonDocument(is);
         if (!f.isPresent()) {
-            result.messages().addError(f.getMessage().get());
+            result.messages().log(HMsg.of(f.getMessage().get().asSevere()));
         }
         TsonDocument d = f.get();
         NOptional<HDocument> dd = convertDocument(d, result);
         if (dd.isPresent()) {
             result.setDocument(dd.get());
         } else if (result.isSuccessful()) {
-            result.messages().addError(dd.getMessage().get());
+            result.messages().log(HMsg.of(dd.getMessage().get().asSevere()));
         }
         return result;
     }
@@ -394,7 +408,7 @@ public class HEngineImpl implements HEngine {
 
     private NOptional<HDocument> convertDocument(TsonDocument doc, HDocumentLoadingResultImpl result) {
         if (doc == null) {
-            result.messages().addError(NMsg.ofPlain("missing document"));
+            result.messages().log(HMsg.of(NMsg.ofPlain("missing document").asSevere()));
             return NOptional.ofNamedEmpty("document");
         }
         HResource source = result.source();
@@ -415,12 +429,12 @@ public class HEngineImpl implements HEngine {
             docd.root().append(r.get());
             return NOptional.of(docd);
         }
-        result.messages().addError(NMsg.ofC("invalid %s", r.getMessage().get()));
+        result.messages().log(HMsg.of(NMsg.ofC("invalid %s", r.getMessage().get()).asSevere()));
         return NOptional.of(docd);
     }
 
 
-    private NOptional<HItem> loadNode0(HNode into, NPath path, HDocument document, HMessageList messages) {
+    private NOptional<HItem> loadNode0(HNode into, NPath path, HDocument document, HLogger messages) {
         HResource source = HResourceFactory.of(path);
         document.resources().add(source);
         TsonReader tr = Tson.reader();
@@ -428,7 +442,7 @@ public class HEngineImpl implements HEngine {
         try {
             doc = tr.readDocument(path.toPath().get());
         } catch (Throwable ex) {
-            messages.addError(NMsg.ofC("error parsing node from %s : %s", path, ex), ex, source);
+            messages.log(HMsg.of(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex, source));
             return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path, ex));
         }
         TsonElement c = doc.getContent();
@@ -482,7 +496,7 @@ public class HEngineImpl implements HEngine {
 
     @Override
     public HResource computeSource(HNode node) {
-        return new HDocumentCompiler(this, new HMessageListImpl(null)).computeSource(node);
+        return new HDocumentCompiler(this, new HLoggerImpl(null)).computeSource(node);
     }
 
     @Override

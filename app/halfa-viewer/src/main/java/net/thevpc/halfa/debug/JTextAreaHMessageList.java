@@ -1,15 +1,16 @@
 package net.thevpc.halfa.debug;
 
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.document.HMessageType;
+import net.thevpc.halfa.api.document.HLogger;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.nuts.util.NMsg;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.Instant;
+import java.util.logging.Level;
 
-public class JTextAreaHMessageList extends JPanel implements HMessageList {
+public class JTextAreaHMessageList extends JPanel implements HLogger {
     private JTextArea view;
 
     public JTextAreaHMessageList() {
@@ -19,13 +20,21 @@ public class JTextAreaHMessageList extends JPanel implements HMessageList {
     }
 
     @Override
-    public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
+    public void log(HMsg msg) {
         Instant time = Instant.now();
+        NMsg nmsg=msg.message();
+        Level type=nmsg.getLevel();
+        Throwable error=msg.error();
+        HResource source=msg.source();
+        if (type == null) {
+            type = Level.INFO;
+        }
+
         NMsg mm = NMsg.ofC("[%s] [%s] [%s] %s",
                 time,
                 type,
                 source == null ? null : source.shortName(),
-                message
+                nmsg
         );
         SwingUtilities.invokeLater(new Runnable() {
             @Override

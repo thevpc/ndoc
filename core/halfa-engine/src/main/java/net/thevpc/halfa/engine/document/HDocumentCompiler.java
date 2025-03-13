@@ -1,10 +1,7 @@
 package net.thevpc.halfa.engine.document;
 
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.document.HMessageType;
-import net.thevpc.halfa.api.document.HDocumentLoadingResult;
+import net.thevpc.halfa.api.document.*;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.resources.HResource;
@@ -32,10 +29,10 @@ import java.util.stream.Collectors;
 public class HDocumentCompiler {
 
     private HEngine engine;
-    private HMessageList messages;
+    private HLogger messages;
     private IfHNodeFlowControlProcessorFactory flowControlProcessorFactory = new IfHNodeFlowControlProcessorFactory();
 
-    public HDocumentCompiler(HEngine engine, HMessageList messages) {
+    public HDocumentCompiler(HEngine engine, HLogger messages) {
         this.engine = engine;
         this.messages = messages;
     }
@@ -178,9 +175,10 @@ public class HDocumentCompiler {
         try {
             aa = findAncestor(node, a);
         } catch (Exception ex) {
-            result.messages().addError(NMsg.ofC("invalid ancestor %s for %s : %s", a, net.thevpc.halfa.api.util.HUtils.strSnapshot(node), ex),
-                    null,
-                    engine.computeSource(node)
+            result.messages().log(HMsg.of(
+                            NMsg.ofC("invalid ancestor %s for %s : %s", a, net.thevpc.halfa.api.util.HUtils.strSnapshot(node), ex).asSevere(),
+                            engine.computeSource(node)
+                    )
             );
         }
         if (aa != null) {
@@ -206,10 +204,12 @@ public class HDocumentCompiler {
             }
             inheritedRules.addAll(Arrays.asList(aa.rules()));
         } else {
-            result.messages().addMessage(HMessageType.WARNING, NMsg.ofC("missing ancestor '%s' for %s", a,
-                            net.thevpc.halfa.api.util.HUtils.strSnapshot(node)
-                    ), null,
-                    engine.computeSource(node)
+            result.messages().log(
+                    HMsg.of(NMsg.ofC("missing ancestor '%s' for %s", a,
+                                    net.thevpc.halfa.api.util.HUtils.strSnapshot(node)
+                            ).asWarning(),
+                            engine.computeSource(node)
+                    )
             );
             //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
         }
@@ -232,7 +232,7 @@ public class HDocumentCompiler {
             }
 
         }
-        List<HNode> newChildren=new ArrayList<>();
+        List<HNode> newChildren = new ArrayList<>();
         for (HNode child : node.children()) {
             newChildren.add(processCalls(child, result));
         }
@@ -243,7 +243,7 @@ public class HDocumentCompiler {
     private HNode inlineNodeDefinitionCall(HNode objectDefNode, TsonElement callFunction) {
         HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
         TsonArray objectDefArgsItem = (TsonArray) objectDefNode.getPropertyValue("args").orNull();
-        TsonElement[] objectDefArgs = objectDefArgsItem==null?new TsonElement[0] :objectDefArgsItem.body().toArray();
+        TsonElement[] objectDefArgs = objectDefArgsItem == null ? new TsonElement[0] : objectDefArgsItem.body().toArray();
         inlinedNode.setSource(objectDefNode.source());
         inlinedNode.setStyleClasses(objectDefNode.getStyleClasses());
         inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
@@ -259,8 +259,8 @@ public class HDocumentCompiler {
             if (passedArg.isSimplePair()) {
                 TsonPair pair = passedArg.toPair();
                 TsonElement value = pair.value();
-                if(HUtils.getCompilerDeclarationPath(value)==null){
-                    value=HUtils.addCompilerDeclarationPath(value,HUtils.getCompilerDeclarationPath(pair));
+                if (HUtils.getCompilerDeclarationPath(value) == null) {
+                    value = HUtils.addCompilerDeclarationPath(value, HUtils.getCompilerDeclarationPath(pair));
                 }
                 inlinedNode.children().add(newAssign(pair.key().toStr().stringValue(), value));
             } else {
@@ -268,15 +268,15 @@ public class HDocumentCompiler {
                     String paramName = objectDefArgs[i].toStr().stringValue();
                     inlinedNode.children().add(newAssign(paramName, passedArg));
                 } else {
-                    NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.halfa.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction);
-                    messages.addError(message, objectDefNode.source());
-                    throw new NIllegalArgumentException( message);
+                    NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.halfa.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction).asSevere();
+                    messages.log(HMsg.of(message, objectDefNode.source()));
+                    throw new NIllegalArgumentException(message);
                 }
             }
         }
         //n.setParent(context.node().parent());
         inlinedNode.setParent(objectDefNode.parent());
-        if(objectDefNode.children()!=null) {
+        if (objectDefNode.children() != null) {
             for (HNode newBodyElement : objectDefNode.children()) {
                 inlinedNode.children().add(newBodyElement.copy());
             }
@@ -382,9 +382,9 @@ public class HDocumentCompiler {
 
     private static class MyHNodeFlowControlProcessorContext implements HNodeFlowControlProcessorContext {
         private HDocument document;
-        private HMessageList messages;
+        private HLogger messages;
 
-        public MyHNodeFlowControlProcessorContext(HDocument document, HMessageList messages) {
+        public MyHNodeFlowControlProcessorContext(HDocument document, HLogger messages) {
             this.document = document;
             this.messages = messages;
         }

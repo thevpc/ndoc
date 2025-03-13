@@ -9,119 +9,116 @@ public class HDocumentStreamRendererConfig {
     private boolean showPageNumber;
     private boolean showFileName;
     private boolean showDate;
-    private int pagenumber;
     private float marginTop;
     private float marginBottom;
     private float marginLeft;
     private float marginRight;
 
-    // getters and setters
-    public float getMarginTop() {
-        return marginTop;
-    }
-
-    public void setMarginTop(float marginTop) {
-        this.marginTop = marginTop;
-    }
-
-    public float getMarginBottom() {
-        return marginBottom;
-    }
-
-    public void setMarginBottom(float marginBottom) {
-        this.marginBottom = marginBottom;
-    }
-
-    public float getMarginLeft() {
-        return marginLeft;
-    }
-
-    public void setMarginLeft(float marginLeft) {
-        this.marginLeft = marginLeft;
-    }
-
-    public float getMarginRight() {
-        return marginRight;
-    }
-
-    public void setMarginRight(float marginRight) {
-        this.marginRight = marginRight;
-    }
     public PageOrientation getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(PageOrientation orientation) {
+    public HDocumentStreamRendererConfig setOrientation(PageOrientation orientation) {
         this.orientation = orientation;
+        return this;
     }
 
     public int getGridX() {
         return gridX;
     }
 
-    public void setGridX(int gridX) {
+    public HDocumentStreamRendererConfig setGridX(int gridX) {
         this.gridX = gridX;
+        return this;
     }
 
     public int getGridY() {
         return gridY;
     }
 
-    public void setGridY(int gridY) {
+    public HDocumentStreamRendererConfig setGridY(int gridY) {
         this.gridY = gridY;
+        return this;
     }
 
     public int getPageWidth() {
         return pageWidth;
     }
 
-    public void setPageWidth(int pageWidth) {
+    public HDocumentStreamRendererConfig setPageWidth(int pageWidth) {
         this.pageWidth = pageWidth;
+        return this;
     }
 
     public int getPageHeight() {
         return pageHeight;
     }
 
-    public void setPageHeight(int pageHeight) {
+    public HDocumentStreamRendererConfig setPageHeight(int pageHeight) {
         this.pageHeight = pageHeight;
+        return this;
     }
 
     public boolean isShowPageNumber() {
         return showPageNumber;
     }
 
-    public void setShowPageNumber(boolean showPageNumber) {
+    public HDocumentStreamRendererConfig setShowPageNumber(boolean showPageNumber) {
         this.showPageNumber = showPageNumber;
+        return this;
     }
 
     public boolean isShowFileName() {
         return showFileName;
     }
 
-    public void setShowFileName(boolean showFileName) {
+    public HDocumentStreamRendererConfig setShowFileName(boolean showFileName) {
         this.showFileName = showFileName;
+        return this;
     }
 
     public boolean isShowDate() {
         return showDate;
     }
 
-    public void setShowDate(boolean showDate) {
+    public HDocumentStreamRendererConfig setShowDate(boolean showDate) {
         this.showDate = showDate;
+        return this;
     }
 
-    public void setImagesPerPage(int selectedItem) {
-        this.pagenumber = selectedItem;
-    }
-    public int getPagenumber() {
-        return pagenumber;
+    public float getMarginTop() {
+        return marginTop;
     }
 
-//    public void setSizePage(int i) {
-//        this.sizepage = i;
-//    }
-//    public int getSizePage() {
-//        return sizepage;
-//    }
+    public HDocumentStreamRendererConfig setMarginTop(float marginTop) {
+        this.marginTop = marginTop;
+        return this;
+    }
+
+    public float getMarginBottom() {
+        return marginBottom;
+    }
+
+    public HDocumentStreamRendererConfig setMarginBottom(float marginBottom) {
+        this.marginBottom = marginBottom;
+        return this;
+    }
+
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
+    public HDocumentStreamRendererConfig setMarginLeft(float marginLeft) {
+        this.marginLeft = marginLeft;
+        return this;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
+    }
+
+    public HDocumentStreamRendererConfig setMarginRight(float marginRight) {
+        this.marginRight = marginRight;
+        return this;
+    }
 }

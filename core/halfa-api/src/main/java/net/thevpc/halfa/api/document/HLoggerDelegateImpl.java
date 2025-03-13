@@ -4,13 +4,14 @@ import net.thevpc.halfa.api.resources.HResource;
 import net.thevpc.nuts.util.NMsg;
 
 import java.time.Instant;
+import java.util.logging.Level;
 
-public class HMessageListDelegateImpl implements HMessageList {
+public class HLoggerDelegateImpl implements HLogger {
     private HResource defaultSource;
-    private HMessageList other;
+    private HLogger other;
     private int errorCount;
 
-    public HMessageListDelegateImpl(HResource defaultSource, HMessageList other) {
+    public HLoggerDelegateImpl(HResource defaultSource, HLogger other) {
         this.defaultSource = defaultSource;
         this.other = other;
     }
@@ -20,11 +21,16 @@ public class HMessageListDelegateImpl implements HMessageList {
     }
 
     @Override
-    public void addMessage(HMessageType type, NMsg message, Throwable error, HResource source) {
+    public void log(HMsg message) {
         Instant time = Instant.now();
-        if (type == null) {
-            type = HMessageType.INFO;
+        NMsg msg = message.message();
+        Level level = msg.getLevel();
+        if (level == null) {
+            level = Level.INFO;
         }
+        Throwable error = message.error();
+        msg = msg.withLevel(level);
+        HResource source = message.source();
         if (source == null) {
             source = defaultSource;
         }
@@ -37,11 +43,11 @@ public class HMessageListDelegateImpl implements HMessageList {
 //                session.out().println(NMsg.ofC("\t%s", s));
 //            }
 //        }
-        if (type == HMessageType.ERROR) {
+        if (level.intValue() >= Level.SEVERE.intValue()) {
             errorCount++;
         }
         if (other != null) {
-            other.addMessage(type, message, error, source);
+            other.log(HMsg.of(msg, error, source));
         }
     }
 }

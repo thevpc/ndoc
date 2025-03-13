@@ -1,6 +1,7 @@
 package net.thevpc.halfa.engine.parser.styles;
 
 import net.thevpc.halfa.HDocumentFactory;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.node.HItemList;
 import net.thevpc.halfa.api.model.node.HItem;
 import net.thevpc.halfa.api.style.HStyleRule;
@@ -44,7 +45,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         HStyleParser.parseStyleRule(yy, f, context).get();
-                        context.messages().addError(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()), context.source());
+                        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()).asSevere(), context.source()));
                         return NOptional.ofEmpty(() -> NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()));
                     }
                     for (HStyleRule r : u.get()) {
@@ -57,7 +58,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 for (TsonElement yy : tsonElement.toArray().body()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
-                        context.messages().addError(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()), context.source());
+                        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get().asSevere(), context.source())));
                         NOptional.ofEmpty(() -> NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()));
                     }
                     for (HStyleRule r : u.get()) {

@@ -9,7 +9,7 @@ import net.thevpc.halfa.api.style.HProps;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.model.elem2d.HAlign;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.halfa.spi.renderer.HDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 
@@ -20,7 +20,7 @@ public class HalfaExampleByCode1 {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        HEngine e = new HEngineImpl();
+        HEngine e = new DefaultHEngine();
         HDocumentFactory f = e.documentFactory();
         HDocument d = f.ofDocument()
                 .add(f.ofPage()
@@ -86,7 +86,7 @@ public class HalfaExampleByCode1 {
                                         )
                         )
                 );
-        HDocumentRenderer renderer = e.newScreenRenderer();
+        HDocumentRenderer renderer = e.newScreenRenderer().get();
         renderer.render(d);
     }
 }

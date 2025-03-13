@@ -2,7 +2,7 @@ package net.thevpc.halfa.spi.renderer;
 
 import net.thevpc.halfa.HDocumentFactory;
 import net.thevpc.halfa.api.HEngine;
-import net.thevpc.halfa.api.document.HMessageList;
+import net.thevpc.halfa.api.document.HLogger;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.style.HProp;
@@ -26,7 +26,7 @@ public interface HNodeRendererContext {
 
     HNodeRendererManager manager();
 
-    HMessageList messages();
+    HLogger log();
 
     HNodeRendererContext dryMode();
 

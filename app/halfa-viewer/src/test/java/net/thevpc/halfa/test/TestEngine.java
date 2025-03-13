@@ -3,8 +3,8 @@ package net.thevpc.halfa.test;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HDocumentLoadingResult;
-import net.thevpc.halfa.api.document.HMessageListImpl;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.api.document.HLoggerImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.Nuts;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +12,7 @@ import java.io.ByteArrayInputStream;
 public class TestEngine {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        HEngine e=new HEngineImpl();
+        HEngine e=new DefaultHEngine();
         String document="\n" +
                 "$a=1\n" +
                 "if($a==1){\n" +
@@ -24,7 +24,7 @@ public class TestEngine {
                 "}\n"
                 ;
         System.out.println(document);
-        HMessageListImpl messages = new HMessageListImpl(null);
+        HLoggerImpl messages = new HLoggerImpl(null);
         HDocumentLoadingResult d = e.loadDocument(
                 new ByteArrayInputStream(document.getBytes()), messages
         );

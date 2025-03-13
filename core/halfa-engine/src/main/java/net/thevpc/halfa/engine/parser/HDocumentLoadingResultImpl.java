@@ -8,14 +8,14 @@ import net.thevpc.nuts.util.NOptional;
 public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
     private HResource source;
     private HDocument document;
-    private HMessageListDelegateImpl messageList;
+    private HLoggerDelegateImpl messageList;
 
-    public HDocumentLoadingResultImpl(HResource source, HMessageList messageList) {
+    public HDocumentLoadingResultImpl(HResource source, HLogger messageList) {
         this.source = source;
         if (messageList == null) {
-            messageList = new HMessageListImpl(source);
+            messageList = new HLoggerImpl(source);
         }
-        this.messageList = new HMessageListDelegateImpl(source, messageList);
+        this.messageList = new HLoggerDelegateImpl(source, messageList);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
         return source;
     }
 
-    public HMessageListDelegateImpl messages() {
+    public HLoggerDelegateImpl messages() {
         return messageList;
     }
 

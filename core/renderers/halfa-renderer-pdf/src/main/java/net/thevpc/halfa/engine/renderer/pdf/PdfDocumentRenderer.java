@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.api.document.HMessageList;
-import net.thevpc.halfa.api.document.HMessageListImpl;
+import net.thevpc.halfa.api.document.HLogger;
+import net.thevpc.halfa.api.document.HLoggerImpl;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.*;
@@ -51,18 +51,19 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
     @Override
     public void renderSupplier(HDocumentRendererSupplier documentSupplier) {
         HDocument document = documentSupplier.get(rendererContext);
+        HDocument compiledDocument = engine.compileDocument(document.copy(), messages).get();
         Object outputTarget = output;
         if (outputTarget == null) {
             outputTarget = NPath.of("document.pdf");
         }
         if (outputTarget instanceof NPath) {
             try (OutputStream os = ((NPath) outputTarget).getOutputStream()) {
-                renderStream(document, os, config);
+                renderStream(compiledDocument, os, config);
             } catch (IOException ex) {
                 throw new NIOException(ex);
             }
         } else if (outputTarget instanceof OutputStream) {
-            renderStream(document, (OutputStream) outputTarget, config);
+            renderStream(compiledDocument, (OutputStream) outputTarget, config);
         }
     }
 
@@ -74,15 +75,15 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             pdfDocument.open();
             addContent(pdfDocument, config);
 
-            HMessageList messages = this.messages != null ? this.messages : new HMessageListImpl(engine.computeSource(document.root()));
+            HLogger messages = this.messages != null ? this.messages : new HLoggerImpl(engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
-            if(imagesPerRow<=0){
-                imagesPerRow=1;
+            if (imagesPerRow <= 0) {
+                imagesPerRow = 1;
             }
             int imagesPerColumn = config.getGridY();
-            if(imagesPerColumn<=0){
-                imagesPerColumn=1;
+            if (imagesPerColumn <= 0) {
+                imagesPerColumn = 1;
             }
             int imagesPerPage = imagesPerRow * imagesPerColumn;
             List<HNode> pages = document.pages();
@@ -305,7 +306,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
     @Override
     public HDocumentStreamRenderer renderNode(HNode part, OutputStream out) {
         try {
-            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
+            HDocumentStreamRenderer htmlRenderer = engine.newHtmlRenderer().get();
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (HNode page : PagesHelper.resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
@@ -334,7 +335,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
             //perhaps I need to store to disk
             return () -> new ByteArrayInputStream(bos2.toByteArray());
         } catch (DocumentException e) {
-            throw new NIllegalArgumentException( NMsg.ofC("invalid parse %s", "file"), e);
+            throw new NIllegalArgumentException(NMsg.ofC("invalid parse %s", "file"), e);
         }
     }
 
@@ -411,7 +412,7 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
 
         @Override
-        public HMessageList messages() {
+        public HLogger messages() {
             return messages;
         }
     }

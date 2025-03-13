@@ -1,6 +1,7 @@
 package net.thevpc.halfa.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
+import net.thevpc.halfa.api.document.HMsg;
 import net.thevpc.halfa.api.model.elem2d.Bounds2;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.api.resources.HResource;
@@ -97,7 +98,7 @@ public class PlantUmlRenderer extends HNodeRendererBase {
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
                 HResource src = ctx.engine().computeSource(p);
-                ctx.messages().addError(NMsg.ofC("Unable to evaluate UML : %s", ex), src);
+                ctx.log().log(HMsg.of(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src));
             }
         }
         if (image != null) {

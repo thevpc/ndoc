@@ -6,7 +6,7 @@ package net.thevpc.halfa.examples;
 
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
-import net.thevpc.halfa.engine.HEngineImpl;
+import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
@@ -17,7 +17,7 @@ public class HalfaExampleFromFile2 {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        HEngine e = new HEngineImpl();
+        HEngine e = new DefaultHEngine();
         NPath file = NPath.of("src/halfa/test1.hd").toAbsolute().normalize();
         HDocument doc = e.loadDocument(file, null).get();
 
