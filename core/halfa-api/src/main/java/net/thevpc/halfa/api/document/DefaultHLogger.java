@@ -8,13 +8,13 @@ import net.thevpc.nuts.util.NStringUtils;
 import java.time.Instant;
 import java.util.logging.Level;
 
-public class HLoggerImpl implements HLogger {
+public class DefaultHLogger implements HLogger {
     private HResource defaultSource;
 
-    public HLoggerImpl() {
+    public DefaultHLogger() {
 
     }
-    public HLoggerImpl(HResource defaultSource) {
+    public DefaultHLogger(HResource defaultSource) {
         this.defaultSource = defaultSource;
     }
 

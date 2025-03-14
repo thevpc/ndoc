@@ -23,9 +23,10 @@ import java.util.function.Supplier;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HLogger;
-import net.thevpc.halfa.api.document.HLoggerImpl;
+import net.thevpc.halfa.api.document.DefaultHLogger;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
+import net.thevpc.halfa.spi.base.renderer.HSpiUtils;
 import net.thevpc.halfa.spi.renderer.*;
 import net.thevpc.halfa.spi.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -58,40 +59,33 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
         if (outputTarget instanceof NPath) {
             try (OutputStream os = ((NPath) outputTarget).getOutputStream()) {
-                renderStream(compiledDocument, os, config);
+                renderStream(compiledDocument, os);
             } catch (IOException ex) {
                 throw new NIOException(ex);
             }
         } else if (outputTarget instanceof OutputStream) {
-            renderStream(compiledDocument, (OutputStream) outputTarget, config);
+            renderStream(compiledDocument, (OutputStream) outputTarget);
         }
     }
 
-    public void renderStream(HDocument document, OutputStream stream, HDocumentStreamRendererConfig config) {
+
+    public void renderStream(HDocument document, OutputStream stream) {
+        HDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
         Document pdfDocument = new Document();
         try {
             PdfWriter pdfWriter = PdfWriter.getInstance(pdfDocument, stream);
-            applyConfigSettings(pdfDocument, pdfWriter, config);
+            applyConfigSettings(pdfDocument, pdfWriter);
             pdfDocument.open();
-            addContent(pdfDocument, config);
+            addContent(pdfDocument);
 
-            HLogger messages = this.messages != null ? this.messages : new HLoggerImpl(engine.computeSource(document.root()));
+            HLogger messages = this.messages != null ? this.messages : new DefaultHLogger(engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
-            if (imagesPerRow <= 0) {
-                imagesPerRow = 1;
-            }
             int imagesPerColumn = config.getGridY();
-            if (imagesPerColumn <= 0) {
-                imagesPerColumn = 1;
-            }
             int imagesPerPage = imagesPerRow * imagesPerColumn;
             List<HNode> pages = document.pages();
             int imageCount = 0;
-
             float margin = 10f;
-
-
             float marginLeft = config.getMarginLeft() >= 0 ? config.getMarginLeft() : 0;
             float marginRight = config.getMarginRight() >= 0 ? config.getMarginRight() : 0;
             float marginTop = config.getMarginTop() >= 0 ? config.getMarginTop() : 0;
@@ -206,48 +200,45 @@ public class PdfDocumentRenderer extends AbstractHDocumentStreamRenderer impleme
         }
     }
 
-    private void applyConfigSettings(Document document, PdfWriter pdfWriter, HDocumentStreamRendererConfig config) throws DocumentException {
-        if (config != null) {
-            if (config.getOrientation() == PageOrientation.LANDSCAPE) {
-                document.setPageSize(PageSize.A4.rotate());
-            } else {
-                document.setPageSize(PageSize.A4);
-            }
-            document.setMargins(config.getMarginLeft(), config.getMarginRight(), config.getMarginTop(), config.getMarginBottom());
-
-            if (config.isShowPageNumber()) {
-                PageNumberEvent pageNumberEvent = new PageNumberEvent();
-                pdfWriter.setPageEvent(pageNumberEvent);
-            }
+    private void applyConfigSettings(Document document, PdfWriter pdfWriter) throws DocumentException {
+        HDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
+        if (config.getOrientation() == PageOrientation.LANDSCAPE) {
+            document.setPageSize(PageSize.A4.rotate());
+        } else {
+            document.setPageSize(PageSize.A4);
+        }
+        document.setMargins(config.getMarginLeft(), config.getMarginRight(), config.getMarginTop(), config.getMarginBottom());
+        if (config.isShowPageNumber()) {
+            PageNumberEvent pageNumberEvent = new PageNumberEvent();
+            pdfWriter.setPageEvent(pageNumberEvent);
         }
     }
 
 
-    private void addContent(Document document, HDocumentStreamRendererConfig config) throws DocumentException {
-        if (config != null) {
-            if (config.isShowFileName()) {
-                String fileName = "my-document.pdf";
-                PdfPTable table = new PdfPTable(1);
-                table.setWidthPercentage(100);
-                table.setSpacingBefore(10);
-                PdfPCell cell = new PdfPCell(new Phrase("File: " + fileName));
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setBorder(Rectangle.NO_BORDER);
-                table.addCell(cell);
-                document.add(table);
-            }
+    private void addContent(Document document) throws DocumentException {
+        HDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
+        if (config.isShowFileName()) {
+            String fileName = "my-document.pdf";
+            PdfPTable table = new PdfPTable(1);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10);
+            PdfPCell cell = new PdfPCell(new Phrase("File: " + fileName));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
+        }
 
-            if (config.isShowDate()) {
-                java.util.Date date = new java.util.Date();
-                PdfPTable table = new PdfPTable(1);
-                table.setWidthPercentage(100);
-                table.setSpacingBefore(10);
-                PdfPCell cell = new PdfPCell(new Phrase("Date: " + date.toString()));
-                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cell.setBorder(Rectangle.NO_BORDER);
-                table.addCell(cell);
-                document.add(table);
-            }
+        if (config.isShowDate()) {
+            java.util.Date date = new java.util.Date();
+            PdfPTable table = new PdfPTable(1);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10);
+            PdfPCell cell = new PdfPCell(new Phrase("Date: " + date.toString()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setBorder(Rectangle.NO_BORDER);
+            table.addCell(cell);
+            document.add(table);
         }
     }
 

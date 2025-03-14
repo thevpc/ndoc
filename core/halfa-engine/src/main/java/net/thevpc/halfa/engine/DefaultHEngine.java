@@ -496,7 +496,7 @@ public class DefaultHEngine implements HEngine {
 
     @Override
     public HResource computeSource(HNode node) {
-        return new HDocumentCompiler(this, new HLoggerImpl(null)).computeSource(node);
+        return new HDocumentCompiler(this, new DefaultHLogger(null)).computeSource(node);
     }
 
     @Override

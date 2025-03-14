@@ -13,7 +13,7 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
     public HDocumentLoadingResultImpl(HResource source, HLogger messageList) {
         this.source = source;
         if (messageList == null) {
-            messageList = new HLoggerImpl(source);
+            messageList = new DefaultHLogger(source);
         }
         this.messageList = new HLoggerDelegateImpl(source, messageList);
     }

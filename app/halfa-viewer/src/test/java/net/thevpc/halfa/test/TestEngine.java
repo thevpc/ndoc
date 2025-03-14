@@ -3,7 +3,7 @@ package net.thevpc.halfa.test;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HDocumentLoadingResult;
-import net.thevpc.halfa.api.document.HLoggerImpl;
+import net.thevpc.halfa.api.document.DefaultHLogger;
 import net.thevpc.halfa.engine.DefaultHEngine;
 import net.thevpc.nuts.Nuts;
 
@@ -24,7 +24,7 @@ public class TestEngine {
                 "}\n"
                 ;
         System.out.println(document);
-        HLoggerImpl messages = new HLoggerImpl(null);
+        DefaultHLogger messages = new DefaultHLogger(null);
         HDocumentLoadingResult d = e.loadDocument(
                 new ByteArrayInputStream(document.getBytes()), messages
         );

@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HLogger;
-import net.thevpc.halfa.api.document.HLoggerImpl;
+import net.thevpc.halfa.api.document.DefaultHLogger;
 import net.thevpc.halfa.api.model.node.HNodeType;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.spi.renderer.*;
@@ -32,7 +32,7 @@ public class HtmlDocumentRenderer extends AbstractHDocumentStreamRenderer implem
     protected void renderStream(HDocument document, OutputStream os) {
         HLogger messages2 = this.messages;
         if (messages2 == null) {
-            messages2 = new HLoggerImpl(engine.computeSource(document.root()));
+            messages2 = new DefaultHLogger(engine.computeSource(document.root()));
         }
         document = engine.compileDocument(document, messages2).get();
         PrintStream out = new PrintStream(os);

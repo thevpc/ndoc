@@ -1,6 +1,8 @@
 package net.thevpc.halfa.spi.renderer;
 
-public class HDocumentStreamRendererConfig {
+import java.io.Serializable;
+
+public class HDocumentStreamRendererConfig implements Serializable, Cloneable {
     private PageOrientation orientation;
     private int gridX;
     private int gridY;
@@ -120,5 +122,13 @@ public class HDocumentStreamRendererConfig {
     public HDocumentStreamRendererConfig setMarginRight(float marginRight) {
         this.marginRight = marginRight;
         return this;
+    }
+
+    public HDocumentStreamRendererConfig copy() {
+        try {
+            return (HDocumentStreamRendererConfig) clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

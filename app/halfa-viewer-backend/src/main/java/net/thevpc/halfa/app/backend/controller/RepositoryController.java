@@ -3,7 +3,7 @@ package net.thevpc.halfa.app.backend.controller;
 import net.thevpc.halfa.api.HEngine;
 import net.thevpc.halfa.api.document.HDocument;
 import net.thevpc.halfa.api.document.HLogger;
-import net.thevpc.halfa.api.document.HLoggerImpl;
+import net.thevpc.halfa.api.document.DefaultHLogger;
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.halfa.app.backend.service.GitService;
 import net.thevpc.halfa.engine.DefaultHEngine;
@@ -119,7 +119,7 @@ public class RepositoryController {
 
             HEngine e = new DefaultHEngine();
             HDocument doc = e.loadDocument(file, null).get();
-            HLogger messages = new HLoggerImpl(engine.computeSource(doc.root()));
+            HLogger messages = new DefaultHLogger(engine.computeSource(doc.root()));
 
             List<HNode> pages = doc.pages();
 
