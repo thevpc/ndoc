@@ -35,7 +35,7 @@ public class HCtrlDefineParser extends HNodeParserBase {
                 TsonPair p = c.toPair();
                 TsonElement k = p.key();
                 TsonElement v = p.value();
-                if (v.isNamedObject() || v.isFunction()) {
+                if (v.isNamedObject() || v.isNamedUplet()) {
                     TsonObject object = v.toObject();
                     String name = object.name();
                     if (!NBlankable.isBlank(name)) {

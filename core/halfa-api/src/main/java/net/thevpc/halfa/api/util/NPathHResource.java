@@ -56,7 +56,7 @@ public class NPathHResource extends DefaultHResource {
         value.put("dir", path.isDirectory());
         boolean file = path.isFile();
         value.put("file", file);
-        value.put("contentLength", path.getContentLength());
+        value.put("contentLength", path.contentLength());
         Instant lastModifiedInstant = path.getLastModifiedInstant();
         value.put("lastModifiedInstant", lastModifiedInstant == null ? -1 : lastModifiedInstant.getEpochSecond());
         if (path.toString().contains("*")) {

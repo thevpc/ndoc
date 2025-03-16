@@ -16,9 +16,12 @@ public class HItemListParser {
         HItemList pg = new HItemList();
 
         switch (ff.type()) {
-            case FUNCTION:
+            case UPLET:
             case OBJECT:
             case ARRAY: {
+                if (ff.isUnNamedUplet()) {
+                    break;
+                }
                 ObjEx ee = ObjEx.of(ff);
                 for (TsonElement e : ee.args()) {
                     NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);

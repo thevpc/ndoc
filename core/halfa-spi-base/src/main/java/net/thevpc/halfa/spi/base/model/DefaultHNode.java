@@ -641,7 +641,7 @@ public class DefaultHNode implements HNode {
                         break;
                     }
                     default: {
-                        o.header().add(p.toTson());
+                        o.addArg(p.toTson());
                     }
                 }
             }
@@ -657,7 +657,7 @@ public class DefaultHNode implements HNode {
             }
             return o.build();
         } else {
-            TsonFunctionBuilder o = Tson.ofFunction(nodeType);
+            TsonUpletBuilder o = Tson.ofUpletBuilder().name(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
@@ -699,7 +699,7 @@ public class DefaultHNode implements HNode {
         if (n != null) {
             return n;
         }
-        //check if it is a template, and return template name
+        //check if It's a template, and return template name
         ObjEx template = ObjEx.of(getPropertyValue(HPropName.TEMPLATE).orNull());
         if (template.isStringOrName()) {
             return template.asStringOrName().get();

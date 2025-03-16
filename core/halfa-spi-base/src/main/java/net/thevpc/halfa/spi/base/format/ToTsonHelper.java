@@ -73,7 +73,7 @@ public class ToTsonHelper {
             applyAnnotations(u);
             return u.build();
         } else {
-            TsonFunctionBuilder u = Tson.ofFunction(name, args2.toArray(new TsonElementBase[0]));
+            TsonUpletBuilder u = Tson.ofUplet(name, args2.toArray(new TsonElementBase[0])).builder();
             applyAnnotations(u);
             return u.build();
         }

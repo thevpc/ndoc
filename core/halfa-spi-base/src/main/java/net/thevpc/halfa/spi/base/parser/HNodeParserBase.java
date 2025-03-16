@@ -85,13 +85,13 @@ public abstract class HNodeParserBase implements HNodeParser {
         public int currentArgIndex;
         public HDocumentFactory f;
         public HNodeFactoryParseContext context;
-        public Map<String,Object> props=new HashMap<>();
+        public Map<String, Object> props = new HashMap<>();
     }
 
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
             case PAIR: {
-                if(info.currentArg.isSimplePair()){
+                if (info.currentArg.isSimplePair()) {
                     TsonPair p = info.currentArg.toPair();
                     String sid = net.thevpc.halfa.api.util.HUtils.uid(p.key().stringValue());
                     if (HParserUtils.isCommonStyleProperty(sid)) {
@@ -136,27 +136,24 @@ public abstract class HNodeParserBase implements HNodeParser {
                 }
                 break;
             }
-            case FUNCTION: {
-                if (acceptTypeName(e.toFunction().name())) {
-                    return e.toFunction().name();
+            case UPLET: {
+                TsonUplet uplet = e.toUplet();
+                if (uplet.isNamed() && acceptTypeName(uplet.name())) {
+                    return uplet.name();
                 }
                 break;
             }
             case OBJECT: {
-                TsonElementHeader h = e.toObject().header();
-                if (h != null) {
-                    if (acceptTypeName(h.name())) {
-                        return h.name();
-                    }
+                TsonObject h = e.toObject();
+                if (h.isNamed() && acceptTypeName(h.name())) {
+                    return h.name();
                 }
                 break;
             }
             case ARRAY: {
-                TsonElementHeader h = e.toArray().header();
-                if (h != null) {
-                    if (acceptTypeName(h.name())) {
-                        return h.name();
-                    }
+                TsonArray h = e.toArray();
+                if (h.isNamed() && acceptTypeName(h.name())) {
+                    return h.name();
                 }
                 break;
             }
@@ -196,23 +193,23 @@ public abstract class HNodeParserBase implements HNodeParser {
         return NCallableSupport.invalid(() -> NMsg.ofC("invalid %s : %s", id(), e));
     }
 
-    public String resolveEffectiveId(String id){
+    public String resolveEffectiveId(String id) {
         String nId = getNodeId();
-        if(!NBlankable.isBlank(nId)){
+        if (!NBlankable.isBlank(nId)) {
             return net.thevpc.halfa.api.util.HUtils.uid(nId);
         }
         return HUtils.uid(id);
     }
 
-    public void onStartParsingItem(String id, HNode p,TsonElement tsonElement, HNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, HNode p, TsonElement tsonElement, HNodeFactoryParseContext context) {
 
     }
 
-    public void onFinishParsingItem(String id, HNode p,TsonElement tsonElement, HNodeFactoryParseContext context) {
+    public void onFinishParsingItem(String id, HNode p, TsonElement tsonElement, HNodeFactoryParseContext context) {
 
     }
 
-    protected boolean processArgumentAsCommonStyleProperty(ParseArgumentInfo info){
+    protected boolean processArgumentAsCommonStyleProperty(ParseArgumentInfo info) {
         if (HParserUtils.isCommonStyleProperty(info.id)) {
             ObjEx es = ObjEx.of(info.currentArg);
             if (es.isFunction()) {
@@ -235,8 +232,8 @@ public abstract class HNodeParserBase implements HNodeParser {
     protected boolean processArguments(ParseArgumentInfo info) {
         for (int i = 0; i < info.arguments.length; i++) {
             TsonElement currentArg = info.arguments[i];
-            info.currentArg=currentArg;
-            info.currentArgIndex=i;
+            info.currentArg = currentArg;
+            info.currentArgIndex = i;
             if (!processArgument(info)) {
                 return processArgumentAsCommonStyleProperty(info);
             }
@@ -251,20 +248,23 @@ public abstract class HNodeParserBase implements HNodeParser {
         HNodeFactoryParseContext context2 = context.push(p);
         onStartParsingItem(id, p, tsonElement, context);
         switch (tsonElement.type()) {
-            case FUNCTION:
+            case UPLET:
             case OBJECT:
             case ARRAY: {
+                if (tsonElement.isUnNamedUplet()) {
+                    break;
+                }
                 ObjEx ee = ObjEx.of(tsonElement);
                 HParseHelper.fillAnnotations(tsonElement, p);
                 ParseArgumentInfo info = new ParseArgumentInfo();
-                info.id=id;
-                info.uid=HUtils.uid(id);
-                info.tsonElement=tsonElement;
-                info.node=p;
-                info.arguments =ee.args().toArray(new TsonElement[0]);
-                info.f=f;
-                info.context=context2;
-                if(!processArguments(info)){
+                info.id = id;
+                info.uid = HUtils.uid(id);
+                info.tsonElement = tsonElement;
+                info.node = p;
+                info.arguments = ee.args().toArray(new TsonElement[0]);
+                info.f = f;
+                info.context = context2;
+                if (!processArguments(info)) {
                     context2.messages().log(HMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), ee.args(), tsonElement).asSevere(), context2.source()));
                     return NOptional.of(new HItemList());
                 }

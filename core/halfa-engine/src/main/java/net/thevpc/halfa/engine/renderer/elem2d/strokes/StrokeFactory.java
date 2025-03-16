@@ -62,7 +62,6 @@ public class StrokeFactory {
         for (TsonElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
-                            || arg.type() == TsonElementType.FUNCTION
                             || arg.type() == TsonElementType.ARRAY
                             || arg.type() == TsonElementType.OBJECT
             ) {

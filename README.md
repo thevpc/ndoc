@@ -1,6 +1,6 @@
 # HALFA
 ## DISCLAIMER :
-HALFA is a codename, it is not intended to be the final project name, so bear with me until we get there...
+HALFA is a codename, It's not intended to be the final project name, so bear with me until we get there...
 
 What halfa is ? Halfa (Stripa Tenacissima plant or esparto grass) is a strong, flexible, fibrous grass that 
 only grows in Tunisia, Morocco, Algeria, Spain and Portugal. 
@@ -33,7 +33,7 @@ It has a very simple yet very strong syntax
 ```
 
 ## Portable
-It is fully written in Java and hence is really portable across systems and architectures.
+It's fully written in Java and hence is really portable across systems and architectures.
 
 ## Multiple Renderers
 We have implemented multiple renderers so that the presentation can be rendered as

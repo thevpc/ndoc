@@ -26,28 +26,30 @@ public class HCtrlCallParser extends HNodeParserBase {
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
-            case FUNCTION: {
-                TsonFunction p = c.toFunction();
-                return NCallableSupport.of(10, () -> {
-                    TsonElementList args = p.args();
-                    HNode node = new DefaultHNode(HNodeType.CALL);
-                    for (TsonElement arg : args) {
-                        if(arg.isSimplePair()){
-                            TsonPair pair = arg.toPair();
-                            switch (HUtils.uid(pair.key().stringValue())){
-                                case HPropName.NAME:{
-                                    node.setProperty(HPropName.NAME, pair.key());
-                                    break;
-                                }
-                                case HPropName.VALUE:{
-                                    node.setProperty(HPropName.VALUE, pair.value());
-                                    break;
+            case UPLET: {
+                TsonUplet p = c.toUplet();
+                if(p.isNamed()) {
+                    return NCallableSupport.of(10, () -> {
+                        TsonElementList args = p.args();
+                        HNode node = new DefaultHNode(HNodeType.CALL);
+                        for (TsonElement arg : args) {
+                            if (arg.isSimplePair()) {
+                                TsonPair pair = arg.toPair();
+                                switch (HUtils.uid(pair.key().stringValue())) {
+                                    case HPropName.NAME: {
+                                        node.setProperty(HPropName.NAME, pair.key());
+                                        break;
+                                    }
+                                    case HPropName.VALUE: {
+                                        node.setProperty(HPropName.VALUE, pair.value());
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
-                    return node;
-                });
+                        return node;
+                    });
+                }
             }
         }
         return NCallableSupport.invalid(() -> NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.halfa.api.util.HUtils.shortName(context.source()), c));

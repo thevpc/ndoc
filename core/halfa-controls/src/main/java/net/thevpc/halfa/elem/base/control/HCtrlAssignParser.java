@@ -15,7 +15,7 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonBinOp;
+import net.thevpc.tson.TsonOp;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
@@ -48,9 +48,9 @@ public class HCtrlAssignParser extends HNodeParserBase {
                 }
                 break;
             }
-            case BINOP:{
-                TsonBinOp binOp = c.toBinOp();
-                if("=".equals(binOp.op())) {
+            case OP:{
+                TsonOp binOp = c.toOp();
+                if("=".equals(binOp.opName())) {
                     TsonElement k = binOp.first();
                     TsonElement v = binOp.second();
                     ObjEx kh = ObjEx.of(k);

@@ -21,8 +21,8 @@ public class HParserUtils {
                 }
                 break;
             }
-            case BINOP:
-            case FUNCTION:
+            case OP:
+            case UPLET:
             case NULL:
                 return true;
         }

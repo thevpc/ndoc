@@ -77,7 +77,6 @@ public class DefaultHDocumentItemParserFactory
             case SHORT:
             case TIME:
             case MATRIX:
-            case UPLET:
             case ALIAS: {
                 HNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                 if (p != null) {
@@ -122,7 +121,7 @@ public class DefaultHDocumentItemParserFactory
                 }
                 break;
             }
-            case BINOP: {
+            case OP: {
                 for (HNodeParser ff : engine.nodeTypeFactories()) {
                     NCallableSupport<HItem> uu = ff.parseNode(context);
                     if (uu.isValid()) {
@@ -132,8 +131,15 @@ public class DefaultHDocumentItemParserFactory
                 break;
             }
             case OBJECT:
-            case FUNCTION:
+            case UPLET:
             case ARRAY: {
+                if (c.type() == TsonElementType.UPLET && !c.isNamedUplet()) {
+                    HNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                    if (p != null) {
+                        return p.parseNode(context);
+                    }
+                    break;
+                }
                 ObjEx ee = ObjEx.of(c);
                 if (NBlankable.isBlank(ee.name())) {
                     return NCallableSupport.of(10, new Supplier<HItem>() {
@@ -159,7 +165,7 @@ public class DefaultHDocumentItemParserFactory
                         });
                     }
                 }
-                if (c.type() == TsonElementType.FUNCTION || c.type() == TsonElementType.OBJECT) {
+                if (c.isNamedUplet() || c.type() == TsonElementType.OBJECT) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
                     callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
@@ -168,18 +174,18 @@ public class DefaultHDocumentItemParserFactory
                         NPath sourcePath = context.source().path().orNull();
                         if (sourcePath != null) {
                             functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
-                            if (c.type() == TsonElementType.FUNCTION) {
-                                TsonFunctionBuilder fb = (TsonFunctionBuilder) functionTsonDeclaration.builder();
-                                for (int i = 0; i < fb.args().size(); i++) {
-                                    fb.args().set(i, HUtils.addCompilerDeclarationPath(fb.args().get(i), sourcePath.toString()));
+                            if (c.isNamedUplet()) {
+                                TsonUpletBuilder fb = (TsonUpletBuilder) functionTsonDeclaration.builder();
+                                for (int i = 0; i < fb.params().length; i++) {
+                                    fb.setAt(i, HUtils.addCompilerDeclarationPath(fb.param(i), sourcePath.toString()));
                                 }
                                 functionTsonDeclaration = fb.build();
                             } else if (c.type() == TsonElementType.OBJECT) {
                                 TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
-                                TsonElementHeaderBuilder<TsonObjectBuilder> header = fb.header();
-                                if (header != null) {
-                                    for (int i = 0; i < header.args().size(); i++) {
-                                        header.args().set(i, HUtils.addCompilerDeclarationPath(header.args().get(i), sourcePath.toString()));
+                                List<TsonElement> args = fb.args();
+                                if (args != null) {
+                                    for (int i = 0; i < args.size(); i++) {
+                                        args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));
                                     }
                                 }
                                 functionTsonDeclaration = fb.build();

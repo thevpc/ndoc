@@ -330,7 +330,6 @@ public class ObjEx {
             if (element instanceof TsonContainer) {
                 TsonContainer te = (TsonContainer) element;
                 switch (te.type()) {
-                    case FUNCTION:
                     case OBJECT:
                     case ARRAY:
                     case UPLET: {
@@ -711,10 +710,10 @@ public class ObjEx {
 
     public NOptional<TsonElement> asTsonStringOrName() {
         if (element instanceof String) {
-            return NOptional.of(Tson.of((String)element));
+            return NOptional.of(Tson.of((String) element));
         }
         if (element instanceof TsonElement) {
-            if(((TsonElement) element).isAnyString()){
+            if (((TsonElement) element).isAnyString()) {
                 return NOptional.of((TsonElement) element);
             }
         }
@@ -823,19 +822,21 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case ARRAY: {
-                    if (te.toArray().header() != null) {
+                    TsonArray a = te.toArray();
+                    if (a.isNamed() || a.isWithArgs()) {
                         return NOptional.of(new TsonElement[]{te});
                     }
                     return NOptional.of(te.toArray().body().toArray());
                 }
                 case OBJECT: {
-                    if (te.toObject().header() != null) {
+                    TsonObject a = te.toObject();
+                    if (a.isNamed() || a.isWithArgs()) {
                         return NOptional.of(new TsonElement[]{te});
                     }
-                    return NOptional.of(te.toArray().body().toArray());
+                    return NOptional.of(te.toObject().body().toArray());
                 }
                 case UPLET: {
-                    return NOptional.of(te.toUplet().args().toArray());
+                    return NOptional.of(te.toUplet().body().toArray());
                 }
             }
         }
@@ -1250,7 +1251,7 @@ public class ObjEx {
             }
         }
         NOptional<Double> dd = asDouble();
-        if(dd.isPresent()) {
+        if (dd.isPresent()) {
             return NOptional.of(new HPoint2D(dd.get(), dd.get()));
         }
         return NOptional.ofNamedEmpty("HPoint2D from " + element);
@@ -1297,8 +1298,8 @@ public class ObjEx {
         if (element instanceof HArrowType) {
             return NOptional.of(new HArrow((HArrowType) element));
         }
-        if (element instanceof TsonFunction) {
-            TsonFunction f = (TsonFunction) element;
+        if (element instanceof TsonUplet && ((TsonUplet) element).isNamed()) {
+            TsonUplet f = (TsonUplet) element;
             NOptional<HArrowType> u = ObjEx.of(f.name()).asArrowType();
             Double width = null;
             Double height = null;
@@ -1472,13 +1473,9 @@ public class ObjEx {
     }
 
     public boolean isFunction() {
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
-            switch (te.type()) {
-                case FUNCTION: {
-                    return true;
-                }
-            }
+        if (element instanceof TsonUplet) {
+            TsonUplet te = (TsonUplet) element;
+            return te.toUplet().isNamed();
         }
         return false;
     }

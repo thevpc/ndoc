@@ -10,13 +10,7 @@ import java.util.stream.Collectors;
 
 import net.thevpc.halfa.api.model.node.HNode;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonArray;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementHeader;
-
-import net.thevpc.tson.TsonFunction;
-import net.thevpc.tson.TsonName;
+import net.thevpc.tson.*;
 
 /**
  * @author vpc
@@ -118,27 +112,27 @@ public class HNodeEval implements ObjectEvalContext {
                     }
                     break;
                 }
-                case FUNCTION: {
-                    TsonFunction ff = ee.toFunction();
-                    List<TsonElement> r = ff.args().toList()
-                            .stream().map(x -> eval(x)).collect(Collectors.toList());
-                    NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
-                    if (!oo.isEmpty()) {
-                        return oo.get();
+                case UPLET: {
+                    TsonUplet ff = ((TsonUplet) element);
+                    if (ff.isNamed()) {
+                        List<TsonElement> r = ff.args().toList()
+                                .stream().map(x -> eval(x)).collect(Collectors.toList());
+                        NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
+                        if (!oo.isEmpty()) {
+                            return oo.get();
+                        }
+                        return element;//Tson.ofFunction(ff.name(), r.toArray(new Object[0])).build();
                     }
-                    return element;//Tson.ofFunction(ff.name(), r.toArray(new Object[0])).build();
+                    return element;
                 }
 
                 case ARRAY: {
                     TsonArray r = ee.toArray();
-                    TsonElementHeader h = r.header();
-                    if (h != null) {
-                        String u = h.name();
-                        if (u != null && u.startsWith("$")) {
-                            String varName = u.substring(1);
-                            TsonElement arrVal = evalVar(varName);
-                            return evalArray(arrVal, r.body().toArray());
-                        }
+                    String u = r.name();
+                    if (u != null && u.startsWith("$")) {
+                        String varName = u.substring(1);
+                        TsonElement arrVal = evalVar(varName);
+                        return evalArray(arrVal, r.body().toArray());
                     }
                     break;
                 }

@@ -551,7 +551,7 @@ class NeuQuant {
     protected static final int netsize = 256; /* number of colours used */
 
     /* four primes near 500 - assume no image has a length so large */
-    /* that it is divisible by all four primes */
+    /* that It's divisible by all four primes */
     protected static final int prime1 = 499;
 
     protected static final int prime2 = 491;
@@ -1144,7 +1144,7 @@ class LZWEncoder {
         initCodeSize = Math.max(2, color_depth);
     }
 
-    // Add a character to the end of the current packet, and if it is 254
+    // Add a character to the end of the current packet, and if It's 254
     // characters, flush the packet to disk.
     void char_out(byte c, OutputStream outs) throws IOException {
         accum[a_count++] = c;

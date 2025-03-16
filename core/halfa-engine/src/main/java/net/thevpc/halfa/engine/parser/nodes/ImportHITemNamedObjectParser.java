@@ -12,6 +12,7 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonUplet;
 
 import java.util.*;
 
@@ -28,31 +29,34 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     @Override
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
-            case FUNCTION: {
-                List<TsonElement> u = tsonElement.toFunction().args().toList();
-                if (u.isEmpty()) {
-                    context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
-                    return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
-                }
-                HNode putInto = context.node();
-                List<HItem> loaded = new ArrayList<>();
-                NRef<Boolean> someLoaded = NRef.of(false);
-                for (TsonElement ee : u) {
-                    ObjEx t = ObjEx.of(ee);
-                    NOptional<String[]> p = t.asStringArrayOrString();
-                    if (p.isPresent()) {
-                        for (String sp : p.get()) {
-                            NOptional<HItem> a = importOne(sp, loaded, putInto, context);
-                            if (a != null) {
-                                return a;
-                            } else {
-                                someLoaded.set(true);
+            case UPLET: {
+                TsonUplet uplet = tsonElement.toUplet();
+                if(uplet.isNamed()) {
+                    List<TsonElement> u = uplet.args().toList();
+                    if (u.isEmpty()) {
+                        context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
+                        return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
+                    }
+                    HNode putInto = context.node();
+                    List<HItem> loaded = new ArrayList<>();
+                    NRef<Boolean> someLoaded = NRef.of(false);
+                    for (TsonElement ee : u) {
+                        ObjEx t = ObjEx.of(ee);
+                        NOptional<String[]> p = t.asStringArrayOrString();
+                        if (p.isPresent()) {
+                            for (String sp : p.get()) {
+                                NOptional<HItem> a = importOne(sp, loaded, putInto, context);
+                                if (a != null) {
+                                    return a;
+                                } else {
+                                    someLoaded.set(true);
+                                }
                             }
                         }
                     }
-                }
-                if (someLoaded.get()) {
-                    return NOptional.of(new HItemList().addAll(loaded));
+                    if (someLoaded.get()) {
+                        return NOptional.of(new HItemList().addAll(loaded));
+                    }
                 }
                 break;
             }
