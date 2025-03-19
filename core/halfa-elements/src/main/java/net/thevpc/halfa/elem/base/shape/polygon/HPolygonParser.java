@@ -23,7 +23,7 @@ public class HPolygonParser extends HNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case INT:
+            case INTEGER:
             case LONG: {
                 info.node.setProperty(HPropName.COUNT, ObjEx.of(info.currentArg).asTsonInt().get());
                 return true;
@@ -69,7 +69,9 @@ public class HPolygonParser extends HNodeParserBase {
                 }
                 break;
             }
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 if (isAncestorScene3D(info.node)) {
                     NOptional<HPoint2D> p2d = ObjEx.of(info.currentArg.toPair().value()).asHPoint2D();
                     if (p2d.isPresent()) {

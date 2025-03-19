@@ -26,11 +26,13 @@ public class HCtrlCallParser extends HNodeParserBase {
         HEngine engine = context.engine();
         HDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 TsonUplet p = c.toUplet();
                 if(p.isNamed()) {
                     return NCallableSupport.of(10, () -> {
-                        TsonElementList args = p.args();
+                        TsonElementList args = p.params();
                         HNode node = new DefaultHNode(HNodeType.CALL);
                         for (TsonElement arg : args) {
                             if (arg.isSimplePair()) {

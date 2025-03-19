@@ -60,7 +60,9 @@ public class HPolylineParser extends HNodeParserBase {
                 }
                 break;
             }
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 if (isAncestorScene3D(info.node)) {
                     NOptional<HPoint3D> p2d = ObjEx.of(info.currentArg.toPair().value()).asHPoint3D();
                     if (p2d.isPresent()) {

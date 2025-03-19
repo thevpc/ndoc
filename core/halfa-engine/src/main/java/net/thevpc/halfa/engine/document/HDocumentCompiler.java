@@ -251,7 +251,7 @@ public class HDocumentCompiler {
                         && !HPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
-        TsonElementList passedArgs = callFunction.toContainer().args();
+        TsonElementList passedArgs = callFunction.toListContainer().params();
         TsonElement[] passedArgsArr = passedArgs == null ? new TsonElement[0] : passedArgs.toList().toArray(new TsonElement[0]);
         inlinedNode.children().add(newAssign(HPropName.ARGS, Tson.ofArray(passedArgsArr).build()));
         for (int i = 0; i < passedArgsArr.length; i++) {

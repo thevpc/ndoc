@@ -107,11 +107,13 @@ public class HStyleParser {
                 }
                 return NOptional.of(DefaultHNodeSelector.ofType(n));
             }
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 List<String> names = new ArrayList<>();
                 List<String> classes = new ArrayList<>();
                 List<String> types = new ArrayList<>();
-                for (TsonElement child : e.toUplet().args()) {
+                for (TsonElement child : e.toUplet().params()) {
                     switch (child.type()) {
                         case PAIR: {
                             ObjEx h = ObjEx.of(e.toPair().key());
@@ -211,7 +213,11 @@ public class HStyleParser {
                 }
                 TsonElement v = e.toPair().value();
                 switch (v.type()) {
-                    case OBJECT: {
+                    case OBJECT:
+                    case NAMED_PARAMETRIZED_OBJECT:
+                    case PARAMETRIZED_OBJECT:
+                    case NAMED_OBJECT:
+                    {
                         List<HProp> styles = new ArrayList<>();
                         for (TsonElement el : v.toObject().body()) {
                             NOptional<HProp[]> s = parseStyle(el, f, context);

@@ -55,7 +55,7 @@ public class ToTsonHelper {
             if (rules.length > 0) {
                 ch.add(
                         Tson.ofPair("styles",
-                                Tson.ofObj(
+                                Tson.ofObjectBuilder(
                                         Arrays.stream(rules).map(x -> x.toTson()).toArray(TsonElement[]::new)
                                 )
                         )
@@ -67,7 +67,7 @@ public class ToTsonHelper {
                         engine.nodeTypeFactory(child.type()).get().toTson(child)
                 );
             }
-            TsonObjectBuilder u = Tson.ofObj(name, args2.toArray(new TsonElementBase[0]),
+            TsonObjectBuilder u = Tson.ofObjectBuilder(name, args2.toArray(new TsonElementBase[0]),
                     ch.toArray(new TsonElementBase[0])
             );
             applyAnnotations(u);

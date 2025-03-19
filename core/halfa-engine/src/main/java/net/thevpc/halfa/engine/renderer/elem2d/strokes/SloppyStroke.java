@@ -49,7 +49,7 @@ public class SloppyStroke implements Stroke {
                         case "cap":
                         case "join": {
                             if (basic == null) {
-                                basic = Tson.ofObj();
+                                basic = Tson.ofObjectBuilder();
                             }
                             basic.set(net.thevpc.halfa.api.util.HUtils.uid(ke.getName()), (TsonElement) ke.getValue().raw());
                             break;
@@ -66,7 +66,7 @@ public class SloppyStroke implements Stroke {
                         case "dash":
                         {
                             if (basic == null) {
-                                basic = Tson.ofObj();
+                                basic = Tson.ofObjectBuilder();
                             }
                             basic.add(Tson.of("dash"));
                             break;
@@ -77,7 +77,7 @@ public class SloppyStroke implements Stroke {
         }
         if (base == null) {
             if (basic == null) {
-                base = StrokeFactory.createBasic(ObjEx.of(Tson.ofObj()));
+                base = StrokeFactory.createBasic(ObjEx.of(Tson.ofObjectBuilder()));
             } else {
                 base = StrokeFactory.createBasic(ObjEx.of(basic));
             }

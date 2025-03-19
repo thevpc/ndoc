@@ -136,21 +136,32 @@ public abstract class HNodeParserBase implements HNodeParser {
                 }
                 break;
             }
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 TsonUplet uplet = e.toUplet();
                 if (uplet.isNamed() && acceptTypeName(uplet.name())) {
                     return uplet.name();
                 }
                 break;
             }
-            case OBJECT: {
+            case OBJECT:
+            case NAMED_PARAMETRIZED_OBJECT:
+            case PARAMETRIZED_OBJECT:
+            case NAMED_OBJECT:
+            {
                 TsonObject h = e.toObject();
                 if (h.isNamed() && acceptTypeName(h.name())) {
                     return h.name();
                 }
                 break;
             }
-            case ARRAY: {
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+
+            {
                 TsonArray h = e.toArray();
                 if (h.isNamed() && acceptTypeName(h.name())) {
                     return h.name();
@@ -248,12 +259,18 @@ public abstract class HNodeParserBase implements HNodeParser {
         HNodeFactoryParseContext context2 = context.push(p);
         onStartParsingItem(id, p, tsonElement, context);
         switch (tsonElement.type()) {
-            case UPLET:
+            case NAMED_UPLET:
+
             case OBJECT:
-            case ARRAY: {
-                if (tsonElement.isUnNamedUplet()) {
-                    break;
-                }
+            case NAMED_PARAMETRIZED_OBJECT:
+            case PARAMETRIZED_OBJECT:
+            case NAMED_OBJECT:
+
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+            {
                 ObjEx ee = ObjEx.of(tsonElement);
                 HParseHelper.fillAnnotations(tsonElement, p);
                 ParseArgumentInfo info = new ParseArgumentInfo();

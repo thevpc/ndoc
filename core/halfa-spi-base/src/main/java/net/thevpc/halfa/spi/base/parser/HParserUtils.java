@@ -8,7 +8,7 @@ public class HParserUtils {
         switch (currentArg.type()) {
             case BYTE:
             case SHORT:
-            case INT:
+            case INTEGER:
             case LONG:
             {
                 return true;
@@ -22,7 +22,10 @@ public class HParserUtils {
                 break;
             }
             case OP:
+
             case UPLET:
+            case NAMED_UPLET:
+
             case NULL:
                 return true;
         }

@@ -59,7 +59,7 @@ public class DefaultHDocumentItemParserFactory
         switch (c.type()) {
             case STRING:
             case BIG_COMPLEX:
-            case BIG_INT:
+            case BIG_INTEGER:
             case BYTE:
             case CHAR:
             case DATE:
@@ -68,7 +68,7 @@ public class DefaultHDocumentItemParserFactory
             case DOUBLE_COMPLEX:
             case FLOAT:
             case FLOAT_COMPLEX:
-            case INT:
+            case INTEGER:
             case BIG_DECIMAL:
             case BOOLEAN:
             case LONG:
@@ -131,8 +131,18 @@ public class DefaultHDocumentItemParserFactory
                 break;
             }
             case OBJECT:
+            case NAMED_PARAMETRIZED_OBJECT:
+            case PARAMETRIZED_OBJECT:
+            case NAMED_OBJECT:
+
             case UPLET:
-            case ARRAY: {
+            case NAMED_UPLET:
+
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+            {
                 if (c.type() == TsonElementType.UPLET && !c.isNamedUplet()) {
                     HNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                     if (p != null) {
@@ -182,7 +192,7 @@ public class DefaultHDocumentItemParserFactory
                                 functionTsonDeclaration = fb.build();
                             } else if (c.type() == TsonElementType.OBJECT) {
                                 TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
-                                List<TsonElement> args = fb.args();
+                                List<TsonElement> args = fb.params();
                                 if (args != null) {
                                     for (int i = 0; i < args.size(); i++) {
                                         args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));

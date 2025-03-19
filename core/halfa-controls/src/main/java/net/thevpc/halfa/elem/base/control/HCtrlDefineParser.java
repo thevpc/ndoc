@@ -40,7 +40,7 @@ public class HCtrlDefineParser extends HNodeParserBase {
                     String name = object.name();
                     if (!NBlankable.isBlank(name)) {
                         return NCallableSupport.of(10, () -> {
-                            TsonElementList definitionArguments = object.args();
+                            TsonElementList definitionArguments = object.params();
                             TsonElementList definitionBody = object.body();
                             HNode node = new DefaultHNode(HNodeType.DEFINE);
                             node.setProperty(HPropName.NAME, Tson.of(name));

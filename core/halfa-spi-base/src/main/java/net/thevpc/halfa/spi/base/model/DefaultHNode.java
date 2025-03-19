@@ -618,7 +618,7 @@ public class DefaultHNode implements HNode {
         String[] a = getAncestors();
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
-            TsonObjectBuilder o = Tson.ofObj(nodeType);
+            TsonObjectBuilder o = Tson.ofObjectBuilder(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
@@ -641,12 +641,12 @@ public class DefaultHNode implements HNode {
                         break;
                     }
                     default: {
-                        o.addArg(p.toTson());
+                        o.addParam(p.toTson());
                     }
                 }
             }
             if (!styleRules.isEmpty()) {
-                o.add("rules", Tson.ofObj(styleRules.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)));
+                o.add("rules", Tson.ofObjectBuilder(styleRules.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)));
             }
             for (HNode child : children()) {
                 if (child instanceof DefaultHNode) {

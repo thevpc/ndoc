@@ -112,21 +112,25 @@ public class HNodeEval implements ObjectEvalContext {
                     }
                     break;
                 }
-                case UPLET: {
+                case NAMED_UPLET: {
                     TsonUplet ff = ((TsonUplet) element);
                     if (ff.isNamed()) {
-                        List<TsonElement> r = ff.args().toList()
+                        List<TsonElement> r = ff.params().toList()
                                 .stream().map(x -> eval(x)).collect(Collectors.toList());
                         NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
                         if (!oo.isEmpty()) {
                             return oo.get();
                         }
-                        return element;//Tson.ofFunction(ff.name(), r.toArray(new Object[0])).build();
+                        return element;//Tson.ofUplet(ff.name(), r.toArray(new Object[0])).build();
                     }
                     return element;
                 }
 
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY:
+                {
                     TsonArray r = ee.toArray();
                     String u = r.name();
                     if (u != null && u.startsWith("$")) {

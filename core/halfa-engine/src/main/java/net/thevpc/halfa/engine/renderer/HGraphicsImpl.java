@@ -162,10 +162,16 @@ public class HGraphicsImpl implements HGraphics {
             return StrokeFactory.createStroke(o.name(), e, this);
         }
         switch (e.type()) {
-            case ARRAY: {
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+            {
                 return CompositeStroke.of(e, this);
             }
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 return StrokeFactory.createBasic(o);
             }
             case NAME:

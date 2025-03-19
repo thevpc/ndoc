@@ -40,7 +40,11 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         List<HItem> styles = new ArrayList<>();
         HDocumentFactory f = context.documentFactory();
         switch (tsonElement.type()) {
-            case OBJECT: {
+            case OBJECT:
+            case NAMED_PARAMETRIZED_OBJECT:
+            case PARAMETRIZED_OBJECT:
+            case NAMED_OBJECT:
+            {
                 for (TsonElement yy : tsonElement.toObject().body()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
@@ -54,7 +58,11 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 }
                 break;
             }
-            case ARRAY: {
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+            {
                 for (TsonElement yy : tsonElement.toArray().body()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {

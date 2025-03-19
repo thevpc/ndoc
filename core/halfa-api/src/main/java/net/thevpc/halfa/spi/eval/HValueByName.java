@@ -216,7 +216,7 @@ public class HValueByName {
             ss.setTranslation(r.get());
             return NOptional.of(ss);
         }
-        if (sv instanceof TsonElement && ((TsonElement) sv).isContainer()) {
+        if (sv instanceof TsonElement && ((TsonElement) sv).isListContainer()) {
             Shadow shadow = new Shadow();
             for (Map.Entry<String, ObjEx> e : o.argsOrBodyMap().entrySet()) {
                 switch (e.getKey()) {

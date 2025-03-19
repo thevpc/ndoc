@@ -57,7 +57,9 @@ public class HGridContainerParser extends HNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 NOptional<Int2> d = ObjEx.of(info.currentArg).asInt2();
                 if (d.isPresent()) {
                     Int2 dd = d.get();

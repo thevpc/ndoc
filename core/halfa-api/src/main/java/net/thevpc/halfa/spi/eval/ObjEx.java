@@ -327,14 +327,23 @@ public class ObjEx {
     private void _parsedChildren() {
         if (!parsedChildren) {
             parsedChildren = true;
-            if (element instanceof TsonContainer) {
-                TsonContainer te = (TsonContainer) element;
-                switch (te.type()) {
+            if (element instanceof TsonListContainer) {
+                switch (((TsonListContainer) element).type()) {
                     case OBJECT:
+                    case NAMED_PARAMETRIZED_OBJECT:
+                    case PARAMETRIZED_OBJECT:
+                    case NAMED_OBJECT:
+
                     case ARRAY:
-                    case UPLET: {
+                    case NAMED_PARAMETRIZED_ARRAY:
+                    case PARAMETRIZED_ARRAY:
+                    case NAMED_ARRAY:
+
+                    case UPLET:
+                    case NAMED_UPLET: {
+                        TsonListContainer te = (TsonListContainer) element;
                         name = net.thevpc.halfa.api.util.HUtils.uid(te.name());
-                        TsonElementList a = te.args();
+                        TsonElementList a = te.params();
                         if (a != null) {
                             args.addAll(a.toList());
                         }
@@ -436,13 +445,14 @@ public class ObjEx {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
                 case BYTE:
-                case BIG_INT:
+                case BIG_INTEGER:
                 case SHORT:
                 case LONG:
-                case INT: {
+                case INTEGER: {
                     return ObjEx.of(te.toInt().intValue()).asColor();
                 }
-                case UPLET: {
+                case UPLET:
+                case NAMED_UPLET: {
                     NOptional<int[]> ri = asIntArray();
                     if (ri.isPresent()) {
                         int[] ints = ri.get();
@@ -626,7 +636,7 @@ public class ObjEx {
             if (te.type().isNumber()) {
                 switch (te.type()) {
                     case BYTE:
-                    case INT:
+                    case INTEGER:
                     case SHORT:
                     case LONG:
                     case FLOAT:
@@ -670,7 +680,7 @@ public class ObjEx {
                 switch (te.type()) {
                     case BYTE:
                     case SHORT:
-                    case INT:
+                    case INTEGER:
                     case LONG: {
                         return NOptional.of(te.toNumber().intValue());
                     }
@@ -758,14 +768,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asIntArray();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT: {
                     return ObjEx.of(te.toObject().body().toArray()).asIntArray();
                 }
-                case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asIntArray();
+                case UPLET:
+                case NAMED_UPLET: {
+                    return ObjEx.of(te.toUplet().params().toArray()).asIntArray();
                 }
             }
         }
@@ -821,21 +838,28 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     TsonArray a = te.toArray();
-                    if (a.isNamed() || a.isWithArgs()) {
+                    if (a.isNamed() || a.isParametrized()) {
                         return NOptional.of(new TsonElement[]{te});
                     }
                     return NOptional.of(te.toArray().body().toArray());
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT: {
                     TsonObject a = te.toObject();
-                    if (a.isNamed() || a.isWithArgs()) {
+                    if (a.isNamed() || a.isParametrized()) {
                         return NOptional.of(new TsonElement[]{te});
                     }
                     return NOptional.of(te.toObject().body().toArray());
                 }
-                case UPLET: {
+                case UPLET:
+                case NAMED_UPLET: {
                     return NOptional.of(te.toUplet().body().toArray());
                 }
             }
@@ -880,14 +904,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asDoubleArray();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT: {
                     return ObjEx.of(te.toObject().body().toArray()).asDoubleArray();
                 }
-                case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asDoubleArray();
+                case UPLET:
+                case NAMED_UPLET: {
+                    return ObjEx.of(te.toUplet().params().toArray()).asDoubleArray();
                 }
             }
         }
@@ -930,14 +961,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY: {
                     return NOptional.of(te.toArray().body().toArray());
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT: {
                     return NOptional.of(te.toObject().body().toArray());
                 }
-                case UPLET: {
-                    return NOptional.of(te.toUplet().args().toArray());
+                case UPLET:
+                case NAMED_UPLET: {
+                    return NOptional.of(te.toUplet().params().toArray());
                 }
             }
         }
@@ -993,14 +1031,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asStringArray();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT: {
                     return ObjEx.of(te.toObject().body().toArray()).asStringArray();
                 }
-                case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asStringArray();
+                case UPLET:
+                case NAMED_UPLET: {
+                    return ObjEx.of(te.toUplet().params().toArray()).asStringArray();
                 }
             }
         }
@@ -1027,14 +1072,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asBooleanArray();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT: {
                     return ObjEx.of(te.toObject().body().toArray()).asBooleanArray();
                 }
+                case NAMED_UPLET:
                 case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asBooleanArray();
+                    return ObjEx.of(te.toUplet().params().toArray()).asBooleanArray();
                 }
             }
         }
@@ -1304,7 +1356,7 @@ public class ObjEx {
             Double width = null;
             Double height = null;
             if (u.isPresent()) {
-                for (TsonElement arg : f.args()) {
+                for (TsonElement arg : f.params()) {
                     NOptional<Number> n = ObjEx.of(arg).asNumber();
                     if (n.isPresent()) {
                         if (width == null) {
@@ -1424,14 +1476,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asDouble2Array();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT:
+                {
                     return ObjEx.of(te.toObject().body().toArray()).asDouble2Array();
                 }
-                case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asDouble2Array();
+                case UPLET:
+                case NAMED_UPLET: {
+                    return ObjEx.of(te.toUplet().params().toArray()).asDouble2Array();
                 }
             }
         }
@@ -1458,14 +1517,21 @@ public class ObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case ARRAY: {
+                case ARRAY:
+                case NAMED_PARAMETRIZED_ARRAY:
+                case PARAMETRIZED_ARRAY:
+                case NAMED_ARRAY: {
                     return ObjEx.of(te.toArray().body().toArray()).asDouble3Array();
                 }
-                case OBJECT: {
+                case OBJECT:
+                case NAMED_PARAMETRIZED_OBJECT:
+                case NAMED_OBJECT:
+                case PARAMETRIZED_OBJECT: {
                     return ObjEx.of(te.toObject().body().toArray()).asDouble3Array();
                 }
-                case UPLET: {
-                    return ObjEx.of(te.toUplet().args().toArray()).asDouble3Array();
+                case UPLET:
+                case NAMED_UPLET: {
+                    return ObjEx.of(te.toUplet().params().toArray()).asDouble3Array();
                 }
             }
         }

@@ -104,7 +104,7 @@ public class HProperties {
     }
 
     public TsonElement toTson() {
-        return Tson.ofObj(
+        return Tson.ofObjectBuilder(
                 map.values().stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
         ).build();
     }

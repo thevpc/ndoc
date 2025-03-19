@@ -29,10 +29,12 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     @Override
     public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
-            case UPLET: {
+            case UPLET:
+            case NAMED_UPLET:
+            {
                 TsonUplet uplet = tsonElement.toUplet();
                 if(uplet.isNamed()) {
-                    List<TsonElement> u = uplet.args().toList();
+                    List<TsonElement> u = uplet.params().toList();
                     if (u.isEmpty()) {
                         context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
                         return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));

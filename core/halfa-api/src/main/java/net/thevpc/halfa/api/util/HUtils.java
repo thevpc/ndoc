@@ -217,7 +217,7 @@ public class HUtils {
             return null;
         }
         switch (v.type()) {
-            case INT:
+            case INTEGER:
                 return v.toInt().intValue();
             case STRING:
                 return v.toStr().intValue();
