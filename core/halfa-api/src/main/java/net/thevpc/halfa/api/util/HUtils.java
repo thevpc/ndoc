@@ -43,7 +43,7 @@ public class HUtils {
     }
 
     public static String getCompilerDeclarationPath(TsonElement element) {
-        return Arrays.stream(element.annotations()).filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.arg(0).stringValue()).orElse(null);
+        return Arrays.stream(element.annotations()).filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.param(0).stringValue()).orElse(null);
 
     }
 

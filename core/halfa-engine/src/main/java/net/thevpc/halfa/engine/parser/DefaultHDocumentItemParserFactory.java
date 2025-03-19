@@ -249,7 +249,7 @@ public class DefaultHDocumentItemParserFactory
             boolean foundHalfa = false;
             boolean foundVersion = false;
             boolean foundOther = false;
-            for (TsonElement cls : a.args()) {
+            for (TsonElement cls : a.children()) {
                 switch (cls.type()) {
                     case STRING: {
                         if (cls.toStr().value().equalsIgnoreCase("halfa")) {
@@ -326,7 +326,7 @@ public class DefaultHDocumentItemParserFactory
             }
             // add classes as well
 
-            for (TsonElement cls : a.args()) {
+            for (TsonElement cls : a.children()) {
                 if (allStyles == null) {
                     allStyles = new HashSet<>();
                 }

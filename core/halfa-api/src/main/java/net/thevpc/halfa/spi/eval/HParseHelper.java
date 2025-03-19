@@ -56,7 +56,7 @@ public class HParseHelper {
             }
             // add classes as well
             Set<String> allClasses = new HashSet<>();
-            for (TsonElement cls : a.args()) {
+            for (TsonElement cls : a.children()) {
                 NOptional<String[]> ss = ObjEx.of(cls).asStringArrayOrString();
                 if (ss.isPresent()) {
                     allClasses.addAll(Arrays.asList(ss.get()));
