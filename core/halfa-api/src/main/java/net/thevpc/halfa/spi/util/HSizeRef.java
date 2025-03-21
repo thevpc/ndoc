@@ -60,7 +60,7 @@ public class HSizeRef {
             TsonElementBase b = (TsonElementBase) o;
             if (b.build().isNumber()) {
                 TsonNumber n = b.build().toNumber();
-                String u = n.unit();
+                String u = n.numberSuffix();
                 if (u == null) {
                     u = "";
                 } else {
