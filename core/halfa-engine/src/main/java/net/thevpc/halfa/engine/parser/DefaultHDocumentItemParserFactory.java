@@ -62,8 +62,8 @@ public class DefaultHDocumentItemParserFactory
             case BIG_INTEGER:
             case BYTE:
             case CHAR:
-            case DATE:
-            case DATETIME:
+            case LOCAL_DATE:
+            case LOCAL_DATETIME:
             case DOUBLE:
             case DOUBLE_COMPLEX:
             case FLOAT:
@@ -75,7 +75,7 @@ public class DefaultHDocumentItemParserFactory
             case NULL:
             case REGEX:
             case SHORT:
-            case TIME:
+            case LOCAL_TIME:
             case MATRIX:
             case ALIAS: {
                 HNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
