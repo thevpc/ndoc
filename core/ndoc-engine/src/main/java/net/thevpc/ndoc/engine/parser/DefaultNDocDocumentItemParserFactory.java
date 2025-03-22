@@ -1,0 +1,372 @@
+package net.thevpc.ndoc.engine.parser;
+
+import net.thevpc.ndoc.NDocDocumentFactory;
+import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.HItemList;
+import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.engine.parser.nodes.*;
+import net.thevpc.ndoc.engine.parser.styles.StylesHITemNamedObjectParser;
+import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.ndoc.spi.NDocNodeParser;
+import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
+import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.*;
+import net.thevpc.tson.*;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.function.Supplier;
+
+/**
+ * @author vpc
+ */
+public class DefaultNDocDocumentItemParserFactory
+        implements NDocNodeParserFactory {
+    static Map<String, HITemNamedObjectParser> allParsers = new HashMap<>();
+
+    static {
+        register(new ImportHITemNamedObjectParser());
+//        register(new DefineHITemNamedObjectParser());
+        register(new StylesHITemNamedObjectParser());
+    }
+
+    private static void register(HITemNamedObjectParser s) {
+        for (String id : s.ids()) {
+            String uid = HUtils.uid(id);
+            HITemNamedObjectParser o = allParsers.get(id);
+            if (o != null) {
+                throw new IllegalArgumentException("clash : " + uid + " is already registered as item parser");
+            }
+            allParsers.put(uid, s);
+        }
+    }
+
+
+    @Override
+    public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
+        TsonElement c = context.element();
+        NDocEngine engine = context.engine();
+        NDocDocumentFactory f = engine.documentFactory();
+        switch (c.type()) {
+            case STRING:
+            case BIG_COMPLEX:
+            case BIG_INTEGER:
+            case BYTE:
+            case CHAR:
+            case LOCAL_DATE:
+            case LOCAL_DATETIME:
+            case DOUBLE:
+            case DOUBLE_COMPLEX:
+            case FLOAT:
+            case FLOAT_COMPLEX:
+            case INTEGER:
+            case BIG_DECIMAL:
+            case BOOLEAN:
+            case LONG:
+            case NULL:
+            case REGEX:
+            case SHORT:
+            case LOCAL_TIME:
+            case MATRIX:
+            case ALIAS: {
+                NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                if (p != null) {
+                    return p.parseNode(context);
+                }
+                break;
+            }
+            case NAME: {
+                String name = c.toName().value();
+                String uid = HUtils.uid(name);
+                NDocNodeParser p = engine.nodeTypeFactory(uid).orNull();
+                if (p != null) {
+                    return p.parseNode(context);
+                }
+                p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                if (p != null) {
+                    return p.parseNode(context);
+                }
+                break;
+            }
+            case PAIR: {
+                TsonPair p = c.toPair();
+                TsonElement k = p.key();
+                TsonElement v = p.value();
+                NDocObjEx kh = NDocObjEx.of(k);
+                NOptional<String> nn = kh.asStringOrName();
+                if (nn.isPresent()) {
+                    String nnn = NStringUtils.trim(nn.get());
+                    HITemNamedObjectParser pp = allParsers.get(nnn);
+                    if (pp != null) {
+                        return NCallableSupport.of(10, () -> {
+                            NOptional<HItem> styles = pp.parseItem(nnn, v, context);
+                            return styles.get();
+                        });
+                    }
+                }
+                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
+                    NCallableSupport<HItem> uu = ff.parseNode(context);
+                    if (uu.isValid()) {
+                        return uu;
+                    }
+                }
+                break;
+            }
+            case OP: {
+                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
+                    NCallableSupport<HItem> uu = ff.parseNode(context);
+                    if (uu.isValid()) {
+                        return uu;
+                    }
+                }
+                break;
+            }
+            case OBJECT:
+            case NAMED_PARAMETRIZED_OBJECT:
+            case PARAMETRIZED_OBJECT:
+            case NAMED_OBJECT:
+
+            case UPLET:
+            case NAMED_UPLET:
+
+            case ARRAY:
+            case NAMED_PARAMETRIZED_ARRAY:
+            case PARAMETRIZED_ARRAY:
+            case NAMED_ARRAY:
+            {
+                if (c.type() == TsonElementType.UPLET && !c.isNamedUplet()) {
+                    NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                    if (p != null) {
+                        return p.parseNode(context);
+                    }
+                    break;
+                }
+                NDocObjEx ee = NDocObjEx.of(c);
+                if (NBlankable.isBlank(ee.name())) {
+                    return NCallableSupport.of(10, new Supplier<HItem>() {
+                        @Override
+                        public HItem get() {
+                            return parseNoNameBloc(context);
+                        }
+                    });
+                } else {
+                    String uid = HUtils.uid(ee.name());
+                    NDocNodeParser p = engine.nodeTypeFactory(uid).orNull();
+                    if (p != null) {
+                        return p.parseNode(context);
+                    }
+                    HITemNamedObjectParser pp = allParsers.get(uid);
+                    if (pp != null) {
+                        return NCallableSupport.of(10, () -> {
+                            NOptional<HItem> styles = pp.parseItem(uid, c, context);
+                            if (!styles.isPresent()) {
+                                pp.parseItem(uid, c, context).get();
+                            }
+                            return styles.get();
+                        });
+                    }
+                }
+                if (c.isNamedUplet() || c.type() == TsonElementType.OBJECT) {
+                    HNode callNode = new DefaultHNode(HNodeType.CALL);
+                    callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
+                    //inline current file path in the TsonElements
+                    TsonElement functionTsonDeclaration = c;
+                    if (context.source() != null) {
+                        NPath sourcePath = context.source().path().orNull();
+                        if (sourcePath != null) {
+                            functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
+                            if (c.isNamedUplet()) {
+                                TsonUpletBuilder fb = (TsonUpletBuilder) functionTsonDeclaration.builder();
+                                for (int i = 0; i < fb.params().length; i++) {
+                                    fb.setAt(i, HUtils.addCompilerDeclarationPath(fb.param(i), sourcePath.toString()));
+                                }
+                                functionTsonDeclaration = fb.build();
+                            } else if (c.type() == TsonElementType.OBJECT) {
+                                TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
+                                List<TsonElement> args = fb.params();
+                                if (args != null) {
+                                    for (int i = 0; i < args.size(); i++) {
+                                        args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));
+                                    }
+                                }
+                                functionTsonDeclaration = fb.build();
+                            }
+                        }
+                    }
+                    callNode.setProperty(HPropName.VALUE, functionTsonDeclaration);
+                    return NCallableSupport.of(10, () -> callNode);
+                    //search for declaration!!
+//                    String uid = HUtils.uid(ee.name());
+
+//                    HNode currNode = context.node().parent();
+//                    while (currNode != null) {
+//                        for (HNode objectDefNode : currNode.children()) {
+//                            if (HNodeType.DEFINE.equals(objectDefNode.getName()) && uid.equals(HUtils.uid(String.valueOf(objectDefNode.getPropertyValue(HPropName.NAME).get())))) {
+//                                return NCallableSupport.of(10, () -> inlineNodeDefinitionCall(objectDefNode, c, context));
+//                            }
+//                        }
+//                        currNode = currNode.parent();
+//                    }
+                }
+                context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+                throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+            }
+        }
+        context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+        throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
+    }
+
+
+    private boolean isRootBloc(NDocNodeFactoryParseContext context) {
+        HNode[] nodes = context.nodePath();
+        if (nodes.length == 0) {
+            return true;
+        }
+        if (nodes.length > 1) {
+            return false;
+        }
+        if (nodes.length == 1) {
+            if (!Objects.equals(nodes[0].type(), HNodeType.PAGE_GROUP)) {
+                return false;
+            }
+        }
+        TsonElement c = context.element();
+//        HEngine engine = context.engine();
+        for (TsonAnnotation a : c.annotations()) {
+            String nn = a.name();
+            if (!NBlankable.isBlank(nn)) {
+                return false;
+            }
+            boolean foundHalfa = false;
+            boolean foundVersion = false;
+            boolean foundOther = false;
+            for (TsonElement cls : a.children()) {
+                switch (cls.type()) {
+                    case STRING: {
+                        if (cls.toStr().value().equalsIgnoreCase("halfa")) {
+                            foundHalfa = true;
+                        } else if (isVersionString(cls.toStr().value())) {
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
+                        }
+                        break;
+                    }
+                    case NAME: {
+                        if (cls.toName().value().equalsIgnoreCase("halfa")) {
+                            foundHalfa = true;
+                        } else if (isVersionString(cls.toStr().value())) {
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
+                        }
+                        break;
+                    }
+                    default: {
+                        if (cls.type().isNumber()) {
+                            BigDecimal bi = cls.toNumber().bigDecimalValue();
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (foundHalfa) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isVersionString(String value) {
+        if (value != null) {
+            value = value.trim();
+            if (value.length() > 0) {
+                if (value.charAt(0) >= '0' && value.charAt(0) >= '9') {
+                    for (char c : value.toCharArray()) {
+                        if (!Character.isAlphabetic(c) && !Character.isDigit(c)
+                                && c != '.' && c != '_' && c != '-'
+
+                        ) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private HItem parseNoNameBloc(NDocNodeFactoryParseContext context) {
+        TsonElement c = context.element();
+        NDocEngine engine = context.engine();
+        NDocDocumentFactory f = engine.documentFactory();
+        HashSet<String> allAncestors = null;
+        HashSet<String> allStyles = null;
+        NDocObjEx ee = NDocObjEx.of(c);
+        for (TsonAnnotation a : c.annotations()) {
+            String nn = a.name();
+            if (!NBlankable.isBlank(nn)) {
+                if (allAncestors == null) {
+                    allAncestors = new HashSet<>();
+                }
+                allAncestors.add(HUtils.uid(nn));
+            }
+            // add classes as well
+
+            for (TsonElement cls : a.children()) {
+                if (allStyles == null) {
+                    allStyles = new HashSet<>();
+                }
+                NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                if (ss.isPresent()) {
+                    allStyles.addAll(Arrays.asList(ss.get()));
+                }
+            }
+        }
+        HNode node = context.node();
+        if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
+            HNode pg = f.ofStack();
+            pg.setAncestors(allAncestors == null ? null : allAncestors.toArray(new String[0]));
+            pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
+            for (TsonElement child : ee.body()) {
+                NOptional<HItem> u = context.engine().newNode(child, context);
+                if (u.isPresent()) {
+                    pg.append(u.get());
+                } else {
+                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s", child,
+                            node == null ? "document" : node.type()
+                    ).toString());
+                }
+            }
+            return pg;
+        } else {
+            HItemList pg = new HItemList();
+            for (TsonElement child : ee.body()) {
+                NOptional<HItem> u = context.engine().newNode(child, context);
+                if (u.isPresent()) {
+                    pg.add(u.get());
+                } else {
+                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s : %s", child,
+                            node == null ? "document" : node.type(),
+                            u.getMessage().get()
+                    ).toString());
+                }
+            }
+            return pg;
+        }
+    }
+
+}

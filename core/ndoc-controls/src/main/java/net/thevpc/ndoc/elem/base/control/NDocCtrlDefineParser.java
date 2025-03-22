@@ -1,0 +1,94 @@
+package net.thevpc.ndoc.elem.base.control;
+
+import net.thevpc.ndoc.NDocDocumentFactory;
+import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.HItemList;
+import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.tson.*;
+
+public class NDocCtrlDefineParser extends NDocNodeParserBase {
+
+    public NDocCtrlDefineParser() {
+        super(false, HNodeType.DEFINE);
+    }
+
+    @Override
+    public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
+        TsonElement c = context.element();
+        NDocEngine engine = context.engine();
+        NDocDocumentFactory f = engine.documentFactory();
+        switch (c.type()) {
+            case PAIR: {
+                TsonPair p = c.toPair();
+                TsonElement k = p.key();
+                TsonElement v = p.value();
+                if (v.isNamedObject() || v.isNamedUplet()) {
+                    TsonObject object = v.toObject();
+                    String name = object.name();
+                    if (!NBlankable.isBlank(name)) {
+                        return NCallableSupport.of(10, () -> {
+                            TsonElementList definitionArguments = object.params();
+                            TsonElementList definitionBody = object.body();
+                            HNode node = new DefaultHNode(HNodeType.DEFINE);
+                            node.setProperty(HPropName.NAME, Tson.of(name));
+                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : Tson.ofArray(definitionArguments.toList().toArray(new TsonElement[0])).build());
+                            for (TsonElement element : definitionBody) {
+                                NOptional<HItem> o = context.engine().newNode(element, context);
+                                if (!o.isPresent()) {
+                                    NMsg nMsg = NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), c)
+                                            .asSevere();
+                                    context.messages().log(HMsg.of(nMsg));
+                                    throw new NIllegalArgumentException(nMsg);
+                                }
+                                HItem hItem = o.get();
+                                if (hItem instanceof HItemList) {
+                                    for (HItem hItem0 : ((HItemList) hItem).getItems()) {
+                                        node.children().add((HNode) hItem0);
+                                    }
+                                } else {
+                                    node.children().add((HNode) hItem);
+                                }
+                            }
+                            return node;
+                        });
+                    }
+                }
+                break;
+            }
+        }
+        return NCallableSupport.invalid(NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), c));
+    }
+
+    @Override
+    public TsonElement toTson(HNode item) {
+        Object varName = "var";
+        Object varValue = null;
+
+        NOptional<TsonElement> s = item.getPropertyValue(HPropName.NAME);
+
+        if (!s.isEmpty()) {
+            varName = s.get();
+        }
+
+        s = item.getPropertyValue(HPropName.VALUE);
+        if (!s.isEmpty()) {
+            varValue = s.get();
+        }
+
+        return Tson.ofPair("$" + varName, HUtils.toTson(varValue));
+    }
+
+}

@@ -1,0 +1,3 @@
+net.thevpc.ndoc.engine.parser.nodes.NDocScene3DParser
+net.thevpc.ndoc.engine.parser.nodes.NDocPageGroupParser
+net.thevpc.ndoc.engine.parser.nodes.NDocPageParser

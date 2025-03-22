@@ -26,7 +26,7 @@
 /extensions/halfa-extension-shapes2d/target
 /app/halfa-viewer/target
 /app/halfa-viewer-backend/target
-/app/halfa-viewer-frontend-ng/.vscode/
+/app/ndoc-viewer-frontend-ng/.vscode/
 /app/halfa-viewer/new-project*
 /extensions/halfa-extension-plot2d/target
 /core/halfa-controls/target/

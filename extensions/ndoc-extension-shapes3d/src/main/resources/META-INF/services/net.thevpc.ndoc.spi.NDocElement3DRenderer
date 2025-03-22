@@ -1,0 +1,3 @@
+net.thevpc.ndoc.extension.simple3d.box.Element3DBoxPrimitiveBuilder
+net.thevpc.ndoc.extension.simple3d.surface.Element3DSurfacePrimitiveBuilder
+net.thevpc.ndoc.extension.simple3d.sphere.Element3DUVSpherePrimitiveBuilder

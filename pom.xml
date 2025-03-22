@@ -3,33 +3,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.thevpc.halfa.builders</groupId>
-    <artifactId>halfa-project</artifactId>
-    <name>Halfa Builder</name>
+    <groupId>net.thevpc.xprojects.builders</groupId>
+    <artifactId>ndoc-project</artifactId>
+    <name>NDoc Builder</name>
     <version>0.8.5.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>core/halfa-api</module>
-        <module>core/halfa-spi-base</module>
-        <module>core/halfa-elements</module>
-        <module>core/halfa-controls</module>
-        <module>core/halfa-engine</module>
-        <module>core/renderers/halfa-renderer-pdf</module>
-        <module>core/renderers/halfa-renderer-html</module>
-        <module>core/renderers/halfa-renderer-screen</module>
-        <module>test/halfa-examples</module>
-        <module>extensions/halfa-extension-plantuml</module>
-        <module>extensions/halfa-extension-animated-gif</module>
-        <module>extensions/halfa-extension-svg</module>
-        <module>extensions/halfa-extension-shapes2d</module>
-        <module>extensions/halfa-extension-shapes3d</module>
-        <module>extensions/halfa-extension-plot2d</module>
-        <module>extensions/halfa-extension-latex</module>
-        <module>extensions/halfa-extension-presenters</module>
-        <module>app/halfa-viewer</module>
-        <module>app/halfa-viewer-backend</module>
-<!--        <module>core/renderers/halfa-renderer-web</module>-->
+        <module>core/ndoc-api</module>
+        <module>core/ndoc-spi-base</module>
+        <module>core/ndoc-elements</module>
+        <module>core/ndoc-controls</module>
+        <module>core/ndoc-engine</module>
+        <module>core/renderers/ndoc-renderer-pdf</module>
+        <module>core/renderers/ndoc-renderer-html</module>
+        <module>core/renderers/ndoc-renderer-screen</module>
+        <module>test/ndoc-examples</module>
+        <module>extensions/ndoc-extension-plantuml</module>
+        <module>extensions/ndoc-extension-animated-gif</module>
+        <module>extensions/ndoc-extension-svg</module>
+        <module>extensions/ndoc-extension-shapes2d</module>
+        <module>extensions/ndoc-extension-shapes3d</module>
+        <module>extensions/ndoc-extension-plot2d</module>
+        <module>extensions/ndoc-extension-latex</module>
+        <module>extensions/ndoc-extension-presenters</module>
+        <module>app/ndoc-viewer</module>
+        <module>app/ndoc-viewer-backend</module>
+<!--        <module>core/renderers/ndoc-renderer-web</module>-->
         <module>companions/nscoreboard</module>
-        <module>halfa-all</module>
+        <module>ndoc-full</module>
     </modules>
 </project>

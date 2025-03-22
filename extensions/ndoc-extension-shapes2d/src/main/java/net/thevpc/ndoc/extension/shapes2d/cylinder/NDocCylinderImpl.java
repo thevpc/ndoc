@@ -1,0 +1,66 @@
+package net.thevpc.ndoc.extension.shapes2d.cylinder;
+
+import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.tson.Tson;
+import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonPair;
+
+public class NDocCylinderImpl extends NDocNodeParserBase {
+
+    public NDocCylinderImpl(){
+        super(false, HNodeType.CYLINDER);
+    }
+
+    @Override
+    protected boolean processArgument(ParseArgumentInfo info) {
+        switch (info.currentArg.type()) {
+            case PAIR: {
+                if(info.currentArg.isSimplePair()){
+                    TsonPair pair = info.currentArg.toPair();
+                    switch (HUtils.uid(pair.key().stringValue())) {
+                        case "ellipse-height": {
+                            info.node.setProperty(HPropName.ELLIPSE_H, pair.value());
+                            return true;
+                        }
+
+                        case "top-color": {
+                            info.node.setProperty(HPropName.TOP_COLOR, pair.value());
+                            return true;
+                        }
+                        case "segment-count": {
+                            info.node.setProperty(HPropName.SEGMENT_COUNT, pair.value());
+                            return true;
+                        }
+
+                    }
+                }
+                break;
+            }
+        }
+        return super.processArgument(info);
+
+    }
+
+    @Override
+    public TsonElement toTson (HNode item) {
+        HProp ellipseHeight = item.getProperty(HPropName.ELLIPSE_H).orNull();
+        HProp topColor = item.getProperty(HPropName.TOP_COLOR).orNull();
+        HProp segmentCount = item.getProperty(HPropName.SEGMENT_COUNT).orNull();
+        return ToTsonHelper.of(
+                        item,
+                        engine()
+                ).addChildren(
+                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toTson(ellipseHeight.getValue())),
+                        topColor == null ? null : Tson.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toTson(topColor.getValue())),
+                        segmentCount == null ? null : Tson.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toTson(segmentCount.getValue()))
+
+                )
+                .build();
+    }
+}

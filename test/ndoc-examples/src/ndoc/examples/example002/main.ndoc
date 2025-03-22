@@ -1,0 +1,20 @@
+@(halfa,"1.0")
+{
+    import("sty/*.ndoc"),
+    import("lib/*.ndoc"),
+    @cover page{
+        text("Cours Micro-Ondes"),
+        $title:"Thank you!",
+        $author:"Thank you!",
+        $date:"2024-01-03",
+        $image:"2024-01-03",
+    },
+
+    import("src/ch01/*.ndoc"),
+    import("src/ch02/*.ndoc"),
+
+    @conclusion page{
+        text("Merci"),
+        $msg:"@conclusion Thank you!",
+    },
+}

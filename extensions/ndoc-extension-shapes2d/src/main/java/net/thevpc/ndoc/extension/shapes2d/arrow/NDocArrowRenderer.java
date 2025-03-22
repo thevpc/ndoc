@@ -1,0 +1,78 @@
+package net.thevpc.ndoc.extension.shapes2d.arrow;
+
+import net.thevpc.ndoc.api.model.elem2d.Bounds2;
+import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
+import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.spi.renderer.NDocGraphics;
+import net.thevpc.ndoc.spi.eval.NDocValueByName;
+import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+
+import java.awt.*;
+import java.awt.geom.GeneralPath;
+
+public class NDocArrowRenderer extends NDocNodeRendererBase {
+    public NDocArrowRenderer() {
+        super(HNodeType.ARROW);
+    }
+
+    @Override
+    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        double x = b.getX();
+        double y = b.getY();
+        double width = b.getWidth();
+        double height = b.getHeight();
+
+        Paint color = NDocValueByName.getForegroundColor(p,ctx, true);
+        HPoint2D base = NDocObjEx.of(p.getPropertyValue("base")).asHPoint2D().orElse(null);
+        if(base==null){
+            Double base3 = NDocObjEx.of(p.getPropertyValue("base")).asDouble().orElse(null);
+            if(base3==null){
+                base=new HPoint2D(80, 20);
+            }else{
+                base=new HPoint2D(base3, base3);
+            }
+        }
+        HPoint2D hat = NDocObjEx.of(p.getPropertyValue("hat")).asHPoint2D().orElse(null);
+        if(hat==null){
+            Double base3 = NDocObjEx.of(p.getPropertyValue("hat")).asDouble().orElse(null);
+            if(base3==null){
+                hat=new HPoint2D(-1, -1);
+            }else{
+                hat=new HPoint2D(base3, base3);
+            }
+        }
+        if(hat.y<0){
+            hat.y=15;
+        }
+        if(hat.x<0){
+            hat.x=0;
+        }
+        double baseH=base.y*height/100.0;
+        double baseW=base.x*width/100.0;
+        double hatH=hat.y*height/100.0;
+        double hatW=hat.x*width/100.0;
+
+        NDocGraphics g = ctx.graphics();
+        g.setPaint(color);
+            GeneralPath arrow = new GeneralPath();
+            arrow.moveTo(x, y+height/2);
+            arrow.lineTo(x, y+height/2-baseH/2);
+            arrow.lineTo(x+baseW, y+height/2-baseH/2);
+            arrow.lineTo(x+baseW-hatW, y+height/2-baseH/2-hatH);
+            arrow.lineTo(x+width, y+height/2);
+            arrow.lineTo(x+baseW-hatW, y+height/2+baseH/2+hatH);
+            arrow.lineTo(x+baseW, y+height/2+baseH/2);
+            arrow.lineTo(x, y+height/2+baseH/2);
+            arrow.closePath();
+            g.draw(arrow);
+            g.fill(arrow);
+            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+
+    }
+
+}

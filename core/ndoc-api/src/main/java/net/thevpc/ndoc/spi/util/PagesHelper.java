@@ -1,0 +1,49 @@
+package net.thevpc.ndoc.spi.util;
+
+import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.document.NDocument;
+import net.thevpc.ndoc.api.model.node.HNode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PagesHelper {
+    public static List<HNode> resolvePages(NDocument document) {
+        List<HNode> all = new ArrayList<>();
+        fillPages(document.root(), all);
+        return all;
+    }
+
+    public static List<HNode> resolvePages(HNode part) {
+        List<HNode> all = new ArrayList<>();
+        fillPages(part, all);
+        return all;
+    }
+
+    public static void fillPages(HNode part, List<HNode> all) {
+        switch (part.type()) {
+            case HNodeType.PAGE: {
+                HNode p = part;
+                if (!p.isTemplate()) {
+                    if (!p.isDisabled()) {
+                        all.add(p);
+                    }
+                }
+                break;
+            }
+            case HNodeType.PAGE_GROUP:
+            case HNodeType.FLOW:
+            case HNodeType.GRID:
+            case HNodeType.STACK: {
+                if (!part.isTemplate()) {
+                    if (!part.isDisabled()) {
+                        for (HNode p : part.children()) {
+                            fillPages(p, all);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+}

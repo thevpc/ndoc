@@ -1,0 +1,26 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package net.thevpc.ndoc.elem.base.control;
+
+import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.tson.Tson;
+
+/**
+ * @author vpc
+ */
+public class NDocElseIfParser extends NDocNodeParserBase {
+    public NDocElseIfParser() {
+        super(true, "elseif");
+    }
+
+    protected boolean processArguments(ParseArgumentInfo info) {
+        if(info.arguments.length==1){
+            info.node.setProperty("condition", info.arguments[0]);
+        }else{
+            info.node.setProperty("condition", Tson.ofArray(info.arguments).build());
+        }
+        return true;
+    }
+}
