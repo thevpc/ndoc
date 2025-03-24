@@ -3,7 +3,7 @@ package net.thevpc.ndoc;
 import com.formdev.flatlaf.FlatLightLaf;
 import net.thevpc.ndoc.main.MainFrame;
 import net.thevpc.nuts.*;
-import net.thevpc.nuts.lib.nswing.NSwingUtils;
+import net.thevpc.nuts.nswing.NSwingUtils;
 
 /**
  * @author vpc
