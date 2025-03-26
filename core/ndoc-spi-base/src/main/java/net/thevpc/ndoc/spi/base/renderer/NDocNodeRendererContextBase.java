@@ -89,7 +89,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     public boolean isCapability(String name) {
         return NLiteral.of(getCapability(name))
-                .asBoolean().orElse(false);
+                .asBooleanValue().orElse(false);
     }
 
     @Override

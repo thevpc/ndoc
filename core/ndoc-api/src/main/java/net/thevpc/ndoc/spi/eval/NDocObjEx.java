@@ -538,7 +538,7 @@ public class NDocObjEx {
                     }
                 }
                 if (s.toLowerCase().startsWith("c")) {
-                    NOptional<Integer> u = NLiteral.of(s.substring(1).trim()).asInt();
+                    NOptional<Integer> u = NLiteral.of(s.substring(1).trim()).asIntValue();
                     if (u.isPresent()) {
                         return NOptional.of(DefaultColorPalette.INSTANCE.getColor(u.get()));
                     }
@@ -629,7 +629,7 @@ public class NDocObjEx {
             return NOptional.of(((Number) element).doubleValue());
         }
         if (element instanceof String) {
-            return NLiteral.of(element).asDouble();
+            return NLiteral.of(element).asDoubleValue();
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
@@ -672,7 +672,7 @@ public class NDocObjEx {
             return NOptional.of(((Number) element).intValue());
         }
         if (element instanceof String) {
-            return NLiteral.of(element).asInt();
+            return NLiteral.of(element).asIntValue();
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
@@ -699,7 +699,7 @@ public class NDocObjEx {
             return NOptional.of(((Boolean) element));
         }
         if (element instanceof String) {
-            return NLiteral.of(element).asBoolean();
+            return NLiteral.of(element).asBooleanValue();
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
@@ -708,10 +708,10 @@ public class NDocObjEx {
                     return NOptional.of(te.toBoolean().booleanValue());
                 }
                 case STRING: {
-                    return NLiteral.of(te.toStr().raw()).asBoolean();
+                    return NLiteral.of(te.toStr().raw()).asBooleanValue();
                 }
                 case NAME: {
-                    return NLiteral.of(te.toName().value()).asBoolean();
+                    return NLiteral.of(te.toName().value()).asBooleanValue();
                 }
             }
         }
