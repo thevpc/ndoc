@@ -298,7 +298,7 @@ public class DocumentView {
         });
         popupMenu.addMenuItem("Goto Page...", ev -> {
             String s = JOptionPane.showInputDialog("Page Number?");
-            Integer v = NLiteral.of(s).asIntValue().orElse(-1);
+            Integer v = NLiteral.of(s).asInt().orElse(-1);
             if (v > 0) {
                 showPage(v - 1);
             }
@@ -625,8 +625,8 @@ public class DocumentView {
         public NDocDocumentStreamRendererConfig getConfig() {
             NDocDocumentStreamRendererConfig config = new NDocDocumentStreamRendererConfig();
             config.setOrientation(portraitRadioButton.isSelected() ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
-            config.setGridX(NLiteral.of(gridXField.getText()).asIntValue().orElse(1));
-            config.setGridY(NLiteral.of(gridYField.getText()).asIntValue().orElse(1));
+            config.setGridX(NLiteral.of(gridXField.getText()).asInt().orElse(1));
+            config.setGridY(NLiteral.of(gridYField.getText()).asInt().orElse(1));
             switch ((String) sizePageComboBox.getSelectedItem()) {
                 case "Small (300x300)":
                     config.setPageWidth(300);
@@ -648,10 +648,10 @@ public class DocumentView {
             config.setShowPageNumber(showPageNumberCheckBox.isSelected());
             config.setShowFileName(showFileNameCheckBox.isSelected());
             config.setShowDate(showDateCheckBox.isSelected());
-            config.setMarginTop(NLiteral.of(marginTopField.getText()).asFloatValue().orElse(0f));
-            config.setMarginBottom(NLiteral.of(marginBottomField.getText()).asFloatValue().orElse(0f));
-            config.setMarginLeft(NLiteral.of(marginLeftField.getText()).asFloatValue().orElse(0f));
-            config.setMarginRight(NLiteral.of(marginRightField.getText()).asFloatValue().orElse(0f));
+            config.setMarginTop(NLiteral.of(marginTopField.getText()).asFloat().orElse(0f));
+            config.setMarginBottom(NLiteral.of(marginBottomField.getText()).asFloat().orElse(0f));
+            config.setMarginLeft(NLiteral.of(marginLeftField.getText()).asFloat().orElse(0f));
+            config.setMarginRight(NLiteral.of(marginRightField.getText()).asFloat().orElse(0f));
             return config;
         }
     }

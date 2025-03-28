@@ -8,6 +8,11 @@
     <name>NDoc Builder</name>
     <version>0.8.5.0</version>
     <packaging>pom</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
     <modules>
         <module>core/ndoc-api</module>
         <module>core/ndoc-spi-base</module>
