@@ -57,7 +57,7 @@ public class NPathHResource extends DefaultHResource {
         boolean file = path.isFile();
         value.put("file", file);
         value.put("contentLength", path.contentLength());
-        Instant lastModifiedInstant = path.getLastModifiedInstant();
+        Instant lastModifiedInstant = path.lastModifiedInstant();
         value.put("lastModifiedInstant", lastModifiedInstant == null ? -1 : lastModifiedInstant.getEpochSecond());
         if (path.toString().contains("*")) {
             value.put("children",
