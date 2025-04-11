@@ -483,7 +483,13 @@ public class NDocObjEx {
                     }
                     break;
                 }
-                case STRING:
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING:
                 case NAME: {
                     NDocObjEx h = NDocObjEx.of(element);
                     String s = h.asStringOrName().get();
@@ -646,7 +652,7 @@ public class NDocObjEx {
                     }
                 }
                 return NOptional.of(te.toDouble().doubleValue());
-            } else if (te.type() == TsonElementType.STRING) {
+            } else if (te.type().isString()) {
                 return NDocObjEx.of(te.toStr().raw()).asDouble();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
@@ -685,7 +691,7 @@ public class NDocObjEx {
                         return NOptional.of(te.toNumber().intValue());
                     }
                 }
-            } else if (te.type() == TsonElementType.STRING) {
+            } else if (te.type().isString()) {
                 return NDocObjEx.of(te.toStr().raw()).asInt();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
@@ -707,7 +713,13 @@ public class NDocObjEx {
                 case BOOLEAN: {
                     return NOptional.of(te.toBoolean().booleanValue());
                 }
-                case STRING: {
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING: {
                     return NLiteral.of(te.toStr().raw()).asBoolean();
                 }
                 case NAME: {
@@ -737,7 +749,13 @@ public class NDocObjEx {
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
             switch (te.type()) {
-                case STRING: {
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING: {
                     return NOptional.of(te.toStr().raw());
                 }
                 case NAME: {
@@ -1130,7 +1148,7 @@ public class NDocObjEx {
                 case 1: {
                     if (taa[0].isNumber()) {
                         return NOptional.of(new TsonNumber2((TsonNumber) taa[0], (TsonNumber) taa[0]));
-                    } else if (taa[0].type() == TsonElementType.STRING || taa[0].type() == TsonElementType.NAME) {
+                    } else if (taa[0].isAnyString()) {
                         Double2 size = HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                         return NOptional.of(
                                 new TsonNumber2(
@@ -1146,14 +1164,14 @@ public class NDocObjEx {
                     TsonNumber yy;
                     if (taa[0].isNumber()) {
                         xx = taa[0].toNumber();
-                    } else if (taa[0].type() == TsonElementType.STRING || taa[0].type() == TsonElementType.NAME) {
+                    } else if (taa[0].isAnyString()) {
                         xx = Tson.of(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).toNumber();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
                     }
                     if (taa[1].isNumber()) {
                         yy = taa[1].toNumber();
-                    } else if (taa[1].type() == TsonElementType.STRING || taa[1].type() == TsonElementType.NAME) {
+                    } else if (taa[1].isAnyString()) {
                         yy = Tson.of(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).toNumber();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
@@ -1167,7 +1185,7 @@ public class NDocObjEx {
             TsonElement taa = te.get();
             if (taa.isNumber()) {
                 return NOptional.of(new TsonNumber2((TsonNumber) taa, (TsonNumber) taa));
-            } else if (taa.type() == TsonElementType.STRING || taa.type() == TsonElementType.NAME) {
+            } else if (taa.isAnyString()) {
                 Double2 size = HAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                 return NOptional.of(
                         new TsonNumber2(
@@ -1484,8 +1502,7 @@ public class NDocObjEx {
                 case OBJECT:
                 case NAMED_PARAMETRIZED_OBJECT:
                 case NAMED_OBJECT:
-                case PARAMETRIZED_OBJECT:
-                {
+                case PARAMETRIZED_OBJECT: {
                     return NDocObjEx.of(te.toObject().body().toArray()).asDouble2Array();
                 }
                 case UPLET:
@@ -1593,14 +1610,7 @@ public class NDocObjEx {
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
-            switch (te.type()) {
-                case STRING: {
-                    return true;
-                }
-                case NAME: {
-                    return true;
-                }
-            }
+            return te.isAnyString();
         }
         return false;
     }
@@ -1611,11 +1621,7 @@ public class NDocObjEx {
         }
         if (element instanceof TsonElement) {
             TsonElement te = (TsonElement) element;
-            switch (te.type()) {
-                case STRING: {
-                    return true;
-                }
-            }
+            return te.isString();
         }
         return false;
     }

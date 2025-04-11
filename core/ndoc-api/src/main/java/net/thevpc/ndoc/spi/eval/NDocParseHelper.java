@@ -21,25 +21,21 @@ import java.util.Set;
 public class NDocParseHelper {
 
     public static String toString(TsonElement e, NDocParseMode mode) {
-        switch (e.type()) {
-            case NAME: {
-                return e.toName().value();
+        if(e.isName()){
+            return e.toName().value();
+        }
+        if(e.isAnyString()){
+            return e.stringValue();
+        }
+        switch (mode) {
+            case ERROR: {
+                throw new IllegalArgumentException("expected string. got " + e);
             }
-            case STRING: {
+            case BEST_ERROR: {
                 return e.toString();
             }
-            default: {
-                switch (mode) {
-                    case ERROR: {
-                        throw new IllegalArgumentException("expected string. got " + e);
-                    }
-                    case BEST_ERROR: {
-                        return e.toString();
-                    }
-                    case NULL: {
-                        return null;
-                    }
-                }
+            case NULL: {
+                return null;
             }
         }
         throw new IllegalArgumentException("expected string. got " + e);
