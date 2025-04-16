@@ -1,7 +1,8 @@
 package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,12 +18,12 @@ public abstract class TsonPanel extends JPanel {
         add(new JScrollPane(view));
     }
 
-    public abstract TsonElement createTson();
+    public abstract NElement createTson();
 
     public void updateContent() {
         String txt = "";
         try {
-            TsonElement e = createTson();
+            NElement e = createTson();
             if (e != null) {
                 txt = e.toString();
             }

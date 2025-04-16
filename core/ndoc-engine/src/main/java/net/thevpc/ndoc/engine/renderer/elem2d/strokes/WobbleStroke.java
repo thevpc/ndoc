@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;
@@ -18,7 +18,7 @@ public class WobbleStroke implements Stroke {
     private float amplitude = 2;
     private float flatness = 1;
 
-    public static Stroke of(TsonElement e) {
+    public static Stroke of(NElement e) {
         NDocObjEx o = NDocObjEx.of(e);
         double detail = 2;
         double amplitude = 2;

@@ -7,8 +7,8 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
 /**
@@ -53,7 +53,7 @@ public class NDocArrowImpl extends NDocNodeParserBase {
 
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         HProp width = item.getProperty(HPropName.WIDTH).orNull();
         HProp height = item.getProperty(HPropName.HEIGHT).orNull();
         HProp base = item.getProperty("base").orNull();
@@ -63,10 +63,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : Tson.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toTson(width.getValue())),
-                height == null ? null : Tson.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toTson(height.getValue())),
-                base == null ? null : Tson.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toTson(base.getValue())),
-                hat == null ? null : Tson.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toTson(base.getValue()))
+                width == null ? null : Tson.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
+                height == null ? null : Tson.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
+                base == null ? null : Tson.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
+                hat == null ? null : Tson.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue()))
         ).build();
     }
 

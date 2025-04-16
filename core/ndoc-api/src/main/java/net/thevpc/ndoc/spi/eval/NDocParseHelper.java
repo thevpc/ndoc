@@ -9,7 +9,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.TsonAnnotation;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class NDocParseHelper {
 
-    public static String toString(TsonElement e, NDocParseMode mode) {
+    public static String toString(NElement e, NDocParseMode mode) {
         if(e.isName()){
             return e.toName().value();
         }
@@ -42,7 +42,7 @@ public class NDocParseHelper {
     }
 
 
-    public static boolean fillAnnotations(TsonElement e, HNode p) {
+    public static boolean fillAnnotations(NElement e, HNode p) {
         for (TsonAnnotation a : e.annotations()) {
             String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
@@ -52,7 +52,7 @@ public class NDocParseHelper {
             }
             // add classes as well
             Set<String> allClasses = new HashSet<>();
-            for (TsonElement cls : a.children()) {
+            for (NElement cls : a.children()) {
                 NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
                 if (ss.isPresent()) {
                     allClasses.addAll(Arrays.asList(ss.get()));

@@ -5,9 +5,10 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HSizeRef;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class NDocValueByName {
         if(hSizeRef==null) {
             hSizeRef = ctx.sizeRef();
         }
-        TsonNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
-                new TsonNumber2(Tson.of(100.0).toNumber(), Tson.of(100.0).toNumber())
+        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
+                new ElemNumber2((NNumberElement)NElements.of().ofDouble(100.0), (NNumberElement)NElements.of().ofDouble(100.0))
         );
 
         Double2 size = new Double2(
@@ -63,9 +64,9 @@ public class NDocValueByName {
     }
 
     public static Double2 getOrigin(HNode t, NDocNodeRendererContext ctx, Double2 a) {
-        TsonNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
+        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
                 .orElseUse(() -> NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new TsonNumber2(Tson.of(0).toNumber(), Tson.of(0).toNumber()));
+                .orElse(new ElemNumber2(NElements.of().ofDouble(0), NElements.of().ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(
                 sr.x(double2OrHAlign.getX()).get(),
@@ -74,9 +75,9 @@ public class NDocValueByName {
     }
 
     public static Double2 getPosition(HNode t, NDocNodeRendererContext ctx, Double2 a) {
-        TsonNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.POSITION)
+        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.POSITION)
                 .orElseUse(() -> NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new TsonNumber2(Tson.of(0).toNumber(), Tson.of(0).toNumber()));
+                .orElse(new ElemNumber2(NElements.of().ofDouble(0), NElements.of().ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(
                 sr.x(double2OrHAlign.getX()).get(),
@@ -84,7 +85,7 @@ public class NDocValueByName {
         );
     }
 
-    public static TsonElement getStroke(HNode t, NDocNodeRendererContext ctx) {
+    public static NElement getStroke(HNode t, NDocNodeRendererContext ctx) {
         return NDocValueByType.getTson(t, ctx, HPropName.STROKE).orNull();
     }
 
@@ -137,7 +138,7 @@ public class NDocValueByName {
     }
 
     public static double getFontSize(HNode t, NDocNodeRendererContext ctx) {
-        TsonElement e = NDocValueByType.getTson(t, ctx, HPropName.FONT_SIZE).orNull();
+        NElement e = NDocValueByType.getTson(t, ctx, HPropName.FONT_SIZE).orNull();
         HSizeRef sr = ctx.sizeRef();
         return Math.min(sr.x(e).orElse(16.0),sr.y(e).orElse(16.0));
     }
@@ -216,7 +217,7 @@ public class NDocValueByName {
             ss.setTranslation(r.get());
             return NOptional.of(ss);
         }
-        if (sv instanceof TsonElement && ((TsonElement) sv).isListContainer()) {
+        if (sv instanceof NElement && ((NElement) sv).isListContainer()) {
             Shadow shadow = new Shadow();
             for (Map.Entry<String, NDocObjEx> e : o.argsOrBodyMap().entrySet()) {
                 switch (e.getKey()) {

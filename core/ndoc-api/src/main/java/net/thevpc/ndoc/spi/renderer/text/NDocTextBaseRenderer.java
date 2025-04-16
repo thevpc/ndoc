@@ -12,7 +12,7 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -90,7 +90,7 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
                             )
                             .stream().map(x
                                             -> {
-                                        TsonElement n = finalCtx.computePropertyValue(p, x).orNull();
+                                NElement n = finalCtx.computePropertyValue(p, x).orNull();
                                         if (n == null) {
                                             return n;
                                         }

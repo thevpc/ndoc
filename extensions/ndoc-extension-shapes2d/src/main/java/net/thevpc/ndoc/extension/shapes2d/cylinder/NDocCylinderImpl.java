@@ -7,8 +7,8 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonPair;
 
 public class NDocCylinderImpl extends NDocNodeParserBase {
@@ -48,7 +48,7 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson (HNode item) {
+    public NElement toElem(HNode item) {
         HProp ellipseHeight = item.getProperty(HPropName.ELLIPSE_H).orNull();
         HProp topColor = item.getProperty(HPropName.TOP_COLOR).orNull();
         HProp segmentCount = item.getProperty(HPropName.SEGMENT_COUNT).orNull();
@@ -56,9 +56,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toTson(ellipseHeight.getValue())),
-                        topColor == null ? null : Tson.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toTson(topColor.getValue())),
-                        segmentCount == null ? null : Tson.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toTson(segmentCount.getValue()))
+                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
+                        topColor == null ? null : Tson.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
+                        segmentCount == null ? null : Tson.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
 
                 )
                 .build();

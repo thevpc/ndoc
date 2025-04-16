@@ -15,8 +15,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ToTsonHelper {
-    List<TsonElement> args = new ArrayList<>();
-    List<TsonElement> children = new ArrayList<>();
+    List<NElement> args = new ArrayList<>();
+    List<NElement> children = new ArrayList<>();
     private String name;
     private HNode node;
     private Predicate<String> exclude;
@@ -36,9 +36,9 @@ public class ToTsonHelper {
         this.engine = engine;
     }
 
-    public TsonElement build() {
-        List<TsonElement> args2 = new ArrayList<>();
-        List<TsonElement> ch = new ArrayList<>();
+    public NElement build() {
+        List<NElement> args2 = new ArrayList<>();
+        List<NElement> ch = new ArrayList<>();
         args2.addAll(args);
         for (HProp p : node.props()) {
             if (
@@ -47,7 +47,7 @@ public class ToTsonHelper {
                             //exclude class and
                             && !defaultExcludeSet.contains(p.getName())
             ) {
-                args2.add(p.toTson());
+                args2.add(p.toElement());
             }
         }
         if (node.children().size() > 0 || node.rules().length > 0) {
@@ -56,7 +56,7 @@ public class ToTsonHelper {
                 ch.add(
                         Tson.ofPair("styles",
                                 Tson.ofObjectBuilder(
-                                        Arrays.stream(rules).map(x -> x.toTson()).toArray(TsonElement[]::new)
+                                        Arrays.stream(rules).map(x -> x.toElement()).toArray(NElement[]::new)
                                 )
                         )
                 );
@@ -64,7 +64,7 @@ public class ToTsonHelper {
             ch.addAll(children);
             for (HNode child : node.children()) {
                 ch.add(
-                        engine.nodeTypeFactory(child.type()).get().toTson(child)
+                        engine.nodeTypeFactory(child.type()).get().toElem(child)
                 );
             }
             TsonObjectBuilder u = Tson.ofObjectBuilder(name, args2.toArray(new TsonElementBase[0]),
@@ -79,7 +79,7 @@ public class ToTsonHelper {
         }
     }
 
-    private void applyAnnotations(TsonElementBuilder u) {
+    private void applyAnnotations(NListContainerElement u) {
         for (String ancestor : node.getAncestors()) {
             u.annotation(ancestor);
         }
@@ -91,16 +91,16 @@ public class ToTsonHelper {
         }
     }
 
-    public ToTsonHelper addArgs(TsonElement... elements) {
+    public ToTsonHelper addArgs(NElement... elements) {
         if (elements != null) {
-            for (TsonElement e : elements) {
+            for (NElement e : elements) {
                 addArg(e);
             }
         }
         return this;
     }
 
-    public ToTsonHelper addArg(TsonElement e) {
+    public ToTsonHelper addArg(NElement e) {
         if (e != null) {
             args.add(e);
         }
@@ -109,21 +109,21 @@ public class ToTsonHelper {
 
     public ToTsonHelper addNonNullPairChild(String name,Object value) {
         if(value!=null){
-            addChild(Tson.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toTson(name)));
+            addChild(Tson.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
         }
         return this;
     }
 
-    public ToTsonHelper addChildren(TsonElement... elements) {
+    public ToTsonHelper addChildren(NElement... elements) {
         if (elements != null) {
-            for (TsonElement e : elements) {
+            for (NElement e : elements) {
                 addChild(e);
             }
         }
         return this;
     }
 
-    public ToTsonHelper addChild(TsonElement e) {
+    public ToTsonHelper addChild(NElement e) {
         if (e != null) {
             children.add(e);
         }
@@ -137,9 +137,9 @@ public class ToTsonHelper {
                     value.indexOf('\n') >= 0
                             || value.indexOf('\r') >= 0;
             if (!multiLine) {
-                addArg(Tson.ofString(value, TsonStringLayout.DOUBLE_QUOTE));
+                addArg(Tson.ofDoubleQuotedString(value));
             } else {
-                addArg(Tson.ofString(value, TsonStringLayout.TRIPLE_DOUBLE_QUOTE));
+                addArg(Tson.ofTripleDoubleQuotedString(value));
             }
         }
         excludeProps(name);
@@ -157,7 +157,7 @@ public class ToTsonHelper {
         if(propNames!=null) {
             for (String propName : propNames) {
                 if(propName!=null) {
-                    TsonElement v = node.getPropertyValue(propName).orNull();
+                    NElement v = node.getPropertyValue(propName).orNull();
                     if (v != null) {
                         addChild(Tson.ofPair(propName, v));
                     }

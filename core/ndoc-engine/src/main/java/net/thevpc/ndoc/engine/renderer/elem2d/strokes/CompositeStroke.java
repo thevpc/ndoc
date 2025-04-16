@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.List;
 public class CompositeStroke implements Stroke {
     private Stroke[] strokes;
 
-    public static Stroke of(TsonElement e, NDocGraphics g) {
+    public static Stroke of(NElement e, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(e);
-        List<TsonElement> args = new ArrayList<>();
+        List<NElement> args = new ArrayList<>();
         args.addAll(o.args());
         args.addAll(o.body());
         return new CompositeStroke(

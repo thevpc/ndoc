@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public interface NDocNodeParser {
     void init(NDocEngine engine);
@@ -18,7 +18,7 @@ public interface NDocNodeParser {
 
     NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context);
 
-    TsonElement toTson(HNode item);
+    NElement toElem(HNode item);
 
     HNode newNode();
 

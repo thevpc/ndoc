@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.spi;
 
 import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public interface NDocNodeFlowControlProcessorContext {
-    TsonElement evalExpression(HNode node, TsonElement expression);
+    NElement evalExpression(HNode node, NElement expression);
 
-    TsonElement resolveVarValue(HNode node, String varName);
+    NElement resolveVarValue(HNode node, String varName);
 }

@@ -22,7 +22,7 @@ public class NDocCtrlCallParser extends NDocNodeParserBase {
 
     @Override
     public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
-        TsonElement c = context.element();
+        NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
@@ -34,7 +34,7 @@ public class NDocCtrlCallParser extends NDocNodeParserBase {
                     return NCallableSupport.of(10, () -> {
                         TsonElementList args = p.params();
                         HNode node = new DefaultHNode(HNodeType.CALL);
-                        for (TsonElement arg : args) {
+                        for (NElement arg : args) {
                             if (arg.isSimplePair()) {
                                 TsonPair pair = arg.toPair();
                                 switch (HUtils.uid(pair.key().stringValue())) {

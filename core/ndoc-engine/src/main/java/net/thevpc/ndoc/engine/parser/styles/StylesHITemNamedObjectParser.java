@@ -11,7 +11,7 @@ import net.thevpc.ndoc.engine.parser.nodes.AbstractHITemNamedObjectParser;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     }
 
     @Override
-    public boolean accept(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public boolean accept(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
 //        HNode node = context.node();
         return true;
 //        if(node==null){
@@ -36,7 +36,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
 
 
     @Override
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         List<HItem> styles = new ArrayList<>();
         NDocDocumentFactory f = context.documentFactory();
         switch (tsonElement.type()) {
@@ -45,7 +45,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case PARAMETRIZED_OBJECT:
             case NAMED_OBJECT:
             {
-                for (TsonElement yy : tsonElement.toObject().body()) {
+                for (NElement yy : tsonElement.toObject().body()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         HStyleParser.parseStyleRule(yy, f, context).get();
@@ -63,7 +63,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                for (TsonElement yy : tsonElement.toArray().body()) {
+                for (NElement yy : tsonElement.toArray().body()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get().asSevere(), context.source())));

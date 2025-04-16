@@ -1,29 +1,29 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 
-public class Rotation implements ToTson {
-    private TsonElement angle;
-    private TsonElement x;
-    private TsonElement y;
+public class Rotation implements NToElement {
+    private NElement angle;
+    private NElement x;
+    private NElement y;
 
-    public Rotation(TsonElement angle, TsonElement x, TsonElement y) {
+    public Rotation(NElement angle, NElement x, NElement y) {
         this.angle = angle;
         this.x = x;
         this.y = y;
     }
 
-    public TsonElement getAngle() {
+    public NElement getAngle() {
         return angle;
     }
 
-    public TsonElement getX() {
+    public NElement getX() {
         return x;
     }
 
-    public TsonElement getY() {
+    public NElement getY() {
         return y;
     }
 
@@ -36,12 +36,12 @@ public class Rotation implements ToTson {
     }
 
     @Override
-    public TsonElement toTson() {
-        return Tson.ofUplet(
+    public NElement toElement() {
+        return NElements.of().ofUplet(
                 angle,
                 x,
                 y
-        ).build();
+        );
     }
 
 }

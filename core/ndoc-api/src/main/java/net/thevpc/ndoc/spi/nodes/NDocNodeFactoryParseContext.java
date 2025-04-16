@@ -6,8 +6,8 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.HLogger;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.tson.TsonElement;
 
 public interface NDocNodeFactoryParseContext {
 
@@ -23,7 +23,7 @@ public interface NDocNodeFactoryParseContext {
 
     HNode[] nodePath();
 
-    TsonElement element();
+    NElement element();
 
     HResource source();
 
@@ -33,6 +33,6 @@ public interface NDocNodeFactoryParseContext {
 
     NDocDocumentFactory documentFactory();
 
-    TsonElement asPathRef(TsonElement element);
+    NElement asPathRef(NElement element);
 
 }

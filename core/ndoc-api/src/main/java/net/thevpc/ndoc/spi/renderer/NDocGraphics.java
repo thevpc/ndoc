@@ -7,8 +7,8 @@ import net.thevpc.ndoc.api.model.elem3d.Light3D;
 import net.thevpc.ndoc.api.model.elem3d.Matrix3D;
 import net.thevpc.ndoc.api.model.elem3d.Projection3D;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -132,8 +132,8 @@ public interface NDocGraphics {
 
     void dispose();
 
-    Shape createShape(TsonElement e);
+    Shape createShape(NElement e);
 
-    Stroke createStroke(TsonElement strokeElem);
+    Stroke createStroke(NElement strokeElem);
 
 }

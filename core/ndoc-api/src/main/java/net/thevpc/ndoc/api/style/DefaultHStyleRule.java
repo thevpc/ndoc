@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 
 import java.util.*;
 
@@ -44,16 +44,17 @@ public class DefaultHStyleRule implements HStyleRule {
         this.styles.set(styles);
     }
 
-    public TsonElement toTson() {
+    public NElement toElement() {
+        NElements elem = NElements.of();
         if (selector == null) {
-            return Tson.ofPair(
-                    Tson.ofString("*"),
-                    styles.toTson()
+            return elem.ofPair(
+                    elem.ofString("*"),
+                    styles.toElement()
             );
         }
-        return Tson.ofPair(
-                selector.toTson(),
-                styles.toTson()
+        return elem.ofPair(
+                selector.toElement(),
+                styles.toElement()
         );
     }
 

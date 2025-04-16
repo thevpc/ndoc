@@ -7,9 +7,9 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 /**
  *
@@ -53,7 +53,7 @@ public class ScoreBoardImpl extends NDocNodeParserBase {
 
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         HProp width = item.getProperty(HPropName.WIDTH).orNull();
         HProp height = item.getProperty(HPropName.HEIGHT).orNull();
         HProp points = item.getProperty("function").orNull();
@@ -62,9 +62,9 @@ public class ScoreBoardImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : Tson.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toTson(width.getValue())),
-                height == null ? null : Tson.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toTson(height.getValue())),
-                points == null ? null : Tson.ofPair("fun", HUtils.toTson(points.getValue()))
+                width == null ? null : Tson.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
+                height == null ? null : Tson.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
+                points == null ? null : Tson.ofPair("fun", HUtils.toElement(points.getValue()))
         ).build();
     }
 

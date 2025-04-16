@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonElementType;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class StrokeFactory {
     public static final float[] DASH_NORMAL = new float[]{5};
     public static final float[] DASH_SMALL = new float[]{3};
 
-    public static Stroke createStroke(String name, TsonElement e, NDocGraphics g) {
+    public static Stroke createStroke(String name, NElement e, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(e);
         switch (net.thevpc.ndoc.api.util.HUtils.uid(name)) {
             case "basic":
@@ -59,7 +59,7 @@ public class StrokeFactory {
     private static Stroke createShaped(NDocObjEx o, NDocGraphics g) {
         List<Shape> base = new ArrayList<>();
         double advance = 15;
-        for (TsonElement arg : o.args()) {
+        for (NElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
                             || arg.type() == TsonElementType.ARRAY
@@ -100,7 +100,7 @@ public class StrokeFactory {
                 }
             }
         } else {
-            for (TsonElement ee : o.argsOrBody()) {
+            for (NElement ee : o.argsOrBody()) {
                 NDocObjEx objEx = NDocObjEx.of(ee);
                 NOptional<NDocObjEx.SimplePair> sp = objEx.asSimplePair();
                 if (sp.isPresent()) {

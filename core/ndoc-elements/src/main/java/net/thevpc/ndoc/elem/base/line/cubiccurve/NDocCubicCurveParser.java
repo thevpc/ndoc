@@ -7,8 +7,9 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonPair;
 
 public class NDocCubicCurveParser extends NDocNodeParserBase {
@@ -21,8 +22,8 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
         switch (info.currentArg.type()) {
             case PAIR: {
                 TsonPair pp = info.currentArg.toPair();
-                TsonElement k = pp.key();
-                TsonElement v = pp.value();
+                NElement k = pp.key();
+                NElement v = pp.value();
                 NDocObjEx ph = NDocObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
@@ -46,7 +47,7 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         return ToTsonHelper.of(
                         item, engine()
                 ).addChildProps(new String[]{HPropName.FROM, HPropName.TO, HPropName.START_ARROW

@@ -91,7 +91,7 @@ public class NDocViewerConfigManager {
 
     public void saveViewerConfig(NDocViewerConfig config) {
         config = validate(config);
-        TsonElement elem = Tson.serializer().serialize(config);
+        NElement elem = Tson.serializer().serialize(config);
         viewerConfigFile.mkParentDirs();
         try (OutputStream os = viewerConfigFile.getOutputStream()) {
             Tson.writer().write(os, elem);

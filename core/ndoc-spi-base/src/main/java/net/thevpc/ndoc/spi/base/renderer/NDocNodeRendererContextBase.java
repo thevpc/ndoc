@@ -9,6 +9,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
@@ -20,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.thevpc.ndoc.api.util.TsonUtils;
+import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContextBaseBase {
 
@@ -116,13 +117,13 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     }
 
     @Override
-    public NOptional<TsonElement> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<NElement> computePropertyValue(HNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<TsonElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
             NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(t);
-            TsonElement u = ne.eval(TsonUtils.toTson(y));
+            NElement u = ne.eval(NElemUtils.toElement(y));
             if (u != null) {
                 return NOptional.of(u);
             }
@@ -130,12 +131,12 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         return (NOptional) r;
     }
 
-    private NOptional<TsonElement> computePropertyValueImpl(HNode t, String... all) {
+    private NOptional<NElement> computePropertyValueImpl(HNode t, String... all) {
         if (t != null) {
             for (String s : all) {
                 NOptional<HProp> o = engine().computeProperty(t, s);
                 if (o.isPresent()) {
-                    NOptional<TsonElement> oo = o.map(HProp::getValue).filter(x -> x != null);
+                    NOptional<NElement> oo = o.map(HProp::getValue).filter(x -> x != null);
                     if (oo.isPresent()) {
                         return oo;
                     }

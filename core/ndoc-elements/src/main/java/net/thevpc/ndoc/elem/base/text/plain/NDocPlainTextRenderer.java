@@ -13,7 +13,7 @@ import net.thevpc.ndoc.spi.renderer.text.NDocTextBaseRenderer;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 
@@ -26,7 +26,7 @@ public class NDocPlainTextRenderer extends NDocTextBaseRenderer {
     public NDocTextRendererBuilder createRichTextHelper(HNode p, NDocNodeRendererContext ctx) {
         Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
         NDocTextRendererBuilder helper = new NDocTextRendererBuilderImpl(fg);
-        TsonElement d = p.getPropertyValue(HPropName.VALUE).orElse(Tson.of(""));
+        NElement d = p.getPropertyValue(HPropName.VALUE).orElse(NElements.of().of(""));
         String message = NStringUtils.trim(d.toStr().value());
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {

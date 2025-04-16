@@ -11,7 +11,7 @@ import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonUplet;
 
 import java.util.*;
@@ -22,19 +22,19 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     }
 
     @Override
-    public boolean accept(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public boolean accept(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         return true;
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case UPLET:
             case NAMED_UPLET:
             {
                 TsonUplet uplet = tsonElement.toUplet();
                 if(uplet.isNamed()) {
-                    List<TsonElement> u = uplet.params().toList();
+                    List<NElement> u = uplet.params().toList();
                     if (u.isEmpty()) {
                         context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
                         return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
@@ -42,7 +42,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                     HNode putInto = context.node();
                     List<HItem> loaded = new ArrayList<>();
                     NRef<Boolean> someLoaded = NRef.of(false);
-                    for (TsonElement ee : u) {
+                    for (NElement ee : u) {
                         NDocObjEx t = NDocObjEx.of(ee);
                         NOptional<String[]> p = t.asStringArrayOrString();
                         if (p.isPresent()) {

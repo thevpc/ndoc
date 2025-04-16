@@ -4,14 +4,14 @@
  */
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 
 /**
  * @author vpc
  */
-public class HSize implements ToTson {
+public class HSize implements NToElement {
 
     private double value;
     private boolean percent;
@@ -30,7 +30,7 @@ public class HSize implements ToTson {
     }
 
     @Override
-    public TsonElement toTson() {
-        return Tson.parseNumber(value + "%");
+    public NElement toElement() {
+        return NElements.of().ofNumber(value + "%");
     }
 }

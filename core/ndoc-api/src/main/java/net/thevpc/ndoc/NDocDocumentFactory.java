@@ -2,7 +2,7 @@ package net.thevpc.ndoc;
 
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public interface NDocDocumentFactory {
 
@@ -40,7 +40,7 @@ public interface NDocDocumentFactory {
 
     HNode ofAssign();
 
-    HNode ofAssign(String name, TsonElement value);
+    HNode ofAssign(String name, NElement value);
 
     HNode ofFlow();
 

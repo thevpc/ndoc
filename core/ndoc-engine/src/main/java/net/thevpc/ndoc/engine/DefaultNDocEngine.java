@@ -29,11 +29,12 @@ import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonDocument;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonReader;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
@@ -66,7 +67,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
 
     @Override
-    public NOptional<HItem> newNode(TsonElement element, NDocNodeFactoryParseContext ctx) {
+    public NOptional<HItem> newNode(NElement element, NDocNodeFactoryParseContext ctx) {
         NAssert.requireNonNull(ctx, "context");
         NAssert.requireNonNull(element, "element");
         NDocNodeFactoryParseContext newContext = new DefaultNDocNodeFactoryParseContext(
@@ -411,7 +412,7 @@ public class DefaultNDocEngine implements NDocEngine {
             return NOptional.ofNamedEmpty("document");
         }
         HResource source = result.source();
-        TsonElement c = doc.getContent();
+        NElement c = doc.getContent();
         NDocument docd = documentFactory().ofDocument();
         docd.resources().add(source);
         docd.root().setSource(source);
@@ -444,7 +445,7 @@ public class DefaultNDocEngine implements NDocEngine {
             messages.log(HMsg.of(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex, source));
             return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path, ex));
         }
-        TsonElement c = doc.getContent();
+        NElement c = doc.getContent();
         ArrayList<HNode> parents = new ArrayList<>();
         if (into != null) {
             parents.add(into);
@@ -460,15 +461,15 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public TsonElement toTson(NDocument doc) {
+    public NElement toElement(NDocument doc) {
         HNode r = doc.root();
-        return nodeTypeFactory(r.type()).get().toTson(r);
+        return nodeTypeFactory(r.type()).get().toElem(r);
     }
 
 
     @Override
-    public TsonElement toTson(HNode node) {
-        return nodeTypeFactory(node.type()).get().toTson(node);
+    public NElement toElement(HNode node) {
+        return nodeTypeFactory(node.type()).get().toElem(node);
     }
 
 

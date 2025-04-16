@@ -24,10 +24,10 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -149,11 +149,11 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
 
-    public Shape createShape(TsonElement e) {
+    public Shape createShape(NElement e) {
         return ShapeFactory.createShape(e);
     }
 
-    public Stroke createStroke(TsonElement e) {
+    public Stroke createStroke(NElement e) {
         if (e == null || e.isNull()) {
             return null;
         }
@@ -175,7 +175,14 @@ public class NDocGraphicsImpl implements NDocGraphics {
                 return StrokeFactory.createBasic(o);
             }
             case NAME:
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 return StrokeFactory.createStroke(o.asStringOrName().get(), e, this);
             }
         }

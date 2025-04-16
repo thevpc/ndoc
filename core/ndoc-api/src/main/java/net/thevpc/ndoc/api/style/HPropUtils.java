@@ -3,7 +3,7 @@ package net.thevpc.ndoc.api.style;
 import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
 import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
 import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.util.TsonUtils;
+import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
 
@@ -21,7 +21,7 @@ public class HPropUtils {
                 v.addAll(Arrays.asList(hPoint2DArray.get()));
             }
             v.add(point);
-            line.setProperty(HPropName.POINTS, TsonUtils.toTson(v.toArray(new HPoint2D[0])));
+            line.setProperty(HPropName.POINTS, NElemUtils.toElement(v.toArray(new HPoint2D[0])));
             return true;
         }
         return false;
@@ -36,7 +36,7 @@ public class HPropUtils {
                 v.addAll(Arrays.asList(hPoint2DArray.get()));
             }
             v.add(point);
-            line.setProperty(HPropName.POINTS, TsonUtils.toTson(v.toArray(new HPoint3D[0])));
+            line.setProperty(HPropName.POINTS, NElemUtils.toElement(v.toArray(new HPoint3D[0])));
             return true;
         }
         return false;

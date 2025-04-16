@@ -10,6 +10,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
 
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBaseBase {
 
@@ -131,11 +132,11 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NOptional<TsonElement> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<NElement> computePropertyValue(HNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<TsonElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
-            TsonElement y = r.get();
+            NElement y = r.get();
             NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(t);
             y = ne.eval(y);
             if (y != null) {
@@ -145,7 +146,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
         return (NOptional) r;
     }
 
-    private NOptional<TsonElement> computePropertyValueImpl(HNode t, String... all) {
+    private NOptional<NElement> computePropertyValueImpl(HNode t, String... all) {
         NOptional y = null;
         if (t != null) {
             y = engine().computeProperty(t, all).map(HProp::getValue).filter(x -> x != null);
@@ -154,7 +155,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
             }
         }
         if (this.defaultStyles != null) {
-            NOptional<TsonElement> u = this.defaultStyles.get(all).map(HProp::getValue).filter(x -> x != null);
+            NOptional<NElement> u = this.defaultStyles.get(all).map(HProp::getValue).filter(x -> x != null);
             if (u.isPresent()) {
                 return u;
             }

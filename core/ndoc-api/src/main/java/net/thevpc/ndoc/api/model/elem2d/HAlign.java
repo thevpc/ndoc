@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
-public enum HAlign implements ToTson {
+public enum HAlign implements NToElement {
     TOP_LEFT,
     TOP_RIGHT,
     TOP,
@@ -61,7 +61,7 @@ public enum HAlign implements ToTson {
     }
 
     @Override
-    public TsonElement toTson() {
-        return Tson.of(HUtils.uid(name()));
+    public NElement toElement() {
+        return NElements.of().ofName(HUtils.uid(name()));
     }
 }

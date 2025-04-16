@@ -7,11 +7,13 @@ import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.util.DefaultColorPalette;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NListContainerElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -19,15 +21,15 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.List;
 
-import net.thevpc.ndoc.api.util.TsonUtils;
+import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.nuts.util.NMsg;
 
 public class NDocObjEx {
 
     private Object element;
     private String name;
-    private List<TsonElement> args = new ArrayList<>();
-    private List<TsonElement> children = new ArrayList<>();
+    private List<NElement> args = new ArrayList<>();
+    private List<NElement> children = new ArrayList<>();
     private static Map<String, Color> predifinedColors = new HashMap<>();
 
     private static NOptional<Color> getRegisteredColor(String name) {
@@ -318,8 +320,8 @@ public class NDocObjEx {
     }
 
     public NDocObjEx(Object element) {
-        if (element instanceof TsonElementBuilder) {
-            element = ((TsonElementBuilder) element).build();
+        if (element instanceof NListContainerElement) {
+            element = ((NListContainerElement) element);
         }
         this.element = element;
     }
@@ -327,8 +329,8 @@ public class NDocObjEx {
     private void _parsedChildren() {
         if (!parsedChildren) {
             parsedChildren = true;
-            if (element instanceof TsonListContainer) {
-                switch (((TsonListContainer) element).type()) {
+            if (element instanceof NListContainerElement) {
+                switch (((NListContainerElement) element).type()) {
                     case OBJECT:
                     case NAMED_PARAMETRIZED_OBJECT:
                     case PARAMETRIZED_OBJECT:
@@ -341,7 +343,7 @@ public class NDocObjEx {
 
                     case UPLET:
                     case NAMED_UPLET: {
-                        TsonListContainer te = (TsonListContainer) element;
+                        NListContainerElement te = (NListContainerElement) element;
                         name = net.thevpc.ndoc.api.util.HUtils.uid(te.name());
                         TsonElementList a = te.params();
                         if (a != null) {
@@ -360,11 +362,11 @@ public class NDocObjEx {
     }
 
     public NOptional<SimplePair> asSimplePair() {
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case PAIR: {
-                    TsonElement key = te.toPair().key();
+                    NElement key = te.toPair().key();
                     NOptional<String> s = NDocObjEx.of(key).asStringOrName();
                     if (s.isPresent()) {
                         return NOptional.of(
@@ -387,8 +389,8 @@ public class NDocObjEx {
         return name;
     }
 
-    public List<TsonElement> argsOrBody() {
-        List<TsonElement> a = new ArrayList<>();
+    public List<NElement> argsOrBody() {
+        List<NElement> a = new ArrayList<>();
         a.addAll(args());
         a.addAll(body());
         return a;
@@ -396,13 +398,13 @@ public class NDocObjEx {
 
     public Map<String, NDocObjEx> argsOrBodyMap() {
         Map<String, NDocObjEx> a = new HashMap<>();
-        for (TsonElement arg : args()) {
+        for (NElement arg : args()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
             }
         }
-        for (TsonElement arg : body()) {
+        for (NElement arg : body()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
@@ -413,7 +415,7 @@ public class NDocObjEx {
 
     public Map<String, NDocObjEx> argsMap() {
         Map<String, NDocObjEx> a = new HashMap<>();
-        for (TsonElement arg : args()) {
+        for (NElement arg : args()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
@@ -422,12 +424,12 @@ public class NDocObjEx {
         return a;
     }
 
-    public List<TsonElement> args() {
+    public List<NElement> args() {
         _parsedChildren();
         return args;
     }
 
-    public List<TsonElement> body() {
+    public List<NElement> body() {
         _parsedChildren();
         return children;
     }
@@ -441,8 +443,8 @@ public class NDocObjEx {
         if (element instanceof Color) {
             return NOptional.of((Color) element);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case BYTE:
                 case BIG_INTEGER:
@@ -619,8 +621,8 @@ public class NDocObjEx {
         if (element instanceof Number) {
             return NOptional.of(((Number) element));
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             if (te.type().isNumber()) {
                 return NOptional.of(te.toNumber().numberValue());
             }
@@ -637,8 +639,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return NLiteral.of(element).asDouble();
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             if (te.type().isNumber()) {
                 switch (te.type()) {
                     case BYTE:
@@ -665,8 +667,8 @@ public class NDocObjEx {
         return asInt().orElseUse(() -> asBoolean().map(x -> x ? 1 : 0));
     }
 
-    public NOptional<TsonElement> asTsonInt() {
-        return asInt().map(x -> Tson.of(x));
+    public NOptional<NElement> asTsonInt() {
+        return asInt().map(x -> NElements.of().of(x));
     }
 
     public NOptional<Integer> asInt() {
@@ -680,8 +682,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return NLiteral.of(element).asInt();
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             if (te.type().isNumber()) {
                 switch (te.type()) {
                     case BYTE:
@@ -707,8 +709,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return NLiteral.of(element).asBoolean();
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case BOOLEAN: {
                     return NOptional.of(te.toBoolean().booleanValue());
@@ -730,13 +732,13 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("boolean from " + element);
     }
 
-    public NOptional<TsonElement> asTsonStringOrName() {
+    public NOptional<NElement> asTsonStringOrName() {
         if (element instanceof String) {
-            return NOptional.of(Tson.of((String) element));
+            return NOptional.of(NElements.of().of((String) element));
         }
-        if (element instanceof TsonElement) {
-            if (((TsonElement) element).isAnyString()) {
-                return NOptional.of((TsonElement) element);
+        if (element instanceof NElement) {
+            if (((NElement) element).isAnyString()) {
+                return NOptional.of((NElement) element);
             }
         }
         return NOptional.ofNamedEmpty("string from " + element);
@@ -746,8 +748,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return NOptional.of((String) element);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case DOUBLE_QUOTED_STRING:
                 case SINGLE_QUOTED_STRING:
@@ -770,8 +772,8 @@ public class NDocObjEx {
         if (element instanceof int[]) {
             return NOptional.of((int[]) element);
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             int[] aa = new int[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Integer> d = NDocObjEx.of(arr[i]).asInt();
@@ -783,8 +785,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -844,17 +846,15 @@ public class NDocObjEx {
         });
     }
 
-    public NOptional<TsonElement[]> asTsonArray() {
-        if (element instanceof TsonElement[]) {
-            return NOptional.of(((TsonElement[]) element));
+    public NOptional<NElement[]> asTsonArray() {
+        if (element instanceof NElement[]) {
+            return NOptional.of(((NElement[]) element));
         }
         if (element instanceof double[]) {
-            return NOptional.of(
-                    Arrays.stream((double[]) element).mapToObj(x -> Tson.of(x)).toArray(TsonElement[]::new)
-            );
+            return NOptional.of(NElements.of().ofDoubleArray((double[]) element).children().toArray(new NElement[0]));
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -862,7 +862,7 @@ public class NDocObjEx {
                 case NAMED_ARRAY: {
                     TsonArray a = te.toArray();
                     if (a.isNamed() || a.isParametrized()) {
-                        return NOptional.of(new TsonElement[]{te});
+                        return NOptional.of(new NElement[]{te});
                     }
                     return NOptional.of(te.toArray().body().toArray());
                 }
@@ -872,7 +872,7 @@ public class NDocObjEx {
                 case PARAMETRIZED_OBJECT: {
                     TsonObject a = te.toObject();
                     if (a.isNamed() || a.isParametrized()) {
-                        return NOptional.of(new TsonElement[]{te});
+                        return NOptional.of(new NElement[]{te});
                     }
                     return NOptional.of(te.toObject().body().toArray());
                 }
@@ -899,15 +899,15 @@ public class NDocObjEx {
                     , ((Double4) element).getX4()
             }).asTsonArray();
         }
-        return NOptional.ofNamedEmpty("TsonElement[] from " + element);
+        return NOptional.ofNamedEmpty("NElement[] from " + element);
     }
 
     public NOptional<double[]> asDoubleArray() {
         if (element instanceof double[]) {
             return NOptional.of((double[]) element);
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             double[] aa = new double[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
@@ -919,8 +919,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -976,8 +976,8 @@ public class NDocObjEx {
         if (element instanceof Object[]) {
             return NOptional.of((Object[]) element);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_ARRAY:
@@ -1033,8 +1033,8 @@ public class NDocObjEx {
         if (element instanceof String[]) {
             return NOptional.of((String[]) element);
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             String[] aa = new String[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<String> d = NDocObjEx.of(arr[i]).asStringOrName();
@@ -1046,8 +1046,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -1074,8 +1074,8 @@ public class NDocObjEx {
         if (element instanceof boolean[]) {
             return NOptional.of((boolean[]) element);
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             boolean[] aa = new boolean[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Boolean> d = NDocObjEx.of(arr[i]).asBoolean();
@@ -1087,8 +1087,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -1140,20 +1140,20 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("Double from " + element);
     }
 
-    public NOptional<TsonNumber2> asTsonNumber2Or1OrHAlign() {
-        NOptional<TsonElement[]> ta = asTsonArray();
+    public NOptional<ElemNumber2> asTsonNumber2Or1OrHAlign() {
+        NOptional<NElement[]> ta = asTsonArray();
         if (ta.isPresent()) {
-            TsonElement[] taa = ta.get();
+            NElement[] taa = ta.get();
             switch (taa.length) {
                 case 1: {
                     if (taa[0].isNumber()) {
-                        return NOptional.of(new TsonNumber2((TsonNumber) taa[0], (TsonNumber) taa[0]));
+                        return NOptional.of(new ElemNumber2((TsonNumber) taa[0], (TsonNumber) taa[0]));
                     } else if (taa[0].isAnyString()) {
                         Double2 size = HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                         return NOptional.of(
-                                new TsonNumber2(
-                                        Tson.of(size.getX()).toNumber(),
-                                        Tson.of(size.getY()).toNumber()
+                                new ElemNumber2(
+                                        NElements.of().of(size.getX()).toNumber(),
+                                        NElements.of().of(size.getY()).toNumber()
                                 )
                         );
                     }
@@ -1165,32 +1165,32 @@ public class NDocObjEx {
                     if (taa[0].isNumber()) {
                         xx = taa[0].toNumber();
                     } else if (taa[0].isAnyString()) {
-                        xx = Tson.of(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).toNumber();
+                        xx = NElements.of().of(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).toNumber();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
                     }
                     if (taa[1].isNumber()) {
                         yy = taa[1].toNumber();
                     } else if (taa[1].isAnyString()) {
-                        yy = Tson.of(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).toNumber();
+                        yy = NElements.of().of(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).toNumber();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
                     }
-                    return NOptional.of(new TsonNumber2(xx, yy));
+                    return NOptional.of(new ElemNumber2(xx, yy));
                 }
             }
         }
-        NOptional<TsonElement> te = asTson();
+        NOptional<NElement> te = asTson();
         if (te.isPresent()) {
-            TsonElement taa = te.get();
+            NElement taa = te.get();
             if (taa.isNumber()) {
-                return NOptional.of(new TsonNumber2((TsonNumber) taa, (TsonNumber) taa));
+                return NOptional.of(new ElemNumber2((TsonNumber) taa, (TsonNumber) taa));
             } else if (taa.isAnyString()) {
                 Double2 size = HAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                 return NOptional.of(
-                        new TsonNumber2(
-                                Tson.of(size.getX()).toNumber(),
-                                Tson.of(size.getY()).toNumber()
+                        new ElemNumber2(
+                                NElements.of().of(size.getX()).toNumber(),
+                                NElements.of().of(size.getY()).toNumber()
                         )
                 );
             }
@@ -1234,26 +1234,26 @@ public class NDocObjEx {
             switch (dd.length) {
                 case 1: {
                     return NOptional.of(new Rotation(
-                            Tson.of(dd[0]),
-                            Tson.of(50),
-                            Tson.of(50)
+                            NElements.of().of(dd[0]),
+                            NElements.of().of(50),
+                            NElements.of().of(50)
                     ));
                 }
                 case 3: {
                     return NOptional.of(new Rotation(
-                            Tson.of(dd[0]),
-                            Tson.of(50),
-                            Tson.of(50)
+                            NElements.of().of(dd[0]),
+                            NElements.of().of(50),
+                            NElements.of().of(50)
                     ));
                 }
             }
         }
-        NOptional<TsonElement> dd = asTson();
+        NOptional<NElement> dd = asTson();
         if (dd.isPresent()) {
             return NOptional.of(new Rotation(
                     dd.get(),
-                    Tson.of(50),
-                    Tson.of(50)
+                    NElements.of().of(50),
+                    NElements.of().of(50)
             ));
         }
         return NOptional.ofNamedEmpty("Rotation from " + element);
@@ -1374,7 +1374,7 @@ public class NDocObjEx {
             Double width = null;
             Double height = null;
             if (u.isPresent()) {
-                for (TsonElement arg : f.params()) {
+                for (NElement arg : f.params()) {
                     NOptional<Number> n = NDocObjEx.of(arg).asNumber();
                     if (n.isPresent()) {
                         if (width == null) {
@@ -1478,8 +1478,8 @@ public class NDocObjEx {
                     Arrays.stream((HPoint2D[]) element).map(x -> new Double2(x.getX(), x.getY())).toArray(Double2[]::new)
             );
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             Double2[] aa = new Double2[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Double2> d = NDocObjEx.of(arr[i]).asDouble2();
@@ -1491,8 +1491,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case NAMED_PARAMETRIZED_ARRAY:
                 case PARAMETRIZED_ARRAY:
@@ -1518,8 +1518,8 @@ public class NDocObjEx {
         if (element instanceof Double3[]) {
             return NOptional.of((Double3[]) element);
         }
-        if (element instanceof TsonElement[]) {
-            TsonElement[] arr = (TsonElement[]) element;
+        if (element instanceof NElement[]) {
+            NElement[] arr = (NElement[]) element;
             Double3[] aa = new Double3[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Double3> d = NDocObjEx.of(arr[i]).asDouble3();
@@ -1531,8 +1531,8 @@ public class NDocObjEx {
             }
             return NOptional.of(aa);
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
@@ -1578,23 +1578,23 @@ public class NDocObjEx {
         if (element instanceof Number) {
             return true;
         }
-        if (element instanceof TsonElement) {
-            return ((TsonElement) element).isNumber();
+        if (element instanceof NElement) {
+            return ((NElement) element).isNumber();
         }
         return false;
     }
 
-    public NOptional<TsonElement> asTson() {
+    public NOptional<NElement> asTson() {
         try {
-            return NOptional.of(TsonUtils.toTson(element));
+            return NOptional.of(NElemUtils.toElement(element));
         } catch (Exception e) {
             return NOptional.ofEmpty(NMsg.ofC("not tson : %s : %s", e, element));
         }
     }
 
     public NOptional<String> asName() {
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             switch (te.type()) {
                 case NAME: {
                     return NOptional.of(te.toName().value());
@@ -1608,8 +1608,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return true;
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             return te.isAnyString();
         }
         return false;
@@ -1619,8 +1619,8 @@ public class NDocObjEx {
         if (element instanceof String) {
             return true;
         }
-        if (element instanceof TsonElement) {
-            TsonElement te = (TsonElement) element;
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
             return te.isString();
         }
         return false;
@@ -1629,10 +1629,10 @@ public class NDocObjEx {
     public static class SimplePair {
 
         private String name;
-        private TsonElement key;
+        private NElement key;
         private NDocObjEx value;
 
-        public SimplePair(String name, TsonElement key, NDocObjEx value) {
+        public SimplePair(String name, NElement key, NDocObjEx value) {
             this.name = name;
             this.key = key;
             this.value = value;
@@ -1646,7 +1646,7 @@ public class NDocObjEx {
             return name;
         }
 
-        public TsonElement getKey() {
+        public NElement getKey() {
             return key;
         }
 

@@ -1,11 +1,10 @@
 package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -204,33 +203,33 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     }
 
     @Override
-    public TsonElement toTson() {
+    public NElement toElement() {
         if (important) {
-            return Tson.ofString("$");
+            return NElements.of().ofString("$");
         }
-        List<TsonElement> c = new ArrayList<>();
+        List<NElement> c = new ArrayList<>();
         if (!names.isEmpty()) {
             for (String name : names) {
-                c.add(Tson.ofString(name));
+                c.add(NElements.of().ofString(name));
             }
         }
         if (!types.isEmpty()) {
             for (String name : types) {
-                c.add(Tson.ofName(NNameFormat.LOWER_KEBAB_CASE.format(name)));
+                c.add(NElements.of().ofName(NNameFormat.LOWER_KEBAB_CASE.format(name)));
             }
         }
         if (!classes.isEmpty()) {
             for (String name : names) {
-                c.add(Tson.ofName("." + name));
+                c.add(NElements.of().ofName("." + name));
             }
         }
         if (c.isEmpty()) {
-            return Tson.ofString("*");
+            return NElements.of().ofString("*");
         }
         if (c.size() == 1) {
             return c.get(0);
         }
-        return Tson.ofUplet(c.toArray(new TsonElementBase[0])).build();
+        return NElements.of().ofUplet(c.toArray(new NElement[0]));
     }
 
     @Override

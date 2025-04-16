@@ -9,11 +9,12 @@ import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonPair;
 
 public abstract class PlantUmlParserBase extends NDocNodeParserBase {
@@ -23,9 +24,16 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 return NOptional.of(
                         context.documentFactory().ofText(tsonElement.toStr().raw())
                 );
@@ -35,9 +43,16 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    protected String acceptTypeName(TsonElement e) {
+    protected String acceptTypeName(NElement e) {
         switch (e.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 return id();
             }
         }
@@ -45,15 +60,22 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    public void onStartParsingItem(String id, HNode node, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, HNode node, NElement tsonElement, NDocNodeFactoryParseContext context) {
         super.onStartParsingItem(id, node, tsonElement, context);
-        node.setProperty(HPropName.MODE, Tson.of(id));
+        node.setProperty(HPropName.MODE, NElements.of().of(id));
     }
 
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 info.node.setProperty(HPropName.VALUE, info.currentArg);
                 return true;
             }
@@ -72,7 +94,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElements.of().of(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
@@ -101,7 +123,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         return ToTsonHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)

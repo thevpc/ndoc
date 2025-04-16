@@ -10,6 +10,8 @@ import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.*;
 
@@ -22,7 +24,7 @@ public class DefaultHNode implements HNode {
     private HResource source;
     protected HNode parent;
     private HProperties properties = new HProperties();
-    private Map<String,TsonElement> vars = new LinkedHashMap<>();
+    private Map<String,NElement> vars = new LinkedHashMap<>();
     private List<HNode> children = new ArrayList<>();
     private List<HStyleRule> styleRules = new ArrayList<>();
 
@@ -46,11 +48,11 @@ public class DefaultHNode implements HNode {
     }
 
     public String[] getAncestors() {
-        NOptional<TsonElement> style = getPropertyValue(HPropName.ANCESTORS);
+        NOptional<NElement> style = getPropertyValue(HPropName.ANCESTORS);
         if (style.isEmpty()) {
             return new String[0];
         }
-        TsonElement v = style.get();
+        NElement v = style.get();
         if (v == null) {
             return new String[0];
         }
@@ -67,7 +69,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String[] getStyleClasses() {
-        NOptional<TsonElement> style = getPropertyValue(HPropName.CLASS);
+        NOptional<NElement> style = getPropertyValue(HPropName.CLASS);
         if (style.isEmpty()) {
             return new String[0];
         }
@@ -104,11 +106,11 @@ public class DefaultHNode implements HNode {
 
     @Override
     public boolean isTemplate() {
-        NOptional<TsonElement> style = getPropertyValue(HPropName.TEMPLATE);
+        NOptional<NElement> style = getPropertyValue(HPropName.TEMPLATE);
         if (style.isEmpty()) {
             return false;
         }
-        TsonElement v = style.get();
+        NElement v = style.get();
         if (v == null) {
             return false;
         }
@@ -130,11 +132,11 @@ public class DefaultHNode implements HNode {
 
     @Override
     public boolean isDisabled() {
-        NOptional<TsonElement> style = getPropertyValue(HPropName.HIDE);
+        NOptional<NElement> style = getPropertyValue(HPropName.HIDE);
         if (style.isEmpty()) {
             return false;
         }
-        TsonElement v = style.get();
+        NElement v = style.get();
         if (v == null) {
             return false;
         }
@@ -148,11 +150,11 @@ public class DefaultHNode implements HNode {
     }
 
     public String name() {
-        NOptional<TsonElement> style = getPropertyValue(HPropName.NAME);
+        NOptional<NElement> style = getPropertyValue(HPropName.NAME);
         if (style.isEmpty()) {
             return null;
         }
-        TsonElement v = style.get();
+        NElement v = style.get();
         if (v == null) {
             return null;
         }
@@ -166,12 +168,12 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public NOptional<TsonElement> getPropertyValue(String... propertyNames) {
+    public NOptional<NElement> getPropertyValue(String... propertyNames) {
         return getProperty(propertyNames).map(x -> x.getValue());
     }
 
     @Override
-    public NOptional<TsonElement> getVar(String property) {
+    public NOptional<NElement> getVar(String property) {
         return NOptional.ofNamed(vars.get(property),property);
     }
 
@@ -180,19 +182,19 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setProperty(String name, TsonElement value) {
+    public HNode setProperty(String name, NElement value) {
         properties.set(name, value);
         return this;
     }
 
     @Override
-    public HNode setProperty(String name, ToTson value) {
-        properties.set(name, value == null ? null : value.toTson());
+    public HNode setProperty(String name, NToElement value) {
+        properties.set(name, value == null ? null : value.toElement());
         return this;
     }
 
     @Override
-    public HNode setVar(String name, TsonElement value) {
+    public HNode setVar(String name, NElement value) {
         if(value==null){
             vars.remove(name);
         }else{
@@ -420,7 +422,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setSize(Double2 size) {
-        TsonElement old = getPropertyValue(HPropName.SIZE).orNull();
+        NElement old = getPropertyValue(HPropName.SIZE).orNull();
         Double2 oo = old == null ? null : NDocObjEx.of(old).asDouble2().orNull();
         if (oo == null) {
             oo = new Double2(null, null);
@@ -442,49 +444,49 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setFontSize(Number w) {
-        setProperty(HPropName.FONT_SIZE, Tson.of(w));
+        setProperty(HPropName.FONT_SIZE, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setFontFamily(String w) {
-        setProperty(HPropName.FONT_FAMILY, Tson.of(w));
+        setProperty(HPropName.FONT_FAMILY, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setFontBold(Boolean w) {
-        setProperty(HPropName.FONT_BOLD, Tson.of(w));
+        setProperty(HPropName.FONT_BOLD, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setFontItalic(Boolean w) {
-        setProperty(HPropName.FONT_ITALIC, Tson.of(w));
+        setProperty(HPropName.FONT_ITALIC, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setFontUnderlined(Boolean w) {
-        setProperty(HPropName.FONT_UNDERLINED, Tson.of(w));
+        setProperty(HPropName.FONT_UNDERLINED, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setFontStrike(Boolean w) {
-        setProperty(HPropName.FONT_STRIKE, Tson.of(w));
+        setProperty(HPropName.FONT_STRIKE, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setForegroundColor(String w) {
-        setProperty(HPropName.FOREGROUND_COLOR, Tson.of(w));
+        setProperty(HPropName.FOREGROUND_COLOR, NElements.of().of(w));
         return this;
     }
 
     @Override
     public HNode setBackgroundColor(String w) {
-        setProperty(HPropName.BACKGROUND_COLOR, Tson.of(w));
+        setProperty(HPropName.BACKGROUND_COLOR, NElements.of().of(w));
         return this;
     }
 
@@ -496,7 +498,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setGridColor(String w) {
-        setProperty(HPropName.GRID_COLOR, Tson.of(w));
+        setProperty(HPropName.GRID_COLOR, NElements.of().of(w));
         return this;
     }
 
@@ -611,7 +613,7 @@ public class DefaultHNode implements HNode {
 //        return this;
 //    }
 //
-    private TsonElement toTson0() {
+    private NElement toTson0() {
         if (HNodeType.ASSIGN.equals(type())) {
             return Tson.ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
         }
@@ -641,12 +643,12 @@ public class DefaultHNode implements HNode {
                         break;
                     }
                     default: {
-                        o.addParam(p.toTson());
+                        o.addParam(p.toElement());
                     }
                 }
             }
             if (!styleRules.isEmpty()) {
-                o.add("rules", Tson.ofObjectBuilder(styleRules.stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)));
+                o.add("rules", Tson.ofObjectBuilder(styleRules.stream().map(x -> x.toElement()).toArray(TsonElementBase[]::new)));
             }
             for (HNode child : children()) {
                 if (child instanceof DefaultHNode) {
@@ -680,7 +682,7 @@ public class DefaultHNode implements HNode {
                         break;
                     }
                     default: {
-                        o.add(p.toTson());
+                        o.add(p.toElement());
                     }
                 }
             }

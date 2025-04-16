@@ -8,9 +8,9 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 public class NDocPieImpl extends NDocNodeParserBase {
     public NDocPieImpl(){
@@ -60,7 +60,7 @@ public class NDocPieImpl extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
 
         HProp startAngle = item.getProperty(HPropName.START_ANGLE).orNull();
         HProp extentAngle = item.getProperty(HPropName.EXTENT_ANGLE).orNull();
@@ -75,12 +75,12 @@ public class NDocPieImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        startAngle == null ? null : Tson.ofPair("start-angle", HUtils.toTson(startAngle.getValue())),
-                        extentAngle == null ? null : Tson.ofPair("extent-angle", HUtils.toTson(extentAngle.getValue())),
-                        sliceCount == null ? null : Tson.ofPair("slice-count", HUtils.toTson(sliceCount.getValue())),
-                        dash == null ? null : Tson.ofPair("dash", HUtils.toTson(dash.getValue())),
-                        colors == null ? null : Tson.ofPair("colors", HUtils.toTson(colors.getValue())),
-                        slices == null ? null : Tson.ofPair("slices", HUtils.toTson(slices.getValue()))
+                        startAngle == null ? null : Tson.ofPair("start-angle", HUtils.toElement(startAngle.getValue())),
+                        extentAngle == null ? null : Tson.ofPair("extent-angle", HUtils.toElement(extentAngle.getValue())),
+                        sliceCount == null ? null : Tson.ofPair("slice-count", HUtils.toElement(sliceCount.getValue())),
+                        dash == null ? null : Tson.ofPair("dash", HUtils.toElement(dash.getValue())),
+                        colors == null ? null : Tson.ofPair("colors", HUtils.toElement(colors.getValue())),
+                        slices == null ? null : Tson.ofPair("slices", HUtils.toElement(slices.getValue()))
 
                 )
                 .build();

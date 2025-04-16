@@ -9,9 +9,9 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HSizeRef;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendererContext {
     public void render(HNode p) {
@@ -28,7 +28,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
         if (path.isAbsolute()) {
             return path;
         }
-        return resolvePath(Tson.of(path.toString()), node);
+        return resolvePath(NElements.of().of(path.toString()), node);
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
 
 
     @Override
-    public NPath resolvePath(TsonElement path, HNode node) {
+    public NPath resolvePath(NElement path, HNode node) {
         Object src = engine().computeSource(node);
         NPath sp = (src instanceof HResource)?((HResource) src).path().orNull():null;
         return HUtils.resolvePath(path, src);

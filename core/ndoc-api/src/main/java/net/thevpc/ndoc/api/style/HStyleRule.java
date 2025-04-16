@@ -6,7 +6,7 @@ package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
@@ -20,6 +20,6 @@ public interface HStyleRule extends HItem {
 
     HStyleRuleResult styles(HNode node);
 
-    TsonElement toTson();
+    NElement toElement();
 
 }

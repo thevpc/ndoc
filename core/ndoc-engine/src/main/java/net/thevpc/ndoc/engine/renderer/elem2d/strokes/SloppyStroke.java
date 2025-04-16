@@ -19,12 +19,12 @@ public class SloppyStroke implements Stroke {
     private Random random;
     private Stroke base;
 
-    public static Stroke of(TsonElement e, NDocGraphics g) {
+    public static Stroke of(NElement e, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(e);
         double sloppyness = 5;
         Stroke base = null;
         TsonObjectBuilder basic = null;
-        for (TsonElement arg : o.args()) {
+        for (NElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
                             || arg.type() == TsonElementType.ARRAY
@@ -51,7 +51,7 @@ public class SloppyStroke implements Stroke {
                             if (basic == null) {
                                 basic = Tson.ofObjectBuilder();
                             }
-                            basic.set(net.thevpc.ndoc.api.util.HUtils.uid(ke.getName()), (TsonElement) ke.getValue().raw());
+                            basic.set(net.thevpc.ndoc.api.util.HUtils.uid(ke.getName()), (NElement) ke.getValue().raw());
                             break;
                         }
                         case "sloppyness":
@@ -68,7 +68,7 @@ public class SloppyStroke implements Stroke {
                             if (basic == null) {
                                 basic = Tson.ofObjectBuilder();
                             }
-                            basic.add(Tson.of("dash"));
+                            basic.add(NElements.of().of("dash"));
                             break;
                         }
                     }

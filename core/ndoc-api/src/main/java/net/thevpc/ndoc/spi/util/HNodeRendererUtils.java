@@ -10,8 +10,8 @@ import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 
@@ -25,7 +25,7 @@ public class HNodeRendererUtils {
     }
 
     public static Stroke resolveStroke(HNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
-        TsonElement strokeElem = NDocValueByName.getStroke(t, ctx);
+        NElement strokeElem = NDocValueByName.getStroke(t, ctx);
         if (strokeElem != null) {
             return ctx.graphics().createStroke(strokeElem);
         }
@@ -66,10 +66,10 @@ public class HNodeRendererUtils {
 
     public static Bounds2 bounds(HNode t, NDocNodeRendererContext ctx) {
         NDocObjEx oSize = NDocObjEx.of(ctx.computePropertyValue(t, HPropName.SIZE));
-        NOptional<TsonElement[]> a = oSize.asTsonArray();
+        NOptional<NElement[]> a = oSize.asTsonArray();
         Double2 size=null;
         if(a.isPresent()){
-            TsonElement[] tt = a.get();
+            NElement[] tt = a.get();
             switch (tt.length){
                 case 1:{
                     size=new Double2(

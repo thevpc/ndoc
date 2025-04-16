@@ -11,12 +11,13 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonOp;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonPair;
 
 public class NDocCtrlAssignParser extends NDocNodeParserBase {
@@ -27,14 +28,14 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
 
     @Override
     public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
-        TsonElement c = context.element();
+        NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
             case PAIR: {
                 TsonPair p = c.toPair();
-                TsonElement k = p.key();
-                TsonElement v = p.value();
+                NElement k = p.key();
+                NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);
                 NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
@@ -51,8 +52,8 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             case OP:{
                 TsonOp binOp = c.toOp();
                 if("=".equals(binOp.opName())) {
-                    TsonElement k = binOp.first();
-                    TsonElement v = binOp.second();
+                    NElement k = binOp.first();
+                    NElement v = binOp.second();
                     NDocObjEx kh = NDocObjEx.of(k);
                     NOptional<String> nn = kh.asStringOrName();
                     if (nn.isPresent()) {
@@ -72,11 +73,11 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         Object varName = "var";
         Object varValue = null;
 
-        NOptional<TsonElement> s = item.getPropertyValue(HPropName.NAME);
+        NOptional<NElement> s = item.getPropertyValue(HPropName.NAME);
 
         if (!s.isEmpty()) {
             varName = s.get();
@@ -87,7 +88,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return Tson.ofPair("$" + varName, HUtils.toTson(varValue));
+        return Tson.ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

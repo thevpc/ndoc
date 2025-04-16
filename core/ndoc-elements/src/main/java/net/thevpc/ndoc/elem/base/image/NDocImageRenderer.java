@@ -19,7 +19,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 
@@ -50,7 +50,7 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
         Object img = p.getPropertyValue(HPropName.VALUE).orNull();
-        NOptional<TsonElement> imgStr = NDocObjEx.of(img).asTsonStringOrName();
+        NOptional<NElement> imgStr = NDocObjEx.of(img).asTsonStringOrName();
         if (imgStr.isPresent()) {
             img = ctx.resolvePath(imgStr.get(), p);
         }

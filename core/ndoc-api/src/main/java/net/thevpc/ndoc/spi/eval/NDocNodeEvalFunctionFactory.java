@@ -5,13 +5,13 @@
 package net.thevpc.ndoc.spi.eval;
 
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
  */
 public interface NDocNodeEvalFunctionFactory {
 
-    NOptional<TsonElement> evalFunction(String varName, TsonElement[] vars);
+    NOptional<NElement> evalFunction(String varName, NElement[] vars);
 
 }

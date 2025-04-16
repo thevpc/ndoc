@@ -4,12 +4,12 @@
  */
 package net.thevpc.ndoc.spi.eval;
 
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
  */
 public interface NDocObjectEvalContext {
 
-    TsonElement eval(TsonElement other);
+    NElement eval(NElement other);
 }

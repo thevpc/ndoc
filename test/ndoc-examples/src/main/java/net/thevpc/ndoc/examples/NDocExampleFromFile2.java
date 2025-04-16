@@ -21,6 +21,6 @@ public class NDocExampleFromFile2 {
         NPath file = NPath.of("src/halfa/test1.ndoc").toAbsolute().normalize();
         NDocument doc = e.loadDocument(file, null).get();
 
-        System.out.println(e.toTson(doc));
+        System.out.println(e.toElement(doc));
     }
 }

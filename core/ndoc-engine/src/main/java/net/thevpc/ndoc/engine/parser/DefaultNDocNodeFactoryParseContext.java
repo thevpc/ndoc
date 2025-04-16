@@ -9,24 +9,25 @@ import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
 
 public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseContext {
     private final HLogger messages;
     private final NDocument document;
-    private final TsonElement element;
+    private final NElement element;
     private final NDocEngine engine;
     private final List<HNode> nodePath = new ArrayList<>();
     private final HResource source;
 
     public DefaultNDocNodeFactoryParseContext(
             NDocument document
-            , TsonElement element
+            , NElement element
             , NDocEngine engine
             ,
             List<HNode> nodePath
@@ -46,7 +47,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public TsonElement asPathRef(TsonElement element) {
+    public NElement asPathRef(NElement element) {
         if (element.isAnyString()) {
             String pathString = element.stringValue();
             if (isVarName(pathString)) {
@@ -59,7 +60,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                         if(resource.path().isPresent()) {
                             NPath nPath = HUtils.resolvePath(element, resource);
                             if(nPath!=null) {
-                                return Tson.of(nPath.toString());
+                                return NElements.of().of(nPath.toString());
                             }
                         }
                     }
@@ -117,7 +118,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public TsonElement element() {
+    public NElement element() {
         return element;
     }
 
@@ -151,6 +152,6 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                 }
             }
         }
-        return HUtils.resolvePath(Tson.of(path),src);
+        return HUtils.resolvePath(NElements.of().of(path),src);
     }
 }

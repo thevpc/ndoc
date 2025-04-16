@@ -20,9 +20,9 @@ import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.renderer.*;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 /**
  * @author vpc
@@ -35,11 +35,12 @@ public interface NDocEngine {
 
     NDocDocumentFactory documentFactory();
 
-    NOptional<HItem> newNode(TsonElement element, NDocNodeFactoryParseContext ctx);
+    NOptional<HItem> newNode(NElement element, NDocNodeFactoryParseContext ctx);
 
     NOptional<NDocDocumentStreamRenderer> newStreamRenderer(String type);
 
     NOptional<NDocDocumentStreamRenderer> newPdfRenderer();
+
     NOptional<NDocDocumentStreamRenderer> newHtmlRenderer();
 
     NOptional<NDocDocumentScreenRenderer> newScreenRenderer();
@@ -56,11 +57,11 @@ public interface NDocEngine {
 
     HDocumentLoadingResult loadDocument(InputStream is, HLogger messages);
 
-    TsonElement toTson(NDocument doc);
+    NElement toElement(NDocument doc);
 
-    TsonElement toTson(HNode node);
+    NElement toElement(HNode node);
 
-    NOptional<HProp> computeProperty(HNode node, String ... propertyNames);
+    NOptional<HProp> computeProperty(HNode node, String... propertyNames);
 
     List<HProp> computeInheritedProperties(HNode node);
 
@@ -77,6 +78,6 @@ public interface NDocEngine {
     void createProject(NPath path, NPath projectUrl, Function<String, String> vars);
 
     String[] getDefaultTemplateUrls();
-    
+
     String getDefaultTemplateUrl();
 }

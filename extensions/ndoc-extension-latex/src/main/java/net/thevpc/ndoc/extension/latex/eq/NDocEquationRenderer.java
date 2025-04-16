@@ -31,7 +31,7 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
     //    @Override
 //    public HSizeRequirements computeSizeRequirements(HNode p, HNodeRendererContext ctx) {
 //        ctx=ctx.withDefaultStyles(p,defaultStyles);
-//        String message = ObjEx.ofProp(p, HPropName.VALUE).asString().orNull();
+//        String message = ObjEx.ofProp(p, HPropName.VALUE).asStringValue().orNull();
 //        if (message == null) {
 //            message = "";
 //        }

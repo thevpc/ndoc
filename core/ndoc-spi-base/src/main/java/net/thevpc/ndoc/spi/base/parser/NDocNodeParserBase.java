@@ -15,6 +15,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -78,10 +79,10 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     protected static class ParseArgumentInfo {
         public String id;
         public String uid;
-        public TsonElement tsonElement;
+        public NElement tsonElement;
         public HNode node;
-        public TsonElement currentArg;
-        public TsonElement[] arguments;
+        public NElement currentArg;
+        public NElement[] arguments;
         public int currentArgIndex;
         public NDocDocumentFactory f;
         public NDocNodeFactoryParseContext context;
@@ -128,7 +129,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return false;
     }
 
-    protected String acceptTypeName(TsonElement e) {
+    protected String acceptTypeName(NElement e) {
         switch (e.type()) {
             case NAME: {
                 if (acceptTypeName(e.toName().value())) {
@@ -187,7 +188,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
     @Override
     public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
-        TsonElement e = context.element();
+        NElement e = context.element();
         String s = acceptTypeName(e);
         if (s != null) {
             return NCallableSupport.of(10,
@@ -212,11 +213,11 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return HUtils.uid(id);
     }
 
-    public void onStartParsingItem(String id, HNode p, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, HNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
 
     }
 
-    public void onFinishParsingItem(String id, HNode p, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onFinishParsingItem(String id, HNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
 
     }
 
@@ -242,7 +243,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
     protected boolean processArguments(ParseArgumentInfo info) {
         for (int i = 0; i < info.arguments.length; i++) {
-            TsonElement currentArg = info.arguments[i];
+            NElement currentArg = info.arguments[i];
             info.currentArg = currentArg;
             info.currentArgIndex = i;
             if (!processArgument(info)) {
@@ -252,7 +253,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return true;
     }
 
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = context.documentFactory();
         HNode p = context.documentFactory().of(resolveEffectiveId(id));
@@ -278,7 +279,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.uid = HUtils.uid(id);
                 info.tsonElement = tsonElement;
                 info.node = p;
-                info.arguments = ee.args().toArray(new TsonElement[0]);
+                info.arguments = ee.args().toArray(new NElement[0]);
                 info.f = f;
                 info.context = context2;
                 if (!processArguments(info)) {
@@ -286,7 +287,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     return NOptional.of(new HItemList());
                 }
                 processImplicitStyles(info);
-                for (TsonElement e : ee.body()) {
+                for (NElement e : ee.body()) {
                     NOptional<HItem> u = engine.newNode(e, context2);
                     if (u.isPresent()) {
                         p.append(u.get());
@@ -304,7 +305,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         return ToTsonHelper.of((HNode) item, engine)
                 .build();
     }

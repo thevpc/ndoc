@@ -21,7 +21,14 @@ public class NDocSourceParser extends NDocNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 info.node.setProperty(HPropName.VALUE, info.currentArg);
                 return true;
             }
@@ -44,7 +51,7 @@ public class NDocSourceParser extends NDocNodeParserBase {
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, Tson.of(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElements.of().of(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())

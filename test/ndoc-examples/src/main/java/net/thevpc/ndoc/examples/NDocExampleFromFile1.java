@@ -22,7 +22,7 @@ public class NDocExampleFromFile1 {
         NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.ndoc").toAbsolute().normalize();
         System.out.println(file);
         NDocument doc = e.loadDocument(file, null).get();
-        System.out.println(e.toTson(doc));
+        System.out.println(e.toElement(doc));
         NDocDocumentStreamRenderer renderer = e.newPdfRenderer().get();
         renderer.setOutput(NPath.ofUserHome().resolve("example.pdf"));
         renderer.render(doc);

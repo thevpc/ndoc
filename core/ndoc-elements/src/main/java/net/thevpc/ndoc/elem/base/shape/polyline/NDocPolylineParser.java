@@ -10,10 +10,11 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonArray;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public class NDocPolylineParser extends NDocNodeParserBase {
     public NDocPolylineParser() {
@@ -86,8 +87,8 @@ public class NDocPolylineParser extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
-        TsonElement points = item.getPropertyValue(HPropName.POINTS).orNull();
+    public NElement toElem(HNode item) {
+        NElement points = item.getPropertyValue(HPropName.POINTS).orNull();
         if (points != null) {
             if (points instanceof TsonArray && ((TsonArray) points).isEmpty()) {
                 points = null;

@@ -1,16 +1,8 @@
 package net.thevpc.ndoc.config;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonDocument;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonSerializer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
 
 public class UserConfigManager {
     private NPath userConfigFile;
@@ -41,24 +33,13 @@ public class UserConfigManager {
         UserConfigs userConfigs = loadUserConfigs();
         updateUser(userConfigs, user);
         saveUserConfigs(userConfigs);
-        TsonElement elem = Tson.serializer().serialize(user);
         userConfigFile.mkParentDirs();
-        try (OutputStream os = userConfigFile.getOutputStream()) {
-            Tson.writer().write(os, elem);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        NElements.ofPlainTson(user).println(userConfigFile.mkParentDirs());
     }
 
     public void saveUserConfigs(UserConfigs config) {
         config=validate(config);
-        TsonElement elem = Tson.serializer().serialize(config);
-        userConfigFile.mkParentDirs();
-        try (OutputStream os = userConfigFile.getOutputStream()) {
-            Tson.writer().write(os, elem);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        NElements.ofPlainTson(config).println(userConfigFile.mkParentDirs());
     }
 
     public UserConfig loadUserConfig(String id) {
@@ -68,13 +49,7 @@ public class UserConfigManager {
     public UserConfigs loadUserConfigs() {
         UserConfigs config = null;
         if (userConfigFile.isRegularFile()) {
-            try (InputStream is = userConfigFile.getInputStream()) {
-                TsonDocument d = Tson.reader().readDocument(is);
-                TsonSerializer serializer = Tson.serializer();
-                config = serializer.deserialize(d.getContent(), UserConfigs.class);
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-            }
+            config = NElements.of().tson().parse(userConfigFile, UserConfigs.class);
         }
         config=validate(config);
         return config;
@@ -93,6 +68,6 @@ public class UserConfigManager {
         if (a instanceof Comparable) {
             return ((Comparable) a).compareTo(b);
         }
-        throw new IllegalArgumentException("invalid comparision");
+        throw new IllegalArgumentException("invalid comparison");
     }
 }

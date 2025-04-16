@@ -8,7 +8,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.*;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
 import java.util.List;
@@ -88,9 +88,16 @@ public class HStyleParser {
     }
 
 
-    public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(TsonElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 String s = e.toStr().stringValue();
                 if (s.isEmpty() || s.equals("*")) {
                     return NOptional.of(DefaultHNodeSelector.ofAny());
@@ -113,7 +120,7 @@ public class HStyleParser {
                 List<String> names = new ArrayList<>();
                 List<String> classes = new ArrayList<>();
                 List<String> types = new ArrayList<>();
-                for (TsonElement child : e.toUplet().params()) {
+                for (NElement child : e.toUplet().params()) {
                     switch (child.type()) {
                         case PAIR: {
                             NDocObjEx h = NDocObjEx.of(e.toPair().key());
@@ -173,7 +180,14 @@ public class HStyleParser {
                             }
                             break;
                         }
-                        case STRING: {
+                        case DOUBLE_QUOTED_STRING:
+                        case SINGLE_QUOTED_STRING:
+                        case ANTI_QUOTED_STRING:
+                        case TRIPLE_DOUBLE_QUOTED_STRING:
+                        case TRIPLE_SINGLE_QUOTED_STRING:
+                        case TRIPLE_ANTI_QUOTED_STRING:
+                        case LINE_STRING:
+                        {
                             String s = child.toStr().stringValue().trim();
                             if (s.isEmpty() || s.equals("*")) {
                                 //
@@ -204,14 +218,14 @@ public class HStyleParser {
         }
     }
 
-    public static NOptional<HStyleRule[]> parseStyleRule(TsonElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<HStyleRule[]> parseStyleRule(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.toPair().key(), f, context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
-                TsonElement v = e.toPair().value();
+                NElement v = e.toPair().value();
                 switch (v.type()) {
                     case OBJECT:
                     case NAMED_PARAMETRIZED_OBJECT:
@@ -219,7 +233,7 @@ public class HStyleParser {
                     case NAMED_OBJECT:
                     {
                         List<HProp> styles = new ArrayList<>();
-                        for (TsonElement el : v.toObject().body()) {
+                        for (NElement el : v.toObject().body()) {
                             NOptional<HProp[]> s = parseStyle(el, f, context);
                             if (!s.isPresent()) {
                                 s = parseStyle(el, f, context);
@@ -242,7 +256,7 @@ public class HStyleParser {
     }
 
 
-    public static NOptional<HProp[]> parseStyle(TsonElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<HProp[]> parseStyle(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NDocObjEx h = NDocObjEx.of(e.toPair().key());
@@ -258,7 +272,7 @@ public class HStyleParser {
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, Tson.of(true))});
+                    return NOptional.of(new HProp[]{new HProp(uid, NElements.of().of(true))});
                 }
                 break;
             }

@@ -5,9 +5,9 @@ import net.thevpc.ndoc.api.model.elem2d.HAlign;
 import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HStyleRule;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.TsonElement;
 
 import java.util.List;
 import java.util.Set;
@@ -47,11 +47,11 @@ public interface HNode extends HItem {
 
     List<HProp> props();
 
-    NOptional<TsonElement> getVar(String property);
+    NOptional<NElement> getVar(String property);
 
-    HNode setVar(String name, TsonElement value);
+    HNode setVar(String name, NElement value);
 
-    NOptional<TsonElement> getPropertyValue(String... propertyNames);
+    NOptional<NElement> getPropertyValue(String... propertyNames);
 
     NOptional<HProp> getProperty(String... propertyNames);
 
@@ -62,9 +62,9 @@ public interface HNode extends HItem {
 
     HNode setProperty(HProp s);
 
-    HNode setProperty(String name, TsonElement value);
+    HNode setProperty(String name, NElement value);
 
-    HNode setProperty(String name, ToTson value);
+    HNode setProperty(String name, NToElement value);
 
     HNode setProperties(HProp... props);
 

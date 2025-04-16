@@ -8,9 +8,9 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
 
 public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     private DefaultNDocEngine engine;
@@ -113,9 +113,9 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public HNode ofAssign(String name, TsonElement value) {
+    public HNode ofAssign(String name, NElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, Tson.of(name))
+                .setProperty(HPropName.NAME, NElements.of().of(name))
                 .setProperty(HPropName.VALUE, value)
                 ;
     }
@@ -143,8 +143,8 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, Tson.of(cols))
-                .setProperty(HPropName.ROWS, Tson.of(rows))
+                .setProperty(HPropName.COLUMNS, NElements.of().of(cols))
+                .setProperty(HPropName.ROWS, NElements.of().of(rows))
                 ;
     }
 
@@ -170,12 +170,12 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, Tson.of(text));
+        return ofPlain().setProperty(HPropName.VALUE, NElements.of().of(text));
     }
 
     @Override
     public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, Tson.of(text));
+        return ofText().setProperty(HPropName.VALUE, NElements.of().of(text));
     }
 
     @Override
@@ -301,7 +301,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, Tson.of(value));
+        return ofEquation().setProperty(HPropName.VALUE, NElements.of().of(value));
     }
 
     @Override

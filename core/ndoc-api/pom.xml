@@ -58,11 +58,6 @@
             <artifactId>nuts-lib</artifactId>
             <version>0.8.5.0</version>
         </dependency>
-        <dependency>
-            <groupId>net.thevpc.tson</groupId>
-            <artifactId>tson</artifactId>
-            <version>1.2.0</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

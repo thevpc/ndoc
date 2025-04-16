@@ -2,7 +2,7 @@ package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.function.Supplier;
 
@@ -16,11 +16,11 @@ public class HDocumentPanel extends TsonPanel {
     }
 
     @Override
-    public TsonElement createTson() {
+    public NElement createTson() {
         NDocument m = null;
         m = model.get();
         if (m != null) {
-            return engine.toTson(m);
+            return engine.toElement(m);
         }
         return null;
     }

@@ -10,10 +10,11 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonArray;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public class NDocPolygonParser extends NDocNodeParserBase {
     public NDocPolygonParser() {
@@ -95,14 +96,14 @@ public class NDocPolygonParser extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
-        TsonElement count = item.getPropertyValue(HPropName.COUNT).orNull();
+    public NElement toElem(HNode item) {
+        NElement count = item.getPropertyValue(HPropName.COUNT).orNull();
         Integer o = count == null ? null : NDocObjEx.of(count).asInt().orNull();
         if (o != null && o <= 1) {
             o = null;
         }
 
-        TsonElement points = item.getPropertyValue(HPropName.POINTS).orNull();
+        NElement points = item.getPropertyValue(HPropName.POINTS).orNull();
         if (points != null) {
             if (((TsonArray) points).isEmpty()) {
                 points = null;

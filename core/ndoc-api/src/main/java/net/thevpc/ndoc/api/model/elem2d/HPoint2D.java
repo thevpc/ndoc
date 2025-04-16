@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 
 import java.util.Objects;
 
-public class HPoint2D implements ToTson {
+public class HPoint2D implements NToElement {
     public double x, y;
 
     public HPoint2D(double x, double y) {
@@ -95,11 +95,12 @@ public class HPoint2D implements ToTson {
     }
 
     @Override
-    public TsonElement toTson() {
-        return Tson.ofUplet(
-                Tson.ofDouble(getX()),
-                Tson.ofDouble(getY())
-        ).build();
+    public NElement toElement() {
+        NElements elem = NElements.of();
+        return elem.ofUplet(
+                elem.ofDouble(getX()),
+                elem.ofDouble(getY())
+        );
     }
 
     public HPoint2D add(double x, double y) {

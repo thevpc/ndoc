@@ -11,7 +11,7 @@ import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,10 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(child.addStyleClasses("ul-item"));
         }
         HNode newNode = f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, Tson.of(2))
-                .setProperty(HPropName.ROWS, Tson.of(2))
+                .setProperty(HPropName.COLUMNS, NElements.of().of(2))
+                .setProperty(HPropName.ROWS, NElements.of().of(2))
                 .setProperty(HPropName.ORIGIN, HAlign.TOP_LEFT)
-                .setProperty(HPropName.COLUMNS_WEIGHT,Tson.of(new double[]{1, 20}))
+                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.of().of(new double[]{1, 20}))
                 .setProperties(p.props().toArray(new HProp[0]));
         for (String s : new String[]{
                 HPropName.GRID_COLOR
@@ -74,7 +74,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
                 , HPropName.FONT_STRIKE
                 , HPropName.FONT_STRIKE
         }) {
-            TsonElement v = ctx.computePropertyValue(p, s).orNull();
+            NElement v = ctx.computePropertyValue(p, s).orNull();
             if (v != null) {
                 newNode.setProperty(s, v);
             }
@@ -82,7 +82,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
         if(NDocValueByName.isDebug(p, ctx)){
             Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
             if(v==null){
-                newNode.setProperty(HPropName.DRAW_GRID, Tson.of(true));
+                newNode.setProperty(HPropName.DRAW_GRID, NElements.of().of(true));
             }
         }
         return newNode;

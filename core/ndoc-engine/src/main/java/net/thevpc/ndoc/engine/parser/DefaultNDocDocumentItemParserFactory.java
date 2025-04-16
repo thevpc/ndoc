@@ -53,11 +53,17 @@ public class DefaultNDocDocumentItemParserFactory
 
     @Override
     public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
-        TsonElement c = context.element();
+        NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
-            case STRING:
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
             case BIG_COMPLEX:
             case BIG_INTEGER:
             case BYTE:
@@ -99,8 +105,8 @@ public class DefaultNDocDocumentItemParserFactory
             }
             case PAIR: {
                 TsonPair p = c.toPair();
-                TsonElement k = p.key();
-                TsonElement v = p.value();
+                NElement k = p.key();
+                NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);
                 NOptional<String> nn = kh.asStringOrName();
                 if (nn.isPresent()) {
@@ -177,9 +183,9 @@ public class DefaultNDocDocumentItemParserFactory
                 }
                 if (c.isNamedUplet() || c.type() == TsonElementType.OBJECT) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
-                    callNode.setProperty(HPropName.NAME, Tson.of(HUtils.uid(ee.name())));
+                    callNode.setProperty(HPropName.NAME, NElements.of().of(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
-                    TsonElement functionTsonDeclaration = c;
+                    NElement functionTsonDeclaration = c;
                     if (context.source() != null) {
                         NPath sourcePath = context.source().path().orNull();
                         if (sourcePath != null) {
@@ -192,7 +198,7 @@ public class DefaultNDocDocumentItemParserFactory
                                 functionTsonDeclaration = fb.build();
                             } else if (c.type() == TsonElementType.OBJECT) {
                                 TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
-                                List<TsonElement> args = fb.params();
+                                List<NElement> args = fb.params();
                                 if (args != null) {
                                     for (int i = 0; i < args.size(); i++) {
                                         args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));
@@ -239,7 +245,7 @@ public class DefaultNDocDocumentItemParserFactory
                 return false;
             }
         }
-        TsonElement c = context.element();
+        NElement c = context.element();
 //        HEngine engine = context.engine();
         for (TsonAnnotation a : c.annotations()) {
             String nn = a.name();
@@ -249,10 +255,17 @@ public class DefaultNDocDocumentItemParserFactory
             boolean foundHalfa = false;
             boolean foundVersion = false;
             boolean foundOther = false;
-            for (TsonElement cls : a.children()) {
+            for (NElement cls : a.children()) {
                 switch (cls.type()) {
-                    case STRING: {
-                        if (cls.toStr().value().equalsIgnoreCase("halfa")) {
+                    case DOUBLE_QUOTED_STRING:
+                    case SINGLE_QUOTED_STRING:
+                    case ANTI_QUOTED_STRING:
+                    case TRIPLE_DOUBLE_QUOTED_STRING:
+                    case TRIPLE_SINGLE_QUOTED_STRING:
+                    case TRIPLE_ANTI_QUOTED_STRING:
+                    case LINE_STRING:
+                    {
+                        if (cls.toStr().value().equalsIgnoreCase("ndoc")) {
                             foundHalfa = true;
                         } else if (isVersionString(cls.toStr().value())) {
                             foundVersion = true;
@@ -262,7 +275,7 @@ public class DefaultNDocDocumentItemParserFactory
                         break;
                     }
                     case NAME: {
-                        if (cls.toName().value().equalsIgnoreCase("halfa")) {
+                        if (cls.toName().value().equalsIgnoreCase("ndoc")) {
                             foundHalfa = true;
                         } else if (isVersionString(cls.toStr().value())) {
                             foundVersion = true;
@@ -310,7 +323,7 @@ public class DefaultNDocDocumentItemParserFactory
     }
 
     private HItem parseNoNameBloc(NDocNodeFactoryParseContext context) {
-        TsonElement c = context.element();
+        NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
         HashSet<String> allAncestors = null;
@@ -326,7 +339,7 @@ public class DefaultNDocDocumentItemParserFactory
             }
             // add classes as well
 
-            for (TsonElement cls : a.children()) {
+            for (NElement cls : a.children()) {
                 if (allStyles == null) {
                     allStyles = new HashSet<>();
                 }
@@ -341,7 +354,7 @@ public class DefaultNDocDocumentItemParserFactory
             HNode pg = f.ofStack();
             pg.setAncestors(allAncestors == null ? null : allAncestors.toArray(new String[0]));
             pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
-            for (TsonElement child : ee.body()) {
+            for (NElement child : ee.body()) {
                 NOptional<HItem> u = context.engine().newNode(child, context);
                 if (u.isPresent()) {
                     pg.append(u.get());
@@ -354,7 +367,7 @@ public class DefaultNDocDocumentItemParserFactory
             return pg;
         } else {
             HItemList pg = new HItemList();
-            for (TsonElement child : ee.body()) {
+            for (NElement child : ee.body()) {
                 NOptional<HItem> u = context.engine().newNode(child, context);
                 if (u.isPresent()) {
                     pg.add(u.get());

@@ -3,14 +3,13 @@ package net.thevpc.ndoc.api.util;
 import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
 import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -42,16 +41,16 @@ public class HUtils {
         return d;
     }
 
-    public static String getCompilerDeclarationPath(TsonElement element) {
+    public static String getCompilerDeclarationPath(NElement element) {
         return element.annotations().stream().filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.param(0).stringValue()).orElse(null);
 
     }
 
-    public static TsonElement addCompilerDeclarationPath(TsonElement element, String path) {
-        return element.builder().addAnnotation("CompilerDeclarationPath", Tson.of(path)).build();
+    public static NElement addCompilerDeclarationPath(NElement element, String path) {
+        return element.builder().addAnnotation("CompilerDeclarationPath", NElements.of().ofString(path)).build();
     }
 
-    public static NPath resolvePath(TsonElement path, Object source) {
+    public static NPath resolvePath(NElement path, Object source) {
         if (NBlankable.isBlank(path)) {
             return null;
         }
@@ -149,70 +148,67 @@ public class HUtils {
         return n.intValue();
     }
 
-    public static TsonElement toTson(
+    public static NElement toElement(
             Object o
     ) {
         if (o == null) {
-            return Tson.ofNull();
+            return NElements.of().ofNull();
         }
         if (o instanceof String) {
-            return Tson.ofString((String) o);
+            return NElements.of().ofString((String) o);
         }
         if (o instanceof Double) {
-            return Tson.ofDouble((Double) o);
+            return NElements.of().ofDouble((Double) o);
         }
         if (o instanceof Integer) {
-            return Tson.ofInt((Integer) o);
+            return NElements.of().ofInt((Integer) o);
         }
         if (o instanceof Boolean) {
-            return Tson.ofBoolean((Boolean) o);
+            return NElements.of().ofBoolean((Boolean) o);
         }
-        if (o instanceof TsonElement) {
-            return (TsonElement) o;
-        }
-        if (o instanceof TsonElementBase) {
-            return ((TsonElementBase) o).build();
+        if (o instanceof NElement) {
+            return (NElement) o;
         }
         if (o instanceof Point2D.Double) {
-            return Tson.ofUplet(
-                    toTson(((Point2D.Double) o).getX()),
-                    toTson(((Point2D.Double) o).getY())
-            ).build();
+            return NElements.of().ofUplet(
+                    toElement(((Point2D.Double) o).getX()),
+                    toElement(((Point2D.Double) o).getY())
+            );
         }
-        if (o instanceof ToTson) {
-            return ((ToTson) o).toTson();
+        if (o instanceof NToElement) {
+            return ((NToElement) o).toElement();
         }
         if (o instanceof Enum) {
-            return Tson.ofName(
+            return NElements.of().ofName(
                     NNameFormat.LOWER_KEBAB_CASE.format(((Enum<?>) o).name())
             );
         }
         if (o instanceof Color) {
             Color c = (Color) o;
-            return Tson.ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
+            return NElements.of().ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
         }
         if (o.getClass().isArray()
         ) {
             if (o.getClass().getComponentType().isPrimitive()) {
-                List<TsonElement> a = new ArrayList<>();
+                List<NElement> a = new ArrayList<>();
                 int max = Array.getLength(o);
                 for (int i = 0; i < max; i++) {
-                    a.add(toTson(Array.get(o, i)));
+                    a.add(toElement(Array.get(o, i)));
                 }
-                return Tson.ofArray(a.toArray(new TsonElementBase[0])).build();
+                return NElements.of().ofArray(a.toArray(new NElement[0]));
             } else {
                 return
-                        Tson.ofArray(
+                        NElements.of().ofArray(
                                 Arrays.stream((Object[]) o)
-                                        .map(x -> toTson(x))
-                                        .toArray(TsonElementBase[]::new)
-                        ).build();
+                                        .map(x -> toElement(x))
+                                        .toArray(NElement[]::new)
+                        );
             }
         }
         throw new IllegalArgumentException("Unsupported toTson(" + o.getClass().getName() + ")");
     }
 
-    public static Object fromTson(TsonElement v) {
+    public static Object fromTson(NElement v) {
         if (v == null) {
             return null;
         }

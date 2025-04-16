@@ -4,11 +4,11 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.util.TsonUtils;
+import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessor;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessorContext;
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +83,7 @@ public class IfNDocNodeFlowControlProcessor implements NDocNodeFlowControlProces
     private void processAssign(HNode hNode, NDocNodeFlowControlProcessorContext context) {
         if (hNode.type().endsWith(HNodeType.ASSIGN)) {
             String n = hNode.getPropertyValue(HPropName.NAME).get().toStr().value();
-            TsonElement value = context.evalExpression(hNode, hNode.getPropertyValue(HPropName.VALUE).get());
+            NElement value = context.evalExpression(hNode, hNode.getPropertyValue(HPropName.VALUE).get());
             hNode.parent().setVar(n, value);
         }
     }
@@ -92,7 +92,7 @@ public class IfNDocNodeFlowControlProcessor implements NDocNodeFlowControlProces
         for (HProp property : hNode.getProperties().toArray(new HProp[0])) {
             String n = property.getName();
             Object value = property.getValue();
-            hNode.setProperty(n, context.evalExpression(hNode, TsonUtils.toTson(value)));
+            hNode.setProperty(n, context.evalExpression(hNode, NElemUtils.toElement(value)));
         }
     }
 
@@ -120,12 +120,12 @@ public class IfNDocNodeFlowControlProcessor implements NDocNodeFlowControlProces
     }
 
     private static class ElseIfBloc {
-        TsonElement cond;
+        NElement cond;
         Bloc trueBloc;
     }
 
     private static class IfBloc {
-        TsonElement cond;
+        NElement cond;
         Bloc trueBloc;
         ElseIfBloc[] elseIfs;
         Bloc elseBloc;
@@ -133,7 +133,7 @@ public class IfNDocNodeFlowControlProcessor implements NDocNodeFlowControlProces
 
 
     public HNode[] evalIfBloc(HNode node, IfBloc ifBloc, NDocNodeFlowControlProcessorContext context) {
-        TsonElement value = context.evalExpression(node, ifBloc.cond);
+        NElement value = context.evalExpression(node, ifBloc.cond);
         if (NDocNodeEvalNDoc.asBoolean(value)) {
             return ifBloc.trueBloc.nodes;
         }

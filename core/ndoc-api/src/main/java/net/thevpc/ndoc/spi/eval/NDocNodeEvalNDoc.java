@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.*;
 
@@ -30,11 +31,11 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
         }
     }
 
-    public TsonElement evalVar(String varName) {
+    public NElement evalVar(String varName) {
         HNode nn = (node);
 //        HNode stop = null;
         while (nn != null) {
-            NOptional<TsonElement> var = nn.getVar(varName);
+            NOptional<NElement> var = nn.getVar(varName);
             if (var.isPresent()) {
                 return var.get();
             }
@@ -56,9 +57,9 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
         return null;
     }
 
-    public NOptional<TsonElement> evalFunction(String name, TsonElement[] args) {
+    public NOptional<NElement> evalFunction(String name, NElement[] args) {
         for (NDocNodeEvalFunctionFactory function : functions) {
-            NOptional<TsonElement> a = function.evalFunction(name, args);
+            NOptional<NElement> a = function.evalFunction(name, args);
             if (a.isPresent()) {
                 return a;
             }
@@ -66,14 +67,14 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
         return NOptional.ofNamedEmpty("function " + name);
     }
 
-    public TsonElement evalArray(TsonElement element, TsonElement[] indices) {
+    public NElement evalArray(NElement element, NElement[] indices) {
         if (element == null) {
             return null;
         }
         if (indices.length == 0) {
             return element;
         }
-        TsonElement u = eval(indices[0]);
+        NElement u = eval(indices[0]);
         NOptional<Integer> i = NDocObjEx.of(u).asInt();
         if (i.isPresent()) {
             int ii = i.get();
@@ -88,7 +89,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     ii = len + len;
                 }
                 if (ii - 1 >= 0 && ii - 1 < len) {
-                    return (TsonElement) obj[ii - 1];
+                    return (NElement) obj[ii - 1];
                 }
             }
         }
@@ -96,12 +97,12 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
     }
 
     @Override
-    public TsonElement eval(TsonElement element) {
+    public NElement eval(NElement element) {
         if (element == null) {
             return null;
         }
-        if (element instanceof TsonElement) {
-            TsonElement ee = ((TsonElement) element);
+        if (element instanceof NElement) {
+            NElement ee = ((NElement) element);
             switch (ee.type()) {
                 case NAME: {
                     TsonName r = ee.toName();
@@ -115,9 +116,9 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 case NAMED_UPLET: {
                     TsonUplet ff = ((TsonUplet) element);
                     if (ff.isNamed()) {
-                        List<TsonElement> r = ff.params().toList()
+                        List<NElement> r = ff.params().toList()
                                 .stream().map(x -> eval(x)).collect(Collectors.toList());
-                        NOptional<TsonElement> oo = evalFunction(ff.name(), r.toArray(new TsonElement[0]));
+                        NOptional<NElement> oo = evalFunction(ff.name(), r.toArray(new NElement[0]));
                         if (!oo.isEmpty()) {
                             return oo.get();
                         }
@@ -135,7 +136,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     String u = r.name();
                     if (u != null && u.startsWith("$")) {
                         String varName = u.substring(1);
-                        TsonElement arrVal = evalVar(varName);
+                        NElement arrVal = evalVar(varName);
                         return evalArray(arrVal, r.body().toArray());
                     }
                     break;
@@ -145,7 +146,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
         return element;
     }
 
-    public static boolean asBoolean(TsonElement e) {
+    public static boolean asBoolean(NElement e) {
         switch (e.type()) {
             case BOOLEAN:
                 return e.toBoolean().value();

@@ -13,11 +13,12 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +33,16 @@ public class NDocTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 return NOptional.of(
                         context.documentFactory().ofText(tsonElement.toStr().raw())
                 );
@@ -44,9 +52,16 @@ public class NDocTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    protected String acceptTypeName(TsonElement e) {
+    protected String acceptTypeName(NElement e) {
         switch (e.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 return id();
             }
         }
@@ -55,12 +70,19 @@ public class NDocTextParser extends NDocNodeParserBase {
 
     @Override
     protected boolean processArguments(ParseArgumentInfo info) {
-        TsonElement lang=null;
-        TsonElement value=null;
-        List<TsonElement> others=new ArrayList<>();
-        for (TsonElement currentArg : info.arguments) {
+        NElement lang=null;
+        NElement value=null;
+        List<NElement> others=new ArrayList<>();
+        for (NElement currentArg : info.arguments) {
             switch (currentArg.type()) {
-                case STRING: {
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING:
+                {
                     others.add(currentArg);
                     break;
                 }
@@ -83,7 +105,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
-                                    value= Tson.of(nPath.readString().trim());
+                                    value= NElements.of().of(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
                                            HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
@@ -135,7 +157,14 @@ public class NDocTextParser extends NDocNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case STRING: {
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
+            {
                 //already processed
                 return true;
             }
@@ -165,7 +194,7 @@ public class NDocTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         return ToTsonHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)

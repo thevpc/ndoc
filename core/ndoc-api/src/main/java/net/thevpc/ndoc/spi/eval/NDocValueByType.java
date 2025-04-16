@@ -5,8 +5,8 @@ import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.model.elem2d.*;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.*;
 
@@ -54,7 +54,7 @@ public class NDocValueByType {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2();
     }
 
-    public static NOptional<TsonElement> getTson(HNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NElement> getTson(HNode t, NDocNodeRendererContext ctx, String s) {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asTson();
     }
 
@@ -62,7 +62,7 @@ public class NDocValueByType {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
     }
 
-    public static NOptional<TsonNumber2> getTsonNumber2Or1OrHAlign(HNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<ElemNumber2> getTsonNumber2Or1OrHAlign(HNode t, NDocNodeRendererContext ctx, String s) {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asTsonNumber2Or1OrHAlign();
     }
 

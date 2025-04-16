@@ -122,7 +122,7 @@ page{
 
                                 HCylinderImpl : HCylinderImpl()
                                 HCylinderImpl : processArg() : boolean
-                                HCylinderImpl : toTson(HNode) : TsonElement
+                                HCylinderImpl : toTson(HNode) : NElement
 
                                 HCylinderRenderer : defaultStyles
                                 HCylinderRenderer : renderMain(HNode,RendererContext) : void

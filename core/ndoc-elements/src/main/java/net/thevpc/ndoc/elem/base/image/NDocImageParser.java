@@ -10,7 +10,8 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonPair;
 
 import java.util.HashSet;
@@ -31,9 +32,16 @@ public class NDocImageParser extends NDocNodeParserBase {
         Set<Integer> processed = new HashSet<>();
         boolean found = false;
         for (int i = 0; i < info.arguments.length; i++) {
-            TsonElement currentArg = info.arguments[i];
+            NElement currentArg = info.arguments[i];
             switch (currentArg.type()) {
-                case STRING: {
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING:
+                {
                     info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
                     processed.add(i);
                     found = true;
@@ -67,7 +75,7 @@ public class NDocImageParser extends NDocNodeParserBase {
         if (!found) {
             for (int i = 0; i < info.arguments.length; i++) {
                 if (!processed.contains(i)) {
-                    TsonElement currentArg = info.arguments[i];
+                    NElement currentArg = info.arguments[i];
                     switch (currentArg.type()) {
                         case NAME: {
                             info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
@@ -94,7 +102,13 @@ public class NDocImageParser extends NDocNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case STRING:
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
             case NAME: {
                 break;
             }
@@ -123,7 +137,7 @@ public class NDocImageParser extends NDocNodeParserBase {
 
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
         return ToTsonHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)

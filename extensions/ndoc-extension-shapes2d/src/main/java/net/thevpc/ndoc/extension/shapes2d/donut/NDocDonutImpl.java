@@ -8,9 +8,10 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+
 public class NDocDonutImpl extends NDocNodeParserBase {
     public NDocDonutImpl(){
         super(false, HNodeType.DONUT);
@@ -63,7 +64,7 @@ public class NDocDonutImpl extends NDocNodeParserBase {
     }
 
     @Override
-    public TsonElement toTson(HNode item) {
+    public NElement toElem(HNode item) {
 
         HProp innerRadius = item.getProperty(HPropName.INNER_RADIUS).orNull();
         HProp startAngle = item.getProperty(HPropName.START_ANGLE).orNull();
@@ -79,13 +80,13 @@ public class NDocDonutImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        innerRadius == null ? null : Tson.ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toTson(innerRadius.getValue())),
-                        startAngle == null ? null : Tson.ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toTson(startAngle.getValue())),
-                        extentAngle == null ? null : Tson.ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toTson(extentAngle.getValue())),
-                        sliceCount == null ? null : Tson.ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toTson(sliceCount.getValue())),
-                        dash == null ? null : Tson.ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toTson(dash.getValue())),
-                        colors == null ? null : Tson.ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toTson(colors.getValue())),
-                        slices == null ? null : Tson.ofPair("slices", HUtils.toTson(slices.getValue()))
+                        innerRadius == null ? null : Tson.ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
+                        startAngle == null ? null : Tson.ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
+                        extentAngle == null ? null : Tson.ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
+                        sliceCount == null ? null : Tson.ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
+                        dash == null ? null : Tson.ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
+                        colors == null ? null : Tson.ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
+                        slices == null ? null : Tson.ofPair("slices", HUtils.toElement(slices.getValue()))
 
                 )
                 .build();

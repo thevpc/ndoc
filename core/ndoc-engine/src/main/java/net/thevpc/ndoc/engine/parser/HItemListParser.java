@@ -9,10 +9,10 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public class HItemListParser {
-    public static NOptional<HItemList> readHItemList(TsonElement ff, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<HItemList> readHItemList(NElement ff, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         HItemList pg = new HItemList();
 
         switch (ff.type()) {
@@ -29,7 +29,7 @@ public class HItemListParser {
             case NAMED_ARRAY:
             {
                 NDocObjEx ee = NDocObjEx.of(ff);
-                for (TsonElement e : ee.args()) {
+                for (NElement e : ee.args()) {
                     NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {
                         for (HProp s : u.get()) {
@@ -39,7 +39,7 @@ public class HItemListParser {
                         return NOptional.ofNamedError("invalid " + e + " for page-group");
                     }
                 }
-                for (TsonElement e : ee.body()) {
+                for (NElement e : ee.body()) {
                     NOptional<HItem> u = context.engine().newNode(e, context);
                     if (u.isPresent()) {
                         pg.add(u.get());

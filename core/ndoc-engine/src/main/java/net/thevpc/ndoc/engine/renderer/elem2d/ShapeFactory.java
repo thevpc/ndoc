@@ -3,19 +3,19 @@ package net.thevpc.ndoc.engine.renderer.elem2d;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class ShapeFactory {
-    public static Shape createShape(TsonElement e) {
+    public static Shape createShape(NElement e) {
         NDocObjEx o = NDocObjEx.of(e);
         if (o.name() != null) {
             switch (o.name()) {
                 case "star": {
                     double radius = 5;
-                    for (TsonElement arg : o.args()) {
+                    for (NElement arg : o.args()) {
                         NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
                         if (sp.isPresent()) {
                             NDocObjEx.SimplePair ke = sp.get();

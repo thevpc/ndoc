@@ -24,12 +24,12 @@
 //    }
 //
 //    @Override
-//    public boolean accept(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
+//    public boolean accept(String id, NElement tsonElement, HNodeFactoryParseContext context) {
 //        return true;
 //    }
 //
 //    @Override
-//    public NOptional<HItem> parseItem(String id, TsonElement tsonElement, HNodeFactoryParseContext context) {
+//    public NOptional<HItem> parseItem(String id, NElement tsonElement, HNodeFactoryParseContext context) {
 //        switch (tsonElement.type()) {
 //            case OBJECT: {
 //                TsonObject object = tsonElement.toObject();
@@ -42,8 +42,8 @@
 //                TsonElementList definitionBody = object.body();
 //                HNode node=new DefaultHNode(HNodeType.DEFINE);
 //                node.setProperty("name", name);
-//                node.setProperty("args", definitionArguments==null?null:definitionArguments.toList().toArray(new TsonElement[0]));
-//                for (TsonElement element : definitionBody) {
+//                node.setProperty("args", definitionArguments==null?null:definitionArguments.toList().toArray(new NElement[0]));
+//                for (NElement element : definitionBody) {
 //                    NOptional<HItem> o = context.engine().newNode(element, context);
 //                    if(!o.isPresent()) {
 //                        return o;

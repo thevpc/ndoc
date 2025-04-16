@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonElementType;
 
 import java.awt.*;
@@ -23,11 +23,11 @@ public class CompoundStroke implements Stroke {
     private Stroke stroke1, stroke2;
     private Op operation;
 
-    public static Stroke of(TsonElement ee, CompoundStroke.Op op, NDocGraphics g) {
+    public static Stroke of(NElement ee, CompoundStroke.Op op, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(ee);
         Stroke base1 = null;
         Stroke base2 = null;
-        for (TsonElement arg : o.args()) {
+        for (NElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
                             || arg.type() == TsonElementType.ARRAY

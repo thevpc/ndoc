@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.tson.TsonElementType;
 
 import java.awt.*;
@@ -22,13 +22,13 @@ public class ZigzagStroke implements Stroke {
     private Stroke stroke;
     private float flatness = 1;
 
-    public static Stroke of(TsonElement e, NDocGraphics g) {
+    public static Stroke of(NElement e, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(e);
         Stroke base = null;
         double wavelength = 2;
         double amplitude = 2;
         double flatness = 1;
-        for (TsonElement arg : o.args()) {
+        for (NElement arg : o.args()) {
             if (
                     arg.type() == TsonElementType.UPLET
                             || arg.type() == TsonElementType.ARRAY

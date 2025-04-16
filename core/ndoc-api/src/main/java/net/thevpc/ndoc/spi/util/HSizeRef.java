@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.spi.util;
 
 import net.thevpc.ndoc.api.model.elem2d.Double2;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElementBase;
-import net.thevpc.tson.TsonNumber;
 
 public class HSizeRef {
     private double rootWidth;
@@ -54,13 +54,13 @@ public class HSizeRef {
             return NOptional.ofNamedEmpty("size");
         }
         if (o instanceof Number) {
-            o = Tson.of(((Number) o).doubleValue());
+            o = NElements.of().ofDouble(((Number) o).doubleValue());
         }
-        if (o instanceof TsonElementBase) {
-            TsonElementBase b = (TsonElementBase) o;
-            if (b.build().isNumber()) {
-                TsonNumber n = b.build().toNumber();
-                String u = n.numberSuffix();
+        if (o instanceof NElement) {
+            NElement b = (NElement) o;
+            if (b.isNumber()) {
+                Number n = b.asNumberValue().get();
+                String u = ((NNumberElement) b).numberSuffix();
                 if (u == null) {
                     u = "";
                 } else {
@@ -92,6 +92,6 @@ public class HSizeRef {
     }
 
     public Double2 apply(Double2 size) {
-        return new Double2(x(Tson.of(size.getX())).get(),y(Tson.of(size.getX())).get());
+        return new Double2(x(NElements.of().ofDouble(size.getX())).get(), y(NElements.of().ofDouble(size.getX())).get());
     }
 }

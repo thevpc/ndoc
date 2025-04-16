@@ -9,9 +9,9 @@ import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HProperties;
 import net.thevpc.ndoc.spi.model.NDocSizeRequirements;
 import net.thevpc.ndoc.spi.util.HSizeRef;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonElement;
 
 import java.awt.image.ImageObserver;
 import java.util.List;
@@ -49,13 +49,13 @@ public interface NDocNodeRendererContext {
 
     NDocDocumentFactory documentFactory();
 
-    NOptional<TsonElement> computePropertyValue(HNode t, String s, String... synonyms);
+    NOptional<NElement> computePropertyValue(HNode t, String s, String... synonyms);
 
     List<HProp> computeProperties(HNode t);
 
     NPath resolvePath(NPath path, HNode node);
 
-    NPath resolvePath(TsonElement path, HNode node);
+    NPath resolvePath(NElement path, HNode node);
 
     NDocNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles);
 

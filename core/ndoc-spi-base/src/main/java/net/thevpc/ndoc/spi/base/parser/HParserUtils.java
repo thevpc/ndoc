@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.spi.base.parser;
 
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 
 public class HParserUtils {
-    public static boolean isIntOrExprNonCommon(TsonElement currentArg){
+    public static boolean isIntOrExprNonCommon(NElement currentArg){
         switch (currentArg.type()) {
             case BYTE:
             case SHORT:
@@ -13,7 +13,13 @@ public class HParserUtils {
             {
                 return true;
             }
-            case STRING:
+            case DOUBLE_QUOTED_STRING:
+            case SINGLE_QUOTED_STRING:
+            case ANTI_QUOTED_STRING:
+            case TRIPLE_DOUBLE_QUOTED_STRING:
+            case TRIPLE_SINGLE_QUOTED_STRING:
+            case TRIPLE_ANTI_QUOTED_STRING:
+            case LINE_STRING:
             case NAME:
             {
                 if (!isCommonStyleProperty(currentArg.stringValue())) {

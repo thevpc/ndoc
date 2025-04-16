@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.api.style;
 
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ public class HProperties {
         return map.containsKey(k);
     }
 
-    public void set(String s, TsonElement value) {
+    public void set(String s, NElement value) {
         map.put(s, new HProp(s, value));
     }
 
@@ -103,9 +102,9 @@ public class HProperties {
         return new ArrayList<>(map.values());
     }
 
-    public TsonElement toTson() {
-        return Tson.ofObjectBuilder(
-                map.values().stream().map(x -> x.toTson()).toArray(TsonElementBase[]::new)
-        ).build();
+    public NElement toElement() {
+        return NElements.of().ofObject(
+                map.values().stream().map(x -> x.toElement()).toArray(NElement[]::new)
+        );
     }
 }

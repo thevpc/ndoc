@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.tson.ToTson;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NToElement;
 
-public class Double2 implements ToTson {
+public class Double2 implements NToElement {
     private Double x;
     private Double y;
 
@@ -34,10 +34,10 @@ public class Double2 implements ToTson {
     }
 
     @Override
-    public TsonElement toTson() {
-        return Tson.ofUplet(
-                Tson.ofDouble(getX()),
-                Tson.ofDouble(getY())
-        ).build();
+    public NElement toElement() {
+        return NElements.of().ofUplet(
+                NElements.of().ofDouble(getX()),
+                NElements.of().ofDouble(getY())
+        );
     }
 }
