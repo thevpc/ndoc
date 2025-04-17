@@ -9,7 +9,7 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.model.DefaultHNode;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocParseHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -19,7 +19,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +93,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    TsonPair p = info.currentArg.toPair();
+                    NPairElement p = info.currentArg.toPair();
                     String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().stringValue());
                     if (HParserUtils.isCommonStyleProperty(sid)) {
                         info.node.setProperty(sid, p.value());
@@ -132,15 +132,15 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     protected String acceptTypeName(NElement e) {
         switch (e.type()) {
             case NAME: {
-                if (acceptTypeName(e.toName().value())) {
-                    return e.toName().value();
+                if (acceptTypeName(e.asStringValue().get())) {
+                    return e.asStringValue().get();
                 }
                 break;
             }
             case UPLET:
             case NAMED_UPLET:
             {
-                TsonUplet uplet = e.toUplet();
+                NUpletElement uplet = e.toUplet();
                 if (uplet.isNamed() && acceptTypeName(uplet.name())) {
                     return uplet.name();
                 }
@@ -306,7 +306,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper.of((HNode) item, engine)
+        return ToElementHelper.of((HNode) item, engine)
                 .build();
     }
 

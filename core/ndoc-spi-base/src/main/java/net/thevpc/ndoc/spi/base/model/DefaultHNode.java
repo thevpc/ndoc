@@ -13,7 +13,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.*;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -659,7 +659,7 @@ public class DefaultHNode implements HNode {
             }
             return o.build();
         } else {
-            TsonUpletBuilder o = Tson.ofUpletBuilder().name(nodeType);
+            NUpletElementBuilder o = Tson.ofUpletBuilder().name(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];

@@ -11,8 +11,8 @@ import net.thevpc.ndoc.spi.renderer.text.NDocRichTextToken;
 import net.thevpc.ndoc.spi.renderer.text.NDocRichTextTokenType;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextBaseRenderer;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.Tson;
 import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
@@ -26,7 +26,7 @@ public class NDocPlainTextRenderer extends NDocTextBaseRenderer {
     public NDocTextRendererBuilder createRichTextHelper(HNode p, NDocNodeRendererContext ctx) {
         Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
         NDocTextRendererBuilder helper = new NDocTextRendererBuilderImpl(fg);
-        NElement d = p.getPropertyValue(HPropName.VALUE).orElse(NElements.of().of(""));
+        NElement d = p.getPropertyValue(HPropName.VALUE).orElse(NElements.of().ofString(""));
         String message = NStringUtils.trim(d.toStr().value());
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {

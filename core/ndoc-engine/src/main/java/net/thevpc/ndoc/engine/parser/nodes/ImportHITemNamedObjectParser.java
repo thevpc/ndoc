@@ -12,7 +12,7 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonUplet;
+
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case UPLET:
             case NAMED_UPLET:
             {
-                TsonUplet uplet = tsonElement.toUplet();
+                NUpletElement uplet = tsonElement.toUplet();
                 if(uplet.isNamed()) {
                     List<NElement> u = uplet.params().toList();
                     if (u.isEmpty()) {

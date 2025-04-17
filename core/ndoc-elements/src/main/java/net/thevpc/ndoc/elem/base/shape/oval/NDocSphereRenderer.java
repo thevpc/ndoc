@@ -11,7 +11,6 @@ import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.tson.Tson;
 
 public class NDocSphereRenderer extends NDocNodeRendererBase {
     HProperties sphereDefaultStyles = new HProperties();

@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonElementType;
+import net.thevpc.nuts.elem.NElementType;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -29,9 +29,9 @@ public class CompoundStroke implements Stroke {
         Stroke base2 = null;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == TsonElementType.UPLET
-                            || arg.type() == TsonElementType.ARRAY
-                            || arg.type() == TsonElementType.OBJECT
+                    arg.type() == NElementType.UPLET
+                            || arg.type() == NElementType.ARRAY
+                            || arg.type() == NElementType.OBJECT
             ) {
                 Stroke stroke = g.createStroke(arg);
                 if (base1 == null) {

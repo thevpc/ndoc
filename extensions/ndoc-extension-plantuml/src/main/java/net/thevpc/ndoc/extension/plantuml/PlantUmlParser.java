@@ -7,15 +7,13 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
+
 
 public class PlantUmlParser extends NDocNodeParserBase {
     public PlantUmlParser() {
@@ -73,7 +71,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
                 return true;
             }
             case NAME: {
-                if (!HParserUtils.isCommonStyleProperty(info.currentArg.toName().value())) {
+                if (!HParserUtils.isCommonStyleProperty(info.currentArg.asStringValue().get())) {
                     info.node.setProperty(HPropName.MODE, info.currentArg);
                     return true;
                 }
@@ -81,7 +79,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    TsonPair p = info.currentArg.toPair();
+                    NPairElement p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
                         case HPropName.VALUE:
@@ -116,7 +114,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper
+        return ToElementHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();

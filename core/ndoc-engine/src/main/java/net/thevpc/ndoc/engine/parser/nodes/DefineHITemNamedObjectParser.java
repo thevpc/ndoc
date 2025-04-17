@@ -13,7 +13,7 @@
 //import net.thevpc.nuts.util.NMsg;
 //import net.thevpc.nuts.util.NOptional;
 //import net.thevpc.nuts.util.NRef;
-//import net.thevpc.tson.*;
+//
 //
 //import java.util.ArrayList;
 //import java.util.List;
@@ -38,8 +38,8 @@
 //                    context.messages().addError(NMsg.ofC("missing definition name : %s", tsonElement), context.source());
 //                    return NOptional.ofError(() -> NMsg.ofC("missing definition name : %s", tsonElement));
 //                }
-//                TsonElementList definitionArguments = object.args();
-//                TsonElementList definitionBody = object.body();
+//                List<NElement> definitionArguments = object.args();
+//                List<NElement> definitionBody = object.body();
 //                HNode node=new DefaultHNode(HNodeType.DEFINE);
 //                node.setProperty("name", name);
 //                node.setProperty("args", definitionArguments==null?null:definitionArguments.toList().toArray(new NElement[0]));

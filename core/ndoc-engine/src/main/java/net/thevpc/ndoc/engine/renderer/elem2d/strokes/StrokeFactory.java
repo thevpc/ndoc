@@ -5,7 +5,6 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonElementType;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -9,10 +9,8 @@ import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +47,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                 }
                 case PAIR: {
                     if (currentArg.isSimplePair()) {
-                        TsonPair p = currentArg.toPair();
+                        NPairElement p = currentArg.toPair();
                         String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().stringValue());
                         switch (sid) {
                             case HPropName.VALUE:
@@ -114,7 +112,7 @@ public class NDocImageParser extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    TsonPair p = info.currentArg.toPair();
+                    NPairElement p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
                         case HPropName.TRANSPARENT_COLOR: {
@@ -138,7 +136,7 @@ public class NDocImageParser extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper
+        return ToElementHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();

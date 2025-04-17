@@ -5,10 +5,9 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
 
 public class NDocRectangleParser extends NDocNodeParserBase {
 
@@ -21,7 +20,7 @@ public class NDocRectangleParser extends NDocNodeParserBase {
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
             case PAIR: {
-                TsonPair pp = info.currentArg.toPair();
+                NPairElement pp = info.currentArg.toPair();
                 NElement k = pp.key();
                 NElement v = pp.value();
                 NDocObjEx ph = NDocObjEx.of(k);
@@ -50,7 +49,7 @@ public class NDocRectangleParser extends NDocNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            info.node.setProperty(uid, NElements.of().of(true));
+                            info.node.setProperty(uid, NElements.of().ofBoolean(true));
                             return true;
                         }
                     }

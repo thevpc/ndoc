@@ -12,7 +12,7 @@ import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.tson.Tson;
+
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;

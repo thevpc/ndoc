@@ -5,7 +5,6 @@
 package net.thevpc.ndoc.elem.base.control;
 
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.tson.Tson;
 
 /**
  * @author vpc

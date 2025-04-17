@@ -4,12 +4,12 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
+
 
 /**
  *
@@ -58,7 +58,7 @@ public class ScoreBoardImpl extends NDocNodeParserBase {
         HProp height = item.getProperty(HPropName.HEIGHT).orNull();
         HProp points = item.getProperty("function").orNull();
 
-        return ToTsonHelper.of(
+        return ToElementHelper.of(
                 item,
                 engine()
         ).addChildren(

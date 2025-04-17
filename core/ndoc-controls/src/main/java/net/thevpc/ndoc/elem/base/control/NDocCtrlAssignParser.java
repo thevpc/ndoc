@@ -15,10 +15,6 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonOp;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
 
 public class NDocCtrlAssignParser extends NDocNodeParserBase {
 
@@ -33,7 +29,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
             case PAIR: {
-                TsonPair p = c.toPair();
+                NPairElement p = c.toPair();
                 NElement k = p.key();
                 NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);

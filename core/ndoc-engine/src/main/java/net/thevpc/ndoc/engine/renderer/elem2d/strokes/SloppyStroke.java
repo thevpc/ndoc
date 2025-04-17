@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
+
 
 import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;

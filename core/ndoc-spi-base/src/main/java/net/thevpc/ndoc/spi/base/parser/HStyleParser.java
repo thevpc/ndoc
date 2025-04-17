@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.Tson;
+
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
@@ -108,7 +108,7 @@ public class HStyleParser {
                 return NOptional.of(DefaultHNodeSelector.ofName(s));
             }
             case NAME: {
-                String n = e.toName().value();
+                String n = e.asStringValue().get();
                 if (n.startsWith(".")) {
                     return NOptional.of(DefaultHNodeSelector.ofClasses(n.substring(1)));
                 }

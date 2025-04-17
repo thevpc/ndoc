@@ -32,10 +32,7 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonDocument;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonReader;
+
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
 

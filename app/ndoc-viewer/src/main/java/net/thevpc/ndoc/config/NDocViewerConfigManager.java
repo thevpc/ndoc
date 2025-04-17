@@ -3,7 +3,6 @@ package net.thevpc.ndoc.config;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.tson.*;
 
 import java.io.*;
 import java.util.*;

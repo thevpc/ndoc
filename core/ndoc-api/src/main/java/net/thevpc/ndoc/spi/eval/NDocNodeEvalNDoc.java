@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
 
 /**
  * @author vpc
@@ -114,7 +113,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     break;
                 }
                 case NAMED_UPLET: {
-                    TsonUplet ff = ((TsonUplet) element);
+                    NUpletElement ff = ((NUpletElement) element);
                     if (ff.isNamed()) {
                         List<NElement> r = ff.params().toList()
                                 .stream().map(x -> eval(x)).collect(Collectors.toList());

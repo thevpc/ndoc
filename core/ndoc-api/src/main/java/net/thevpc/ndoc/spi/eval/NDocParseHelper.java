@@ -6,9 +6,9 @@ package net.thevpc.ndoc.spi.eval;
 
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.nuts.elem.NElementAnnotation;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.TsonAnnotation;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.Arrays;
@@ -21,11 +21,8 @@ import java.util.Set;
 public class NDocParseHelper {
 
     public static String toString(NElement e, NDocParseMode mode) {
-        if(e.isName()){
-            return e.toName().value();
-        }
         if(e.isAnyString()){
-            return e.stringValue();
+            return e.asStringValue().get();
         }
         switch (mode) {
             case ERROR: {
@@ -43,7 +40,7 @@ public class NDocParseHelper {
 
 
     public static boolean fillAnnotations(NElement e, HNode p) {
-        for (TsonAnnotation a : e.annotations()) {
+        for (NElementAnnotation a : e.annotations()) {
             String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 HashSet<String> o = new HashSet<>(Arrays.asList(p.getAncestors()));

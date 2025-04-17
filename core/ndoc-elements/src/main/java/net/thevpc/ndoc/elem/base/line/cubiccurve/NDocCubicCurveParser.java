@@ -4,13 +4,11 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
 
 public class NDocCubicCurveParser extends NDocNodeParserBase {
     public NDocCubicCurveParser() {
@@ -21,7 +19,7 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
             case PAIR: {
-                TsonPair pp = info.currentArg.toPair();
+                NPairElement pp = info.currentArg.toPair();
                 NElement k = pp.key();
                 NElement v = pp.value();
                 NDocObjEx ph = NDocObjEx.of(k);
@@ -48,7 +46,7 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper.of(
+        return ToElementHelper.of(
                         item, engine()
                 ).addChildProps(new String[]{HPropName.FROM, HPropName.TO, HPropName.START_ARROW
                         , HPropName.END_ARROW

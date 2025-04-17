@@ -10,8 +10,8 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
-import net.thevpc.tson.Tson;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,10 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(child.addStyleClasses("ul-item"));
         }
         HNode newNode = f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, NElements.of().of(2))
-                .setProperty(HPropName.ROWS, NElements.of().of(2))
+                .setProperty(HPropName.COLUMNS, NElements.of().ofInt(2))
+                .setProperty(HPropName.ROWS, NElements.of().ofInt(2))
                 .setProperty(HPropName.ORIGIN, HAlign.TOP_LEFT)
-                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.of().of(new double[]{1, 20}))
+                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.of().ofDoubleArray(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]));
         for (String s : new String[]{
                 HPropName.GRID_COLOR

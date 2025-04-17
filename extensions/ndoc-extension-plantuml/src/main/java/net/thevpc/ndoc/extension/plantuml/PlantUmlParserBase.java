@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -13,9 +13,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.TsonPair;
+
 
 public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     public PlantUmlParserBase(String id, String mode) {
@@ -81,7 +79,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    TsonPair p = info.currentArg.toPair();
+                    NPairElement p = info.currentArg.toPair();
                     String sid = HUtils.uid(p.key().stringValue());
                     switch (sid) {
                         case HPropName.VALUE:
@@ -124,7 +122,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper
+        return ToElementHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();

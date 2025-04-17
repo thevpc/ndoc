@@ -10,15 +10,13 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +193,7 @@ public class NDocTextParser extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper
+        return ToElementHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();

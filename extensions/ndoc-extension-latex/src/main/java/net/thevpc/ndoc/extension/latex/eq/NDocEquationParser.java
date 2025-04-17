@@ -9,8 +9,7 @@ import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
-import net.thevpc.nuts.elem.NElement;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
 
 /**
@@ -58,7 +57,7 @@ public class NDocEquationParser extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(HNode item) {
-        return ToTsonHelper
+        return ToElementHelper
                 .of(item, engine())
                 .inlineStringProp(HPropName.VALUE)
                 .build();

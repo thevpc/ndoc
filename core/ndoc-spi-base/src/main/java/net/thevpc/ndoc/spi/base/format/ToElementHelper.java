@@ -7,14 +7,15 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
+
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public class ToTsonHelper {
+public class ToElementHelper {
     List<NElement> args = new ArrayList<>();
     List<NElement> children = new ArrayList<>();
     private String name;
@@ -24,13 +25,13 @@ public class ToTsonHelper {
     private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(HPropName.CLASS, HPropName.ANCESTORS));
     private NDocEngine engine;
 
-    public static ToTsonHelper of(HNode node, NDocEngine engine) {
-        return new ToTsonHelper(
+    public static ToElementHelper of(HNode node, NDocEngine engine) {
+        return new ToElementHelper(
                 net.thevpc.ndoc.api.util.HUtils.uid(node.type())
                 , node, engine);
     }
 
-    public ToTsonHelper(String name, HNode node, NDocEngine engine) {
+    public ToElementHelper(String name, HNode node, NDocEngine engine) {
         this.name = name;
         this.node = node;
         this.engine = engine;
@@ -73,7 +74,7 @@ public class ToTsonHelper {
             applyAnnotations(u);
             return u.build();
         } else {
-            TsonUpletBuilder u = Tson.ofUplet(name, args2.toArray(new TsonElementBase[0])).builder();
+            NUpletElementBuilder u = Tson.ofUplet(name, args2.toArray(new TsonElementBase[0])).builder();
             applyAnnotations(u);
             return u.build();
         }
@@ -91,7 +92,7 @@ public class ToTsonHelper {
         }
     }
 
-    public ToTsonHelper addArgs(NElement... elements) {
+    public ToElementHelper addArgs(NElement... elements) {
         if (elements != null) {
             for (NElement e : elements) {
                 addArg(e);
@@ -100,21 +101,21 @@ public class ToTsonHelper {
         return this;
     }
 
-    public ToTsonHelper addArg(NElement e) {
+    public ToElementHelper addArg(NElement e) {
         if (e != null) {
             args.add(e);
         }
         return this;
     }
 
-    public ToTsonHelper addNonNullPairChild(String name,Object value) {
+    public ToElementHelper addNonNullPairChild(String name, Object value) {
         if(value!=null){
             addChild(Tson.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
         }
         return this;
     }
 
-    public ToTsonHelper addChildren(NElement... elements) {
+    public ToElementHelper addChildren(NElement... elements) {
         if (elements != null) {
             for (NElement e : elements) {
                 addChild(e);
@@ -123,14 +124,14 @@ public class ToTsonHelper {
         return this;
     }
 
-    public ToTsonHelper addChild(NElement e) {
+    public ToElementHelper addChild(NElement e) {
         if (e != null) {
             children.add(e);
         }
         return this;
     }
 
-    public ToTsonHelper inlineStringProp(String name) {
+    public ToElementHelper inlineStringProp(String name) {
         String value = NDocObjEx.ofProp(node, name).asStringOrName().orNull();
         if (value != null) {
             boolean multiLine =
@@ -146,14 +147,14 @@ public class ToTsonHelper {
         return this;
     }
 
-    public ToTsonHelper excludeProps(String prop) {
+    public ToElementHelper excludeProps(String prop) {
         if (!NBlankable.isBlank(prop)) {
             excludeSet.add(HUtils.uid(prop));
         }
         return this;
     }
 
-    public ToTsonHelper addChildProps(String[] propNames) {
+    public ToElementHelper addChildProps(String[] propNames) {
         if(propNames!=null) {
             for (String propName : propNames) {
                 if(propName!=null) {

@@ -345,7 +345,7 @@ public class NDocObjEx {
                     case NAMED_UPLET: {
                         NListContainerElement te = (NListContainerElement) element;
                         name = net.thevpc.ndoc.api.util.HUtils.uid(te.name());
-                        TsonElementList a = te.params();
+                        List<NElement> a = te.params();
                         if (a != null) {
                             args.addAll(a.toList());
                         }
@@ -725,7 +725,7 @@ public class NDocObjEx {
                     return NLiteral.of(te.toStr().raw()).asBoolean();
                 }
                 case NAME: {
-                    return NLiteral.of(te.toName().value()).asBoolean();
+                    return NLiteral.of(te.asStringValue().get()).asBoolean();
                 }
             }
         }
@@ -761,7 +761,7 @@ public class NDocObjEx {
                     return NOptional.of(te.toStr().raw());
                 }
                 case NAME: {
-                    return NOptional.of(te.toName().value());
+                    return NOptional.of(te.asStringValue().get());
                 }
             }
         }
@@ -1368,8 +1368,8 @@ public class NDocObjEx {
         if (element instanceof HArrowType) {
             return NOptional.of(new HArrow((HArrowType) element));
         }
-        if (element instanceof TsonUplet && ((TsonUplet) element).isNamed()) {
-            TsonUplet f = (TsonUplet) element;
+        if (element instanceof NUpletElement && ((NUpletElement) element).isNamed()) {
+            NUpletElement f = (NUpletElement) element;
             NOptional<HArrowType> u = NDocObjEx.of(f.name()).asArrowType();
             Double width = null;
             Double height = null;
@@ -1556,8 +1556,8 @@ public class NDocObjEx {
     }
 
     public boolean isFunction() {
-        if (element instanceof TsonUplet) {
-            TsonUplet te = (TsonUplet) element;
+        if (element instanceof NUpletElement) {
+            NUpletElement te = (NUpletElement) element;
             return te.toUplet().isNamed();
         }
         return false;
@@ -1588,7 +1588,7 @@ public class NDocObjEx {
         try {
             return NOptional.of(NElemUtils.toElement(element));
         } catch (Exception e) {
-            return NOptional.ofEmpty(NMsg.ofC("not tson : %s : %s", e, element));
+            return NOptional.ofEmpty(NMsg.ofC("not a valid element : %s : %s", e, element));
         }
     }
 
@@ -1597,7 +1597,7 @@ public class NDocObjEx {
             NElement te = (NElement) element;
             switch (te.type()) {
                 case NAME: {
-                    return NOptional.of(te.toName().value());
+                    return NOptional.of(te.asStringValue().get());
                 }
             }
         }

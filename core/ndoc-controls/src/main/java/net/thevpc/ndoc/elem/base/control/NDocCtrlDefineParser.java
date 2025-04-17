@@ -18,7 +18,6 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
 
 public class NDocCtrlDefineParser extends NDocNodeParserBase {
 
@@ -33,7 +32,7 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
             case PAIR: {
-                TsonPair p = c.toPair();
+                NPairElement p = c.toPair();
                 NElement k = p.key();
                 NElement v = p.value();
                 if (v.isNamedObject() || v.isNamedUplet()) {
@@ -41,8 +40,8 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
                     String name = object.name();
                     if (!NBlankable.isBlank(name)) {
                         return NCallableSupport.of(10, () -> {
-                            TsonElementList definitionArguments = object.params();
-                            TsonElementList definitionBody = object.body();
+                            List<NElement> definitionArguments = object.params();
+                            List<NElement> definitionBody = object.body();
                             HNode node = new DefaultHNode(HNodeType.DEFINE);
                             node.setProperty(HPropName.NAME, NElements.of().of(name));
                             node.setProperty(HPropName.ARGS, definitionArguments == null ? null : Tson.ofArray(definitionArguments.toList().toArray(new NElement[0])).build());

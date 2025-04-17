@@ -22,7 +22,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.*;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -252,13 +252,13 @@ public class HDocumentCompiler {
                         && !HPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
-        TsonElementList passedArgs = callFunction.toListContainer().params();
+        List<NElement> passedArgs = callFunction.toListContainer().params();
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toList().toArray(new NElement[0]);
         inlinedNode.children().add(newAssign(HPropName.ARGS, Tson.ofArray(passedArgsArr).build()));
         for (int i = 0; i < passedArgsArr.length; i++) {
             NElement passedArg = passedArgsArr[i];
             if (passedArg.isSimplePair()) {
-                TsonPair pair = passedArg.toPair();
+                NPairElement pair = passedArg.toPair();
                 NElement value = pair.value();
                 if (HUtils.getCompilerDeclarationPath(value) == null) {
                     value = HUtils.addCompilerDeclarationPath(value, HUtils.getCompilerDeclarationPath(pair));

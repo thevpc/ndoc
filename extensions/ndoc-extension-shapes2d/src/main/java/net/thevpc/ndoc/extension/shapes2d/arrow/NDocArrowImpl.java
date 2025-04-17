@@ -5,11 +5,10 @@ import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonPair;
+
 
 /**
  *
@@ -25,7 +24,7 @@ public class NDocArrowImpl extends NDocNodeParserBase {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    TsonPair p = info.currentArg.toPair();
+                    NPairElement p = info.currentArg.toPair();
                     switch (HUtils.uid(p.key().stringValue())) {
                         case "width": {
                             info.node.setProperty(HPropName.WIDTH, p.value());
@@ -59,7 +58,7 @@ public class NDocArrowImpl extends NDocNodeParserBase {
         HProp base = item.getProperty("base").orNull();
         HProp hat = item.getProperty("hat").orNull();
 
-        return ToTsonHelper.of(
+        return ToElementHelper.of(
                 item,
                 engine()
         ).addChildren(

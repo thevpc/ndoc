@@ -20,7 +20,7 @@ import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.*;
+
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -91,7 +91,7 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case NAME: {
-                String name = c.toName().value();
+                String name = c.asStringValue().get();
                 String uid = HUtils.uid(name);
                 NDocNodeParser p = engine.nodeTypeFactory(uid).orNull();
                 if (p != null) {
@@ -104,7 +104,7 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case PAIR: {
-                TsonPair p = c.toPair();
+                NPairElement p = c.toPair();
                 NElement k = p.key();
                 NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);
@@ -191,7 +191,7 @@ public class DefaultNDocDocumentItemParserFactory
                         if (sourcePath != null) {
                             functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
                             if (c.isNamedUplet()) {
-                                TsonUpletBuilder fb = (TsonUpletBuilder) functionTsonDeclaration.builder();
+                                NUpletElementBuilder fb = (NUpletElementBuilder) functionTsonDeclaration.builder();
                                 for (int i = 0; i < fb.params().length; i++) {
                                     fb.setAt(i, HUtils.addCompilerDeclarationPath(fb.param(i), sourcePath.toString()));
                                 }
@@ -275,7 +275,7 @@ public class DefaultNDocDocumentItemParserFactory
                         break;
                     }
                     case NAME: {
-                        if (cls.toName().value().equalsIgnoreCase("ndoc")) {
+                        if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
                             foundHalfa = true;
                         } else if (isVersionString(cls.toStr().value())) {
                             foundVersion = true;

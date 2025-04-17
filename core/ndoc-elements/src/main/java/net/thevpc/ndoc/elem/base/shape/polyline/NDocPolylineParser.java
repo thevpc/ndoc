@@ -8,13 +8,10 @@ import net.thevpc.ndoc.api.style.HPropUtils;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonArray;
-import net.thevpc.nuts.elem.NElement;
 
 public class NDocPolylineParser extends NDocNodeParserBase {
     public NDocPolylineParser() {
@@ -94,7 +91,7 @@ public class NDocPolylineParser extends NDocNodeParserBase {
                 points = null;
             }
         }
-        return ToTsonHelper.of(
+        return ToElementHelper.of(
                         item, engine()
                 ).addChildren(
                         points == null ? null : Tson.ofPair("points", points)

@@ -5,11 +5,11 @@ import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.format.ToTsonHelper;
+import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonPair;
+import net.thevpc.nuts.elem.NPairElement;
+
 
 public class NDocCylinderImpl extends NDocNodeParserBase {
 
@@ -22,7 +22,7 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if(info.currentArg.isSimplePair()){
-                    TsonPair pair = info.currentArg.toPair();
+                    NPairElement pair = info.currentArg.toPair();
                     switch (HUtils.uid(pair.key().stringValue())) {
                         case "ellipse-height": {
                             info.node.setProperty(HPropName.ELLIPSE_H, pair.value());
@@ -52,7 +52,7 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
         HProp ellipseHeight = item.getProperty(HPropName.ELLIPSE_H).orNull();
         HProp topColor = item.getProperty(HPropName.TOP_COLOR).orNull();
         HProp segmentCount = item.getProperty(HPropName.SEGMENT_COUNT).orNull();
-        return ToTsonHelper.of(
+        return ToElementHelper.of(
                         item,
                         engine()
                 ).addChildren(

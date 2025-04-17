@@ -11,8 +11,8 @@ import net.thevpc.ndoc.spi.base.model.DefaultHNode;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.tson.*;
 
 public class NDocCtrlCallParser extends NDocNodeParserBase {
 
@@ -29,14 +29,14 @@ public class NDocCtrlCallParser extends NDocNodeParserBase {
             case UPLET:
             case NAMED_UPLET:
             {
-                TsonUplet p = c.toUplet();
+                NUpletElement p = c.toUplet();
                 if(p.isNamed()) {
                     return NCallableSupport.of(10, () -> {
-                        TsonElementList args = p.params();
+                        List<NElement> args = p.params();
                         HNode node = new DefaultHNode(HNodeType.CALL);
                         for (NElement arg : args) {
                             if (arg.isSimplePair()) {
-                                TsonPair pair = arg.toPair();
+                                NPairElement pair = arg.toPair();
                                 switch (HUtils.uid(pair.key().stringValue())) {
                                     case HPropName.NAME: {
                                         node.setProperty(HPropName.NAME, pair.key());
