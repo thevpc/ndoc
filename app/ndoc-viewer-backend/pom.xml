@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.thevpc.ndoc</groupId>
@@ -24,59 +21,21 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.thevpc.ndoc</groupId>
-			<artifactId>ndoc-api</artifactId>
-			<version>0.8.5</version>
-		</dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.5</version></dependency>
 		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-spring-boot</artifactId><version>0.8.5.0</version></dependency>
-		<dependency>
-			<groupId>net.thevpc.ndoc</groupId>
-			<artifactId>ndoc-spi-base</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.thevpc.ndoc</groupId>
-			<artifactId>ndoc-engine</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.thevpc.ndoc</groupId>
-			<artifactId>ndoc-elements</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.thevpc.nuts</groupId>
-			<artifactId>nuts-runtime</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.5.0</version></dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.5.0</version></dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-elements</artifactId><version>0.8.5.0</version></dependency>
+		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.5.0</version></dependency>
 
-		<dependency>
-			<groupId>net.thevpc.ndoc</groupId>
-			<artifactId>ndoc-renderer-html</artifactId>
-			<version>0.8.5.0</version>
-		</dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.5.0</version></dependency>
 		<!-- Spring Boot dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
 
 		<!-- GitHub API -->
-		<dependency>
-			<groupId>org.kohsuke</groupId>
-			<artifactId>github-api</artifactId>
-			<version>1.101</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jgit</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
-			<version>5.12.0.202106070339-r</version>
-		</dependency>
+		<dependency><groupId>org.kohsuke</groupId><artifactId>github-api</artifactId><version>1.101</version></dependency>
+		<dependency><groupId>org.eclipse.jgit</groupId><artifactId>org.eclipse.jgit</artifactId><version>5.12.0.202106070339-r</version></dependency>
 
 	</dependencies>
 
