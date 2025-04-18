@@ -82,7 +82,7 @@ public class IfNDocNodeFlowControlProcessor implements NDocNodeFlowControlProces
 
     private void processAssign(HNode hNode, NDocNodeFlowControlProcessorContext context) {
         if (hNode.type().endsWith(HNodeType.ASSIGN)) {
-            String n = hNode.getPropertyValue(HPropName.NAME).get().toStr().value();
+            String n = hNode.getPropertyValue(HPropName.NAME).get().asStringValue().get();
             NElement value = context.evalExpression(hNode, hNode.getPropertyValue(HPropName.VALUE).get());
             hNode.parent().setVar(n, value);
         }

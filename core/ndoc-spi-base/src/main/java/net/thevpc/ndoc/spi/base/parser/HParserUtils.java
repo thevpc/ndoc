@@ -22,7 +22,7 @@ public class HParserUtils {
             case LINE_STRING:
             case NAME:
             {
-                if (!isCommonStyleProperty(currentArg.stringValue())) {
+                if (!isCommonStyleProperty(currentArg.asStringValue().get())) {
                     return true;
                 }
                 break;

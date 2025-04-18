@@ -3,6 +3,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -29,9 +30,9 @@ public class ZigzagStroke implements Stroke {
         double flatness = 1;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == TsonElementType.UPLET
-                            || arg.type() == TsonElementType.ARRAY
-                            || arg.type() == TsonElementType.OBJECT
+                    arg.type() == NElementType.UPLET
+                            || arg.type() == NElementType.ARRAY
+                            || arg.type() == NElementType.OBJECT
             ) {
                 if (base == null) {
                     base = g.createStroke(arg);

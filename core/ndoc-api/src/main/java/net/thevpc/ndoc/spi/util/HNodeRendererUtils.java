@@ -66,7 +66,7 @@ public class HNodeRendererUtils {
 
     public static Bounds2 bounds(HNode t, NDocNodeRendererContext ctx) {
         NDocObjEx oSize = NDocObjEx.of(ctx.computePropertyValue(t, HPropName.SIZE));
-        NOptional<NElement[]> a = oSize.asTsonArray();
+        NOptional<NElement[]> a = oSize.asNArrayElement();
         Double2 size=null;
         if(a.isPresent()){
             NElement[] tt = a.get();

@@ -9,6 +9,7 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 
@@ -75,12 +76,12 @@ public class NDocPieImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        startAngle == null ? null : Tson.ofPair("start-angle", HUtils.toElement(startAngle.getValue())),
-                        extentAngle == null ? null : Tson.ofPair("extent-angle", HUtils.toElement(extentAngle.getValue())),
-                        sliceCount == null ? null : Tson.ofPair("slice-count", HUtils.toElement(sliceCount.getValue())),
-                        dash == null ? null : Tson.ofPair("dash", HUtils.toElement(dash.getValue())),
-                        colors == null ? null : Tson.ofPair("colors", HUtils.toElement(colors.getValue())),
-                        slices == null ? null : Tson.ofPair("slices", HUtils.toElement(slices.getValue()))
+                        startAngle == null ? null : NElements.of().ofPair("start-angle", startAngle.getValue()),
+                        extentAngle == null ? null : NElements.of().ofPair("extent-angle", extentAngle.getValue()),
+                        sliceCount == null ? null : NElements.of().ofPair("slice-count", sliceCount.getValue()),
+                        dash == null ? null : NElements.of().ofPair("dash", dash.getValue()),
+                        colors == null ? null : NElements.of().ofPair("colors", colors.getValue()),
+                        slices == null ? null : NElements.of().ofPair("slices", slices.getValue())
 
                 )
                 .build();

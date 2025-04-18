@@ -32,7 +32,7 @@
 //    public NOptional<HItem> parseItem(String id, NElement tsonElement, HNodeFactoryParseContext context) {
 //        switch (tsonElement.type()) {
 //            case OBJECT: {
-//                TsonObject object = tsonElement.toObject();
+//                NObjectElement object = tsonElement.toObject();
 //                String name = object.name();
 //                if(NBlankable.isBlank(name)) {
 //                    context.messages().addError(NMsg.ofC("missing definition name : %s", tsonElement), context.source());

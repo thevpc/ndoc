@@ -48,7 +48,7 @@ public class NDocEquationParser extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HProp.ofString(HPropName.VALUE, info.currentArg.toStr().raw()));
+                info.node.setProperty(HProp.ofString(HPropName.VALUE, info.currentArg.asStringValue().get()));
                 return true;
             }
         }

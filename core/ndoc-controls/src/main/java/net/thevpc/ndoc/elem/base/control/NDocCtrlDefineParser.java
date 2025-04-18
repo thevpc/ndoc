@@ -15,9 +15,15 @@ import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NObjectElement;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
+
+import java.util.Collections;
+import java.util.List;
 
 public class NDocCtrlDefineParser extends NDocNodeParserBase {
 
@@ -32,19 +38,19 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
             case PAIR: {
-                NPairElement p = c.toPair();
+                NPairElement p = c.asPair().get();
                 NElement k = p.key();
                 NElement v = p.value();
                 if (v.isNamedObject() || v.isNamedUplet()) {
-                    TsonObject object = v.toObject();
+                    NObjectElement object = v.toObject().get();
                     String name = object.name();
                     if (!NBlankable.isBlank(name)) {
                         return NCallableSupport.of(10, () -> {
-                            List<NElement> definitionArguments = object.params();
-                            List<NElement> definitionBody = object.body();
+                            List<NElement> definitionArguments = object.params().orElse(Collections.emptyList());
+                            List<NElement> definitionBody = object.children();
                             HNode node = new DefaultHNode(HNodeType.DEFINE);
-                            node.setProperty(HPropName.NAME, NElements.of().of(name));
-                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : Tson.ofArray(definitionArguments.toList().toArray(new NElement[0])).build());
+                            node.setProperty(HPropName.NAME, NElements.of().ofString(name));
+                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElements.of().ofArray(definitionArguments.toArray(new NElement[0])));
                             for (NElement element : definitionBody) {
                                 NOptional<HItem> o = context.engine().newNode(element, context);
                                 if (!o.isPresent()) {
@@ -88,7 +94,7 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return Tson.ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElements.of().ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

@@ -12,6 +12,7 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -40,10 +41,10 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
             case "hgrid":
             case "row": {
                 if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElements.of().of(-1));
+                    info.node.setProperty(HPropName.COLUMNS, NElements.of().ofInt(-1));
                 }
                 if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElements.of().of(1));
+                    info.node.setProperty(HPropName.ROWS, NElements.of().ofInt(1));
                 }
                 break;
             }
@@ -66,7 +67,7 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
                 return false;
             }
             case PAIR: {
-                NPairElement pp = info.currentArg.toPair();
+                NPairElement pp = info.currentArg.asPair().get();
                 NElement k = pp.key();
                 NElement v = pp.value();
                 NDocObjEx ph = NDocObjEx.of(k);

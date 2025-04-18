@@ -9,6 +9,7 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 
@@ -80,13 +81,13 @@ public class NDocDonutImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        innerRadius == null ? null : Tson.ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
-                        startAngle == null ? null : Tson.ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
-                        extentAngle == null ? null : Tson.ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
-                        sliceCount == null ? null : Tson.ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
-                        dash == null ? null : Tson.ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
-                        colors == null ? null : Tson.ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
-                        slices == null ? null : Tson.ofPair("slices", HUtils.toElement(slices.getValue()))
+                        innerRadius == null ? null : NElements.of().ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
+                        startAngle == null ? null : NElements.of().ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
+                        extentAngle == null ? null : NElements.of().ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
+                        sliceCount == null ? null : NElements.of().ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
+                        dash == null ? null : NElements.of().ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
+                        colors == null ? null : NElements.of().ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
+                        slices == null ? null : NElements.of().ofPair("slices", HUtils.toElement(slices.getValue()))
 
                 )
                 .build();

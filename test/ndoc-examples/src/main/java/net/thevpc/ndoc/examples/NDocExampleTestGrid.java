@@ -12,6 +12,7 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentRenderer;
 import net.thevpc.nuts.Nuts;
+import net.thevpc.nuts.elem.NElements;
 
 
 import java.awt.*;
@@ -29,7 +30,7 @@ public class NDocExampleTestGrid {
                 .add(f.ofPage()
                         .add(
                                 f.ofGrid(3, 2)
-                                        .setProperty(HPropName.COLUMNS_WEIGHT, NElements.of().of(new double[]{1, 2, 3, 4, 5, 6}))
+                                        .setProperty(HPropName.COLUMNS_WEIGHT, NElements.of().ofDoubleArray(1, 2, 3, 4, 5, 6))
                                         .add(f.ofRectangle()
                                                 .setProperty(HProps.backgroundColor(Color.BLUE))
                                                 .setProperty(HProps.colspan(4))

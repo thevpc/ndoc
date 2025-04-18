@@ -42,7 +42,7 @@ public class HUtils {
     }
 
     public static String getCompilerDeclarationPath(NElement element) {
-        return element.annotations().stream().filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.param(0).stringValue()).orElse(null);
+        return element.annotations().stream().filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.param(0).asStringValue().get()).orElse(null);
 
     }
 
@@ -54,7 +54,7 @@ public class HUtils {
         if (NBlankable.isBlank(path)) {
             return null;
         }
-        String pathString = path.stringValue();
+        String pathString = path.asStringValue().get();
         if (NBlankable.isBlank(pathString)) {
             return null;
         }
@@ -205,7 +205,7 @@ public class HUtils {
                         );
             }
         }
-        throw new IllegalArgumentException("Unsupported toTson(" + o.getClass().getName() + ")");
+        throw new IllegalArgumentException("Unsupported toElement(" + o.getClass().getName() + ")");
     }
 
     public static Object fromTson(NElement v) {
@@ -214,7 +214,7 @@ public class HUtils {
         }
         switch (v.type()) {
             case INTEGER:
-                return v.toInt().intValue();
+                return v.asIntValue().get();
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
             case ANTI_QUOTED_STRING:
@@ -222,7 +222,7 @@ public class HUtils {
             case TRIPLE_SINGLE_QUOTED_STRING:
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
-                return v.toStr().intValue();
+                return v.asStringValue().get();
         }
         throw new IllegalArgumentException("unsupported yet : fromTson(" + v.type() + ")");
     }

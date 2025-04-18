@@ -12,7 +12,11 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
+import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.nuts.util.NMsg;
+
+import java.util.List;
 
 public class NDocCtrlCallParser extends NDocNodeParserBase {
 
@@ -29,15 +33,15 @@ public class NDocCtrlCallParser extends NDocNodeParserBase {
             case UPLET:
             case NAMED_UPLET:
             {
-                NUpletElement p = c.toUplet();
+                NUpletElement p = c.asUplet().get();
                 if(p.isNamed()) {
                     return NCallableSupport.of(10, () -> {
                         List<NElement> args = p.params();
                         HNode node = new DefaultHNode(HNodeType.CALL);
                         for (NElement arg : args) {
                             if (arg.isSimplePair()) {
-                                NPairElement pair = arg.toPair();
-                                switch (HUtils.uid(pair.key().stringValue())) {
+                                NPairElement pair = arg.asPair().get();
+                                switch (HUtils.uid(pair.key().asStringValue().get())) {
                                     case HPropName.NAME: {
                                         node.setProperty(HPropName.NAME, pair.key());
                                         break;

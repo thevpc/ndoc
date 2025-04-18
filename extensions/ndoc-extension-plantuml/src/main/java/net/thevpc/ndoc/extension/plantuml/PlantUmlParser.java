@@ -10,6 +10,8 @@ import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -32,7 +34,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
             case LINE_STRING:
             {
                 return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.toStr().raw())
+                        context.documentFactory().ofText(tsonElement.asStringValue().get())
                 );
             }
         }
@@ -79,8 +81,8 @@ public class PlantUmlParser extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    String sid = HUtils.uid(p.key().stringValue());
+                    NPairElement p = info.currentArg.asPair().get();
+                    String sid = HUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
                         case HPropName.VALUE:
                         case "content": {
@@ -88,11 +90,11 @@ public class PlantUmlParser extends NDocNodeParserBase {
                             return true;
                         }
                         case HPropName.FILE: {
-                            String path = p.value().stringValue().trim();
+                            String path = p.value().asStringValue().get().trim();
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElements.of().of(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElements.of().ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())

@@ -10,7 +10,9 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 public class NDocPolylineParser extends NDocNodeParserBase {
@@ -62,7 +64,7 @@ public class NDocPolylineParser extends NDocNodeParserBase {
             case NAMED_UPLET:
             {
                 if (isAncestorScene3D(info.node)) {
-                    NOptional<HPoint3D> p2d = NDocObjEx.of(info.currentArg.toPair().value()).asHPoint3D();
+                    NOptional<HPoint3D> p2d = NDocObjEx.of(info.currentArg.asPair().get().value()).asHPoint3D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(info.node, p2d.get());
                         return true;
@@ -70,7 +72,7 @@ public class NDocPolylineParser extends NDocNodeParserBase {
                         return false;
                     }
                 } else {
-                    NOptional<HPoint2D> p2d = NDocObjEx.of(info.currentArg.toPair().value()).asHPoint2D();
+                    NOptional<HPoint2D> p2d = NDocObjEx.of(info.currentArg.asPair().get().value()).asHPoint2D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(info.node, p2d.get());
                         return true;
@@ -87,14 +89,14 @@ public class NDocPolylineParser extends NDocNodeParserBase {
     public NElement toElem(HNode item) {
         NElement points = item.getPropertyValue(HPropName.POINTS).orNull();
         if (points != null) {
-            if (points instanceof TsonArray && ((TsonArray) points).isEmpty()) {
+            if (points instanceof NArrayElement && ((NArrayElement) points).isEmpty()) {
                 points = null;
             }
         }
         return ToElementHelper.of(
                         item, engine()
                 ).addChildren(
-                        points == null ? null : Tson.ofPair("points", points)
+                        points == null ? null : NElements.of().ofPair("points", points)
                 )
                 .build();
     }

@@ -36,7 +36,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
                 }
                 default: {
                     all.add(f.ofSphere()
-                            //.setProperty(HPropName.SIZE, Tson.ofDouble(2,"%g"))
+                            //.setProperty(HPropName.SIZE, NElements.of().ofDouble(2,"%g"))
                             .addStyleClasses("ul-bullet"));
                     break;
                 }
@@ -82,7 +82,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
         if(NDocValueByName.isDebug(p, ctx)){
             Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
             if(v==null){
-                newNode.setProperty(HPropName.DRAW_GRID, NElements.of().of(true));
+                newNode.setProperty(HPropName.DRAW_GRID, NElements.of().ofBoolean(true));
             }
         }
         return newNode;

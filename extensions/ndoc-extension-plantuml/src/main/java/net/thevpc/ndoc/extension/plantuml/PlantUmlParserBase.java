@@ -10,6 +10,8 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -33,7 +35,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
             case LINE_STRING:
             {
                 return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.toStr().raw())
+                        context.documentFactory().ofText(tsonElement.asStringValue().get())
                 );
             }
         }
@@ -60,7 +62,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     @Override
     public void onStartParsingItem(String id, HNode node, NElement tsonElement, NDocNodeFactoryParseContext context) {
         super.onStartParsingItem(id, node, tsonElement, context);
-        node.setProperty(HPropName.MODE, NElements.of().of(id));
+        node.setProperty(HPropName.MODE, NElements.of().ofString(id));
     }
 
     @Override
@@ -79,8 +81,8 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    String sid = HUtils.uid(p.key().stringValue());
+                    NPairElement p = info.currentArg.asPair().get();
+                    String sid = HUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
                         case HPropName.VALUE:
                         case "content": {
@@ -88,11 +90,11 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
                             return true;
                         }
                         case HPropName.FILE: {
-                            String path = p.value().stringValue().trim();
+                            String path = p.value().asStringValue().get().trim();
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElements.of().of(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElements.of().ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())

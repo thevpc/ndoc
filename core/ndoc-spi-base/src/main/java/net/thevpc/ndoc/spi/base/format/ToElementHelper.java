@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
@@ -55,8 +55,8 @@ public class ToElementHelper {
             HStyleRule[] rules = node.rules();
             if (rules.length > 0) {
                 ch.add(
-                        Tson.ofPair("styles",
-                                Tson.ofObjectBuilder(
+                        NElements.of().ofPair("styles",
+                                NElements.of().ofObject(
                                         Arrays.stream(rules).map(x -> x.toElement()).toArray(NElement[]::new)
                                 )
                         )
@@ -68,26 +68,24 @@ public class ToElementHelper {
                         engine.nodeTypeFactory(child.type()).get().toElem(child)
                 );
             }
-            TsonObjectBuilder u = Tson.ofObjectBuilder(name, args2.toArray(new TsonElementBase[0]),
-                    ch.toArray(new TsonElementBase[0])
-            );
+            NObjectElementBuilder u = NElements.of().ofObjectBuilder(name).addParams(args2).addAll(ch);
             applyAnnotations(u);
             return u.build();
         } else {
-            NUpletElementBuilder u = Tson.ofUplet(name, args2.toArray(new TsonElementBase[0])).builder();
+            NUpletElementBuilder u = NElements.of().ofUplet(name, args2.toArray(new NElement[0])).builder();
             applyAnnotations(u);
             return u.build();
         }
     }
 
-    private void applyAnnotations(NListContainerElement u) {
+    private void applyAnnotations(NElementBuilder u) {
         for (String ancestor : node.getAncestors()) {
-            u.annotation(ancestor);
+            u.addAnnotation(ancestor);
         }
         NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(HPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
-            u.annotation(null,
-                    Arrays.stream(sa.get()).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new)
+            u.addAnnotation(null,
+                    Arrays.stream(sa.get()).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new)
             );
         }
     }
@@ -110,7 +108,7 @@ public class ToElementHelper {
 
     public ToElementHelper addNonNullPairChild(String name, Object value) {
         if(value!=null){
-            addChild(Tson.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
+            addChild(NElements.of().ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
         }
         return this;
     }
@@ -138,9 +136,9 @@ public class ToElementHelper {
                     value.indexOf('\n') >= 0
                             || value.indexOf('\r') >= 0;
             if (!multiLine) {
-                addArg(Tson.ofDoubleQuotedString(value));
+                addArg(NElements.of().ofString(value));
             } else {
-                addArg(Tson.ofTripleDoubleQuotedString(value));
+                addArg(NElements.of().ofString(value,NElementType.TRIPLE_DOUBLE_QUOTED_STRING));
             }
         }
         excludeProps(name);
@@ -160,7 +158,7 @@ public class ToElementHelper {
                 if(propName!=null) {
                     NElement v = node.getPropertyValue(propName).orNull();
                     if (v != null) {
-                        addChild(Tson.ofPair(propName, v));
+                        addChild(NElements.of().ofPair(propName, v));
                     }
                 }
             }

@@ -9,6 +9,7 @@ import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NAssert;
 
 
@@ -115,7 +116,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofAssign(String name, NElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, NElements.of().of(name))
+                .setProperty(HPropName.NAME, NElements.of().ofString(name))
                 .setProperty(HPropName.VALUE, value)
                 ;
     }
@@ -143,8 +144,8 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, NElements.of().of(cols))
-                .setProperty(HPropName.ROWS, NElements.of().of(rows))
+                .setProperty(HPropName.COLUMNS, NElements.of().ofInt(cols))
+                .setProperty(HPropName.ROWS, NElements.of().ofInt(rows))
                 ;
     }
 
@@ -170,12 +171,12 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, NElements.of().of(text));
+        return ofPlain().setProperty(HPropName.VALUE, NElements.of().ofString(text));
     }
 
     @Override
     public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, NElements.of().of(text));
+        return ofText().setProperty(HPropName.VALUE, NElements.of().ofString(text));
     }
 
     @Override
@@ -301,7 +302,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, NElements.of().of(value));
+        return ofEquation().setProperty(HPropName.VALUE, NElements.of().ofString(value));
     }
 
     @Override

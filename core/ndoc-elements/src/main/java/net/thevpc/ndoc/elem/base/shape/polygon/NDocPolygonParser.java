@@ -10,7 +10,9 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 public class NDocPolygonParser extends NDocNodeParserBase {
@@ -71,7 +73,7 @@ public class NDocPolygonParser extends NDocNodeParserBase {
             case NAMED_UPLET:
             {
                 if (isAncestorScene3D(info.node)) {
-                    NOptional<HPoint2D> p2d = NDocObjEx.of(info.currentArg.toPair().value()).asHPoint2D();
+                    NOptional<HPoint2D> p2d = NDocObjEx.of(info.currentArg.asPair().get().value()).asHPoint2D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(info.node, p2d.get());
                         return true;
@@ -79,7 +81,7 @@ public class NDocPolygonParser extends NDocNodeParserBase {
                         return false;
                     }
                 } else {
-                    NOptional<HPoint3D> p2d = NDocObjEx.of(info.currentArg.toPair().value()).asHPoint3D();
+                    NOptional<HPoint3D> p2d = NDocObjEx.of(info.currentArg.asPair().get().value()).asHPoint3D();
                     if (p2d.isPresent()) {
                         HPropUtils.addPoint(info.node, p2d.get());
                         return true;
@@ -102,7 +104,7 @@ public class NDocPolygonParser extends NDocNodeParserBase {
 
         NElement points = item.getPropertyValue(HPropName.POINTS).orNull();
         if (points != null) {
-            if (((TsonArray) points).isEmpty()) {
+            if (((NArrayElement) points).isEmpty()) {
                 points = null;
             }
         }
@@ -113,8 +115,8 @@ public class NDocPolygonParser extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        count == null ? null : Tson.ofPair("count", count),
-                        points == null ? null : Tson.ofPair("points", points)
+                        count == null ? null : NElements.of().ofPair("count", count),
+                        points == null ? null : NElements.of().ofPair("points", points)
                 )
                 .build();
     }

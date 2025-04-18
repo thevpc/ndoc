@@ -12,6 +12,9 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NOperatorElement;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -29,7 +32,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
         NDocDocumentFactory f = engine.documentFactory();
         switch (c.type()) {
             case PAIR: {
-                NPairElement p = c.toPair();
+                NPairElement p = c.asPair().get();
                 NElement k = p.key();
                 NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);
@@ -45,9 +48,9 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
                 }
                 break;
             }
-            case OP:{
-                TsonOp binOp = c.toOp();
-                if("=".equals(binOp.opName())) {
+            case OP: {
+                NOperatorElement binOp = c.asOperator().get();
+                if ("=".equals(binOp.operatorName())) {
                     NElement k = binOp.first();
                     NElement v = binOp.second();
                     NDocObjEx kh = NDocObjEx.of(k);
@@ -84,7 +87,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return Tson.ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElements.of().ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

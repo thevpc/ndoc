@@ -11,6 +11,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,8 +48,8 @@ public class NDocImageParser extends NDocNodeParserBase {
                 }
                 case PAIR: {
                     if (currentArg.isSimplePair()) {
-                        NPairElement p = currentArg.toPair();
-                        String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().stringValue());
+                        NPairElement p = currentArg.asPair().get();
+                        String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().asStringValue().get());
                         switch (sid) {
                             case HPropName.VALUE:
                             case HPropName.FILE: {
@@ -112,8 +113,8 @@ public class NDocImageParser extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    String sid = HUtils.uid(p.key().stringValue());
+                    NPairElement p = info.currentArg.asPair().get();
+                    String sid = HUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
                         case HPropName.TRANSPARENT_COLOR: {
                             info.node.setProperty(sid, p.value());

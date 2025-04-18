@@ -3,6 +3,10 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementType;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NOptional;
 
 
@@ -23,12 +27,12 @@ public class SloppyStroke implements Stroke {
         NDocObjEx o = NDocObjEx.of(e);
         double sloppyness = 5;
         Stroke base = null;
-        TsonObjectBuilder basic = null;
+        NObjectElementBuilder basic = null;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == TsonElementType.UPLET
-                            || arg.type() == TsonElementType.ARRAY
-                            || arg.type() == TsonElementType.OBJECT
+                    arg.type() == NElementType.UPLET
+                            || arg.type() == NElementType.ARRAY
+                            || arg.type() == NElementType.OBJECT
             ) {
                 if (base == null) {
                     base = g.createStroke(arg);
@@ -49,7 +53,7 @@ public class SloppyStroke implements Stroke {
                         case "cap":
                         case "join": {
                             if (basic == null) {
-                                basic = Tson.ofObjectBuilder();
+                                basic = NElements.of().ofObjectBuilder();
                             }
                             basic.set(net.thevpc.ndoc.api.util.HUtils.uid(ke.getName()), (NElement) ke.getValue().raw());
                             break;
@@ -61,14 +65,14 @@ public class SloppyStroke implements Stroke {
                         }
                     }
                 }else if(arg.isAnyString()){
-                    switch (HUtils.uid(arg.toStr().stringValue())) {
+                    switch (HUtils.uid(arg.asStringValue().get())) {
                         case "dashed":
                         case "dash":
                         {
                             if (basic == null) {
-                                basic = Tson.ofObjectBuilder();
+                                basic = NElements.of().ofObjectBuilder();
                             }
-                            basic.add(NElements.of().of("dash"));
+                            basic.add(NElements.of().ofString("dash"));
                             break;
                         }
                     }
@@ -77,7 +81,7 @@ public class SloppyStroke implements Stroke {
         }
         if (base == null) {
             if (basic == null) {
-                base = StrokeFactory.createBasic(NDocObjEx.of(Tson.ofObjectBuilder()));
+                base = StrokeFactory.createBasic(NDocObjEx.of(NElements.of().ofObjectBuilder()));
             } else {
                 base = StrokeFactory.createBasic(NDocObjEx.of(basic));
             }

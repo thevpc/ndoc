@@ -8,6 +8,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 
 
@@ -22,8 +23,8 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if(info.currentArg.isSimplePair()){
-                    NPairElement pair = info.currentArg.toPair();
-                    switch (HUtils.uid(pair.key().stringValue())) {
+                    NPairElement pair = info.currentArg.asPair().get();
+                    switch (HUtils.uid(pair.key().asStringValue().get())) {
                         case "ellipse-height": {
                             info.node.setProperty(HPropName.ELLIPSE_H, pair.value());
                             return true;
@@ -56,9 +57,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : Tson.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
-                        topColor == null ? null : Tson.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
-                        segmentCount == null ? null : Tson.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
+                        ellipseHeight == null ? null : NElements.of().ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
+                        topColor == null ? null : NElements.of().ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
+                        segmentCount == null ? null : NElements.of().ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
 
                 )
                 .build();

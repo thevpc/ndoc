@@ -8,6 +8,8 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 
 
 /**
@@ -24,8 +26,8 @@ public class NDocArrowImpl extends NDocNodeParserBase {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    switch (HUtils.uid(p.key().stringValue())) {
+                    NPairElement p = info.currentArg.asPair().get();
+                    switch (HUtils.uid(p.key().asStringValue().get())) {
                         case "width": {
                             info.node.setProperty(HPropName.WIDTH, p.value());
                             return true;
@@ -62,10 +64,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : Tson.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
-                height == null ? null : Tson.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
-                base == null ? null : Tson.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
-                hat == null ? null : Tson.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue()))
+                width == null ? null : NElements.of().ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
+                height == null ? null : NElements.of().ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
+                base == null ? null : NElements.of().ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
+                hat == null ? null : NElements.of().ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
         ).build();
     }
 

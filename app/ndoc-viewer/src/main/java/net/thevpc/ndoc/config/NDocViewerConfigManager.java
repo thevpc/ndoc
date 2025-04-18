@@ -1,6 +1,8 @@
 package net.thevpc.ndoc.config;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -90,10 +92,10 @@ public class NDocViewerConfigManager {
 
     public void saveViewerConfig(NDocViewerConfig config) {
         config = validate(config);
-        NElement elem = Tson.serializer().serialize(config);
+        NElement elem = NElements.of().toElement(config);
         viewerConfigFile.mkParentDirs();
         try (OutputStream os = viewerConfigFile.getOutputStream()) {
-            Tson.writer().write(os, elem);
+            NElements.of(elem).tson().print(os);
         } catch (IOException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -119,9 +121,8 @@ public class NDocViewerConfigManager {
         NDocViewerConfig config = null;
         if (viewerConfigFile.isRegularFile()) {
             try (InputStream is = viewerConfigFile.getInputStream()) {
-                TsonDocument d = Tson.reader().readDocument(is);
-                TsonSerializer serializer = Tson.serializer();
-                config = serializer.deserialize(d.getContent(), NDocViewerConfig.class);
+                NElement d = NElements.of().tson().parse(is);
+                config = NElements.of().fromElement(d, NDocViewerConfig.class);
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
             }
@@ -162,7 +163,7 @@ public class NDocViewerConfigManager {
                 })
                 .sorted((a, b) -> {
                     int p;
-                    p = compare(b.getLastAccess(),a.getLastAccess());
+                    p = compare(b.getLastAccess(), a.getLastAccess());
                     if (p != 0) {
                         return p;
                     }

@@ -7,6 +7,7 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.engine.HEngineUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -30,12 +31,11 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case UPLET:
-            case NAMED_UPLET:
-            {
-                NUpletElement uplet = tsonElement.toUplet();
-                if(uplet.isNamed()) {
-                    List<NElement> u = uplet.params().toList();
-                    if (u.isEmpty()) {
+            case NAMED_UPLET: {
+                NUpletElement uplet = tsonElement.asUplet().get();
+                if (uplet.isNamed()) {
+                    List<NElement> u = uplet.params();
+                    if (u == null || u.isEmpty()) {
                         context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
                         return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
                     }

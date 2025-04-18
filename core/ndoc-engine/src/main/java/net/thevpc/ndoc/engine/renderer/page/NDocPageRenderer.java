@@ -10,6 +10,7 @@ import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HSizeRef;
 
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 
 import java.awt.*;
 
@@ -36,8 +37,8 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
         int height = b.getHeight().intValue();
         Color color = Color.gray;
         g.setColor(color);
-        NElement rowsSize = Tson.ofDouble(10, "%");
-        NElement columnsSize = Tson.ofDouble(10, "%");
+        NElement rowsSize = NElements.of().ofDouble(10, "%");
+        NElement columnsSize = NElements.of().ofDouble(10, "%");
 
         Stroke os = g.getStroke();
         Stroke dashed = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,

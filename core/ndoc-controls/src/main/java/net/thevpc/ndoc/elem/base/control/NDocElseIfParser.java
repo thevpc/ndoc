@@ -5,6 +5,7 @@
 package net.thevpc.ndoc.elem.base.control;
 
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.nuts.elem.NElements;
 
 /**
  * @author vpc
@@ -18,7 +19,7 @@ public class NDocElseIfParser extends NDocNodeParserBase {
         if(info.arguments.length==1){
             info.node.setProperty("condition", info.arguments[0]);
         }else{
-            info.node.setProperty("condition", Tson.ofArray(info.arguments).build());
+            info.node.setProperty("condition", NElements.of().ofArray(info.arguments));
         }
         return true;
     }

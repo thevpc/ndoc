@@ -10,8 +10,7 @@ import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NToElement;
+import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.*;
 
 
@@ -140,7 +139,7 @@ public class DefaultHNode implements HNode {
         if (v == null) {
             return false;
         }
-        return v.booleanValue();
+        return v.asBooleanValue().get();
     }
 
     @Override
@@ -158,7 +157,7 @@ public class DefaultHNode implements HNode {
         if (v == null) {
             return null;
         }
-        return v.toStr().value();
+        return v.asStringValue().get();
     }
 
     @Override
@@ -444,49 +443,49 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setFontSize(Number w) {
-        setProperty(HPropName.FONT_SIZE, NElements.of().of(w));
+        setProperty(HPropName.FONT_SIZE, NElements.of().ofNumber(w));
         return this;
     }
 
     @Override
     public HNode setFontFamily(String w) {
-        setProperty(HPropName.FONT_FAMILY, NElements.of().of(w));
+        setProperty(HPropName.FONT_FAMILY, NElements.of().ofString(w));
         return this;
     }
 
     @Override
     public HNode setFontBold(Boolean w) {
-        setProperty(HPropName.FONT_BOLD, NElements.of().of(w));
+        setProperty(HPropName.FONT_BOLD, NElements.of().ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontItalic(Boolean w) {
-        setProperty(HPropName.FONT_ITALIC, NElements.of().of(w));
+        setProperty(HPropName.FONT_ITALIC, NElements.of().ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontUnderlined(Boolean w) {
-        setProperty(HPropName.FONT_UNDERLINED, NElements.of().of(w));
+        setProperty(HPropName.FONT_UNDERLINED, NElements.of().ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontStrike(Boolean w) {
-        setProperty(HPropName.FONT_STRIKE, NElements.of().of(w));
+        setProperty(HPropName.FONT_STRIKE, NElements.of().ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setForegroundColor(String w) {
-        setProperty(HPropName.FOREGROUND_COLOR, NElements.of().of(w));
+        setProperty(HPropName.FOREGROUND_COLOR, NElements.of().ofString(w));
         return this;
     }
 
     @Override
     public HNode setBackgroundColor(String w) {
-        setProperty(HPropName.BACKGROUND_COLOR, NElements.of().of(w));
+        setProperty(HPropName.BACKGROUND_COLOR, NElements.of().ofString(w));
         return this;
     }
 
@@ -498,7 +497,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setGridColor(String w) {
-        setProperty(HPropName.GRID_COLOR, NElements.of().of(w));
+        setProperty(HPropName.GRID_COLOR, NElements.of().ofString(w));
         return this;
     }
 
@@ -615,26 +614,26 @@ public class DefaultHNode implements HNode {
 //
     private NElement toTson0() {
         if (HNodeType.ASSIGN.equals(type())) {
-            return Tson.ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
+            return NElements.of().ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
         }
         String[] a = getAncestors();
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
-            TsonObjectBuilder o = Tson.ofObjectBuilder(nodeType);
+            NObjectElementBuilder o = NElements.of().ofObjectBuilder(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
                     if (i == a.length - 1) {
-                        o.annotation(s, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new));
                     } else {
-                        o.annotation(s);
+                        o.addAnnotation(s);
                     }
                 }
             } else if (styleClasses.length > 0) {
-                o.annotation(null, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
-                o.add(Tson.ofPair("source", Tson.ofString(source.shortName())));
+                o.add(NElements.of().ofPair("source", NElements.of().ofString(source.shortName())));
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {
@@ -648,32 +647,32 @@ public class DefaultHNode implements HNode {
                 }
             }
             if (!styleRules.isEmpty()) {
-                o.add("rules", Tson.ofObjectBuilder(styleRules.stream().map(x -> x.toElement()).toArray(TsonElementBase[]::new)));
+                o.add("rules", NElements.of().ofObject(styleRules.stream().map(x -> x.toElement()).toArray(NElement[]::new)));
             }
             for (HNode child : children()) {
                 if (child instanceof DefaultHNode) {
                     o.add(((DefaultHNode) child).toTson0());
                 } else {
-                    o.add(Tson.ofString(child.toString()));
+                    o.add(NElements.of().ofString(child.toString()));
                 }
             }
             return o.build();
         } else {
-            NUpletElementBuilder o = Tson.ofUpletBuilder().name(nodeType);
+            NUpletElementBuilder o = NElements.of().ofUpletBuilder().name(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
                     if (i == a.length - 1) {
-                        o.annotation(s, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new));
                     } else {
-                        o.annotation(s);
+                        o.addAnnotation(s);
                     }
                 }
             } else if (styleClasses.length > 0) {
-                o.annotation(null, Arrays.stream(styleClasses).map(x -> Tson.ofString(x)).toArray(TsonElementBase[]::new));
+                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
-                o.add(Tson.ofPair("source", Tson.ofString(String.valueOf(source))));
+                o.add(NElements.of().ofPair("source", NElements.of().ofString(String.valueOf(source))));
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {

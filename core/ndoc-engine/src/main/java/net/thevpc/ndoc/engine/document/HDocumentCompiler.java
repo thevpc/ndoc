@@ -18,7 +18,10 @@ import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessorContext;
 import net.thevpc.ndoc.spi.base.model.DefaultHNode;
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -243,8 +246,8 @@ public class HDocumentCompiler {
 
     private HNode inlineNodeDefinitionCall(HNode objectDefNode, NElement callFunction) {
         HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
-        TsonArray objectDefArgsItem = (TsonArray) objectDefNode.getPropertyValue("args").orNull();
-        NElement[] objectDefArgs = objectDefArgsItem == null ? new NElement[0] : objectDefArgsItem.body().toArray();
+        NArrayElement objectDefArgsItem = (NArrayElement) objectDefNode.getPropertyValue("args").orNull();
+        NElement[] objectDefArgs = objectDefArgsItem == null ? new NElement[0] : objectDefArgsItem.children().toArray(new NElement[0]);
         inlinedNode.setSource(objectDefNode.source());
         inlinedNode.setStyleClasses(objectDefNode.getStyleClasses());
         inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
@@ -252,21 +255,21 @@ public class HDocumentCompiler {
                         && !HPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
-        List<NElement> passedArgs = callFunction.toListContainer().params();
-        NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toList().toArray(new NElement[0]);
-        inlinedNode.children().add(newAssign(HPropName.ARGS, Tson.ofArray(passedArgsArr).build()));
+        List<NElement> passedArgs = callFunction.asParametrizedContainer().map(x->x.params().orElse(Collections.emptyList())).orElse(Collections.emptyList());
+        NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
+        inlinedNode.children().add(newAssign(HPropName.ARGS, NElements.of().ofArray(passedArgsArr)));
         for (int i = 0; i < passedArgsArr.length; i++) {
             NElement passedArg = passedArgsArr[i];
             if (passedArg.isSimplePair()) {
-                NPairElement pair = passedArg.toPair();
+                NPairElement pair = passedArg.asPair().get();
                 NElement value = pair.value();
                 if (HUtils.getCompilerDeclarationPath(value) == null) {
                     value = HUtils.addCompilerDeclarationPath(value, HUtils.getCompilerDeclarationPath(pair));
                 }
-                inlinedNode.children().add(newAssign(pair.key().toStr().stringValue(), value));
+                inlinedNode.children().add(newAssign(pair.key().asStringValue().get(), value));
             } else {
                 if (i < objectDefArgs.length) {
-                    String paramName = objectDefArgs[i].toStr().stringValue();
+                    String paramName = objectDefArgs[i].asStringValue().get();
                     inlinedNode.children().add(newAssign(paramName, passedArg));
                 } else {
                     NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.ndoc.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction).asSevere();
@@ -288,7 +291,7 @@ public class HDocumentCompiler {
 
     private HNode newAssign(String name, NElement value) {
         HNode n = new DefaultHNode(HNodeType.ASSIGN);
-        n.setProperty(HPropName.NAME, NElements.of().of(name));
+        n.setProperty(HPropName.NAME, NElements.of().ofString(name));
         n.setProperty(HPropName.VALUE, value);
         return n;
     }
@@ -304,7 +307,7 @@ public class HDocumentCompiler {
             for (String a : t) {
                 prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
-            node.setProperty(HPropName.ANCESTORS, NElements.of().of(newAncestors.toArray(new String[0])));
+            node.setProperty(HPropName.ANCESTORS, NElements.of().ofStringArray(newAncestors.toArray(new String[0])));
             for (HProp p : inheritedProps.toList()) {
                 NOptional<HProp> u = node.getProperty(p.getName());
                 if (!u.isPresent()) {
@@ -398,7 +401,7 @@ public class HDocumentCompiler {
 
         @Override
         public NElement resolveVarValue(HNode node, String varName) {
-            return evalExpression(node, Tson.ofName("$" + varName));
+            return evalExpression(node, NElements.of().ofName("$" + varName));
         }
     }
 }

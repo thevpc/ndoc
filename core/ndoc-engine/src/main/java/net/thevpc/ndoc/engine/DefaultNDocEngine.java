@@ -30,6 +30,7 @@ import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 
@@ -238,11 +239,11 @@ public class DefaultNDocEngine implements NDocEngine {
         if (path.exists()) {
             if (path.isRegularFile()) {
                 HResource nPathResource = HResourceFactory.of(path);
-                NOptional<TsonDocument> f = loadTsonDocument(path);
+                NOptional<NElement> f = loadDocument(path);
                 if (!f.isPresent()) {
                     messages1.log(HMsg.of(f.getMessage().get().asSevere(), nPathResource));
                 }
-                TsonDocument d = f.get();
+                NElement d = f.get();
                 NOptional<NDocument> dd = convertDocument(d, r);
                 if (dd.isPresent()) {
                     r.setDocument(dd.get());
@@ -364,35 +365,29 @@ public class DefaultNDocEngine implements NDocEngine {
         return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
-    private NOptional<TsonDocument> loadTsonDocument(InputStream is) {
-        TsonReader tr = Tson.reader();
-        TsonDocument doc;
+    private NOptional<NElement> loadDocument(InputStream is) {
         try {
-            doc = tr.readDocument(is);
+            return NOptional.of(NElements.of().tson().parse(is));
         } catch (Exception ex) {
             return NOptional.ofNamedError("error loading tson document", ex);
         }
-        return NOptional.of(doc);
     }
 
-    private NOptional<TsonDocument> loadTsonDocument(NPath is) {
-        TsonReader tr = Tson.reader();
-        TsonDocument doc;
+    private NOptional<NElement> loadDocument(NPath is) {
         try {
-            doc = tr.readDocument(is.toPath().get());
+            return NOptional.of(NElements.of().tson().parse(is));
         } catch (Exception ex) {
             return NOptional.ofNamedError("error loading tson document", ex);
         }
-        return NOptional.of(doc);
     }
 
     public HDocumentLoadingResult loadDocument(InputStream is, HLogger messages) {
         HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(HResourceFactory.of(is), messages);
-        NOptional<TsonDocument> f = loadTsonDocument(is);
+        NOptional<NElement> f = loadDocument(is);
         if (!f.isPresent()) {
             result.messages().log(HMsg.of(f.getMessage().get().asSevere()));
         }
-        TsonDocument d = f.get();
+        NElement d = f.get();
         NOptional<NDocument> dd = convertDocument(d, result);
         if (dd.isPresent()) {
             result.setDocument(dd.get());
@@ -403,13 +398,13 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
 
-    private NOptional<NDocument> convertDocument(TsonDocument doc, HDocumentLoadingResultImpl result) {
+    private NOptional<NDocument> convertDocument(NElement doc, HDocumentLoadingResultImpl result) {
         if (doc == null) {
             result.messages().log(HMsg.of(NMsg.ofPlain("missing document").asSevere()));
             return NOptional.ofNamedEmpty("document");
         }
         HResource source = result.source();
-        NElement c = doc.getContent();
+        NElement c = doc;
         NDocument docd = documentFactory().ofDocument();
         docd.resources().add(source);
         docd.root().setSource(source);
@@ -434,15 +429,13 @@ public class DefaultNDocEngine implements NDocEngine {
     private NOptional<HItem> loadNode0(HNode into, NPath path, NDocument document, HLogger messages) {
         HResource source = HResourceFactory.of(path);
         document.resources().add(source);
-        TsonReader tr = Tson.reader();
-        TsonDocument doc;
+        NElement c;
         try {
-            doc = tr.readDocument(path.toPath().get());
+            c = NElements.of().tson().parse(path);
         } catch (Throwable ex) {
             messages.log(HMsg.of(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex, source));
             return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path, ex));
         }
-        NElement c = doc.getContent();
         ArrayList<HNode> parents = new ArrayList<>();
         if (into != null) {
             parents.add(into);

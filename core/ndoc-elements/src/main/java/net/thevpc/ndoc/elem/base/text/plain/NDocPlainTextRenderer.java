@@ -27,7 +27,7 @@ public class NDocPlainTextRenderer extends NDocTextBaseRenderer {
         Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
         NDocTextRendererBuilder helper = new NDocTextRendererBuilderImpl(fg);
         NElement d = p.getPropertyValue(HPropName.VALUE).orElse(NElements.of().ofString(""));
-        String message = NStringUtils.trim(d.toStr().value());
+        String message = NStringUtils.trim(d.asStringValue().get());
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {
             allLines[i] = allLines[i].trim();

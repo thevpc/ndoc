@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NNamedElement;
+import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -104,8 +107,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
             NElement ee = ((NElement) element);
             switch (ee.type()) {
                 case NAME: {
-                    TsonName r = ee.toName();
-                    String u = r.value();
+                    String u = ee.asStringValue().get();
                     if (u.startsWith("$")) {
                         String varName = u.substring(1);
                         return evalVar(varName);
@@ -115,13 +117,13 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 case NAMED_UPLET: {
                     NUpletElement ff = ((NUpletElement) element);
                     if (ff.isNamed()) {
-                        List<NElement> r = ff.params().toList()
+                        List<NElement> r = ff.params()
                                 .stream().map(x -> eval(x)).collect(Collectors.toList());
                         NOptional<NElement> oo = evalFunction(ff.name(), r.toArray(new NElement[0]));
                         if (!oo.isEmpty()) {
                             return oo.get();
                         }
-                        return element;//Tson.ofUplet(ff.name(), r.toArray(new Object[0])).build();
+                        return element;//NElements.of().ofUplet(ff.name(), r.toArray(new Object[0])).build();
                     }
                     return element;
                 }
@@ -129,14 +131,13 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 case ARRAY:
                 case NAMED_PARAMETRIZED_ARRAY:
                 case PARAMETRIZED_ARRAY:
-                case NAMED_ARRAY:
-                {
-                    TsonArray r = ee.toArray();
+                case NAMED_ARRAY: {
+                    NArrayElement r = ee.toArray().get();
                     String u = r.name();
                     if (u != null && u.startsWith("$")) {
                         String varName = u.substring(1);
                         NElement arrVal = evalVar(varName);
-                        return evalArray(arrVal, r.body().toArray());
+                        return evalArray(arrVal, r.children().toArray(new NElement[0]));
                     }
                     break;
                 }
@@ -148,10 +149,10 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
     public static boolean asBoolean(NElement e) {
         switch (e.type()) {
             case BOOLEAN:
-                return e.toBoolean().value();
+                return e.asBooleanValue().get();
             default: {
                 if (e.isNumber()) {
-                    return e.toNumber().doubleValue() != 0;
+                    return e.asDoubleValue().get().doubleValue() != 0.0;
                 }
                 return !e.isNull();
             }

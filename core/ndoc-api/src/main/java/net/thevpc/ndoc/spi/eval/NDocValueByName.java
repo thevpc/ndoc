@@ -28,7 +28,7 @@ public class NDocValueByName {
         if(hSizeRef==null) {
             hSizeRef = ctx.sizeRef();
         }
-        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
+        ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
                 new ElemNumber2((NNumberElement)NElements.of().ofDouble(100.0), (NNumberElement)NElements.of().ofDouble(100.0))
         );
 
@@ -64,8 +64,8 @@ public class NDocValueByName {
     }
 
     public static Double2 getOrigin(HNode t, NDocNodeRendererContext ctx, Double2 a) {
-        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
-                .orElseUse(() -> NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
+        ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
+                .orElseUse(() -> NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.AT))
                 .orElse(new ElemNumber2(NElements.of().ofDouble(0), NElements.of().ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(
@@ -75,8 +75,8 @@ public class NDocValueByName {
     }
 
     public static Double2 getPosition(HNode t, NDocNodeRendererContext ctx, Double2 a) {
-        ElemNumber2 double2OrHAlign = NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.POSITION)
-                .orElseUse(() -> NDocValueByType.getTsonNumber2Or1OrHAlign(t, ctx, HPropName.AT))
+        ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.POSITION)
+                .orElseUse(() -> NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.AT))
                 .orElse(new ElemNumber2(NElements.of().ofDouble(0), NElements.of().ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(

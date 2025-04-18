@@ -6,6 +6,7 @@ import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.*;
 
 import net.thevpc.nuts.elem.NElement;
@@ -98,7 +99,7 @@ public class HStyleParser {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                String s = e.toStr().stringValue();
+                String s = e.asStringValue().get();
                 if (s.isEmpty() || s.equals("*")) {
                     return NOptional.of(DefaultHNodeSelector.ofAny());
                 }
@@ -120,15 +121,15 @@ public class HStyleParser {
                 List<String> names = new ArrayList<>();
                 List<String> classes = new ArrayList<>();
                 List<String> types = new ArrayList<>();
-                for (NElement child : e.toUplet().params()) {
+                for (NElement child : e.asUplet().get().params()) {
                     switch (child.type()) {
                         case PAIR: {
-                            NDocObjEx h = NDocObjEx.of(e.toPair().key());
+                            NDocObjEx h = NDocObjEx.of(e.asPair().get().key());
                             NOptional<String> k = h.asStringOrName();
                             if (k.isPresent()) {
                                 switch (net.thevpc.ndoc.api.util.HUtils.uid(k.get())) {
                                     case "class": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.toPair().value());
+                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
@@ -138,7 +139,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "name": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.toPair().value());
+                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
@@ -150,7 +151,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "type": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.toPair().value());
+                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
@@ -170,7 +171,7 @@ public class HStyleParser {
                             }
                         }
                         case NAME: {
-                            String s = child.toName().toString().trim();
+                            String s = child.asStringValue().get().trim();
                             if (s.isEmpty() || s.equals("*")) {
                                 //
                             } else if (s.startsWith(".")) {
@@ -188,7 +189,7 @@ public class HStyleParser {
                         case TRIPLE_ANTI_QUOTED_STRING:
                         case LINE_STRING:
                         {
-                            String s = child.toStr().stringValue().trim();
+                            String s = child.asStringValue().get().trim();
                             if (s.isEmpty() || s.equals("*")) {
                                 //
                             } else if (s.startsWith(".")) {
@@ -221,11 +222,11 @@ public class HStyleParser {
     public static NOptional<HStyleRule[]> parseStyleRule(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.toPair().key(), f, context);
+                NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
-                NElement v = e.toPair().value();
+                NElement v = e.asPair().get().value();
                 switch (v.type()) {
                     case OBJECT:
                     case NAMED_PARAMETRIZED_OBJECT:
@@ -233,7 +234,7 @@ public class HStyleParser {
                     case NAMED_OBJECT:
                     {
                         List<HProp> styles = new ArrayList<>();
-                        for (NElement el : v.toObject().body()) {
+                        for (NElement el : v.toObject().get().children()) {
                             NOptional<HProp[]> s = parseStyle(el, f, context);
                             if (!s.isPresent()) {
                                 s = parseStyle(el, f, context);
@@ -259,11 +260,11 @@ public class HStyleParser {
     public static NOptional<HProp[]> parseStyle(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NDocObjEx h = NDocObjEx.of(e.toPair().key());
+                NDocObjEx h = NDocObjEx.of(e.asPair().get().key());
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = net.thevpc.ndoc.api.util.HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, e.toPair().value())});
+                    return NOptional.of(new HProp[]{new HProp(uid, e.asPair().get().value())});
                 }
                 break;
             }
@@ -272,7 +273,7 @@ public class HStyleParser {
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, NElements.of().of(true))});
+                    return NOptional.of(new HProp[]{new HProp(uid, NElements.of().ofBoolean(true))});
                 }
                 break;
             }

@@ -14,6 +14,7 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -42,7 +43,7 @@ public class NDocTextParser extends NDocNodeParserBase {
             case LINE_STRING:
             {
                 return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.toStr().raw())
+                        context.documentFactory().ofText(tsonElement.asStringValue().get())
                 );
             }
         }
@@ -103,7 +104,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
-                                    value= NElements.of().of(nPath.readString().trim());
+                                    value= NElements.of().ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
                                            HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
@@ -126,7 +127,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                     info.node.setProperty(HPropName.VALUE, others.get(0));
                     others.remove(0);
                 } else {
-                    String v = others.get(0).toStr().stringValue();
+                    String v = others.get(0).asStringValue().get();
                     if (v.matches("[a-zA-Z0-9+._-]+")) {
                         info.node.setProperty(HPropName.LANG, others.get(0));
                         others.remove(0);
@@ -140,7 +141,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                 info.node.setProperty(HPropName.VALUE, others.get(0));
                 others.remove(0);
             }else if (lang == null) {
-                String v = others.get(0).toStr().stringValue();
+                String v = others.get(0).asStringValue().get();
                 if (v.matches("[a-zA-Z0-9+._-]+")) {
                     info.node.setProperty(HPropName.LANG, others.get(0));
                 }

@@ -8,6 +8,7 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NOptional;
 
 public class NDocCubicCurveParser extends NDocNodeParserBase {
@@ -19,7 +20,7 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
             case PAIR: {
-                NPairElement pp = info.currentArg.toPair();
+                NPairElement pp = info.currentArg.asPair().get();
                 NElement k = pp.key();
                 NElement v = pp.value();
                 NDocObjEx ph = NDocObjEx.of(k);

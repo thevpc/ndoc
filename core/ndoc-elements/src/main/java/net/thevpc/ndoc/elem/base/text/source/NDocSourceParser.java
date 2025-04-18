@@ -7,6 +7,7 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -37,8 +38,8 @@ public class NDocSourceParser extends NDocNodeParserBase {
             }
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    switch (HUtils.uid(p.key().stringValue())) {
+                    NPairElement p = info.currentArg.asPair().get();
+                    switch (HUtils.uid(p.key().asStringValue().get())) {
                         case "value":
                         case "code":
                         case "content": {
@@ -46,7 +47,7 @@ public class NDocSourceParser extends NDocNodeParserBase {
                             return true;
                         }
                         case "file": {
-                            String path = p.value().toStr().stringValue().trim();
+                            String path = p.value().asStringValue().get().trim();
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {

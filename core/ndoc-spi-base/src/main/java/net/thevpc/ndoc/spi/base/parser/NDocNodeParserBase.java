@@ -15,7 +15,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -93,8 +93,8 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
-                    NPairElement p = info.currentArg.toPair();
-                    String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().stringValue());
+                    NPairElement p = info.currentArg.asPair().get();
+                    String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().asStringValue().get());
                     if (HParserUtils.isCommonStyleProperty(sid)) {
                         info.node.setProperty(sid, p.value());
                         return true;
@@ -109,7 +109,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     String pid = net.thevpc.ndoc.api.util.HUtils.uid(u.get());
                     if (HParserUtils.isCommonStyleProperty(pid)) {
                         //will be processed later
-                        info.node.setProperty(pid, Tson.ofTrue());
+                        info.node.setProperty(pid, NElements.of().ofTrue());
                         return true;
                     }
                 }
@@ -140,7 +140,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case UPLET:
             case NAMED_UPLET:
             {
-                NUpletElement uplet = e.toUplet();
+                NUpletElement uplet = e.asUplet().get();
                 if (uplet.isNamed() && acceptTypeName(uplet.name())) {
                     return uplet.name();
                 }
@@ -151,7 +151,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case PARAMETRIZED_OBJECT:
             case NAMED_OBJECT:
             {
-                TsonObject h = e.toObject();
+                NObjectElement h = e.toObject().get();
                 if (h.isNamed() && acceptTypeName(h.name())) {
                     return h.name();
                 }
@@ -163,7 +163,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case NAMED_ARRAY:
 
             {
-                TsonArray h = e.toArray();
+                NArrayElement h = e.toArray().get();
                 if (h.isNamed() && acceptTypeName(h.name())) {
                     return h.name();
                 }
@@ -228,7 +228,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.context.source(),
                         info.currentArg,
-                        es.name(), Tson.ofUplet(es.args().toArray(new TsonElementBase[0]))
+                        es.name(), NElements.of().ofUplet(es.args().toArray(new NElement[0]))
                 ).asSevere(), info.context.source()));
                 // empty result
                 return false;

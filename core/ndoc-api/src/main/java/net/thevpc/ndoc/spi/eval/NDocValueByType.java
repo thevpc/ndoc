@@ -62,8 +62,8 @@ public class NDocValueByType {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
     }
 
-    public static NOptional<ElemNumber2> getTsonNumber2Or1OrHAlign(HNode t, NDocNodeRendererContext ctx, String s) {
-        return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asTsonNumber2Or1OrHAlign();
+    public static NOptional<ElemNumber2> getNNumberElement2Or1OrHAlign(HNode t, NDocNodeRendererContext ctx, String s) {
+        return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asNNumberElement2Or1OrHAlign();
     }
 
     public static NOptional<Double4> getDouble4(HNode t, NDocNodeRendererContext ctx, String s) {

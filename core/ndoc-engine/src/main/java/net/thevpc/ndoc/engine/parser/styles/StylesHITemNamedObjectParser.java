@@ -45,7 +45,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case PARAMETRIZED_OBJECT:
             case NAMED_OBJECT:
             {
-                for (NElement yy : tsonElement.toObject().body()) {
+                for (NElement yy : tsonElement.toObject().get().children()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         HStyleParser.parseStyleRule(yy, f, context).get();
@@ -63,7 +63,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                for (NElement yy : tsonElement.toArray().body()) {
+                for (NElement yy : tsonElement.toArray().get().children()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get().asSevere(), context.source())));

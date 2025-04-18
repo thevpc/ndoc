@@ -18,6 +18,7 @@ import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 
@@ -104,7 +105,7 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case PAIR: {
-                NPairElement p = c.toPair();
+                NPairElement p = c.asPair().get();
                 NElement k = p.key();
                 NElement v = p.value();
                 NDocObjEx kh = NDocObjEx.of(k);
@@ -149,7 +150,7 @@ public class DefaultNDocDocumentItemParserFactory
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                if (c.type() == TsonElementType.UPLET && !c.isNamedUplet()) {
+                if (c.type() == NElementType.UPLET && !c.isNamedUplet()) {
                     NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                     if (p != null) {
                         return p.parseNode(context);
@@ -181,9 +182,9 @@ public class DefaultNDocDocumentItemParserFactory
                         });
                     }
                 }
-                if (c.isNamedUplet() || c.type() == TsonElementType.OBJECT) {
+                if (c.isNamedUplet() || c.type() == NElementType.OBJECT) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
-                    callNode.setProperty(HPropName.NAME, NElements.of().of(HUtils.uid(ee.name())));
+                    callNode.setProperty(HPropName.NAME, NElements.of().ofString(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
                     NElement functionTsonDeclaration = c;
                     if (context.source() != null) {
@@ -192,12 +193,12 @@ public class DefaultNDocDocumentItemParserFactory
                             functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
                             if (c.isNamedUplet()) {
                                 NUpletElementBuilder fb = (NUpletElementBuilder) functionTsonDeclaration.builder();
-                                for (int i = 0; i < fb.params().length; i++) {
-                                    fb.setAt(i, HUtils.addCompilerDeclarationPath(fb.param(i), sourcePath.toString()));
+                                for (int i = 0; i < fb.params().size(); i++) {
+                                    fb.set(i, HUtils.addCompilerDeclarationPath(fb.get(i), sourcePath.toString()));
                                 }
                                 functionTsonDeclaration = fb.build();
-                            } else if (c.type() == TsonElementType.OBJECT) {
-                                TsonObjectBuilder fb = (TsonObjectBuilder) functionTsonDeclaration.builder();
+                            } else if (c.type() == NElementType.OBJECT) {
+                                NObjectElementBuilder fb = (NObjectElementBuilder) functionTsonDeclaration.builder();
                                 List<NElement> args = fb.params();
                                 if (args != null) {
                                     for (int i = 0; i < args.size(); i++) {
@@ -247,7 +248,7 @@ public class DefaultNDocDocumentItemParserFactory
         }
         NElement c = context.element();
 //        HEngine engine = context.engine();
-        for (TsonAnnotation a : c.annotations()) {
+        for (NElementAnnotation a : c.annotations()) {
             String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 return false;
@@ -256,43 +257,23 @@ public class DefaultNDocDocumentItemParserFactory
             boolean foundVersion = false;
             boolean foundOther = false;
             for (NElement cls : a.children()) {
-                switch (cls.type()) {
-                    case DOUBLE_QUOTED_STRING:
-                    case SINGLE_QUOTED_STRING:
-                    case ANTI_QUOTED_STRING:
-                    case TRIPLE_DOUBLE_QUOTED_STRING:
-                    case TRIPLE_SINGLE_QUOTED_STRING:
-                    case TRIPLE_ANTI_QUOTED_STRING:
-                    case LINE_STRING:
-                    {
-                        if (cls.toStr().value().equalsIgnoreCase("ndoc")) {
-                            foundHalfa = true;
-                        } else if (isVersionString(cls.toStr().value())) {
-                            foundVersion = true;
-                        } else {
-                            foundOther = true;
-                        }
-                        break;
+                if(cls.isAnyString()){
+                    if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
+                        foundHalfa = true;
+                    } else if (isVersionString(cls.asStringValue().get())) {
+                        foundVersion = true;
+                    } else {
+                        foundOther = true;
                     }
-                    case NAME: {
-                        if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
-                            foundHalfa = true;
-                        } else if (isVersionString(cls.toStr().value())) {
-                            foundVersion = true;
-                        } else {
-                            foundOther = true;
-                        }
-                        break;
+                }else{
+                    if (cls.type().isNumber()) {
+                        BigDecimal bi = cls.asNumber().get().bigDecimalValue();
+                        foundVersion = true;
+                    } else {
+                        foundOther = true;
                     }
-                    default: {
-                        if (cls.type().isNumber()) {
-                            BigDecimal bi = cls.toNumber().bigDecimalValue();
-                            foundVersion = true;
-                        } else {
-                            foundOther = true;
-                        }
-                        break;
-                    }
+                    break;
+
                 }
             }
             if (foundHalfa) {
@@ -329,7 +310,7 @@ public class DefaultNDocDocumentItemParserFactory
         HashSet<String> allAncestors = null;
         HashSet<String> allStyles = null;
         NDocObjEx ee = NDocObjEx.of(c);
-        for (TsonAnnotation a : c.annotations()) {
+        for (NElementAnnotation a : c.annotations()) {
             String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
                 if (allAncestors == null) {
