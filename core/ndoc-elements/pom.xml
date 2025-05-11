@@ -4,7 +4,7 @@
     <artifactId>ndoc-elements</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NDoc Elements</name>
+    <name>NDoc :: Elements</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>

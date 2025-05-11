@@ -4,7 +4,7 @@
     <artifactId>ndoc-extension-plot2d</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NDoc Extension Plot 2D OBJ</name>
+    <name>NDoc :: Extension Plot 2D OBJ</name>
     <description>SVG</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

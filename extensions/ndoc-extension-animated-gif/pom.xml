@@ -4,7 +4,7 @@
     <artifactId>ndoc-extension-animated-gif</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NDoc Extension Animated GIF</name>
+    <name>NDoc :: Extension Animated GIF</name>
     <description>Animated GIF</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

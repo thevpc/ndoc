@@ -4,7 +4,7 @@
     <artifactId>ndoc-extension-shapes2d</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NDoc Extension Shapes 2D OBJ</name>
+    <name>NDoc :: Extension Shapes 2D OBJ</name>
     <description>SVG</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

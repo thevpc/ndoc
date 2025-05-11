@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.xprojects.builders</groupId>
     <artifactId>ndoc-builder</artifactId>
-    <name>NDoc Builder</name>
+    <name>NDoc :: All Builder</name>
     <version>0.8.5.0</version>
     <packaging>pom</packaging>
     <properties>

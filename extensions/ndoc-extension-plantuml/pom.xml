@@ -4,7 +4,7 @@
     <artifactId>ndoc-extension-plantuml</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NDoc Extension PlantUML</name>
+    <name>NDoc :: Extension PlantUML</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>

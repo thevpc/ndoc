@@ -6,8 +6,7 @@
 	<version>0.8.5.0</version>
 	<packaging>jar</packaging>
 
-	<name>GitHub Render Application</name>
-	<description>Spring Boot application to render GitHub repository details</description>
+	<name>NDoc :: App Viewer Backend</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
