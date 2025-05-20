@@ -1,10 +1,13 @@
 package net.thevpc.ndoc.api.document;
 
 import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.log.NLogVerb;
 import net.thevpc.nuts.util.NMsg;
 
 import java.time.Instant;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HLoggerDelegateImpl implements HLogger {
     private HResource defaultSource;
@@ -49,5 +52,6 @@ public class HLoggerDelegateImpl implements HLogger {
         if (other != null) {
             other.log(HMsg.of(msg, error, source));
         }
+        NLog.of(getClass()).log(msg.getLevel(), NLogVerb.INFO, NMsg.ofC("%s %s",source, msg),error);
     }
 }

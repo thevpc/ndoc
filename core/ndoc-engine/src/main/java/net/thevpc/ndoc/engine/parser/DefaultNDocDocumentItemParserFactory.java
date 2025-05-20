@@ -36,7 +36,7 @@ public class DefaultNDocDocumentItemParserFactory
 
     static {
         register(new ImportHITemNamedObjectParser());
-//        register(new DefineHITemNamedObjectParser());
+        register(new DefineHITemNamedObjectParser());
         register(new StylesHITemNamedObjectParser());
     }
 
@@ -150,7 +150,7 @@ public class DefaultNDocDocumentItemParserFactory
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                if (c.type() == NElementType.UPLET && !c.isNamedUplet()) {
+                if (c.type() == NElementType.UPLET) {
                     NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                     if (p != null) {
                         return p.parseNode(context);

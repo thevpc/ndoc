@@ -21,7 +21,9 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class NDocNodeParserBase implements NDocNodeParser {
@@ -272,22 +274,36 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                NDocObjEx ee = NDocObjEx.of(tsonElement);
+//                NDocObjEx ee = NDocObjEx.of(tsonElement);
                 NDocParseHelper.fillAnnotations(tsonElement, p);
                 ParseArgumentInfo info = new ParseArgumentInfo();
                 info.id = id;
                 info.uid = HUtils.uid(id);
                 info.tsonElement = tsonElement;
                 info.node = p;
-                info.arguments = ee.args().toArray(new NElement[0]);
+                List<NElement> body;
+                switch (tsonElement.type()) {
+                    case UPLET:
+                    case NAMED_UPLET:
+                    {
+                        info.arguments = tsonElement.asUplet().get().params().toArray(new NElement[0]);
+                        body= Collections.emptyList();
+                        break;
+                    }
+                    default:{
+                        info.arguments = tsonElement.asParametrizedContainer().flatMap(x->x.params()).orElse(Collections.emptyList()).toArray(new NElement[0]);
+                        body = tsonElement.asListContainer().map(x->x.children()).orElse(Collections.emptyList());
+                    }
+                }
+
                 info.f = f;
                 info.context = context2;
                 if (!processArguments(info)) {
-                    context2.messages().log(HMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), ee.args(), tsonElement).asSevere(), context2.source()));
+                    context2.messages().log(HMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), info.arguments, tsonElement).asSevere(), context2.source()));
                     return NOptional.of(new HItemList());
                 }
                 processImplicitStyles(info);
-                for (NElement e : ee.body()) {
+                for (NElement e : body) {
                     NOptional<HItem> u = engine.newNode(e, context2);
                     if (u.isPresent()) {
                         p.append(u.get());

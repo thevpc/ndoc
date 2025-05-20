@@ -32,6 +32,7 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.util.*;
 
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -256,7 +257,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 return r;
             } else if (path.isDirectory()) {
                 NDocument document = documentFactory().ofDocument();
-                document.resources().add(path.resolve(HEngineUtils.HALFA_EXT_STAR));
+                document.resources().add(path.resolve(HEngineUtils.NDOC_EXT_STAR));
                 List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x)).toList();
                 if (all.isEmpty()) {
                     messages1.log(
@@ -286,6 +287,7 @@ public class DefaultNDocEngine implements NDocEngine {
                     try {
                         d = loadNode(document.root(), nPath, document, messages1);
                     } catch (Exception ex) {
+                        NLog.of(getClass()).error(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), ex);
                         messages1.log(HMsg.of(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), nPathResource));
                     }
                     if (d != null) {
@@ -342,6 +344,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 for (NPath nPath : all) {
                     NOptional<HItem> d = loadNode0((node instanceof HNode) ? (HNode) node : null, nPath, document, messages);
                     if (!d.isPresent()) {
+                        NLog.of(getClass()).error(NMsg.ofC("invalid file %s", nPath));
                         return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
                     updateSource(d.get(), HResourceFactory.of(path));
@@ -359,9 +362,11 @@ public class DefaultNDocEngine implements NDocEngine {
                 }
                 return NOptional.of(node);
             } else {
+                NLog.of(getClass()).error(NMsg.ofC("invalid file %s", path));
                 return NOptional.ofError(() -> NMsg.ofC("invalid file %s", path));
             }
         }
+        NLog.of(getClass()).error(NMsg.ofC("file does not exist %s", path));
         return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
@@ -369,6 +374,7 @@ public class DefaultNDocEngine implements NDocEngine {
         try {
             return NOptional.of(NElements.of().tson().parse(is));
         } catch (Exception ex) {
+            NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
             return NOptional.ofNamedError("error loading tson document", ex);
         }
     }
@@ -377,6 +383,7 @@ public class DefaultNDocEngine implements NDocEngine {
         try {
             return NOptional.of(NElements.of().tson().parse(is));
         } catch (Exception ex) {
+            NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
             return NOptional.ofNamedError("error loading tson document", ex);
         }
     }
@@ -433,6 +440,7 @@ public class DefaultNDocEngine implements NDocEngine {
         try {
             c = NElements.of().tson().parse(path);
         } catch (Throwable ex) {
+            NLog.of(getClass()).error(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex);
             messages.log(HMsg.of(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex, source));
             return NOptional.ofNamedError(NMsg.ofC("error parsing node from %s : %s", path, ex));
         }
@@ -529,6 +537,7 @@ public class DefaultNDocEngine implements NDocEngine {
                             }
                         }
                     } catch (Exception ex) {
+                        NLog.of(getClass()).error(NMsg.ofC("Failed to resolve template boot url from %s", finalProjectUrl, ex).asSevere(), ex);
                         throw new IllegalArgumentException("Failed to resolve template boot url from " + finalProjectUrl);
                     }
                 }

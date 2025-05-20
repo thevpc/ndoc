@@ -5,7 +5,7 @@ import net.thevpc.nuts.io.NPath;
 public class HEngineUtils {
     public static final String HALFA_EXT_NAME = "ndoc";
     public static final String HALFA_EXT = ".ndoc";
-    public static final String HALFA_EXT_STAR = "*.ndoc";
+    public static final String NDOC_EXT_STAR = "*.ndoc";
     public static final String HALFA_EXT_STAR_STAR = "**/*.ndoc";
 
     public static boolean isHalfaFile(NPath path) {

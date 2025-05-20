@@ -333,7 +333,15 @@ public class NDocObjEx {
                     case ARRAY:
                     case NAMED_PARAMETRIZED_ARRAY:
                     case PARAMETRIZED_ARRAY:
-                    case NAMED_ARRAY:
+                    case NAMED_ARRAY:{
+                        NListContainerElement te = (NListContainerElement) element;
+                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().map(NNamedElement::name).orNull());
+                        List<NElement> a = te.children();
+                        if (a != null) {
+                            children.addAll(a);
+                        }
+                        break;
+                    }
 
                     case UPLET:
                     case NAMED_UPLET: {
@@ -871,8 +879,8 @@ public class NDocObjEx {
         if (element instanceof double[]) {
             return NOptional.of((double[]) element);
         }
-        if (element instanceof NElement[]) {
-            NElement[] arr = (NElement[]) element;
+        if (element instanceof Object[]) {
+            Object[] arr = (Object[]) element;
             double[] aa = new double[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
@@ -887,7 +895,7 @@ public class NDocObjEx {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if(te.isListContainer()){
-                return NDocObjEx.of(te.asListContainer().get().children().toArray()).asDoubleArray();
+                return NDocObjEx.of(te.asListContainer().get().children().toArray(new NElement[0])).asDoubleArray();
             }
         }
         if (element instanceof Double2) {
@@ -906,6 +914,19 @@ public class NDocObjEx {
                     d.getX2(),
                     d.getX3(),
                     d.getX4(),});
+        }
+        if (element instanceof Collection) {
+            Object[] arr = ((Collection)element).toArray();
+            double[] aa = new double[arr.length];
+            for (int i = 0; i < aa.length; i++) {
+                NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
+                if (d.isPresent()) {
+                    aa[i] = d.get();
+                } else {
+                    return NOptional.ofNamedEmpty("double[] from " + element);
+                }
+            }
+            return NOptional.of(aa);
         }
         return NOptional.ofNamedEmpty("double[] from " + element);
     }

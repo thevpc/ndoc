@@ -22,15 +22,15 @@
                     }
                     eq("f_1(x)=\int_x \sin(x^2)",font-size:5%g)
                     uml(
-                                        """
-                                            left to right direction
-                                            actor "Food Critic" as fc
-                                            rectangle Restaurant {
-                                              usecase "Eat Food" as UC1
-                                            }
-                                            fc --> UC1
-                                        """
-                                    )
+                        """
+                            left to right direction
+                            actor "Food Critic" as fc
+                            rectangle Restaurant {
+                              usecase "Eat Food" as UC1
+                            }
+                            fc --> UC1
+                        """
+                    )
             }
         }
     }

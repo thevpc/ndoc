@@ -255,7 +255,7 @@ public class HDocumentCompiler {
                         && !HPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
-        List<NElement> passedArgs = callFunction.asParametrizedContainer().map(x->x.params().orElse(Collections.emptyList())).orElse(Collections.emptyList());
+        List<NElement> passedArgs = callFunction.asUplet().map(x->x.params()).orElse(Collections.emptyList());
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
         inlinedNode.children().add(newAssign(HPropName.ARGS, NElements.of().ofArray(passedArgsArr)));
         for (int i = 0; i < passedArgsArr.length; i++) {

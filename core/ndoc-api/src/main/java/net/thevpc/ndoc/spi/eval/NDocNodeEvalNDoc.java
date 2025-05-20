@@ -132,7 +132,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 case NAMED_PARAMETRIZED_ARRAY:
                 case PARAMETRIZED_ARRAY:
                 case NAMED_ARRAY: {
-                    NArrayElement r = ee.toArray().get();
+                    NArrayElement r = ee.asArray().get();
                     String u = r.name();
                     if (u != null && u.startsWith("$")) {
                         String varName = u.substring(1);

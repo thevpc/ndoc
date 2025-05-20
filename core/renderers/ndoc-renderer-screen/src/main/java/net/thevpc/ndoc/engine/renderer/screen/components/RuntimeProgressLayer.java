@@ -17,7 +17,7 @@ public class RuntimeProgressLayer implements HDocumentLayer {
             double x0 = (int) size.getWidth() / 2 /*- w2 / 2 - 5*/;
             double y0 = (int) size.getHeight() / 2 /*- w2 / 2 - 5*/;
             long v = System.currentTimeMillis() / 10;
-            System.out.println(v);
+            //System.out.println(v);
             drawProgress(null, new Color(0xff5500), (v % 360) / 360.0 * 100, x0, y0, w1, w2, g);
         }
     }

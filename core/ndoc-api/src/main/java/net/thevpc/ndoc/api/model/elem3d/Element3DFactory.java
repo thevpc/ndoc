@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.api.model.elem3d;
 
-import net.thevpc.ndoc.api.fct.HFunctionXY;
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.elem3d.composite.Element3DBox;
 import net.thevpc.ndoc.api.model.elem3d.composite.Element3DGroup;
@@ -9,6 +8,7 @@ import net.thevpc.ndoc.api.model.elem3d.composite.Element3DUVSphere;
 import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DLine;
 import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DPolygon;
 import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DPolyline;
+import net.thevpc.nuts.util.NDoubleFunction2;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class Element3DFactory {
         return new Element3DSurface(points);
     }
 
-    public static Element3DSurface surface(double[] x, double[] y, HFunctionXY f) {
+    public static Element3DSurface surface(double[] x, double[] y, NDoubleFunction2 f) {
         List<HPoint3D> all = new ArrayList<>();
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < y.length; j++) {
