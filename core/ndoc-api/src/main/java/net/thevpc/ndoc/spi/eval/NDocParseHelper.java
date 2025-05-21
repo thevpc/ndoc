@@ -13,6 +13,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,10 +50,13 @@ public class NDocParseHelper {
             }
             // add classes as well
             Set<String> allClasses = new HashSet<>();
-            for (NElement cls : a.children()) {
-                NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
-                if (ss.isPresent()) {
-                    allClasses.addAll(Arrays.asList(ss.get()));
+            List<NElement> params = a.params();
+            if(params !=null) {
+                for (NElement cls : params) {
+                    NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                    if (ss.isPresent()) {
+                        allClasses.addAll(Arrays.asList(ss.get()));
+                    }
                 }
             }
             if (!allClasses.isEmpty()) {

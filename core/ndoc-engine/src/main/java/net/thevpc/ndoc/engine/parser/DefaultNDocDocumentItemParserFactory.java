@@ -256,24 +256,27 @@ public class DefaultNDocDocumentItemParserFactory
             boolean foundHalfa = false;
             boolean foundVersion = false;
             boolean foundOther = false;
-            for (NElement cls : a.children()) {
-                if(cls.isAnyString()){
-                    if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
-                        foundHalfa = true;
-                    } else if (isVersionString(cls.asStringValue().get())) {
-                        foundVersion = true;
+            List<NElement> params = a.params();
+            if(params !=null) {
+                for (NElement cls : params) {
+                    if (cls.isAnyString()) {
+                        if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
+                            foundHalfa = true;
+                        } else if (isVersionString(cls.asStringValue().get())) {
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
+                        }
                     } else {
-                        foundOther = true;
-                    }
-                }else{
-                    if (cls.type().isNumber()) {
-                        BigDecimal bi = cls.asNumber().get().bigDecimalValue();
-                        foundVersion = true;
-                    } else {
-                        foundOther = true;
-                    }
-                    break;
+                        if (cls.type().isNumber()) {
+                            BigDecimal bi = cls.asNumber().get().bigDecimalValue();
+                            foundVersion = true;
+                        } else {
+                            foundOther = true;
+                        }
+                        break;
 
+                    }
                 }
             }
             if (foundHalfa) {
@@ -320,13 +323,16 @@ public class DefaultNDocDocumentItemParserFactory
             }
             // add classes as well
 
-            for (NElement cls : a.children()) {
-                if (allStyles == null) {
-                    allStyles = new HashSet<>();
-                }
-                NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
-                if (ss.isPresent()) {
-                    allStyles.addAll(Arrays.asList(ss.get()));
+            List<NElement> params = a.params();
+            if(params !=null) {
+                for (NElement cls : params) {
+                    if (allStyles == null) {
+                        allStyles = new HashSet<>();
+                    }
+                    NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                    if (ss.isPresent()) {
+                        allStyles.addAll(Arrays.asList(ss.get()));
+                    }
                 }
             }
         }
