@@ -119,7 +119,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     if (ff.isNamed()) {
                         List<NElement> r = ff.params()
                                 .stream().map(x -> eval(x)).collect(Collectors.toList());
-                        NOptional<NElement> oo = evalFunction(ff.name(), r.toArray(new NElement[0]));
+                        NOptional<NElement> oo = evalFunction(ff.name().get(), r.toArray(new NElement[0]));
                         if (!oo.isEmpty()) {
                             return oo.get();
                         }
@@ -133,7 +133,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 case PARAMETRIZED_ARRAY:
                 case NAMED_ARRAY: {
                     NArrayElement r = ee.asArray().get();
-                    String u = r.name();
+                    String u = r.name().orNull();
                     if (u != null && u.startsWith("$")) {
                         String varName = u.substring(1);
                         NElement arrVal = evalVar(varName);

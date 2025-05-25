@@ -194,12 +194,12 @@ public class DefaultNDocDocumentItemParserFactory
                             if (c.isNamedUplet()) {
                                 NUpletElementBuilder fb = (NUpletElementBuilder) functionTsonDeclaration.builder();
                                 for (int i = 0; i < fb.params().size(); i++) {
-                                    fb.set(i, HUtils.addCompilerDeclarationPath(fb.get(i), sourcePath.toString()));
+                                    fb.set(i, HUtils.addCompilerDeclarationPath(fb.get(i).orNull(), sourcePath.toString()));
                                 }
                                 functionTsonDeclaration = fb.build();
                             } else if (c.type() == NElementType.OBJECT) {
                                 NObjectElementBuilder fb = (NObjectElementBuilder) functionTsonDeclaration.builder();
-                                List<NElement> args = fb.params();
+                                List<NElement> args = fb.params().orNull();
                                 if (args != null) {
                                     for (int i = 0; i < args.size(); i++) {
                                         args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));

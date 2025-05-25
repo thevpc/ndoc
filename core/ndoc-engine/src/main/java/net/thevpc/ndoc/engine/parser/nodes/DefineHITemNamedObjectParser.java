@@ -37,7 +37,7 @@ public class DefineHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         switch (tsonElement.type()) {
             case NAMED_PARAMETRIZED_OBJECT: {
                 NObjectElement object = tsonElement.toObject().get();
-                String name = object.name();
+                String name = object.name().orNull();
                 if(NBlankable.isBlank(name)) {
                     context.messages().log(HMsg.of(NMsg.ofC("missing definition name : %s", tsonElement).asSevere(), context.source()));
                     return NOptional.ofError(() -> NMsg.ofC("missing definition name : %s", tsonElement));

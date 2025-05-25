@@ -51,8 +51,8 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             case OP: {
                 NOperatorElement binOp = c.asOperator().get();
                 if ("=".equals(binOp.operatorName())) {
-                    NElement k = binOp.first();
-                    NElement v = binOp.second();
+                    NElement k = binOp.first().orNull();
+                    NElement v = binOp.second().orNull();
                     NDocObjEx kh = NDocObjEx.of(k);
                     NOptional<String> nn = kh.asStringOrName();
                     if (nn.isPresent()) {

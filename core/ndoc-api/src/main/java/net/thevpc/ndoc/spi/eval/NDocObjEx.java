@@ -335,7 +335,7 @@ public class NDocObjEx {
                     case PARAMETRIZED_ARRAY:
                     case NAMED_ARRAY:{
                         NListContainerElement te = (NListContainerElement) element;
-                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().map(NNamedElement::name).orNull());
+                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
                         List<NElement> a = te.children();
                         if (a != null) {
                             children.addAll(a);
@@ -346,7 +346,7 @@ public class NDocObjEx {
                     case UPLET:
                     case NAMED_UPLET: {
                         NListContainerElement te = (NListContainerElement) element;
-                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().map(NNamedElement::name).orNull());
+                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
                         List<NElement> a = te.children();
                         if (a != null) {
                             args.addAll(a);
@@ -1296,7 +1296,7 @@ public class NDocObjEx {
         }
         if (element instanceof NUpletElement && ((NUpletElement) element).isNamed()) {
             NUpletElement f = (NUpletElement) element;
-            NOptional<HArrowType> u = NDocObjEx.of(f.name()).asArrowType();
+            NOptional<HArrowType> u = NDocObjEx.of(f.name().orNull()).asArrowType();
             Double width = null;
             Double height = null;
             if (u.isPresent()) {

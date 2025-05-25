@@ -143,8 +143,8 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case NAMED_UPLET:
             {
                 NUpletElement uplet = e.asUplet().get();
-                if (uplet.isNamed() && acceptTypeName(uplet.name())) {
-                    return uplet.name();
+                if (uplet.isNamed() && acceptTypeName(uplet.name().orNull())) {
+                    return uplet.name().orNull();
                 }
                 break;
             }
@@ -154,8 +154,8 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             case NAMED_OBJECT:
             {
                 NObjectElement h = e.toObject().get();
-                if (h.isNamed() && acceptTypeName(h.name())) {
-                    return h.name();
+                if (h.isNamed() && acceptTypeName(h.name().orNull())) {
+                    return h.name().orNull();
                 }
                 break;
             }
@@ -166,8 +166,8 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
             {
                 NArrayElement h = e.toArray().get();
-                if (h.isNamed() && acceptTypeName(h.name())) {
-                    return h.name();
+                if (h.isNamed() && acceptTypeName(h.name().orNull())) {
+                    return h.name().orNull();
                 }
                 break;
             }

@@ -43,7 +43,7 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
                 NElement v = p.value();
                 if (v.isNamedObject() || v.isNamedUplet()) {
                     NObjectElement object = v.toObject().get();
-                    String name = object.name();
+                    String name = object.name().orNull();
                     if (!NBlankable.isBlank(name)) {
                         return NCallableSupport.of(10, () -> {
                             List<NElement> definitionArguments = object.params().orElse(Collections.emptyList());
