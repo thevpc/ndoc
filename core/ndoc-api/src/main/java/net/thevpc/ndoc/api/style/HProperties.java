@@ -103,7 +103,7 @@ public class HProperties {
     }
 
     public NElement toElement() {
-        return NElements.of().ofObject(
+        return NElements.ofObject(
                 map.values().stream().map(x -> x.toElement()).toArray(NElement[]::new)
         );
     }

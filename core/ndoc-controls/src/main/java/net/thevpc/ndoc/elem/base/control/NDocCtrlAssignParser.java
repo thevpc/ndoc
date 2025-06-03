@@ -87,7 +87,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return NElements.of().ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElements.ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

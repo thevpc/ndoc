@@ -47,7 +47,7 @@ public class HUtils {
     }
 
     public static NElement addCompilerDeclarationPath(NElement element, String path) {
-        return element.builder().addAnnotation("CompilerDeclarationPath", NElements.of().ofString(path)).build();
+        return element.builder().addAnnotation("CompilerDeclarationPath", NElements.ofString(path)).build();
     }
 
     public static NPath resolvePath(NElement path, Object source) {
@@ -152,25 +152,25 @@ public class HUtils {
             Object o
     ) {
         if (o == null) {
-            return NElements.of().ofNull();
+            return NElements.ofNull();
         }
         if (o instanceof String) {
-            return NElements.of().ofString((String) o);
+            return NElements.ofString((String) o);
         }
         if (o instanceof Double) {
-            return NElements.of().ofDouble((Double) o);
+            return NElements.ofDouble((Double) o);
         }
         if (o instanceof Integer) {
-            return NElements.of().ofInt((Integer) o);
+            return NElements.ofInt((Integer) o);
         }
         if (o instanceof Boolean) {
-            return NElements.of().ofBoolean((Boolean) o);
+            return NElements.ofBoolean((Boolean) o);
         }
         if (o instanceof NElement) {
             return (NElement) o;
         }
         if (o instanceof Point2D.Double) {
-            return NElements.of().ofUplet(
+            return NElements.ofUplet(
                     toElement(((Point2D.Double) o).getX()),
                     toElement(((Point2D.Double) o).getY())
             );
@@ -179,13 +179,13 @@ public class HUtils {
             return ((NToElement) o).toElement();
         }
         if (o instanceof Enum) {
-            return NElements.of().ofName(
+            return NElements.ofName(
                     NNameFormat.LOWER_KEBAB_CASE.format(((Enum<?>) o).name())
             );
         }
         if (o instanceof Color) {
             Color c = (Color) o;
-            return NElements.of().ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
+            return NElements.ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
         }
         if (o.getClass().isArray()
         ) {
@@ -195,10 +195,10 @@ public class HUtils {
                 for (int i = 0; i < max; i++) {
                     a.add(toElement(Array.get(o, i)));
                 }
-                return NElements.of().ofArray(a.toArray(new NElement[0]));
+                return NElements.ofArray(a.toArray(new NElement[0]));
             } else {
                 return
-                        NElements.of().ofArray(
+                        NElements.ofArray(
                                 Arrays.stream((Object[]) o)
                                         .map(x -> toElement(x))
                                         .toArray(NElement[]::new)

@@ -64,9 +64,9 @@ public class NDocPlot2DImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : NElements.of().ofPair("width", width.getValue()),
-                height == null ? null : NElements.of().ofPair("height", height.getValue()),
-                points == null ? null : NElements.of().ofPair("fun", points.getValue())
+                width == null ? null : NElements.ofPair("width", width.getValue()),
+                height == null ? null : NElements.ofPair("height", height.getValue()),
+                points == null ? null : NElements.ofPair("fun", points.getValue())
         ).build();
     }
 

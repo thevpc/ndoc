@@ -29,7 +29,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
         if (path.isAbsolute()) {
             return path;
         }
-        return resolvePath(NElements.of().ofString(path.toString()), node);
+        return resolvePath(NElements.ofString(path.toString()), node);
     }
 
     @Override

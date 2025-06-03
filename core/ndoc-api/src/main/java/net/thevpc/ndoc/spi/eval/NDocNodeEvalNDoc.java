@@ -123,7 +123,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                         if (!oo.isEmpty()) {
                             return oo.get();
                         }
-                        return element;//NElements.of().ofUplet(ff.name(), r.toArray(new Object[0])).build();
+                        return element;//NElements.ofUplet(ff.name(), r.toArray(new Object[0])).build();
                     }
                     return element;
                 }

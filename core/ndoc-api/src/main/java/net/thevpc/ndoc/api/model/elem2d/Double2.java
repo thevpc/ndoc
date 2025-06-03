@@ -35,9 +35,9 @@ public class Double2 implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.of().ofUplet(
-                NElements.of().ofDouble(getX()),
-                NElements.of().ofDouble(getY())
+        return NElements.ofUplet(
+                NElements.ofDouble(getX()),
+                NElements.ofDouble(getY())
         );
     }
 }

@@ -37,7 +37,7 @@ public class Rotation implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.of().ofUplet(
+        return NElements.ofUplet(
                 angle,
                 x,
                 y

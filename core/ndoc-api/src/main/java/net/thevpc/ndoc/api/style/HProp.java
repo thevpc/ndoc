@@ -26,19 +26,19 @@ public class HProp implements HItem, NToElement {
     private NElement value;
 
     public static HProp ofDouble(String name, Double value) {
-        return new HProp(name, NElements.of().ofDouble(value));
+        return new HProp(name, NElements.ofDouble(value));
     }
 
     public static HProp ofInt(String name, Integer value) {
-        return new HProp(name, NElements.of().ofInt(value));
+        return new HProp(name, NElements.ofInt(value));
     }
 
     public static HProp ofBoolean(String name, Boolean value) {
-        return new HProp(name, NElements.of().ofBoolean(value));
+        return new HProp(name, NElements.ofBoolean(value));
     }
 
     public static HProp ofString(String name, String value) {
-        return new HProp(name, NElements.of().ofString(value));
+        return new HProp(name, NElements.ofString(value));
     }
 
     public static HProp ofObject(String name, NElement value) {
@@ -46,15 +46,15 @@ public class HProp implements HItem, NToElement {
     }
 
     public static HProp ofStringArray(String name, String[] value) {
-        return new HProp(name, NElements.of().ofStringArray(value));
+        return new HProp(name, NElements.ofStringArray(value));
     }
 
     public static HProp ofDouble2(String name, double x, double y) {
-        return new HProp(name, NElements.of().ofUplet(NElements.of().ofDouble(x), NElements.of().ofDouble(y)));
+        return new HProp(name, NElements.ofUplet(NElements.ofDouble(x), NElements.ofDouble(y)));
     }
 
     public static HProp ofHPoint2D(String name, double x, double y) {
-        return new HProp(name, NElements.of().ofUplet(NElements.of().ofDouble(x), NElements.of().ofDouble(y)));
+        return new HProp(name, NElements.ofUplet(NElements.ofDouble(x), NElements.ofDouble(y)));
     }
 
     public static HProp ofDouble2(String name, Double2 d) {
@@ -70,19 +70,19 @@ public class HProp implements HItem, NToElement {
     }
 
     public static HProp ofDouble2Array(String name, Double2... d) {
-        return new HProp(name, NElements.of().ofArray(Arrays.stream(d).map(Double2::toElement).toArray(NElement[]::new)));
+        return new HProp(name, NElements.ofArray(Arrays.stream(d).map(Double2::toElement).toArray(NElement[]::new)));
     }
 
     public static HProp ofDoubleArray(String name, double[] d) {
-        return new HProp(name, NElements.of().ofDoubleArray(d));
+        return new HProp(name, NElements.ofDoubleArray(d));
     }
 
     public static HProp ofHPoint2DArray(String name, HPoint2D... d) {
-        return new HProp(name, NElements.of().ofArray(Arrays.stream(d).map(HPoint2D::toElement).toArray(NElement[]::new)));
+        return new HProp(name, NElements.ofArray(Arrays.stream(d).map(HPoint2D::toElement).toArray(NElement[]::new)));
     }
 
     public static HProp ofHPoint3DArray(String name, HPoint3D... d) {
-        return new HProp(name, NElements.of().ofArray(Arrays.stream(d).map(HPoint3D::toElement).toArray(NElement[]::new)));
+        return new HProp(name, NElements.ofArray(Arrays.stream(d).map(HPoint3D::toElement).toArray(NElement[]::new)));
     }
 
     public HProp(String name, NElement value) {
@@ -174,6 +174,6 @@ public class HProp implements HItem, NToElement {
     }
 
     public NElement toElement() {
-        return NElements.of().ofPair(net.thevpc.ndoc.api.util.HUtils.toElement(name), HUtils.toElement(value));
+        return NElements.ofPair(net.thevpc.ndoc.api.util.HUtils.toElement(name), HUtils.toElement(value));
     }
 }

@@ -45,8 +45,8 @@ public class DefineHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 List<NElement> definitionArguments = object.params().get();
                 List<NElement> definitionBody = object.children();
                 HNode node=new DefaultHNode(HNodeType.DEFINE);
-                node.setProperty("name", NElements.of().ofNameOrString(name));
-                node.setProperty("args", definitionArguments==null?null:NElements.of().ofArray(definitionArguments.toArray(new NElement[0])));
+                node.setProperty("name", NElements.ofNameOrString(name));
+                node.setProperty("args", definitionArguments==null?null:NElements.ofArray(definitionArguments.toArray(new NElement[0])));
                 for (NElement element : definitionBody) {
                     NOptional<HItem> o = context.engine().newNode(element, context);
                     if(!o.isPresent()) {

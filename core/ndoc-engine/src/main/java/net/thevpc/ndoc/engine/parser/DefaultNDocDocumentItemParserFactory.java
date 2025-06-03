@@ -184,7 +184,7 @@ public class DefaultNDocDocumentItemParserFactory
                 }
                 if (c.isNamedUplet() || c.type() == NElementType.OBJECT) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
-                    callNode.setProperty(HPropName.NAME, NElements.of().ofString(HUtils.uid(ee.name())));
+                    callNode.setProperty(HPropName.NAME, NElements.ofString(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
                     NElement functionTsonDeclaration = c;
                     if (context.source() != null) {

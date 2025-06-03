@@ -19,8 +19,8 @@ public class NDocSphereRenderer extends NDocNodeRendererBase {
 
     public NDocSphereRenderer() {
         super(HNodeType.SPHERE, HNodeType.ELLIPSOID);
-        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.of().ofTrue());
-        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.of().ofTrue());
+        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.ofTrue());
+        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.ofTrue());
     }
 
     public void renderMain(HNode p, NDocNodeRendererContext ctx) {

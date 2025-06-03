@@ -59,7 +59,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                         if(resource.path().isPresent()) {
                             NPath nPath = HUtils.resolvePath(element, resource);
                             if(nPath!=null) {
-                                return NElements.of().ofString(nPath.toString());
+                                return NElements.ofString(nPath.toString());
                             }
                         }
                     }
@@ -151,6 +151,6 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                 }
             }
         }
-        return HUtils.resolvePath(NElements.of().ofString(path),src);
+        return HUtils.resolvePath(NElements.ofString(path),src);
     }
 }

@@ -55,8 +55,8 @@ public class ToElementHelper {
             HStyleRule[] rules = node.rules();
             if (rules.length > 0) {
                 ch.add(
-                        NElements.of().ofPair("styles",
-                                NElements.of().ofObject(
+                        NElements.ofPair("styles",
+                                NElements.ofObject(
                                         Arrays.stream(rules).map(x -> x.toElement()).toArray(NElement[]::new)
                                 )
                         )
@@ -68,11 +68,11 @@ public class ToElementHelper {
                         engine.nodeTypeFactory(child.type()).get().toElem(child)
                 );
             }
-            NObjectElementBuilder u = NElements.of().ofObjectBuilder(name).addParams(args2).addAll(ch);
+            NObjectElementBuilder u = NElements.ofObjectBuilder(name).addParams(args2).addAll(ch);
             applyAnnotations(u);
             return u.build();
         } else {
-            NUpletElementBuilder u = NElements.of().ofUplet(name, args2.toArray(new NElement[0])).builder();
+            NUpletElementBuilder u = NElements.ofUplet(name, args2.toArray(new NElement[0])).builder();
             applyAnnotations(u);
             return u.build();
         }
@@ -85,7 +85,7 @@ public class ToElementHelper {
         NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(HPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
-                    Arrays.stream(sa.get()).map(x -> NElements.of().ofString(x)).toArray(NElement[]::new)
+                    Arrays.stream(sa.get()).map(x -> NElements.ofString(x)).toArray(NElement[]::new)
             );
         }
     }
@@ -108,7 +108,7 @@ public class ToElementHelper {
 
     public ToElementHelper addNonNullPairChild(String name, Object value) {
         if(value!=null){
-            addChild(NElements.of().ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
+            addChild(NElements.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
         }
         return this;
     }
@@ -136,9 +136,9 @@ public class ToElementHelper {
                     value.indexOf('\n') >= 0
                             || value.indexOf('\r') >= 0;
             if (!multiLine) {
-                addArg(NElements.of().ofString(value));
+                addArg(NElements.ofString(value));
             } else {
-                addArg(NElements.of().ofString(value,NElementType.TRIPLE_DOUBLE_QUOTED_STRING));
+                addArg(NElements.ofString(value,NElementType.TRIPLE_DOUBLE_QUOTED_STRING));
             }
         }
         excludeProps(name);
@@ -158,7 +158,7 @@ public class ToElementHelper {
                 if(propName!=null) {
                     NElement v = node.getPropertyValue(propName).orNull();
                     if (v != null) {
-                        addChild(NElements.of().ofPair(propName, v));
+                        addChild(NElements.ofPair(propName, v));
                     }
                 }
             }

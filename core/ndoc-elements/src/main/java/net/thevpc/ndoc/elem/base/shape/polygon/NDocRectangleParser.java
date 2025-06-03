@@ -50,7 +50,7 @@ public class NDocRectangleParser extends NDocNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            info.node.setProperty(uid, NElements.of().ofBoolean(true));
+                            info.node.setProperty(uid, NElements.ofBoolean(true));
                             return true;
                         }
                     }

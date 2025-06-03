@@ -31,6 +31,6 @@ public class HSize implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.of().ofNumber(value + "%");
+        return NElements.ofNumber(value + "%");
     }
 }

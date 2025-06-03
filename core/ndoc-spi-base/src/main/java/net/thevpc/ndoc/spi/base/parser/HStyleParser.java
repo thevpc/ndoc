@@ -273,7 +273,7 @@ public class HStyleParser {
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, NElements.of().ofBoolean(true))});
+                    return NOptional.of(new HProp[]{new HProp(uid, NElements.ofBoolean(true))});
                 }
                 break;
             }

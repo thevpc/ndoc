@@ -667,7 +667,7 @@ public class NDocObjEx {
     }
 
     public NOptional<NElement> asTsonInt() {
-        return asInt().map(x -> NElements.of().ofInt(x));
+        return asInt().map(x -> NElements.ofInt(x));
     }
 
     public NOptional<Integer> asInt() {
@@ -733,7 +733,7 @@ public class NDocObjEx {
 
     public NOptional<NElement> asTsonStringOrName() {
         if (element instanceof String) {
-            return NOptional.of(NElements.of().ofString((String) element));
+            return NOptional.of(NElements.ofString((String) element));
         }
         if (element instanceof NElement) {
             if (((NElement) element).isAnyString()) {
@@ -824,7 +824,7 @@ public class NDocObjEx {
             return NOptional.of(((NElement[]) element));
         }
         if (element instanceof double[]) {
-            return NOptional.of(NElements.of().ofDoubleArray((double[]) element).children().toArray(new NElement[0]));
+            return NOptional.of(NElements.ofDoubleArray((double[]) element).children().toArray(new NElement[0]));
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
@@ -1078,8 +1078,8 @@ public class NDocObjEx {
                         Double2 size = HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                         return NOptional.of(
                                 new ElemNumber2(
-                                        NElements.of().ofDouble(size.getX()).asNumber().get(),
-                                        NElements.of().ofDouble(size.getY()).asNumber().get()
+                                        NElements.ofDouble(size.getX()).asNumber().get(),
+                                        NElements.ofDouble(size.getY()).asNumber().get()
                                 )
                         );
                     }
@@ -1091,14 +1091,14 @@ public class NDocObjEx {
                     if (taa[0].isNumber()) {
                         xx = taa[0].asNumber().get();
                     } else if (taa[0].isAnyString()) {
-                        xx = NElements.of().ofDouble(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).asNumber().get();
+                        xx = NElements.ofDouble(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
                     }
                     if (taa[1].isNumber()) {
                         yy = taa[1].asNumber().get();
                     } else if (taa[1].isAnyString()) {
-                        yy = NElements.of().ofDouble(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
+                        yy = NElements.ofDouble(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
                     }
@@ -1115,8 +1115,8 @@ public class NDocObjEx {
                 Double2 size = HAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                 return NOptional.of(
                         new ElemNumber2(
-                                NElements.of().ofDouble(size.getX()).asNumber().get(),
-                                NElements.of().ofDouble(size.getY()).asNumber().get()
+                                NElements.ofDouble(size.getX()).asNumber().get(),
+                                NElements.ofDouble(size.getY()).asNumber().get()
                         )
                 );
             }
@@ -1160,16 +1160,16 @@ public class NDocObjEx {
             switch (dd.length) {
                 case 1: {
                     return NOptional.of(new Rotation(
-                            NElements.of().ofDouble(dd[0]),
-                            NElements.of().ofDouble(50),
-                            NElements.of().ofDouble(50)
+                            NElements.ofDouble(dd[0]),
+                            NElements.ofDouble(50),
+                            NElements.ofDouble(50)
                     ));
                 }
                 case 3: {
                     return NOptional.of(new Rotation(
-                            NElements.of().ofDouble(dd[0]),
-                            NElements.of().ofDouble(50),
-                            NElements.of().ofDouble(50)
+                            NElements.ofDouble(dd[0]),
+                            NElements.ofDouble(50),
+                            NElements.ofDouble(50)
                     ));
                 }
             }
@@ -1178,8 +1178,8 @@ public class NDocObjEx {
         if (dd.isPresent()) {
             return NOptional.of(new Rotation(
                     dd.get(),
-                    NElements.of().ofDouble(50),
-                    NElements.of().ofDouble(50)
+                    NElements.ofDouble(50),
+                    NElements.ofDouble(50)
             ));
         }
         return NOptional.ofNamedEmpty("Rotation from " + element);

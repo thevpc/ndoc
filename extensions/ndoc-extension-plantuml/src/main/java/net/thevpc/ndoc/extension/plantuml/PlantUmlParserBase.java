@@ -62,7 +62,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     @Override
     public void onStartParsingItem(String id, HNode node, NElement tsonElement, NDocNodeFactoryParseContext context) {
         super.onStartParsingItem(id, node, tsonElement, context);
-        node.setProperty(HPropName.MODE, NElements.of().ofString(id));
+        node.setProperty(HPropName.MODE, NElements.ofString(id));
     }
 
     @Override
@@ -94,7 +94,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElements.of().ofString(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElements.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())

@@ -116,7 +116,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofAssign(String name, NElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, NElements.of().ofString(name))
+                .setProperty(HPropName.NAME, NElements.ofString(name))
                 .setProperty(HPropName.VALUE, value)
                 ;
     }
@@ -144,8 +144,8 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, NElements.of().ofInt(cols))
-                .setProperty(HPropName.ROWS, NElements.of().ofInt(rows))
+                .setProperty(HPropName.COLUMNS, NElements.ofInt(cols))
+                .setProperty(HPropName.ROWS, NElements.ofInt(rows))
                 ;
     }
 
@@ -171,12 +171,12 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, NElements.of().ofString(text));
+        return ofPlain().setProperty(HPropName.VALUE, NElements.ofString(text));
     }
 
     @Override
     public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, NElements.of().ofString(text));
+        return ofText().setProperty(HPropName.VALUE, NElements.ofString(text));
     }
 
     @Override
@@ -302,7 +302,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, NElements.of().ofString(value));
+        return ofEquation().setProperty(HPropName.VALUE, NElements.ofString(value));
     }
 
     @Override

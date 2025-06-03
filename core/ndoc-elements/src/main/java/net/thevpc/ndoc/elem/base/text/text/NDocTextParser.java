@@ -104,7 +104,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
-                                    value= NElements.of().ofString(nPath.readString().trim());
+                                    value= NElements.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
                                            HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));

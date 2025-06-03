@@ -115,8 +115,8 @@ public class NDocPolygonParser extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        count == null ? null : NElements.of().ofPair("count", count),
-                        points == null ? null : NElements.of().ofPair("points", points)
+                        count == null ? null : NElements.ofPair("count", count),
+                        points == null ? null : NElements.ofPair("points", points)
                 )
                 .build();
     }

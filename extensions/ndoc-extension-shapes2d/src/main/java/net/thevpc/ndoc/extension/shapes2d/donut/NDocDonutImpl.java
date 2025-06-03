@@ -81,13 +81,13 @@ public class NDocDonutImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        innerRadius == null ? null : NElements.of().ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
-                        startAngle == null ? null : NElements.of().ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
-                        extentAngle == null ? null : NElements.of().ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
-                        sliceCount == null ? null : NElements.of().ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
-                        dash == null ? null : NElements.of().ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
-                        colors == null ? null : NElements.of().ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
-                        slices == null ? null : NElements.of().ofPair("slices", HUtils.toElement(slices.getValue()))
+                        innerRadius == null ? null : NElements.ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
+                        startAngle == null ? null : NElements.ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
+                        extentAngle == null ? null : NElements.ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
+                        sliceCount == null ? null : NElements.ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
+                        dash == null ? null : NElements.ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
+                        colors == null ? null : NElements.ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
+                        slices == null ? null : NElements.ofPair("slices", HUtils.toElement(slices.getValue()))
 
                 )
                 .build();

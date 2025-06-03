@@ -64,10 +64,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : NElements.of().ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
-                height == null ? null : NElements.of().ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
-                base == null ? null : NElements.of().ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
-                hat == null ? null : NElements.of().ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
+                width == null ? null : NElements.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
+                height == null ? null : NElements.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
+                base == null ? null : NElements.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
+                hat == null ? null : NElements.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
         ).build();
     }
 

@@ -31,20 +31,20 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
             case "vgrid":
             case "column": {
                 if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElements.of().ofInt(1));
+                    info.node.setProperty(HPropName.COLUMNS, NElements.ofInt(1));
                 }
                 if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElements.of().ofInt(-1));
+                    info.node.setProperty(HPropName.ROWS, NElements.ofInt(-1));
                 }
                 break;
             }
             case "hgrid":
             case "row": {
                 if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElements.of().ofInt(-1));
+                    info.node.setProperty(HPropName.COLUMNS, NElements.ofInt(-1));
                 }
                 if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElements.of().ofInt(1));
+                    info.node.setProperty(HPropName.ROWS, NElements.ofInt(1));
                 }
                 break;
             }

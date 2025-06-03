@@ -19,7 +19,7 @@ public class NDocElseIfParser extends NDocNodeParserBase {
         if(info.arguments.length==1){
             info.node.setProperty("condition", info.arguments[0]);
         }else{
-            info.node.setProperty("condition", NElements.of().ofArray(info.arguments));
+            info.node.setProperty("condition", NElements.ofArray(info.arguments));
         }
         return true;
     }

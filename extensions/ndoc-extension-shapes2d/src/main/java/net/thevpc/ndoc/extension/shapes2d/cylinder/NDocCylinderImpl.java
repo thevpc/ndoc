@@ -57,9 +57,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : NElements.of().ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
-                        topColor == null ? null : NElements.of().ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
-                        segmentCount == null ? null : NElements.of().ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
+                        ellipseHeight == null ? null : NElements.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
+                        topColor == null ? null : NElements.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
+                        segmentCount == null ? null : NElements.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
 
                 )
                 .build();

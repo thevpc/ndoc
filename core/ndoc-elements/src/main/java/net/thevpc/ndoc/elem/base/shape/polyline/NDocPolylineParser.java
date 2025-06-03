@@ -96,7 +96,7 @@ public class NDocPolylineParser extends NDocNodeParserBase {
         return ToElementHelper.of(
                         item, engine()
                 ).addChildren(
-                        points == null ? null : NElements.of().ofPair("points", points)
+                        points == null ? null : NElements.ofPair("points", points)
                 )
                 .build();
     }

@@ -29,9 +29,9 @@ public class NDocOrderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(child.addStyleClasses("ol-item"));
         }
         return f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, NElements.of().ofInt(2))
-                .setProperty(HPropName.ROWS, NElements.of().ofInt(2))
-                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.of().ofDoubleArray(1, 20))
+                .setProperty(HPropName.COLUMNS, NElements.ofInt(2))
+                .setProperty(HPropName.ROWS, NElements.ofInt(2))
+                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.ofDoubleArray(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]))
                 ;
     }

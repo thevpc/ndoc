@@ -54,7 +54,7 @@ public class HSizeRef {
             return NOptional.ofNamedEmpty("size");
         }
         if (o instanceof Number) {
-            o = NElements.of().ofDouble(((Number) o).doubleValue());
+            o = NElements.ofDouble(((Number) o).doubleValue());
         }
         if (o instanceof NElement) {
             NElement b = (NElement) o;
@@ -92,6 +92,6 @@ public class HSizeRef {
     }
 
     public Double2 apply(Double2 size) {
-        return new Double2(x(NElements.of().ofDouble(size.getX())).get(), y(NElements.of().ofDouble(size.getX())).get());
+        return new Double2(x(NElements.ofDouble(size.getX())).get(), y(NElements.ofDouble(size.getX())).get());
     }
 }

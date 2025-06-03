@@ -49,8 +49,8 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
                             List<NElement> definitionArguments = object.params().orElse(Collections.emptyList());
                             List<NElement> definitionBody = object.children();
                             HNode node = new DefaultHNode(HNodeType.DEFINE);
-                            node.setProperty(HPropName.NAME, NElements.of().ofString(name));
-                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElements.of().ofArray(definitionArguments.toArray(new NElement[0])));
+                            node.setProperty(HPropName.NAME, NElements.ofString(name));
+                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElements.ofArray(definitionArguments.toArray(new NElement[0])));
                             for (NElement element : definitionBody) {
                                 NOptional<HItem> o = context.engine().newNode(element, context);
                                 if (!o.isPresent()) {
@@ -94,7 +94,7 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return NElements.of().ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElements.ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

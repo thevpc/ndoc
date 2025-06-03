@@ -36,7 +36,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
                 }
                 default: {
                     all.add(f.ofSphere()
-                            //.setProperty(HPropName.SIZE, NElements.of().ofDouble(2,"%g"))
+                            //.setProperty(HPropName.SIZE, NElements.ofDouble(2,"%g"))
                             .addStyleClasses("ul-bullet"));
                     break;
                 }
@@ -44,10 +44,10 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(child.addStyleClasses("ul-item"));
         }
         HNode newNode = f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, NElements.of().ofInt(2))
-                .setProperty(HPropName.ROWS, NElements.of().ofInt(2))
+                .setProperty(HPropName.COLUMNS, NElements.ofInt(2))
+                .setProperty(HPropName.ROWS, NElements.ofInt(2))
                 .setProperty(HPropName.ORIGIN, HAlign.TOP_LEFT)
-                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.of().ofDoubleArray(1, 20))
+                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.ofDoubleArray(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]));
         for (String s : new String[]{
                 HPropName.GRID_COLOR
@@ -82,7 +82,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
         if(NDocValueByName.isDebug(p, ctx)){
             Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
             if(v==null){
-                newNode.setProperty(HPropName.DRAW_GRID, NElements.of().ofBoolean(true));
+                newNode.setProperty(HPropName.DRAW_GRID, NElements.ofBoolean(true));
             }
         }
         return newNode;

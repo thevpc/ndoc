@@ -18,14 +18,14 @@ public class NElemUtils {
 
     public static NElement toElement(NToElement[] r) {
         if(r==null){
-            return NElements.of().ofNull();
+            return NElements.ofNull();
         }
-        return NElements.of().ofArray(Arrays.stream(r).map(x->x==null?NElements.of().ofNull():x.toElement()).toArray(NElement[]::new));
+        return NElements.ofArray(Arrays.stream(r).map(x->x==null?NElements.ofNull():x.toElement()).toArray(NElement[]::new));
     }
 
     public static NElement toElement(Object r) {
         if (r == null) {
-            return NElements.of().ofNull();
+            return NElements.ofNull();
         }
         if (r instanceof NElement) {
             return ((NElement) r);
@@ -34,31 +34,31 @@ public class NElemUtils {
             return ((NToElement) r).toElement();
         }
         if (r.getClass().isEnum()) {
-            return NElements.of().ofString(((Enum) r).name());
+            return NElements.ofString(((Enum) r).name());
         }
         switch (r.getClass().getName()) {
             case "int":
             case "java.lang.Integer":
-                return NElements.of().ofInt((Integer) r);
+                return NElements.ofInt((Integer) r);
             case "boolean":
             case "java.lang.Boolean":
-                return NElements.of().ofBoolean((Boolean) r);
+                return NElements.ofBoolean((Boolean) r);
             case "double":
             case "java.lang.Double":
-                return NElements.of().ofDouble((Double) r);
+                return NElements.ofDouble((Double) r);
             case "java.lang.String":
-                return NElements.of().ofString((String) r);
+                return NElements.ofString((String) r);
             case "java.awt.Color":
                 return toElement((Color) r);
             case "[D":
-                return NElements.of().ofDoubleArray((double[]) r);
+                return NElements.ofDoubleArray((double[]) r);
         }
         throw new IllegalArgumentException("not supported type to element yet..." + r.getClass());
     }
 
     public static NElement toElement(Color color) {
         final String PATTERN = "#%02x%02x%02x";
-        return NElements.of().ofString(
+        return NElements.ofString(
                 String.format(PATTERN, color.getRed(), color.getGreen(), color.getBlue()).toUpperCase()
         );
     }

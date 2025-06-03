@@ -76,12 +76,12 @@ public class NDocPieImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        startAngle == null ? null : NElements.of().ofPair("start-angle", startAngle.getValue()),
-                        extentAngle == null ? null : NElements.of().ofPair("extent-angle", extentAngle.getValue()),
-                        sliceCount == null ? null : NElements.of().ofPair("slice-count", sliceCount.getValue()),
-                        dash == null ? null : NElements.of().ofPair("dash", dash.getValue()),
-                        colors == null ? null : NElements.of().ofPair("colors", colors.getValue()),
-                        slices == null ? null : NElements.of().ofPair("slices", slices.getValue())
+                        startAngle == null ? null : NElements.ofPair("start-angle", startAngle.getValue()),
+                        extentAngle == null ? null : NElements.ofPair("extent-angle", extentAngle.getValue()),
+                        sliceCount == null ? null : NElements.ofPair("slice-count", sliceCount.getValue()),
+                        dash == null ? null : NElements.ofPair("dash", dash.getValue()),
+                        colors == null ? null : NElements.ofPair("colors", colors.getValue()),
+                        slices == null ? null : NElements.ofPair("slices", slices.getValue())
 
                 )
                 .build();

@@ -62,6 +62,6 @@ public enum HAlign implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.of().ofName(HUtils.uid(name()));
+        return NElements.ofName(HUtils.uid(name()));
     }
 }

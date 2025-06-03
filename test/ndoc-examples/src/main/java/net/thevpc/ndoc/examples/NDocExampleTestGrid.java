@@ -30,7 +30,7 @@ public class NDocExampleTestGrid {
                 .add(f.ofPage()
                         .add(
                                 f.ofGrid(3, 2)
-                                        .setProperty(HPropName.COLUMNS_WEIGHT, NElements.of().ofDoubleArray(1, 2, 3, 4, 5, 6))
+                                        .setProperty(HPropName.COLUMNS_WEIGHT, NElements.ofDoubleArray(1, 2, 3, 4, 5, 6))
                                         .add(f.ofRectangle()
                                                 .setProperty(HProps.backgroundColor(Color.BLUE))
                                                 .setProperty(HProps.colspan(4))

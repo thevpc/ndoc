@@ -2,6 +2,7 @@ package net.thevpc.ndoc.config;
 
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -121,7 +122,7 @@ public class NDocViewerConfigManager {
         NDocViewerConfig config = null;
         if (viewerConfigFile.isRegularFile()) {
             try (InputStream is = viewerConfigFile.getInputStream()) {
-                NElement d = NElements.of().tson().parse(is);
+                NElement d = NElementParser.ofTson().parse(is);
                 config = NElements.of().fromElement(d, NDocViewerConfig.class);
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);

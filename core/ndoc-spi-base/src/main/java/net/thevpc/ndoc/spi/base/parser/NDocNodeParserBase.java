@@ -111,7 +111,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     String pid = net.thevpc.ndoc.api.util.HUtils.uid(u.get());
                     if (HParserUtils.isCommonStyleProperty(pid)) {
                         //will be processed later
-                        info.node.setProperty(pid, NElements.of().ofTrue());
+                        info.node.setProperty(pid, NElements.ofTrue());
                         return true;
                     }
                 }
@@ -230,7 +230,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.context.source(),
                         info.currentArg,
-                        es.name(), NElements.of().ofUplet(es.args().toArray(new NElement[0]))
+                        es.name(), NElements.ofUplet(es.args().toArray(new NElement[0]))
                 ).asSevere(), info.context.source()));
                 // empty result
                 return false;
