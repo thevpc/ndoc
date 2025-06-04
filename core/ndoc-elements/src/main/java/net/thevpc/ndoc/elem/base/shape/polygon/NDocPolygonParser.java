@@ -12,7 +12,6 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 public class NDocPolygonParser extends NDocNodeParserBase {
@@ -115,8 +114,8 @@ public class NDocPolygonParser extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        count == null ? null : NElements.ofPair("count", count),
-                        points == null ? null : NElements.ofPair("points", points)
+                        count == null ? null : NElement.ofPair("count", count),
+                        points == null ? null : NElement.ofPair("points", points)
                 )
                 .build();
     }

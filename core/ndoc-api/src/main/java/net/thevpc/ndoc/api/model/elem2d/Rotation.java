@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 public class Rotation implements NToElement {
@@ -37,7 +36,7 @@ public class Rotation implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.ofUplet(
+        return NElement.ofUplet(
                 angle,
                 x,
                 y

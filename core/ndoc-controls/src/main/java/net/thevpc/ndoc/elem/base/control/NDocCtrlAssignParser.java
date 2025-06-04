@@ -12,7 +12,6 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NOperatorElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NMsg;
@@ -87,7 +86,7 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return NElements.ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElement.ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }

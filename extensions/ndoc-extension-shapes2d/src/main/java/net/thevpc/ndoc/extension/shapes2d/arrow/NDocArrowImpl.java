@@ -8,7 +8,6 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 
 
@@ -64,10 +63,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : NElements.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
-                height == null ? null : NElements.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
-                base == null ? null : NElements.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
-                hat == null ? null : NElements.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
+                width == null ? null : NElement.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
+                height == null ? null : NElement.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
+                base == null ? null : NElement.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
+                hat == null ? null : NElement.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
         ).build();
     }
 

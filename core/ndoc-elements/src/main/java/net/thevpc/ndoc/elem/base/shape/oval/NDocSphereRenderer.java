@@ -11,7 +11,7 @@ import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NElement;
 
 public class NDocSphereRenderer extends NDocNodeRendererBase {
     HProperties sphereDefaultStyles = new HProperties();
@@ -19,8 +19,8 @@ public class NDocSphereRenderer extends NDocNodeRendererBase {
 
     public NDocSphereRenderer() {
         super(HNodeType.SPHERE, HNodeType.ELLIPSOID);
-        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.ofTrue());
-        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElements.ofTrue());
+        sphereDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElement.ofTrue());
+        ellipsoidDefaultStyles.set(HPropName.PRESERVE_ASPECT_RATIO, NElement.ofTrue());
     }
 
     public void renderMain(HNode p, NDocNodeRendererContext ctx) {

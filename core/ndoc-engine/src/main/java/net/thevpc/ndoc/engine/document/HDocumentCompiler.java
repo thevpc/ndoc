@@ -20,7 +20,6 @@ import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
@@ -257,7 +256,7 @@ public class HDocumentCompiler {
         inlinedNode.setRules(objectDefNode.rules());
         List<NElement> passedArgs = callFunction.asUplet().map(x->x.params()).orElse(Collections.emptyList());
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
-        inlinedNode.children().add(newAssign(HPropName.ARGS, NElements.ofArray(passedArgsArr)));
+        inlinedNode.children().add(newAssign(HPropName.ARGS, NElement.ofArray(passedArgsArr)));
         for (int i = 0; i < passedArgsArr.length; i++) {
             NElement passedArg = passedArgsArr[i];
             if (passedArg.isSimplePair()) {
@@ -291,7 +290,7 @@ public class HDocumentCompiler {
 
     private HNode newAssign(String name, NElement value) {
         HNode n = new DefaultHNode(HNodeType.ASSIGN);
-        n.setProperty(HPropName.NAME, NElements.ofString(name));
+        n.setProperty(HPropName.NAME, NElement.ofString(name));
         n.setProperty(HPropName.VALUE, value);
         return n;
     }
@@ -307,7 +306,7 @@ public class HDocumentCompiler {
             for (String a : t) {
                 prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
-            node.setProperty(HPropName.ANCESTORS, NElements.ofStringArray(newAncestors.toArray(new String[0])));
+            node.setProperty(HPropName.ANCESTORS, NElement.ofStringArray(newAncestors.toArray(new String[0])));
             for (HProp p : inheritedProps.toList()) {
                 NOptional<HProp> u = node.getProperty(p.getName());
                 if (!u.isPresent()) {
@@ -401,7 +400,7 @@ public class HDocumentCompiler {
 
         @Override
         public NElement resolveVarValue(HNode node, String varName) {
-            return evalExpression(node, NElements.ofName("$" + varName));
+            return evalExpression(node, NElement.ofName("$" + varName));
         }
     }
 }

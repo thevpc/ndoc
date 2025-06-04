@@ -10,7 +10,6 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HSizeRef;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 
 
@@ -29,7 +28,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
         if (path.isAbsolute()) {
             return path;
         }
-        return resolvePath(NElements.ofString(path.toString()), node);
+        return resolvePath(NElement.ofString(path.toString()), node);
     }
 
     @Override

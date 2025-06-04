@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.style;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
@@ -103,7 +102,7 @@ public class HProperties {
     }
 
     public NElement toElement() {
-        return NElements.ofObject(
+        return NElement.ofObject(
                 map.values().stream().map(x -> x.toElement()).toArray(NElement[]::new)
         );
     }

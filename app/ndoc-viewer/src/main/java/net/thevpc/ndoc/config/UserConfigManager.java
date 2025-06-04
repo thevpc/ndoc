@@ -1,6 +1,8 @@
 package net.thevpc.ndoc.config;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 
@@ -34,12 +36,12 @@ public class UserConfigManager {
         updateUser(userConfigs, user);
         saveUserConfigs(userConfigs);
         userConfigFile.mkParentDirs();
-        NElements.ofPlainTson(user).println(userConfigFile.mkParentDirs());
+        NElementWriter.ofTson().write(user,userConfigFile.mkParentDirs());
     }
 
     public void saveUserConfigs(UserConfigs config) {
         config=validate(config);
-        NElements.ofPlainTson(config).println(userConfigFile.mkParentDirs());
+        NElementWriter.ofTson().write(config,userConfigFile.mkParentDirs());
     }
 
     public UserConfig loadUserConfig(String id) {
@@ -49,7 +51,7 @@ public class UserConfigManager {
     public UserConfigs loadUserConfigs() {
         UserConfigs config = null;
         if (userConfigFile.isRegularFile()) {
-            config = NElements.of().tson().parse(userConfigFile, UserConfigs.class);
+            config = NElementParser.ofTson().parse(userConfigFile, UserConfigs.class);
         }
         config=validate(config);
         return config;

@@ -12,7 +12,6 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 public class NDocPolylineParser extends NDocNodeParserBase {
@@ -96,7 +95,7 @@ public class NDocPolylineParser extends NDocNodeParserBase {
         return ToElementHelper.of(
                         item, engine()
                 ).addChildren(
-                        points == null ? null : NElements.ofPair("points", points)
+                        points == null ? null : NElement.ofPair("points", points)
                 )
                 .build();
     }

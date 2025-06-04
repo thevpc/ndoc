@@ -6,7 +6,6 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.HSizeRef;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
 
@@ -29,7 +28,7 @@ public class NDocValueByName {
             hSizeRef = ctx.sizeRef();
         }
         ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.SIZE).orElse(
-                new ElemNumber2((NNumberElement)NElements.ofDouble(100.0), (NNumberElement)NElements.ofDouble(100.0))
+                new ElemNumber2((NNumberElement) NElement.ofDouble(100.0), (NNumberElement) NElement.ofDouble(100.0))
         );
 
         Double2 size = new Double2(
@@ -66,7 +65,7 @@ public class NDocValueByName {
     public static Double2 getOrigin(HNode t, NDocNodeRendererContext ctx, Double2 a) {
         ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.ORIGIN)
                 .orElseUse(() -> NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new ElemNumber2(NElements.ofDouble(0), NElements.ofDouble(0)));
+                .orElse(new ElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(
                 sr.x(double2OrHAlign.getX()).get(),
@@ -77,7 +76,7 @@ public class NDocValueByName {
     public static Double2 getPosition(HNode t, NDocNodeRendererContext ctx, Double2 a) {
         ElemNumber2 double2OrHAlign = NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.POSITION)
                 .orElseUse(() -> NDocValueByType.getNNumberElement2Or1OrHAlign(t, ctx, HPropName.AT))
-                .orElse(new ElemNumber2(NElements.ofDouble(0), NElements.ofDouble(0)));
+                .orElse(new ElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
         HSizeRef sr = new HSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new Double2(
                 sr.x(double2OrHAlign.getX()).get(),

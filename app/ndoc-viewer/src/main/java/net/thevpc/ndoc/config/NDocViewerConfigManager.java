@@ -3,6 +3,7 @@ package net.thevpc.ndoc.config;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -96,7 +97,7 @@ public class NDocViewerConfigManager {
         NElement elem = NElements.of().toElement(config);
         viewerConfigFile.mkParentDirs();
         try (OutputStream os = viewerConfigFile.getOutputStream()) {
-            NElements.of(elem).tson().print(os);
+            NElementWriter.ofTson().write(elem, os);
         } catch (IOException ex) {
             throw new IllegalArgumentException(ex);
         }

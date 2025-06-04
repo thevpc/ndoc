@@ -4,7 +4,6 @@ import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
 import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -47,7 +46,7 @@ public class HUtils {
     }
 
     public static NElement addCompilerDeclarationPath(NElement element, String path) {
-        return element.builder().addAnnotation("CompilerDeclarationPath", NElements.ofString(path)).build();
+        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString(path)).build();
     }
 
     public static NPath resolvePath(NElement path, Object source) {
@@ -152,25 +151,25 @@ public class HUtils {
             Object o
     ) {
         if (o == null) {
-            return NElements.ofNull();
+            return NElement.ofNull();
         }
         if (o instanceof String) {
-            return NElements.ofString((String) o);
+            return NElement.ofString((String) o);
         }
         if (o instanceof Double) {
-            return NElements.ofDouble((Double) o);
+            return NElement.ofDouble((Double) o);
         }
         if (o instanceof Integer) {
-            return NElements.ofInt((Integer) o);
+            return NElement.ofInt((Integer) o);
         }
         if (o instanceof Boolean) {
-            return NElements.ofBoolean((Boolean) o);
+            return NElement.ofBoolean((Boolean) o);
         }
         if (o instanceof NElement) {
             return (NElement) o;
         }
         if (o instanceof Point2D.Double) {
-            return NElements.ofUplet(
+            return NElement.ofUplet(
                     toElement(((Point2D.Double) o).getX()),
                     toElement(((Point2D.Double) o).getY())
             );
@@ -179,13 +178,13 @@ public class HUtils {
             return ((NToElement) o).toElement();
         }
         if (o instanceof Enum) {
-            return NElements.ofName(
+            return NElement.ofName(
                     NNameFormat.LOWER_KEBAB_CASE.format(((Enum<?>) o).name())
             );
         }
         if (o instanceof Color) {
             Color c = (Color) o;
-            return NElements.ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
+            return NElement.ofString(String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()));
         }
         if (o.getClass().isArray()
         ) {
@@ -195,10 +194,10 @@ public class HUtils {
                 for (int i = 0; i < max; i++) {
                     a.add(toElement(Array.get(o, i)));
                 }
-                return NElements.ofArray(a.toArray(new NElement[0]));
+                return NElement.ofArray(a.toArray(new NElement[0]));
             } else {
                 return
-                        NElements.ofArray(
+                        NElement.ofArray(
                                 Arrays.stream((Object[]) o)
                                         .map(x -> toElement(x))
                                         .toArray(NElement[]::new)

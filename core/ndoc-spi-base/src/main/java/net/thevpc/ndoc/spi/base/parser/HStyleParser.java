@@ -6,7 +6,6 @@ import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.*;
 
 import net.thevpc.nuts.elem.NElement;
@@ -273,7 +272,7 @@ public class HStyleParser {
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, NElements.ofBoolean(true))});
+                    return NOptional.of(new HProp[]{new HProp(uid, NElement.ofBoolean(true))});
                 }
                 break;
             }

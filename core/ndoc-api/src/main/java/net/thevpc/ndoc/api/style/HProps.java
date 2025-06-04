@@ -5,7 +5,7 @@ import java.awt.*;
 import net.thevpc.ndoc.api.model.elem2d.Double2;
 import net.thevpc.ndoc.api.model.elem2d.HAlign;
 import net.thevpc.ndoc.api.model.elem2d.HSize;
-import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
@@ -13,11 +13,11 @@ import net.thevpc.nuts.elem.NElements;
 public class HProps {
 
     public static HProp fontSize(Number value) {
-        return new HProp(HPropName.FONT_SIZE, NElements.ofNumber(value == null ? null : value.doubleValue()));
+        return new HProp(HPropName.FONT_SIZE, NElement.ofNumber(value == null ? null : value.doubleValue()));
     }
 
     public static HProp fontFamily(String value) {
-        return new HProp(HPropName.FONT_FAMILY, NElements.ofString(value));
+        return new HProp(HPropName.FONT_FAMILY, NElement.ofString(value));
     }
 
     public static HProp width(HSize size) {
@@ -33,15 +33,15 @@ public class HProps {
 //    }
 
     public static HProp foregroundColor(int color) {
-        return new HProp(HPropName.FOREGROUND_COLOR, NElements.ofInt(color));
+        return new HProp(HPropName.FOREGROUND_COLOR, NElement.ofInt(color));
     }
 
     public static HProp backgroundColor(int rgb) {
-        return new HProp(HPropName.BACKGROUND_COLOR, NElements.ofInt(rgb));
+        return new HProp(HPropName.BACKGROUND_COLOR, NElement.ofInt(rgb));
     }
 
     public static HProp backgroundColor(Color color) {
-        return new HProp(HPropName.BACKGROUND_COLOR, color==null?null:NElements.ofInt(color.getRGB()));
+        return new HProp(HPropName.BACKGROUND_COLOR, color==null?null: NElement.ofInt(color.getRGB()));
     }
 
 //    public static HProp lineColor(Paint color) {
@@ -49,7 +49,7 @@ public class HProps {
 //    }
 
     public static HProp gridColor(Color color) {
-        return new HProp(HPropName.GRID_COLOR, color==null?null:NElements.ofInt(color.getRGB()));
+        return new HProp(HPropName.GRID_COLOR, color==null?null: NElement.ofInt(color.getRGB()));
     }
 
 //    public static HProp lineColor(int color) {
@@ -65,35 +65,35 @@ public class HProps {
     }
 
     public static HProp preserveShapeRatio(boolean value) {
-        return new HProp(HPropName.PRESERVE_ASPECT_RATIO, NElements.ofBoolean(value));
+        return new HProp(HPropName.PRESERVE_ASPECT_RATIO, NElement.ofBoolean(value));
     }
 
     public static HProp drawContour(boolean value) {
-        return new HProp(HPropName.DRAW_CONTOUR, NElements.ofBoolean(value));
+        return new HProp(HPropName.DRAW_CONTOUR, NElement.ofBoolean(value));
     }
 
     public static HProp drawGrid(boolean value) {
-        return new HProp(HPropName.DRAW_GRID, NElements.ofBoolean(value));
+        return new HProp(HPropName.DRAW_GRID, NElement.ofBoolean(value));
     }
 
     public static HProp fillBackground(boolean value) {
-        return new HProp(HPropName.FILL_BACKGROUND, NElements.ofBoolean(value));
+        return new HProp(HPropName.FILL_BACKGROUND, NElement.ofBoolean(value));
     }
 
     public static HProp fontBold(boolean value) {
-        return new HProp(HPropName.FONT_BOLD, NElements.ofBoolean(value));
+        return new HProp(HPropName.FONT_BOLD, NElement.ofBoolean(value));
     }
 
     public static HProp fontItalic(boolean value) {
-        return new HProp(HPropName.FONT_ITALIC, NElements.ofBoolean(value));
+        return new HProp(HPropName.FONT_ITALIC, NElement.ofBoolean(value));
     }
 
     public static HProp fontUnderlined(boolean value) {
-        return new HProp(HPropName.FONT_UNDERLINED, NElements.ofBoolean(value));
+        return new HProp(HPropName.FONT_UNDERLINED, NElement.ofBoolean(value));
     }
 
     public static HProp fontStrike(boolean value) {
-        return new HProp(HPropName.FONT_STRIKE, NElements.ofBoolean(value));
+        return new HProp(HPropName.FONT_STRIKE, NElement.ofBoolean(value));
     }
 
     public static HProp position(Double2 p) {
@@ -141,58 +141,58 @@ public class HProps {
     }
 
     public static HProp threeD(Boolean b) {
-        return new HProp(HPropName.THEED, NElements.ofBoolean(b));
+        return new HProp(HPropName.THEED, NElement.ofBoolean(b));
     }
 
     public static HProp raised(Boolean b) {
-        return new HProp(HPropName.RAISED, NElements.ofBoolean(b));
+        return new HProp(HPropName.RAISED, NElement.ofBoolean(b));
     }
 
     public static HProp columns(int o) {
-        return new HProp(HPropName.COLUMNS, NElements.ofInt(o));
+        return new HProp(HPropName.COLUMNS, NElement.ofInt(o));
     }
 
     public static HProp rows(int o) {
-        return new HProp(HPropName.ROWS, NElements.ofInt(o));
+        return new HProp(HPropName.ROWS, NElement.ofInt(o));
     }
 
     public static HProp rowsWeight(double... w) {
-        return new HProp(HPropName.ROWS_WEIGHT, NElements.ofDoubleArray(w));
+        return new HProp(HPropName.ROWS_WEIGHT, NElement.ofDoubleArray(w));
     }
 
     public static HProp colspan(int c) {
-        return new HProp(HPropName.COLSPAN, NElements.ofInt(c));
+        return new HProp(HPropName.COLSPAN, NElement.ofInt(c));
     }
 
     public static HProp rowspan(int r) {
-        return new HProp(HPropName.ROWSPAN, NElements.ofInt(r));
+        return new HProp(HPropName.ROWSPAN, NElement.ofInt(r));
     }
 
     public static HProp styleClasses(String... array) {
-        return new HProp(HPropName.CLASS, NElements.ofStringArray(array));
+        return new HProp(HPropName.CLASS, NElement.ofStringArray(array));
     }
 
     public static HProp template(boolean b) {
-        return new HProp(HPropName.TEMPLATE, NElements.ofBoolean(b));
+        return new HProp(HPropName.TEMPLATE, NElement.ofBoolean(b));
     }
 
     public static HProp disabled(boolean b) {
-        return new HProp(HPropName.HIDE, NElements.ofBoolean(b));
+        return new HProp(HPropName.HIDE, NElement.ofBoolean(b));
     }
 
     public static HProp ancestors(String[] ancestors) {
-        return new HProp(HPropName.ANCESTORS, NElements.ofStringArray(ancestors));
+        return new HProp(HPropName.ANCESTORS, NElement.ofStringArray(ancestors));
     }
 
     public static HProp name(String name) {
-        return new HProp(HPropName.NAME, NElements.ofString(name));
+        return new HProp(HPropName.NAME, NElement.ofString(name));
     }
 
     public static HProp maxX(double x) {
-        return new HProp(HPropName.MAX_X, NElements.ofDouble(x));
+        return new HProp(HPropName.MAX_X, NElement.ofDouble(x));
     }
 
     public static HProp maxY(double x) {
-        return new HProp(HPropName.MAX_Y, NElements.ofDouble(x));
+        return new HProp(HPropName.MAX_Y, NElement.ofDouble(x));
     }
 }

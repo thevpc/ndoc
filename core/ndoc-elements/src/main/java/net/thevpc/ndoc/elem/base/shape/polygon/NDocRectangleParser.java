@@ -5,7 +5,6 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
@@ -50,7 +49,7 @@ public class NDocRectangleParser extends NDocNodeParserBase {
                         case HPropName.THEED:
                         case HPropName.RAISED:
                         {
-                            info.node.setProperty(uid, NElements.ofBoolean(true));
+                            info.node.setProperty(uid, NElement.ofBoolean(true));
                             return true;
                         }
                     }

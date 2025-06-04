@@ -5,18 +5,12 @@ import net.thevpc.ndoc.api.model.node.HItemList;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.engine.HEngineUtils;
 import net.thevpc.ndoc.spi.base.model.DefaultHNode;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NObjectElement;
-import net.thevpc.nuts.elem.NUpletElement;
-import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NRef;
 import net.thevpc.nuts.elem.NElement;
 
 
@@ -45,8 +39,8 @@ public class DefineHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 List<NElement> definitionArguments = object.params().get();
                 List<NElement> definitionBody = object.children();
                 HNode node=new DefaultHNode(HNodeType.DEFINE);
-                node.setProperty("name", NElements.ofNameOrString(name));
-                node.setProperty("args", definitionArguments==null?null:NElements.ofArray(definitionArguments.toArray(new NElement[0])));
+                node.setProperty("name", NElement.ofNameOrString(name));
+                node.setProperty("args", definitionArguments==null?null: NElement.ofArray(definitionArguments.toArray(new NElement[0])));
                 for (NElement element : definitionBody) {
                     NOptional<HItem> o = context.engine().newNode(element, context);
                     if(!o.isPresent()) {

@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 import java.util.Objects;
@@ -96,10 +95,9 @@ public class HPoint2D implements NToElement {
 
     @Override
     public NElement toElement() {
-        NElements elem = NElements.of();
-        return elem.ofUplet(
-                elem.ofDouble(getX()),
-                elem.ofDouble(getY())
+        return NElement.ofUplet(
+                NElement.ofDouble(getX()),
+                NElement.ofDouble(getY())
         );
     }
 

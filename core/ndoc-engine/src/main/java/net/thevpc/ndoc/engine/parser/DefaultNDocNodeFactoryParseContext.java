@@ -10,7 +10,6 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -59,7 +58,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                         if(resource.path().isPresent()) {
                             NPath nPath = HUtils.resolvePath(element, resource);
                             if(nPath!=null) {
-                                return NElements.ofString(nPath.toString());
+                                return NElement.ofString(nPath.toString());
                             }
                         }
                     }
@@ -151,6 +150,6 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                 }
             }
         }
-        return HUtils.resolvePath(NElements.ofString(path),src);
+        return HUtils.resolvePath(NElement.ofString(path),src);
     }
 }

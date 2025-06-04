@@ -2,7 +2,6 @@ package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 
@@ -205,31 +204,31 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     @Override
     public NElement toElement() {
         if (important) {
-            return NElements.ofString("$");
+            return NElement.ofString("$");
         }
         List<NElement> c = new ArrayList<>();
         if (!names.isEmpty()) {
             for (String name : names) {
-                c.add(NElements.ofString(name));
+                c.add(NElement.ofString(name));
             }
         }
         if (!types.isEmpty()) {
             for (String name : types) {
-                c.add(NElements.ofName(NNameFormat.LOWER_KEBAB_CASE.format(name)));
+                c.add(NElement.ofName(NNameFormat.LOWER_KEBAB_CASE.format(name)));
             }
         }
         if (!classes.isEmpty()) {
             for (String name : names) {
-                c.add(NElements.ofName("." + name));
+                c.add(NElement.ofName("." + name));
             }
         }
         if (c.isEmpty()) {
-            return NElements.ofString("*");
+            return NElement.ofString("*");
         }
         if (c.size() == 1) {
             return c.get(0);
         }
-        return NElements.ofUplet(c.toArray(new NElement[0]));
+        return NElement.ofUplet(c.toArray(new NElement[0]));
     }
 
     @Override

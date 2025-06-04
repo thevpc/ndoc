@@ -443,49 +443,49 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setFontSize(Number w) {
-        setProperty(HPropName.FONT_SIZE, NElements.ofNumber(w));
+        setProperty(HPropName.FONT_SIZE, NElement.ofNumber(w));
         return this;
     }
 
     @Override
     public HNode setFontFamily(String w) {
-        setProperty(HPropName.FONT_FAMILY, NElements.ofString(w));
+        setProperty(HPropName.FONT_FAMILY, NElement.ofString(w));
         return this;
     }
 
     @Override
     public HNode setFontBold(Boolean w) {
-        setProperty(HPropName.FONT_BOLD, NElements.ofBoolean(w));
+        setProperty(HPropName.FONT_BOLD, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontItalic(Boolean w) {
-        setProperty(HPropName.FONT_ITALIC, NElements.ofBoolean(w));
+        setProperty(HPropName.FONT_ITALIC, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontUnderlined(Boolean w) {
-        setProperty(HPropName.FONT_UNDERLINED, NElements.ofBoolean(w));
+        setProperty(HPropName.FONT_UNDERLINED, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setFontStrike(Boolean w) {
-        setProperty(HPropName.FONT_STRIKE, NElements.ofBoolean(w));
+        setProperty(HPropName.FONT_STRIKE, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
     public HNode setForegroundColor(String w) {
-        setProperty(HPropName.FOREGROUND_COLOR, NElements.ofString(w));
+        setProperty(HPropName.FOREGROUND_COLOR, NElement.ofString(w));
         return this;
     }
 
     @Override
     public HNode setBackgroundColor(String w) {
-        setProperty(HPropName.BACKGROUND_COLOR, NElements.ofString(w));
+        setProperty(HPropName.BACKGROUND_COLOR, NElement.ofString(w));
         return this;
     }
 
@@ -497,7 +497,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setGridColor(String w) {
-        setProperty(HPropName.GRID_COLOR, NElements.ofString(w));
+        setProperty(HPropName.GRID_COLOR, NElement.ofString(w));
         return this;
     }
 
@@ -614,26 +614,26 @@ public class DefaultHNode implements HNode {
 //
     private NElement toTson0() {
         if (HNodeType.ASSIGN.equals(type())) {
-            return NElements.ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
+            return NElement.ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
         }
         String[] a = getAncestors();
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
-            NObjectElementBuilder o = NElements.ofObjectBuilder(nodeType);
+            NObjectElementBuilder o = NElement.ofObjectBuilder(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
                     if (i == a.length - 1) {
-                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElements.ofString(x)).toArray(NElement[]::new));
+                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
                     } else {
                         o.addAnnotation(s);
                     }
                 }
             } else if (styleClasses.length > 0) {
-                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElements.ofString(x)).toArray(NElement[]::new));
+                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
-                o.add(NElements.ofPair("source", NElements.ofString(source.shortName())));
+                o.add(NElement.ofPair("source", NElement.ofString(source.shortName())));
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {
@@ -647,32 +647,32 @@ public class DefaultHNode implements HNode {
                 }
             }
             if (!styleRules.isEmpty()) {
-                o.add("rules", NElements.ofObject(styleRules.stream().map(x -> x.toElement()).toArray(NElement[]::new)));
+                o.add("rules", NElement.ofObject(styleRules.stream().map(x -> x.toElement()).toArray(NElement[]::new)));
             }
             for (HNode child : children()) {
                 if (child instanceof DefaultHNode) {
                     o.add(((DefaultHNode) child).toTson0());
                 } else {
-                    o.add(NElements.ofString(child.toString()));
+                    o.add(NElement.ofString(child.toString()));
                 }
             }
             return o.build();
         } else {
-            NUpletElementBuilder o = NElements.ofUpletBuilder().name(nodeType);
+            NUpletElementBuilder o = NElement.ofUpletBuilder().name(nodeType);
             if (a.length > 0) {
                 for (int i = 0; i < a.length; i++) {
                     String s = a[i];
                     if (i == a.length - 1) {
-                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElements.ofString(x)).toArray(NElement[]::new));
+                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
                     } else {
                         o.addAnnotation(s);
                     }
                 }
             } else if (styleClasses.length > 0) {
-                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElements.ofString(x)).toArray(NElement[]::new));
+                o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
-                o.add(NElements.ofPair("source", NElements.ofString(String.valueOf(source))));
+                o.add(NElement.ofPair("source", NElement.ofString(String.valueOf(source))));
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {

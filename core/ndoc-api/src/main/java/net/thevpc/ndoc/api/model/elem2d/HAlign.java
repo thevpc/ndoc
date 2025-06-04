@@ -2,7 +2,6 @@ package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -62,6 +61,6 @@ public enum HAlign implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.ofName(HUtils.uid(name()));
+        return NElement.ofName(HUtils.uid(name()));
     }
 }

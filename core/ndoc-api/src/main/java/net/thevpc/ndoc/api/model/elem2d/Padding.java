@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 public class Padding implements NToElement {
@@ -60,12 +59,11 @@ public class Padding implements NToElement {
 
     @Override
     public NElement toElement() {
-        NElements elem = NElements.of();
-        return elem.ofUplet(
-                elem.ofDouble(getLeft()),
-                elem.ofDouble(getTop()),
-                elem.ofDouble(getRight()),
-                elem.ofDouble(getBottom())
+        return NElement.ofUplet(
+                NElement.ofDouble(getLeft()),
+                NElement.ofDouble(getTop()),
+                NElement.ofDouble(getRight()),
+                NElement.ofDouble(getBottom())
         );
     }
 

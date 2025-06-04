@@ -5,7 +5,6 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementType;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NOptional;
 
@@ -53,7 +52,7 @@ public class SloppyStroke implements Stroke {
                         case "cap":
                         case "join": {
                             if (basic == null) {
-                                basic = NElements.ofObjectBuilder();
+                                basic = NElement.ofObjectBuilder();
                             }
                             basic.set(net.thevpc.ndoc.api.util.HUtils.uid(ke.getName()), (NElement) ke.getValue().raw());
                             break;
@@ -70,9 +69,9 @@ public class SloppyStroke implements Stroke {
                         case "dash":
                         {
                             if (basic == null) {
-                                basic = NElements.ofObjectBuilder();
+                                basic = NElement.ofObjectBuilder();
                             }
-                            basic.add(NElements.ofString("dash"));
+                            basic.add(NElement.ofString("dash"));
                             break;
                         }
                     }
@@ -81,7 +80,7 @@ public class SloppyStroke implements Stroke {
         }
         if (base == null) {
             if (basic == null) {
-                base = StrokeFactory.createBasic(NDocObjEx.of(NElements.ofObjectBuilder()));
+                base = StrokeFactory.createBasic(NDocObjEx.of(NElement.ofObjectBuilder()));
             } else {
                 base = StrokeFactory.createBasic(NDocObjEx.of(basic));
             }

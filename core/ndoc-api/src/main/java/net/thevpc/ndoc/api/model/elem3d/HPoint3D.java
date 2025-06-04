@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.model.elem3d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 import java.util.Objects;
@@ -125,11 +124,10 @@ public class HPoint3D implements NToElement {
 
     @Override
     public NElement toElement() {
-        NElements elem = NElements.of();
-        return elem.ofUplet(
-                elem.ofDouble(getX()),
-                elem.ofDouble(getY()),
-                elem.ofDouble(getZ())
+        return NElement.ofUplet(
+                NElement.ofDouble(getX()),
+                NElement.ofDouble(getY()),
+                NElement.ofDouble(getZ())
         );
     }
 }

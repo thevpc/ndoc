@@ -11,7 +11,6 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
@@ -31,20 +30,20 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
             case "vgrid":
             case "column": {
                 if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElements.ofInt(1));
+                    info.node.setProperty(HPropName.COLUMNS, NElement.ofInt(1));
                 }
                 if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElements.ofInt(-1));
+                    info.node.setProperty(HPropName.ROWS, NElement.ofInt(-1));
                 }
                 break;
             }
             case "hgrid":
             case "row": {
                 if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElements.ofInt(-1));
+                    info.node.setProperty(HPropName.COLUMNS, NElement.ofInt(-1));
                 }
                 if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElements.ofInt(1));
+                    info.node.setProperty(HPropName.ROWS, NElement.ofInt(1));
                 }
                 break;
             }

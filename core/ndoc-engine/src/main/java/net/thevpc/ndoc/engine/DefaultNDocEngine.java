@@ -30,6 +30,8 @@ import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementPath;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
@@ -372,7 +374,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
     private NOptional<NElement> loadDocument(InputStream is) {
         try {
-            return NOptional.of(NElements.of().tson().parse(is));
+            return NOptional.of(NElementParser.ofTson().parse(is));
         } catch (Exception ex) {
             NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
             return NOptional.ofNamedError("error loading tson document", ex);
@@ -381,7 +383,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
     private NOptional<NElement> loadDocument(NPath is) {
         try {
-            return NOptional.of(NElements.of().tson().parse(is));
+            return NOptional.of(NElementParser.ofTson().parse(is));
         } catch (Exception ex) {
             NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
             return NOptional.ofNamedError("error loading tson document", ex);
@@ -438,7 +440,7 @@ public class DefaultNDocEngine implements NDocEngine {
         document.resources().add(source);
         NElement c;
         try {
-            c = NElements.of().tson().parse(path);
+            c = NElementParser.ofTson().parse(path);
         } catch (Throwable ex) {
             NLog.of(getClass()).error(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex);
             messages.log(HMsg.of(NMsg.ofC("error parsing node from %s : %s", path, ex).asSevere(), ex, source));

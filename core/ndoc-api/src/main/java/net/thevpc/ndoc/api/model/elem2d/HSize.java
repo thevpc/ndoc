@@ -5,7 +5,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 /**
@@ -31,6 +30,6 @@ public class HSize implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.ofNumber(value + "%");
+        return NElement.ofNumber(value + "%");
     }
 }

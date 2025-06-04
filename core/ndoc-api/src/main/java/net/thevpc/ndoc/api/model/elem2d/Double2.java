@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NToElement;
 
 public class Double2 implements NToElement {
@@ -35,9 +34,9 @@ public class Double2 implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElements.ofUplet(
-                NElements.ofDouble(getX()),
-                NElements.ofDouble(getY())
+        return NElement.ofUplet(
+                NElement.ofDouble(getX()),
+                NElement.ofDouble(getY())
         );
     }
 }

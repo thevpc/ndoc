@@ -2,7 +2,6 @@ package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 
 import java.util.*;
 
@@ -45,14 +44,13 @@ public class DefaultHStyleRule implements HStyleRule {
     }
 
     public NElement toElement() {
-        NElements elem = NElements.of();
         if (selector == null) {
-            return elem.ofPair(
-                    elem.ofString("*"),
+            return NElement.ofPair(
+                    NElement.ofString("*"),
                     styles.toElement()
             );
         }
-        return elem.ofPair(
+        return NElement.ofPair(
                 selector.toElement(),
                 styles.toElement()
         );

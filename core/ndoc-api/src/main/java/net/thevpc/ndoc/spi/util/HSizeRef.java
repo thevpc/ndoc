@@ -2,7 +2,6 @@ package net.thevpc.ndoc.spi.util;
 
 import net.thevpc.ndoc.api.model.elem2d.Double2;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
 
@@ -54,7 +53,7 @@ public class HSizeRef {
             return NOptional.ofNamedEmpty("size");
         }
         if (o instanceof Number) {
-            o = NElements.ofDouble(((Number) o).doubleValue());
+            o = NElement.ofDouble(((Number) o).doubleValue());
         }
         if (o instanceof NElement) {
             NElement b = (NElement) o;
@@ -92,6 +91,6 @@ public class HSizeRef {
     }
 
     public Double2 apply(Double2 size) {
-        return new Double2(x(NElements.ofDouble(size.getX())).get(), y(NElements.ofDouble(size.getX())).get());
+        return new Double2(x(NElement.ofDouble(size.getX())).get(), y(NElement.ofDouble(size.getX())).get());
     }
 }

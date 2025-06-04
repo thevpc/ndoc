@@ -9,7 +9,6 @@ import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NAssert;
 
 
@@ -116,7 +115,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofAssign(String name, NElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, NElements.ofString(name))
+                .setProperty(HPropName.NAME, NElement.ofString(name))
                 .setProperty(HPropName.VALUE, value)
                 ;
     }
@@ -144,8 +143,8 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public HNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, NElements.ofInt(cols))
-                .setProperty(HPropName.ROWS, NElements.ofInt(rows))
+                .setProperty(HPropName.COLUMNS, NElement.ofInt(cols))
+                .setProperty(HPropName.ROWS, NElement.ofInt(rows))
                 ;
     }
 
@@ -171,12 +170,12 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, NElements.ofString(text));
+        return ofPlain().setProperty(HPropName.VALUE, NElement.ofString(text));
     }
 
     @Override
     public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, NElements.ofString(text));
+        return ofText().setProperty(HPropName.VALUE, NElement.ofString(text));
     }
 
     @Override
@@ -302,7 +301,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, NElements.ofString(value));
+        return ofEquation().setProperty(HPropName.VALUE, NElement.ofString(value));
     }
 
     @Override

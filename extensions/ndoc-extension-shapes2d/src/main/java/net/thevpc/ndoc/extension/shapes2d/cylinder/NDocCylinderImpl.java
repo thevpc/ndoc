@@ -8,7 +8,6 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 
 
@@ -57,9 +56,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : NElements.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
-                        topColor == null ? null : NElements.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
-                        segmentCount == null ? null : NElements.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
+                        ellipseHeight == null ? null : NElement.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
+                        topColor == null ? null : NElement.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
+                        segmentCount == null ? null : NElement.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
 
                 )
                 .build();

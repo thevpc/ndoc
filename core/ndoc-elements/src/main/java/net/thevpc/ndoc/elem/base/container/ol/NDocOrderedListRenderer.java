@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.style.HPropName;
 import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
-import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +29,9 @@ public class NDocOrderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(child.addStyleClasses("ol-item"));
         }
         return f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, NElements.ofInt(2))
-                .setProperty(HPropName.ROWS, NElements.ofInt(2))
-                .setProperty(HPropName.COLUMNS_WEIGHT,NElements.ofDoubleArray(1, 20))
+                .setProperty(HPropName.COLUMNS, NElement.ofInt(2))
+                .setProperty(HPropName.ROWS, NElement.ofInt(2))
+                .setProperty(HPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]))
                 ;
     }

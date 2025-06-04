@@ -14,7 +14,6 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -104,7 +103,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
-                                    value= NElements.ofString(nPath.readString().trim());
+                                    value= NElement.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
                                            HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));

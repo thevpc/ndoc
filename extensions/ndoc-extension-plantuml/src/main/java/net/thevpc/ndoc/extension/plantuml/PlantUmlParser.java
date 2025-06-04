@@ -10,7 +10,6 @@ import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -94,7 +93,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElements.ofString(nPath.readString().trim()));
+                                info.node.setProperty(HPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
                                         HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())

@@ -4,12 +4,10 @@ import net.thevpc.ndoc.api.model.node.HNode;
 import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.util.NOptional;
 
 
@@ -64,9 +62,9 @@ public class NDocPlot2DImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : NElements.ofPair("width", width.getValue()),
-                height == null ? null : NElements.ofPair("height", height.getValue()),
-                points == null ? null : NElements.ofPair("fun", points.getValue())
+                width == null ? null : NElement.ofPair("width", width.getValue()),
+                height == null ? null : NElement.ofPair("height", height.getValue()),
+                points == null ? null : NElement.ofPair("fun", points.getValue())
         ).build();
     }
 

@@ -15,7 +15,6 @@ import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NObjectElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NBlankable;
@@ -49,8 +48,8 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
                             List<NElement> definitionArguments = object.params().orElse(Collections.emptyList());
                             List<NElement> definitionBody = object.children();
                             HNode node = new DefaultHNode(HNodeType.DEFINE);
-                            node.setProperty(HPropName.NAME, NElements.ofString(name));
-                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElements.ofArray(definitionArguments.toArray(new NElement[0])));
+                            node.setProperty(HPropName.NAME, NElement.ofString(name));
+                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElement.ofArray(definitionArguments.toArray(new NElement[0])));
                             for (NElement element : definitionBody) {
                                 NOptional<HItem> o = context.engine().newNode(element, context);
                                 if (!o.isPresent()) {
@@ -94,7 +93,7 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
             varValue = s.get();
         }
 
-        return NElements.ofPair("$" + varName, HUtils.toElement(varValue));
+        return NElement.ofPair("$" + varName, HUtils.toElement(varValue));
     }
 
 }
