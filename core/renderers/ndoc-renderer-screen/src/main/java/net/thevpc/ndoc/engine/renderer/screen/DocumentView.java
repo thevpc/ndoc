@@ -1,5 +1,4 @@
 package net.thevpc.ndoc.engine.renderer.screen;
-//import net.thevpc.halfa.main.ServiceHelper;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
