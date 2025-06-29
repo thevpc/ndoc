@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndoc</groupId>
     <artifactId>ndoc-renderer-pdf</artifactId>
-    <version>0.8.5.0</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDoc :: Renderer PDF</name>
     <properties>
@@ -51,9 +51,9 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.5</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>org.xhtmlrenderer</groupId><artifactId>flying-saucer-core</artifactId><version>9.1.22</version></dependency>
         <dependency><groupId>org.xhtmlrenderer</groupId><artifactId>flying-saucer-pdf</artifactId><version>9.1.22</version></dependency>
 

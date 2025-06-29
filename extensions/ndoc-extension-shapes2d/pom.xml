@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndoc</groupId>
     <artifactId>ndoc-extension-shapes2d</artifactId>
-    <version>0.8.5.0</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDoc :: Extension Shapes 2D OBJ</name>
     <description>SVG</description>
@@ -52,8 +52,8 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.5</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
     <build>
         <plugins>

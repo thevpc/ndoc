@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndoc</groupId>
     <artifactId>ndoc-full</artifactId>
-    <version>0.8.5.0</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDoc :: Core Full</name>
     <properties>
@@ -51,21 +51,21 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-elements</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-controls</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-plantuml</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-animated-gif</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-svg</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-shapes2d</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-shapes3d</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-plot2d</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-presenters</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-latex</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-pdf</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-screen</artifactId><version>0.8.5.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-elements</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-controls</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-plantuml</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-animated-gif</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-svg</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-shapes2d</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-shapes3d</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-plot2d</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-presenters</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-latex</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-pdf</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-screen</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
     <build>
         <plugins>

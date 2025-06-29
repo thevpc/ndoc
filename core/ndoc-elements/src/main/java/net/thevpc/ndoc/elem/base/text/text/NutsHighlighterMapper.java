@@ -150,19 +150,19 @@ public class NutsHighlighterMapper {
                     result.nextLine();
                 }
                 NTextPlain np = (NTextPlain) nText;
-                if (np.getText().equals("\n")) {
+                if (np.getValue().equals("\n")) {
                     result.nextLine();
                 } else {
                     if (styles.length==0) {
                         result.currRow();
-                        NDocRichTextToken col = new NDocRichTextToken(NDocRichTextTokenType.PLAIN, np.getText());
+                        NDocRichTextToken col = new NDocRichTextToken(NDocRichTextTokenType.PLAIN, np.getValue());
                         col.tok = nText;
                         //g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);
                         result.addToken(col);
                     } else {
                         result.currRow();
-                        NDocRichTextToken col = new NDocRichTextToken(NDocRichTextTokenType.STYLED, np.getText());
+                        NDocRichTextToken col = new NDocRichTextToken(NDocRichTextTokenType.STYLED, np.getValue());
                         col.tok = nText;
                         //g.setFont(col.textOptions.font);
                         col.bounds = g.getStringBounds(col.text);

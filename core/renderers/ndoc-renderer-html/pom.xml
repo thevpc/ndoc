@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndoc</groupId>
     <artifactId>ndoc-renderer-html</artifactId>
-    <version>0.8.5.0</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDoc :: Renderer HTML</name>
     <properties>
@@ -51,7 +51,7 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.5</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
     </dependencies>
     <build>
         <plugins>

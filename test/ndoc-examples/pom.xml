@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.xprojects.test.ndoc</groupId>
     <artifactId>ndoc-examples</artifactId>
-    <version>0.8.5</version>
+    <version>0.8.6</version>
     <packaging>jar</packaging>
     <name>NDoc :: Examples</name>
     <properties>
@@ -51,7 +51,7 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-viewer</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-viewer</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
     <build>
         <plugins>
