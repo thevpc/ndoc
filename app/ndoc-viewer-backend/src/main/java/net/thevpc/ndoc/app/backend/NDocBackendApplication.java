@@ -1,11 +1,13 @@
 package net.thevpc.ndoc.app.backend;
 
+import net.thevpc.nuts.NApp;
 import net.thevpc.nuts.NApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@NApp.Info
 @SpringBootApplication
-public class NDocBackendApplication implements NApplication {
+public class NDocBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NDocBackendApplication.class, args);
@@ -26,7 +28,7 @@ public class NDocBackendApplication implements NApplication {
 //		session.out().println("write your business logic that will be processed when the application is being uninstalled/removed here...");
 //	}
 
-	@Override
+	@NApp.Main
 	public void run() {
 		//
 	}
