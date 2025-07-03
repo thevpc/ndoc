@@ -11,7 +11,7 @@ import net.thevpc.nuts.nswing.NSwingUtils;
 public class NDocViewer implements NApplication {
 
     public static void main(String[] args) {
-        new NDocViewer().main(NMainArgs.of(args));
+        NApp.builder(args).run();
     }
 
     @Override
