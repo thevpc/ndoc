@@ -8,13 +8,13 @@ import net.thevpc.nuts.nswing.NSwingUtils;
 /**
  * @author vpc
  */
-public class NDocViewer implements NApplication {
+public class NDocViewer  {
 
     public static void main(String[] args) {
         NApp.builder(args).run();
     }
 
-    @Override
+    @NApp.Main
     public void run() {
         NWorkspace.of().share();
         NSwingUtils.setSharedWorkspaceInstance();
