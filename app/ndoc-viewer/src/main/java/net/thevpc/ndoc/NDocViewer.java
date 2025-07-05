@@ -14,7 +14,7 @@ public class NDocViewer  {
         NApp.builder(args).run();
     }
 
-    @NApp.Runner
+    @NAppRunner
     public void run() {
         NWorkspace.of().share();
         NSwingUtils.setSharedWorkspaceInstance();
