@@ -4,7 +4,7 @@ import net.thevpc.nuts.NApp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@NApp.Info
+@NApp.Definition
 @SpringBootApplication
 public class NDocBackendApplication {
 
