@@ -446,7 +446,7 @@ public class NDocObjEx {
             NElement te = (NElement) element;
             switch (te.type()) {
                 case BYTE:
-                case BIG_INTEGER:
+                case BIG_INT:
                 case SHORT:
                 case LONG:
                 case INTEGER: {

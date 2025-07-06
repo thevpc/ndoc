@@ -66,7 +66,7 @@ public class DefaultNDocDocumentItemParserFactory
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             case BIG_COMPLEX:
-            case BIG_INTEGER:
+            case BIG_INT:
             case BYTE:
             case CHAR:
             case LOCAL_DATE:
