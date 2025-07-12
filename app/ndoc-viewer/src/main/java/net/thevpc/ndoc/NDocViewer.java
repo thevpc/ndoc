@@ -8,6 +8,7 @@ import net.thevpc.nuts.nswing.NSwingUtils;
 /**
  * @author vpc
  */
+@NAppDefinition
 public class NDocViewer  {
 
     public static void main(String[] args) {
