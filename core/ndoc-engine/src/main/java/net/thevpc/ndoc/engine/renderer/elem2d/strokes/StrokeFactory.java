@@ -61,9 +61,9 @@ public class StrokeFactory {
         double advance = 15;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == NElementType.UPLET
-                            || arg.type() == NElementType.ARRAY
-                            || arg.type() == NElementType.OBJECT
+                    arg.isAnyUplet()
+                            || arg.isAnyArray()
+                            || arg.isAnyObject()
             ) {
                 base.add(g.createShape(arg));
             } else {

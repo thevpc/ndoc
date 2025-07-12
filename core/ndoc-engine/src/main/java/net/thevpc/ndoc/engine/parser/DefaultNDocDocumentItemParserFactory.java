@@ -182,7 +182,7 @@ public class DefaultNDocDocumentItemParserFactory
                         });
                     }
                 }
-                if (c.isNamedUplet() || c.type() == NElementType.OBJECT) {
+                if (c.isNamedUplet() || c.isAnyObject()) {
                     HNode callNode = new DefaultHNode(HNodeType.CALL);
                     callNode.setProperty(HPropName.NAME, NElement.ofString(HUtils.uid(ee.name())));
                     //inline current file path in the TsonElements
@@ -197,7 +197,7 @@ public class DefaultNDocDocumentItemParserFactory
                                     fb.set(i, HUtils.addCompilerDeclarationPath(fb.get(i).orNull(), sourcePath.toString()));
                                 }
                                 functionTsonDeclaration = fb.build();
-                            } else if (c.type() == NElementType.OBJECT) {
+                            } else if (c.isAnyObject()) {
                                 NObjectElementBuilder fb = (NObjectElementBuilder) functionTsonDeclaration.builder();
                                 List<NElement> args = fb.params().orNull();
                                 if (args != null) {

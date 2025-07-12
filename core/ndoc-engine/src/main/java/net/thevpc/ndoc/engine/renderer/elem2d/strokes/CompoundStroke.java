@@ -29,9 +29,9 @@ public class CompoundStroke implements Stroke {
         Stroke base2 = null;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == NElementType.UPLET
-                            || arg.type() == NElementType.ARRAY
-                            || arg.type() == NElementType.OBJECT
+                    arg.isAnyUplet()
+                            || arg.isAnyArray()
+                            || arg.isAnyObject()
             ) {
                 Stroke stroke = g.createStroke(arg);
                 if (base1 == null) {

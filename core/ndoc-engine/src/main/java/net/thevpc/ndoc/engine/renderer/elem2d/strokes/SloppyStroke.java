@@ -29,9 +29,9 @@ public class SloppyStroke implements Stroke {
         NObjectElementBuilder basic = null;
         for (NElement arg : o.args()) {
             if (
-                    arg.type() == NElementType.UPLET
-                            || arg.type() == NElementType.ARRAY
-                            || arg.type() == NElementType.OBJECT
+                    arg.isAnyUplet()
+                            || arg.isAnyArray()
+                            || arg.isAnyObject()
             ) {
                 if (base == null) {
                     base = g.createStroke(arg);
