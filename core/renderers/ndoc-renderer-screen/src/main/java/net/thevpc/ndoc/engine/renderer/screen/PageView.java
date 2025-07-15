@@ -78,11 +78,10 @@ public class PageView extends JComponent {
 
 
     public void render(HNode p, NDocNodeRendererContext ctx) {
-        if (p.isTemplate()) {
-            return;
+        for (HNode nn : engine.compileNodeBeforeRendering(p, ctx.log())) {
+            NDocNodeRenderer r = rendererManager.getRenderer(nn.type()).get();
+            r.render(nn, ctx);
         }
-        NDocNodeRenderer r = rendererManager.getRenderer(p.type()).get();
-        r.render(p, ctx);
     }
 
     public NDocNodeRendererManager rendererManager() {
