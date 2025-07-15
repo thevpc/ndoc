@@ -610,4 +610,8 @@ public class DefaultNDocEngine implements NDocEngine {
         }
     }
 
+    @Override
+    public HNode[] compileNodeBeforeRendering(HNode p, HLogger messages) {
+        return new HDocumentCompiler(this, messages).compilePage(p);
+    }
 }
