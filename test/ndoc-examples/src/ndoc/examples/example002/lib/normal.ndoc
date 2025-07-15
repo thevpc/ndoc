@@ -1,3 +1,5 @@
-page(template,name:normal){
+@define normal{
+    page{
+    }
 }
 

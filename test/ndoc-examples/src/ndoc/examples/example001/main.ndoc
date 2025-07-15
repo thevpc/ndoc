@@ -1,4 +1,4 @@
-@(halfa,"1.0")
+@(ndoc,"1.0")
 {
     styles:{
         //import("*.tcss"),
@@ -9,11 +9,15 @@
         title:{
             font-size:50,
             bold:true
-        },
-    },
-    page(template,name:'course'){
-        circle(),
-    },
+        }
+    }
+
+    @define course{
+        page(name:'course'){
+            circle(),
+        }
+    }
+
     @course page{
         text("My Title",at:top),
         rectangle(

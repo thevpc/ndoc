@@ -1,4 +1,4 @@
-define: my-custom(str){
+@define my-custom(str){
     text($str,font-size:20)
     image($str,font-size:20)
 }

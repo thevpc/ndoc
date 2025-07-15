@@ -1,4 +1,3 @@
-@(halfa,"1.0")
 (name:'myname', classes:[class1,class2],disabled:false){
     styles:{
         "" :{
