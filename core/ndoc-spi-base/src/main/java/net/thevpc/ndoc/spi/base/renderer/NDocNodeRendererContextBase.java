@@ -23,7 +23,6 @@ import java.util.Map;
 
 import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
-import net.thevpc.nuts.elem.NElement;
 
 public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContextBaseBase {
 
@@ -151,9 +150,6 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     @Override
     public void render(HNode p, NDocNodeRendererContext ctx) {
-        if (p.isTemplate()) {
-            return;
-        }
         manager().getRenderer(p.type()).get().render(p, ctx);
     }
 
