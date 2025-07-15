@@ -10,7 +10,6 @@ public interface NDocNodeRendererManager {
 
     NOptional<NDocNodeRenderer> getRenderer(String type);
 
-
     BufferedImage renderImage(HNode node, NDocNodeRendererConfig config);
 
     byte[] renderImageBytes(HNode node, NDocNodeRendererConfig config);

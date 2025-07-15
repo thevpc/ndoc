@@ -24,10 +24,8 @@ public class PagesHelper {
         switch (part.type()) {
             case HNodeType.PAGE: {
                 HNode p = part;
-                if (!p.isTemplate()) {
-                    if (!p.isDisabled()) {
-                        all.add(p);
-                    }
+                if (!p.isDisabled()) {
+                    all.add(p);
                 }
                 break;
             }
