@@ -155,4 +155,10 @@ public interface HNode extends HItem {
     HNode setRules(HStyleRule[] rules);
 
     void setChildAt(int i, HNode c);
+
+    HNodeDef[] definitions();
+
+    HNode addDefinition(HNodeDef s) ;
+
+    HNode removeDefinition(HNodeDef s) ;
 }
