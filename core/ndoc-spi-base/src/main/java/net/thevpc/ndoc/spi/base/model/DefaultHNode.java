@@ -1,11 +1,8 @@
 package net.thevpc.ndoc.spi.base.model;
 
-import net.thevpc.ndoc.api.model.node.HItemList;
+import net.thevpc.ndoc.api.model.node.*;
 import net.thevpc.ndoc.api.model.elem2d.Double2;
 import net.thevpc.ndoc.api.model.elem2d.HAlign;
-import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
 import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
@@ -23,9 +20,10 @@ public class DefaultHNode implements HNode {
     private HResource source;
     protected HNode parent;
     private HProperties properties = new HProperties();
-    private Map<String,NElement> vars = new LinkedHashMap<>();
+    private Map<String, NElement> vars = new LinkedHashMap<>();
     private List<HNode> children = new ArrayList<>();
     private List<HStyleRule> styleRules = new ArrayList<>();
+    private List<HNodeDef> nodeDefinitions = new ArrayList<>();
 
     public DefaultHNode(String nodeType) {
         this.nodeType = nodeType;
@@ -144,7 +142,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setDisabled(boolean disabled) {
-        setProperty(HProps.template(disabled));
+        setProperty(HProps.disabled(disabled));
         return this;
     }
 
@@ -173,7 +171,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public NOptional<NElement> getVar(String property) {
-        return NOptional.ofNamed(vars.get(property),property);
+        return NOptional.ofNamed(vars.get(property), property);
     }
 
     public NOptional<HProp> getProperty(String... propertyNames) {
@@ -194,9 +192,9 @@ public class DefaultHNode implements HNode {
 
     @Override
     public HNode setVar(String name, NElement value) {
-        if(value==null){
+        if (value == null) {
             vars.remove(name);
-        }else{
+        } else {
             vars.put(name, value);
         }
         return this;
@@ -319,6 +317,8 @@ public class DefaultHNode implements HNode {
                 }
             } else if (other instanceof HProp) {
                 setProperty((HProp) other);
+            } else if (other instanceof HNodeDef) {
+                addDefinition((HNodeDef) other);
             } else if (other instanceof HNode) {
                 HNode hn = (HNode) other;
                 if (this.source == null) {
@@ -586,6 +586,26 @@ public class DefaultHNode implements HNode {
         return this;
     }
 
+    public HNodeDef[] definitions() {
+        return nodeDefinitions.toArray(new HNodeDef[0]);
+    }
+
+    @Override
+    public HNode addDefinition(HNodeDef s) {
+        if (s != null) {
+            nodeDefinitions.add(s);
+        }
+        return this;
+    }
+
+    @Override
+    public HNode removeDefinition(HNodeDef s) {
+        if (s != null) {
+            nodeDefinitions.remove(s);
+        }
+        return this;
+    }
+
     @Override
     public HStyleRule[] rules() {
         return styleRules.toArray(new HStyleRule[0]);
@@ -593,12 +613,16 @@ public class DefaultHNode implements HNode {
 
     public HNode copy() {
         DefaultHNode o = new DefaultHNode(nodeType);
-        o.setUuid(UUID.randomUUID().toString());
-        o.setSource(source());
-        o.setProperties(properties.toArray());
-        o.addAll(children().stream().map(HNode::copy).toArray(HNode[]::new));
-        o.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
+        copyTo(o);
         return o;
+    }
+
+    public void copyTo(HNode other) {
+        other.setUuid(UUID.randomUUID().toString());
+        other.setSource(source());
+        other.setProperties(properties.toArray());
+        other.addAll(children().stream().map(HNode::copy).toArray(HNode[]::new));
+        other.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
     }
 
     //    @Override
