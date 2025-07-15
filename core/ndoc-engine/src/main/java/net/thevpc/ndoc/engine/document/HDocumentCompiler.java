@@ -2,8 +2,7 @@ package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.*;
 import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.style.HPropName;
@@ -11,8 +10,10 @@ import net.thevpc.ndoc.api.style.HProperties;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
+import net.thevpc.ndoc.engine.control.CtrlHNodeCall;
 import net.thevpc.ndoc.engine.control.IfHNodeFlowControlProcessorFactory;
 import net.thevpc.ndoc.engine.parser.HDocumentLoadingResultImpl;
+import net.thevpc.ndoc.engine.parser.HNodeDefParamImpl;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessor;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessorContext;
 import net.thevpc.ndoc.spi.base.model.DefaultHNode;
@@ -21,9 +22,7 @@ import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
-import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.*;
 
 
 import java.util.*;
@@ -45,10 +44,10 @@ public class HDocumentCompiler {
         result.setDocument(document);
         HNode root = document.root();
         processUuid(root);
-        root = processCalls(root, result);
+//        root = processCalls(root, result);
         root = processInheritance(root, result);
         root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
-        root = removeDeclarations(root, result);
+//        root = removeDeclarations(root, result);
         processRootPages(root);
         return result;
     }
@@ -67,30 +66,25 @@ public class HDocumentCompiler {
                     if (c == null) {
                         someChanges = true;
                     } else {
-                        if (c.isTemplate()) {
-                            //just ignore
-                            //newChildren.add(c);
-                        } else {
-                            someChanges |= processRootPages(c);
-                            if (Objects.equals(c.type(), HNodeType.PAGE_GROUP)
-                                    || Objects.equals(c.type(), HNodeType.PAGE)
-                                    //assign are retained in the same level!
-                                    || Objects.equals(c.type(), HNodeType.ASSIGN)
-                            ) {
-                                if (pending != null && !pending.isEmpty()) {
-                                    HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
-                                    newChildren.add(newPage);
-                                    newPage.addAll(pending.toArray(new HNode[0]));
-                                    pending = null;
-                                }
-                                newChildren.add(c);
-                            } else {
-                                someChanges = true;
-                                if (pending == null) {
-                                    pending = new ArrayList<>();
-                                }
-                                pending.add(c);
+                        someChanges |= processRootPages(c);
+                        if (Objects.equals(c.type(), HNodeType.PAGE_GROUP)
+                                || Objects.equals(c.type(), HNodeType.PAGE)
+                                //assign are retained in the same level!
+                                || Objects.equals(c.type(), HNodeType.ASSIGN)
+                        ) {
+                            if (pending != null && !pending.isEmpty()) {
+                                HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
+                                newChildren.add(newPage);
+                                newPage.addAll(pending.toArray(new HNode[0]));
+                                pending = null;
                             }
+                            newChildren.add(c);
+                        } else {
+                            someChanges = true;
+                            if (pending == null) {
+                                pending = new ArrayList<>();
+                            }
+                            pending.add(c);
                         }
                     }
                 }
@@ -154,18 +148,18 @@ public class HDocumentCompiler {
         return curr.toArray(new HNode[0]);
     }
 
-    protected HNode removeDeclarations(HNode node, HDocumentLoadingResultImpl result) {
-        List<HNode> children = node.children();
-        for (int i = children.size() - 1; i >= 0; i--) {
-            HNode child = children.get(i);
-            if (child.isTemplate() || HNodeType.DEFINE.equals(child.type())) {
-                children.remove(i);
-            } else {
-                removeDeclarations(child, result);
-            }
-        }
-        return node;
-    }
+//    protected HNode removeDeclarations(HNode node, HDocumentLoadingResultImpl result) {
+//        List<HNode> children = node.children();
+//        for (int i = children.size() - 1; i >= 0; i--) {
+//            HNode child = children.get(i);
+//            if (child.isTemplate() || HNodeType.DEFINE.equals(child.type())) {
+//                children.remove(i);
+//            } else {
+//                removeDeclarations(child, result);
+//            }
+//        }
+//        return node;
+//    }
 
     protected void prepareInheritanceSingle(String a, HNode node, HDocumentLoadingResultImpl result,
                                             Set<String> newAncestors,
@@ -218,30 +212,92 @@ public class HDocumentCompiler {
         }
     }
 
-    protected HNode processCalls(HNode node, HDocumentLoadingResultImpl result) {
-        if (HNodeType.CALL.equals(node.type())) {
-            String uid = node.getName();
-            NElement callDeclaration = node.getPropertyValue(HPropName.VALUE).get();
-            //                    String uid = HUtils.uid(ee.name());
-
-            HNode currNode = node.parent();
-            while (currNode != null) {
-                for (HNode objectDefNode : currNode.children()) {
-                    if (HNodeType.DEFINE.equals(objectDefNode.type()) && uid.equals(net.thevpc.ndoc.api.util.HUtils.uid(objectDefNode.getName()))) {
-                        return inlineNodeDefinitionCall(objectDefNode, callDeclaration);
+    public NOptional<HNodeDef> findDefinition(HNode node, String name) {
+        HNode currNode = node;
+        while (currNode != null) {
+            for (HNode objectDefNode : currNode.children()) {
+                for (HNodeDef o : objectDefNode.definitions()) {
+                    if (NNameFormat.equalsIgnoreFormat(o.name(), name)) {
+                        return NOptional.of(o);
                     }
                 }
-                currNode = currNode.parent();
             }
-
+            currNode = currNode.parent();
         }
+        return NOptional.ofNamedEmpty("definition for " + name);
+    }
+
+    protected HNode[] compileNodeTree(HNode node) {
+        if (HNodeType.CALL.equals(node.type())) {
+            return _process_call(node);
+        }
+        node = node.copy();
         List<HNode> newChildren = new ArrayList<>();
         for (HNode child : node.children()) {
-            newChildren.add(processCalls(child, result));
+            newChildren.addAll(Arrays.asList(compileNodeTree(child)));
         }
         node.setChildren(newChildren.toArray(new HNode[0]));
-        return node;
+        return new HNode[]{node};
     }
+
+    private HNode[] _process_call(HNode node) {
+        if (HNodeType.CALL.equals(node.type())) {
+            CtrlHNodeCall c = (CtrlHNodeCall) node;
+            String uid = c.getCallName();
+            NElement callDeclaration = c.getCallExpr();
+            //                    String uid = HUtils.uid(ee.name());
+            HNode currNode = node.parent();
+            HNodeDef d = findDefinition(currNode, uid).get();
+            List<NElement> callArgs = c.getCallArgs();
+            HNodeDefParam[] expectedParams = d.params();
+            HNodeDefParam[] effectiveParams = new HNodeDefParam[expectedParams.length];
+            Map<String, NElement> extraProperties = new HashMap<>();
+
+            if (callArgs.stream().allMatch(x -> x.isNamedPair())) {
+                for (NElement e : callArgs) {
+                    NPairElement p = e.asPair().get();
+                    String n = p.key().asStringValue().get();
+                    int pos = NArrays.indexOfByMatcher(expectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
+                    if (pos >= 0) {
+                        effectiveParams[pos]=new HNodeDefParamImpl(expectedParams[pos].name(),p.value());
+                    }
+                }
+                for (int i = 0; i < expectedParams.length; i++) {
+                    if(effectiveParams[i]==null){
+                        NElement v = expectedParams[i].value();
+                        if(v!=null){
+                            effectiveParams[i]=expectedParams[i];
+                        }else{
+                            NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", expectedParams[i].name(), uid, callDeclaration);
+                            messages.log(HMsg.of(errMsg, node.source()));
+                            throw new NIllegalArgumentException(errMsg);
+                        }
+                    }
+                }
+            } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
+                if(expectedParams.length==callArgs.size()){
+                    for (int i = 0; i < expectedParams.length; i++) {
+                        effectiveParams[i]=new HNodeDefParamImpl(expectedParams[i].name(),callArgs.get(i));
+                    }
+                }
+            } else {
+                NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
+                messages.log(HMsg.of(errMsg, node.source()));
+                throw new NIllegalArgumentException(errMsg);
+            }
+
+            HNode[] body = Arrays.copyOf(d.body(), d.body().length);
+            for (int i = 0; i < body.length; i++) {
+                body[i]=body[i].copy();
+                for (int j = effectiveParams.length-1; j >=0 ; j--) {
+                    body[i].children().add(0,newAssign(effectiveParams[i].name(),effectiveParams[i].value()));
+                }
+            }
+            return body;
+        }
+        throw new NIllegalArgumentException(NMsg.ofC("unexpected node type %s", node.type()));
+    }
+
 
     private HNode inlineNodeDefinitionCall(HNode objectDefNode, NElement callFunction) {
         HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
@@ -254,7 +310,7 @@ public class HDocumentCompiler {
                         && !HPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
-        List<NElement> passedArgs = callFunction.asUplet().map(x->x.params()).orElse(Collections.emptyList());
+        List<NElement> passedArgs = callFunction.asUplet().map(x -> x.params()).orElse(Collections.emptyList());
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
         inlinedNode.children().add(newAssign(HPropName.ARGS, NElement.ofArray(passedArgsArr)));
         for (int i = 0; i < passedArgsArr.length; i++) {
@@ -340,25 +396,46 @@ public class HDocumentCompiler {
         return node;
     }
 
-    protected HNode findAncestor(HNode node, String name) {
-        HNode temp = null;
+    protected HNode findAncestor(HNode node, String name, HProp... args) {
+        HNodeDef ancestor0 = findAncestorDefinition(node, name);
+        HNode[] body = ancestor0.body();
+        if (body.length == 0) {
+            return new DefaultHNode(HNodeType.VOID);
+        }
+        for (int i = 0; i < body.length; i++) {
+            //apply args
+            body[i] = applyArgs(body[i], args);
+        }
+        if (body.length == 1) {
+            return body[0];
+        }
+        DefaultHNode stack = new DefaultHNode(HNodeType.STACK);
+        stack.addAll(body);
+        return stack;
+    }
+
+    private HNode applyArgs(HNode hNode, HProp[] args) {
+        // TODO
+        return hNode.copy();
+    }
+
+    protected HNodeDef findAncestorDefinition(HNode node, String name) {
+        HNodeDef temp = null;
         HNode parent = node.parent();
         String finalName = net.thevpc.ndoc.api.util.HUtils.uid(name);
         while (parent != null) {
-            List<HNode> r = new ArrayList<>();
-            for (HNode x : parent.children()) {
-                if (x.isTemplate()) {
-                    if (Objects.equals(HUtils.uid(x.getName()), finalName)) {
-                        r.add(x);
-                    }
+            List<HNodeDef> r = new ArrayList<>();
+            for (HNodeDef x : parent.definitions()) {
+                if (Objects.equals(HUtils.uid(x.name()), finalName)) {
+                    r.add(x);
                 }
             }
             if (r.size() > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("too many templates : ").append(finalName);
                 for (int i = 0; i < r.size(); i++) {
-                    HNode hNode = r.get(i);
-                    HResource n = engine.computeSource(hNode);
+                    HNodeDef hNode = r.get(i);
+                    HResource n = hNode.source();
                     sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(net.thevpc.ndoc.api.util.HUtils.strSnapshot(hNode));
                 }
                 throw new IllegalArgumentException(sb.toString());
@@ -381,6 +458,10 @@ public class HDocumentCompiler {
             node = node.parent();
         }
         return null;
+    }
+
+    public HNode[] compilePage(HNode p) {
+        return compileNodeTree(p);
     }
 
     private static class MyNDocNodeFlowControlProcessorContext implements NDocNodeFlowControlProcessorContext {
