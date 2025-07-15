@@ -3,15 +3,12 @@ package net.thevpc.ndoc.engine.parser;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.HMsg;
-import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HItemList;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.*;
+import net.thevpc.ndoc.api.resources.HResource;
 import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.engine.control.CtrlHNodeCall;
 import net.thevpc.ndoc.engine.parser.nodes.*;
 import net.thevpc.ndoc.engine.parser.styles.StylesHITemNamedObjectParser;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
@@ -19,13 +16,13 @@ import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
-import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author vpc
@@ -36,7 +33,7 @@ public class DefaultNDocDocumentItemParserFactory
 
     static {
         register(new ImportHITemNamedObjectParser());
-        register(new DefineHITemNamedObjectParser());
+//        register(new DefineHITemNamedObjectParser());
         register(new StylesHITemNamedObjectParser());
     }
 
@@ -51,12 +48,49 @@ public class DefaultNDocDocumentItemParserFactory
         }
     }
 
-
     @Override
     public NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
         NDocEngine engine = context.engine();
-        NDocDocumentFactory f = engine.documentFactory();
+        if (c.annotations().stream().anyMatch(x -> "define".equals(x.name()))) {
+            //this is a node definition
+            if (c.isAnyObject() || c.isNamed()) {
+                return NCallableSupport.of(1, () -> {
+                    NObjectElement object = c.asObject().get();
+                    String templateName = object.name().get();
+                    List<HNodeDefParam> params;
+                    if (object.isParametrized()) {
+                        params = object.asParametrizedContainer().get().params().get()
+                                .stream().map(x -> {
+                                    if(x.isNamedPair()) {
+                                        NPairElement p = x.asPair().get();
+                                        return new HNodeDefParamImpl(
+                                                p.key().asStringValue().get(),
+                                                p.value()
+                                        );
+                                    }else if(x.isName()){
+                                        return new HNodeDefParamImpl(
+                                                x.asStringValue().get(),
+                                                null
+                                        );
+                                    }else{
+                                        throw new IllegalArgumentException("expected var name : "+x);
+                                    }
+                                }).collect(Collectors.toList());
+                    } else {
+                        params = new ArrayList<>();
+                    }
+                    HResource source = context.source();
+                    return new HNodeDefImpl(templateName,
+                            params.toArray(new HNodeDefParam[0]),
+                            object.children().stream().map(x -> engine.newNode(x, context).get()).toArray(HNode[]::new),
+                            source
+                    );
+                });
+            } else {
+                return NCallableSupport.invalid(NMsg.ofC("invalid defineNode syntax, expected @define <NAME>(...){....}"));
+            }
+        }
         switch (c.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -148,8 +182,7 @@ public class DefaultNDocDocumentItemParserFactory
             case ARRAY:
             case NAMED_PARAMETRIZED_ARRAY:
             case PARAMETRIZED_ARRAY:
-            case NAMED_ARRAY:
-            {
+            case NAMED_ARRAY: {
                 if (c.type() == NElementType.UPLET) {
                     NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
                     if (p != null) {
@@ -175,54 +208,15 @@ public class DefaultNDocDocumentItemParserFactory
                     if (pp != null) {
                         return NCallableSupport.of(10, () -> {
                             NOptional<HItem> styles = pp.parseItem(uid, c, context);
-                            if (!styles.isPresent()) {
-                                pp.parseItem(uid, c, context).get();
-                            }
+//                            if (!styles.isPresent()) {
+//                                pp.parseItem(uid, c, context).get();
+//                            }
                             return styles.get();
                         });
                     }
                 }
                 if (c.isNamedUplet() || c.isAnyObject()) {
-                    HNode callNode = new DefaultHNode(HNodeType.CALL);
-                    callNode.setProperty(HPropName.NAME, NElement.ofString(HUtils.uid(ee.name())));
-                    //inline current file path in the TsonElements
-                    NElement functionTsonDeclaration = c;
-                    if (context.source() != null) {
-                        NPath sourcePath = context.source().path().orNull();
-                        if (sourcePath != null) {
-                            functionTsonDeclaration = HUtils.addCompilerDeclarationPath(functionTsonDeclaration, sourcePath.toString());
-                            if (c.isNamedUplet()) {
-                                NUpletElementBuilder fb = (NUpletElementBuilder) functionTsonDeclaration.builder();
-                                for (int i = 0; i < fb.params().size(); i++) {
-                                    fb.set(i, HUtils.addCompilerDeclarationPath(fb.get(i).orNull(), sourcePath.toString()));
-                                }
-                                functionTsonDeclaration = fb.build();
-                            } else if (c.isAnyObject()) {
-                                NObjectElementBuilder fb = (NObjectElementBuilder) functionTsonDeclaration.builder();
-                                List<NElement> args = fb.params().orNull();
-                                if (args != null) {
-                                    for (int i = 0; i < args.size(); i++) {
-                                        args.set(i, HUtils.addCompilerDeclarationPath(args.get(i), sourcePath.toString()));
-                                    }
-                                }
-                                functionTsonDeclaration = fb.build();
-                            }
-                        }
-                    }
-                    callNode.setProperty(HPropName.VALUE, functionTsonDeclaration);
-                    return NCallableSupport.of(10, () -> callNode);
-                    //search for declaration!!
-//                    String uid = HUtils.uid(ee.name());
-
-//                    HNode currNode = context.node().parent();
-//                    while (currNode != null) {
-//                        for (HNode objectDefNode : currNode.children()) {
-//                            if (HNodeType.DEFINE.equals(objectDefNode.getName()) && uid.equals(HUtils.uid(String.valueOf(objectDefNode.getPropertyValue(HPropName.NAME).get())))) {
-//                                return NCallableSupport.of(10, () -> inlineNodeDefinitionCall(objectDefNode, c, context));
-//                            }
-//                        }
-//                        currNode = currNode.parent();
-//                    }
+                    return NCallableSupport.of(10, () -> new CtrlHNodeCall(c, context.source()));
                 }
                 context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
                 throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
@@ -257,7 +251,7 @@ public class DefaultNDocDocumentItemParserFactory
             boolean foundVersion = false;
             boolean foundOther = false;
             List<NElement> params = a.params();
-            if(params !=null) {
+            if (params != null) {
                 for (NElement cls : params) {
                     if (cls.isAnyString()) {
                         if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
@@ -324,7 +318,7 @@ public class DefaultNDocDocumentItemParserFactory
             // add classes as well
 
             List<NElement> params = a.params();
-            if(params !=null) {
+            if (params != null) {
                 for (NElement cls : params) {
                     if (allStyles == null) {
                         allStyles = new HashSet<>();
