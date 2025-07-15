@@ -80,4 +80,6 @@ public interface NDocEngine {
     String[] getDefaultTemplateUrls();
 
     String getDefaultTemplateUrl();
+
+    HNode[] compileNodeBeforeRendering(HNode p, HLogger messages);
 }
