@@ -61,10 +61,10 @@ public class DocumentView {
         this.rendererManager = engine.renderManager();
 
         frame = new JFrame();
-        frame.setTitle("H Document Viewer");
+        frame.setTitle("NDoc Viewer");
         frame.setIconImage(
                 HImageUtils.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/halfa.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/ndoc.png")).getImage(),
                         16, 16)
         );
         contentPane = new ContentPanel();
