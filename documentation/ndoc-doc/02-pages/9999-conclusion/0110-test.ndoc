@@ -1,8 +1,8 @@
-@normal page{
-    @header {
+normal{
+    header {
         text("Test me"),
     }
-    @body{
+    body{
         // write whatever you like here???
         "open ##0110-test.ndoc## file and try to write some things there"
 
