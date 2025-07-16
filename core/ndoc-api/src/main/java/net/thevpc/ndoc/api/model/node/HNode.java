@@ -161,4 +161,6 @@ public interface HNode extends HItem {
     HNode addDefinition(HNodeDef s) ;
 
     HNode removeDefinition(HNodeDef s) ;
+
+    HNode addDefinitions(HNodeDef... definitions);
 }
