@@ -1,4 +1,4 @@
-@cover page{
+cover{
     @(title)       text("Halfa Document")
     @(subtitle)    text("Text Based Presentation")
     @(subsubtitle) text("Open Source")
