@@ -1,7 +1,9 @@
 package net.thevpc.ndoc.main;
 
+import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.main.components.EntryComponent;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
+import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +17,10 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         serviceHelper = new ServiceHelper(this);
-        setTitle("HD Viewer Application");
+        setTitle("NDoc Viewer");
         this.setIconImage(
                 HImageUtils.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/halfa.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/ndoc.png")).getImage(),
                         16, 16)
         );
         setContentPane(createCenter());
@@ -111,6 +113,22 @@ public class MainFrame extends JFrame {
             entryComponent.reload();
         });
         return menu;
+    }
+
+    public void openProject(NPath path) {
+        serviceHelper.openProject(path);
+    }
+
+    public void showNewProject() {
+        serviceHelper.showNewProject();
+    }
+
+    public ServiceHelper getService() {
+        return serviceHelper;
+    }
+
+    public NDocEngine getEngine() {
+        return serviceHelper.getEngine();
     }
 
 }
