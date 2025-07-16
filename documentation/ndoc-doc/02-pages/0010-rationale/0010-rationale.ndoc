@@ -1,8 +1,8 @@
-@normal page(name:Rationale){
-    @header {
+normal(name:Rationale){
+    header {
         text("Rationale"),
     }
-    @body{
+    body{
         ul{
             ¶ Text-based, declarative, and intuitive syntax
             ¶ Readable by humans, writable with ease
