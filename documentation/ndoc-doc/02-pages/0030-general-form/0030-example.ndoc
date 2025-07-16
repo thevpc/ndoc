@@ -1,8 +1,8 @@
-@normal page{
-   @header {
+normal{
+   header {
         text("More Elaborate Example"),
     }
-    @body{
+    body{
         grid((2,1)){
             source(tson,file:"0030-example.tson", position: (2,2),font-size:5%g)
             grid((2,2),draw-contour,background:white){
