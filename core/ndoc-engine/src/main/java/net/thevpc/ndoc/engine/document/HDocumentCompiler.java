@@ -47,6 +47,15 @@ public class HDocumentCompiler {
 //        root = processCalls(root, result);
         root = processInheritance(root, result);
         root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
+        HNode[] all = compileNodeTree(root);
+        if (all.length == 0) {
+            root = new DefaultHNode(HNodeType.VOID);
+        } else if (all.length == 1) {
+            root = all[0];
+        } else {
+            root = new DefaultHNode(HNodeType.PAGE_GROUP);
+            root.setChildren(all);
+        }
 //        root = removeDeclarations(root, result);
         processRootPages(root);
         return result;
@@ -215,11 +224,9 @@ public class HDocumentCompiler {
     public NOptional<HNodeDef> findDefinition(HNode node, String name) {
         HNode currNode = node;
         while (currNode != null) {
-            for (HNode objectDefNode : currNode.children()) {
-                for (HNodeDef o : objectDefNode.definitions()) {
-                    if (NNameFormat.equalsIgnoreFormat(o.name(), name)) {
-                        return NOptional.of(o);
-                    }
+            for (HNodeDef o : currNode.definitions()) {
+                if (NNameFormat.equalsIgnoreFormat(o.name(), name)) {
+                    return NOptional.of(o);
                 }
             }
             currNode = currNode.parent();
@@ -259,15 +266,15 @@ public class HDocumentCompiler {
                     String n = p.key().asStringValue().get();
                     int pos = NArrays.indexOfByMatcher(expectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
                     if (pos >= 0) {
-                        effectiveParams[pos]=new HNodeDefParamImpl(expectedParams[pos].name(),p.value());
+                        effectiveParams[pos] = new HNodeDefParamImpl(expectedParams[pos].name(), p.value());
                     }
                 }
                 for (int i = 0; i < expectedParams.length; i++) {
-                    if(effectiveParams[i]==null){
+                    if (effectiveParams[i] == null) {
                         NElement v = expectedParams[i].value();
-                        if(v!=null){
-                            effectiveParams[i]=expectedParams[i];
-                        }else{
+                        if (v != null) {
+                            effectiveParams[i] = expectedParams[i];
+                        } else {
                             NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", expectedParams[i].name(), uid, callDeclaration);
                             messages.log(HMsg.of(errMsg, node.source()));
                             throw new NIllegalArgumentException(errMsg);
@@ -275,9 +282,9 @@ public class HDocumentCompiler {
                     }
                 }
             } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
-                if(expectedParams.length==callArgs.size()){
+                if (expectedParams.length == callArgs.size()) {
                     for (int i = 0; i < expectedParams.length; i++) {
-                        effectiveParams[i]=new HNodeDefParamImpl(expectedParams[i].name(),callArgs.get(i));
+                        effectiveParams[i] = new HNodeDefParamImpl(expectedParams[i].name(), callArgs.get(i));
                     }
                 }
             } else {
@@ -288,9 +295,9 @@ public class HDocumentCompiler {
 
             HNode[] body = Arrays.copyOf(d.body(), d.body().length);
             for (int i = 0; i < body.length; i++) {
-                body[i]=body[i].copy();
-                for (int j = effectiveParams.length-1; j >=0 ; j--) {
-                    body[i].children().add(0,newAssign(effectiveParams[i].name(),effectiveParams[i].value()));
+                body[i] = body[i].copy();
+                for (int j = effectiveParams.length - 1; j >= 0; j--) {
+                    body[i].children().add(0, newAssign(effectiveParams[i].name(), effectiveParams[i].value()));
                 }
             }
             return body;
@@ -461,7 +468,7 @@ public class HDocumentCompiler {
     }
 
     public HNode[] compilePage(HNode p) {
-        return compileNodeTree(p);
+        return new HNode[]{p};
     }
 
     private static class MyNDocNodeFlowControlProcessorContext implements NDocNodeFlowControlProcessorContext {
