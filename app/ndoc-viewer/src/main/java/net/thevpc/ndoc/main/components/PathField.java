@@ -31,7 +31,7 @@ public class PathField extends JPanel {
     private void onSelectPath() {
         String oldPath = path.getText();
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(ServiceHelper.HD_FILTER);
+        f.setFileFilter(ServiceHelper.NDOC_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (!NBlankable.isBlank(oldPath)) {
             f.setCurrentDirectory(new File(oldPath));
