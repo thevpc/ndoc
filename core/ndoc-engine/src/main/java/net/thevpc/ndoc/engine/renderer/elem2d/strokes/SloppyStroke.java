@@ -4,7 +4,6 @@ import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NOptional;
 
@@ -38,7 +37,7 @@ public class SloppyStroke implements Stroke {
                 } else {
                     base = CompositeStroke.of(base, g.createStroke(arg));
                 }
-            } else if (arg.type().isNumber()) {
+            } else if (arg.type().isAnyNumber()) {
                 sloppyness = NDocObjEx.of(arg).asDouble().orElse(sloppyness);
             } else {
                 NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
