@@ -1,8 +1,8 @@
-@normal page{
-    @header {
+normal{
+    header {
         text("Images"),
     }
-    @body{
+    body{
         grid((4,4),columns-weight:[1,3]){
             // Row 2
             image("../../../images/image.png",size:(50,50),at:center)
