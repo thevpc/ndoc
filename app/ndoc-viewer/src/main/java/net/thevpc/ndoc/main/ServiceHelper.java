@@ -2,6 +2,7 @@ package net.thevpc.ndoc.main;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
+import net.thevpc.ndoc.config.NDocProject;
 import net.thevpc.ndoc.config.NDocViewerConfigManager;
 import net.thevpc.ndoc.config.UserConfig;
 import net.thevpc.ndoc.config.UserConfigManager;
@@ -25,7 +26,7 @@ import java.util.*;
 
 public class ServiceHelper {
 
-    public static final FileFilter HD_FILTER = new FileFilter() {
+    public static final FileFilter NDOC_FILTER = new FileFilter() {
         @Override
         public boolean accept(File f) {
             if (f.isDirectory()) {
@@ -36,7 +37,7 @@ public class ServiceHelper {
 
         @Override
         public String getDescription() {
-            return "H Document";
+            return "NDoc File";
         }
     };
     MainFrame mainFrame;
@@ -80,6 +81,14 @@ public class ServiceHelper {
         debugFrame.run();
     }
 
+    public NPath getLatestProjectPath() {
+        NDocProject[] p = config().getRecentProjects();
+        if(p!=null && p.length>0) {
+            return NPath.of(p[0].getPath());
+        }
+        return null;
+    }
+
     public NDocViewerConfigManager config() {
         return configManager;
     }
@@ -99,7 +108,7 @@ public class ServiceHelper {
     public void showOpenFile() {
         NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(HD_FILTER);
+        f.setFileFilter(NDOC_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (nPath != null) {
             f.setCurrentDirectory(nPath.toFile().get());
@@ -159,7 +168,7 @@ public class ServiceHelper {
     public void showNewFile() {
         NPath nPath = configManager.getLastAccessedPath();
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(HD_FILTER);
+        f.setFileFilter(NDOC_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (nPath != null) {
             f.setCurrentDirectory(nPath.toFile().get());
@@ -178,6 +187,10 @@ public class ServiceHelper {
                 }
             }
         }
+    }
+
+    public NDocEngine getEngine() {
+        return engine;
     }
 
     private static boolean isHalfaDocFile(NPath x) {
