@@ -23,7 +23,7 @@ public class DefaultHNode implements HNode {
     private Map<String, NElement> vars = new LinkedHashMap<>();
     private List<HNode> children = new ArrayList<>();
     private List<HStyleRule> styleRules = new ArrayList<>();
-    private List<HNodeDef> nodeDefinitions = new ArrayList<>();
+    private List<HNodeDef> definitions = new ArrayList<>();
 
     public DefaultHNode(String nodeType) {
         this.nodeType = nodeType;
@@ -352,6 +352,9 @@ public class DefaultHNode implements HNode {
             } else if (a instanceof HNode) {
                 add((HNode) a);
                 return true;
+            } else if (a instanceof HNodeDef) {
+                addDefinition((HNodeDef) a);
+                return true;
             }
         }
         return false;
@@ -587,13 +590,13 @@ public class DefaultHNode implements HNode {
     }
 
     public HNodeDef[] definitions() {
-        return nodeDefinitions.toArray(new HNodeDef[0]);
+        return definitions.toArray(new HNodeDef[0]);
     }
 
     @Override
     public HNode addDefinition(HNodeDef s) {
         if (s != null) {
-            nodeDefinitions.add(s);
+            definitions.add(s);
         }
         return this;
     }
@@ -601,7 +604,7 @@ public class DefaultHNode implements HNode {
     @Override
     public HNode removeDefinition(HNodeDef s) {
         if (s != null) {
-            nodeDefinitions.remove(s);
+            definitions.remove(s);
         }
         return this;
     }
@@ -623,6 +626,15 @@ public class DefaultHNode implements HNode {
         other.setProperties(properties.toArray());
         other.addAll(children().stream().map(HNode::copy).toArray(HNode[]::new));
         other.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
+        other.addDefinitions(definitions());
+    }
+
+    @Override
+    public HNode addDefinitions(HNodeDef... definitions) {
+        for (HNodeDef definition : definitions) {
+            addDefinition(definition);
+        }
+        return this;
     }
 
     //    @Override
