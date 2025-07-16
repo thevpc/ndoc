@@ -91,6 +91,17 @@ public class DefaultNDocDocumentItemParserFactory
                 return NCallableSupport.invalid(NMsg.ofC("invalid defineNode syntax, expected @define <NAME>(...){....}"));
             }
         }
+        switch (c.type().typeGroup()) {
+            case OPERATOR:{
+                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
+                    NCallableSupport<HItem> uu = ff.parseNode(context);
+                    if (uu.isValid()) {
+                        return uu;
+                    }
+                }
+                break;
+            }
+        }
         switch (c.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -154,15 +165,6 @@ public class DefaultNDocDocumentItemParserFactory
                         });
                     }
                 }
-                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
-                    NCallableSupport<HItem> uu = ff.parseNode(context);
-                    if (uu.isValid()) {
-                        return uu;
-                    }
-                }
-                break;
-            }
-            case OP: {
                 for (NDocNodeParser ff : engine.nodeTypeFactories()) {
                     NCallableSupport<HItem> uu = ff.parseNode(context);
                     if (uu.isValid()) {
@@ -262,7 +264,7 @@ public class DefaultNDocDocumentItemParserFactory
                             foundOther = true;
                         }
                     } else {
-                        if (cls.type().isNumber()) {
+                        if (cls.type().isAnyNumber()) {
                             BigDecimal bi = cls.asNumber().get().bigDecimalValue();
                             foundVersion = true;
                         } else {
