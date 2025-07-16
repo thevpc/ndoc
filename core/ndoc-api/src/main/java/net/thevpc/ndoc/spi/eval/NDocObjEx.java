@@ -622,7 +622,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if (te.type().isNumber()) {
+            if (te.type().isAnyNumber()) {
                 return NOptional.of(te.asNumberValue().get());
             }
         }
@@ -640,7 +640,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if (te.type().isNumber()) {
+            if (te.type().isAnyNumber()) {
                 switch (te.type()) {
                     case BYTE:
                     case INTEGER:
@@ -653,7 +653,7 @@ public class NDocObjEx {
                     }
                 }
                 return NOptional.of(te.asDoubleValue().get());
-            } else if (te.type().isString()) {
+            } else if (te.type().isAnyString()) {
                 return NDocObjEx.of(te.asStringValue().get()).asDouble();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
@@ -683,7 +683,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if (te.type().isNumber()) {
+            if (te.type().isAnyNumber()) {
                 switch (te.type()) {
                     case BYTE:
                     case SHORT:
@@ -692,7 +692,7 @@ public class NDocObjEx {
                         return NOptional.of(te.asIntValue().get());
                     }
                 }
-            } else if (te.type().isString()) {
+            } else if (te.type().isAnyString()) {
                 return NDocObjEx.of(te.asStringValue().get()).asInt();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
