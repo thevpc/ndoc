@@ -65,7 +65,7 @@ public class HDebugFrame extends JFrame {
         setMinimumSize(new Dimension(400, 600));
         this.setIconImage(
                 HImageUtils.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/halfa.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ndoc/ndoc.png")).getImage(),
                         16, 16)
         );
         addWindowListener(new WindowListener() {
