@@ -12,6 +12,7 @@ import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NOperatorElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NMsg;
@@ -29,6 +30,27 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
         NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
+        switch (c.type().typeGroup()){
+            case OPERATOR:{
+                NOperatorElement binOp = c.asOperator().get();
+                if (binOp.type()== NElementType.OP_EQ) {
+                    NElement k = binOp.first().orNull();
+                    NElement v = binOp.second().orNull();
+                    NDocObjEx kh = NDocObjEx.of(k);
+                    NOptional<String> nn = kh.asStringOrName();
+                    if (nn.isPresent()) {
+                        String nnn = NStringUtils.trim(nn.get());
+                        if (nnn.length() > 1 && nnn.startsWith("$")) {
+                            return NCallableSupport.of(10, () -> f.ofAssign(
+                                    nnn.substring(1),
+                                    v
+                            ));
+                        }
+                    }
+                }
+                break;
+            }
+        }
         switch (c.type()) {
             case PAIR: {
                 NPairElement p = c.asPair().get();
@@ -43,25 +65,6 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
                                 nnn.substring(1),
                                 v
                         ));
-                    }
-                }
-                break;
-            }
-            case OP: {
-                NOperatorElement binOp = c.asOperator().get();
-                if ("=".equals(binOp.operatorName())) {
-                    NElement k = binOp.first().orNull();
-                    NElement v = binOp.second().orNull();
-                    NDocObjEx kh = NDocObjEx.of(k);
-                    NOptional<String> nn = kh.asStringOrName();
-                    if (nn.isPresent()) {
-                        String nnn = NStringUtils.trim(nn.get());
-                        if (nnn.length() > 1 && nnn.startsWith("$")) {
-                            return NCallableSupport.of(10, () -> f.ofAssign(
-                                    nnn.substring(1),
-                                    v
-                            ));
-                        }
                     }
                 }
                 break;
