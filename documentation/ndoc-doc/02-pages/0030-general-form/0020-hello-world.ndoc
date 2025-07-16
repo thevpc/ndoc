@@ -1,8 +1,8 @@
-@normal page{
-    @header {
+normal{
+    header {
         text("Hello World"),
     }
-    @body{
+    body{
         grid((4,2),columns-weight:[1]){
             styles:{
                 "*": {margin:2}
