@@ -4,11 +4,12 @@
         //import("*.tcss"),
         "" :{
             color:blue,
-            font-size:40,
+            font-size:10,
         }
         title:{
             font-size:50,
             bold:true
+            color:red,
         }
     }
 
@@ -18,8 +19,8 @@
         }
     }
 
-    @course page{
-        text("My Title",at:top),
+    course{
+        @(title) text("My Title",at:top),
         rectangle(
             size:(50,50),
             background:$palette[3],
@@ -37,7 +38,7 @@
         },
     },
     page{
-        text("My Title 2"),
+        @(title) text("My Title Page 2",at:top),
         equation("""
             x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
             """,
