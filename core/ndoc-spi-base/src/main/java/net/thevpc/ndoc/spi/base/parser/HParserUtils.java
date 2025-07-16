@@ -5,6 +5,11 @@ import net.thevpc.nuts.elem.NElement;
 
 public class HParserUtils {
     public static boolean isIntOrExprNonCommon(NElement currentArg){
+        switch (currentArg.type().typeGroup()) {
+            case OPERATOR:{
+                return true;
+            }
+        }
         switch (currentArg.type()) {
             case BYTE:
             case SHORT:
@@ -27,7 +32,6 @@ public class HParserUtils {
                 }
                 break;
             }
-            case OP:
 
             case UPLET:
             case NAMED_UPLET:
