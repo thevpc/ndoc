@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 public class GitHelper {
     public static boolean isGithubFolder(String sp) {
         return
-                //  github://thevpc/halfa-templates/myFolder
+                //  github://thevpc/ndoc-templates/myFolder
                 sp.startsWith("github://")
-                        // git@github.com:thevpc/halfa-templates.git/myFolder
+                        // git@github.com:thevpc/ndoc-templates.git/myFolder
                         || sp.startsWith("git@")
-                        // https://github.com/thevpc/halfa-templates.git/myFolder
+                        // https://github.com/thevpc/ndoc-templates.git/myFolder
                         || sp.startsWith("https://github.com/")
                 ;
     }
@@ -29,9 +29,9 @@ public class GitHelper {
         NPath userConfHome;
         NPath appCacheFolder = NApp.of().getCacheFolder();
         if (appCacheFolder == null) {
-            userConfHome = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.halfa:halfa"), NStoreType.CACHE).resolve("github");
+            userConfHome = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ndoc:ndoc"), NStoreType.CACHE).resolve("github");
         } else {
-            userConfHome = appCacheFolder.resolve("halfa/github");
+            userConfHome = appCacheFolder.resolve("ndoc/github");
         }
         if (githubPath.startsWith("github://")) {
             Pattern pattern = Pattern.compile("github://(?<user>[a-zA-Z0-9_-]+)/(?<repo>[a-zA-Z0-9_-]+)((/(?<path>.*))?)");
@@ -54,7 +54,7 @@ public class GitHelper {
                 return userConfHome.resolve(user + "/" + repo + "/" + path);
             }
         } else if (githubPath.startsWith("https://github.com")) {
-            // https://github.com/thevpc/halfa-templates.git
+            // https://github.com/thevpc/ndoc-templates.git
             Pattern pattern = Pattern.compile("https://github.com/(?<user>[a-zA-Z0-9_-]+)/(?<repo>[a-zA-Z0-9_-]+).git((/(?<path>.*))?)");
             Matcher matcher = pattern.matcher(githubPath);
             if (matcher.matches()) {
