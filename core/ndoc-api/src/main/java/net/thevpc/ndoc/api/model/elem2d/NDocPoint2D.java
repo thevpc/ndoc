@@ -5,10 +5,10 @@ import net.thevpc.nuts.elem.NToElement;
 
 import java.util.Objects;
 
-public class HPoint2D implements NToElement {
+public class NDocPoint2D implements NToElement {
     public double x, y;
 
-    public HPoint2D(double x, double y) {
+    public NDocPoint2D(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -25,8 +25,8 @@ public class HPoint2D implements NToElement {
         return new Vector2D(x, y);
     }
 
-    public HPoint2D minus(HPoint2D b) {
-        return new HPoint2D(
+    public NDocPoint2D minus(NDocPoint2D b) {
+        return new NDocPoint2D(
                 x - b.x,
                 y - b.y
         );
@@ -37,35 +37,35 @@ public class HPoint2D implements NToElement {
         return Math.sqrt(dot(this));
     }
 
-    public HPoint2D plus(HPoint2D b) {
-        return new HPoint2D(
+    public NDocPoint2D plus(NDocPoint2D b) {
+        return new NDocPoint2D(
                 x + b.x,
                 y + b.y
         );
     }
 
-    public HPoint2D plus(double b) {
-        return new HPoint2D(
+    public NDocPoint2D plus(double b) {
+        return new NDocPoint2D(
                 x + b,
                 y + b
         );
     }
 
-    public HPoint2D minus(double b) {
-        return new HPoint2D(
+    public NDocPoint2D minus(double b) {
+        return new NDocPoint2D(
                 x - b,
                 y - b
         );
     }
 
-    public HPoint2D mul(double b) {
-        return new HPoint2D(
+    public NDocPoint2D mul(double b) {
+        return new NDocPoint2D(
                 x * b,
                 y * b
         );
     }
 
-    public double dot(HPoint2D b) {
+    public double dot(NDocPoint2D b) {
         return (
                 x * b.x +
                         y * b.y
@@ -76,7 +76,7 @@ public class HPoint2D implements NToElement {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HPoint2D point2D = (HPoint2D) o;
+        NDocPoint2D point2D = (NDocPoint2D) o;
         return Double.compare(x, point2D.x) == 0 && Double.compare(y, point2D.y) == 0;
     }
 
@@ -101,7 +101,7 @@ public class HPoint2D implements NToElement {
         );
     }
 
-    public HPoint2D add(double x, double y) {
-        return new HPoint2D(x+x, y+y);
+    public NDocPoint2D add(double x, double y) {
+        return new NDocPoint2D(x+x, y+y);
     }
 }
