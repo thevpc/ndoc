@@ -5,20 +5,20 @@
 package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
  */
 public interface HStyleRule extends HItem {
-    boolean acceptNode(HNode node);
+    boolean acceptNode(NDocNode node);
 
-    HStyleRuleSelector selector();
+    NDocStyleRuleSelector selector();
 
-    HProperties styles();
+    NDocProperties styles();
 
-    HStyleRuleResult styles(HNode node);
+    HStyleRuleResult styles(NDocNode node);
 
     NElement toElement();
 
