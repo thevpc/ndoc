@@ -10,20 +10,20 @@ import net.thevpc.nuts.elem.NToElement;
 /**
  * @author vpc
  */
-public class HSize implements NToElement {
+public class NDocSize implements NToElement {
 
     private double value;
     private boolean percent;
 
-    public static HSize ofPercent(double value) {
-        return new HSize(value, true);
+    public static NDocSize ofPercent(double value) {
+        return new NDocSize(value, true);
     }
 
-    public static HSize of(double value) {
-        return new HSize(value, false);
+    public static NDocSize of(double value) {
+        return new NDocSize(value, false);
     }
 
-    public HSize(double value, boolean percent) {
+    public NDocSize(double value, boolean percent) {
         this.value = value;
         this.percent = percent;
     }
