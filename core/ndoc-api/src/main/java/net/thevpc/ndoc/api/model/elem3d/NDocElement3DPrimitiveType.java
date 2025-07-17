@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model.elem3d;
 
-public enum Element3DPrimitiveType {
+public enum NDocElement3DPrimitiveType {
     LINE,
     ARC,
     TRIANGLE,
