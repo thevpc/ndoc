@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.style;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
@@ -10,31 +10,31 @@ import java.util.*;
  */
 public class DefaultHStyleRule implements HStyleRule {
     private final HStyleMagnitude magnetude;
-    private final HProperties styles;
-    private final HStyleRuleSelector selector;
+    private final NDocProperties styles;
+    private final NDocStyleRuleSelector selector;
 
     public static DefaultHStyleRule ofAny(HProp... styles) {
-        return new DefaultHStyleRule(DefaultHNodeSelector.ofAny(), styles);
+        return new DefaultHStyleRule(DefaultNDocNodeSelector.ofAny(), styles);
     }
 
     public static DefaultHStyleRule ofType(String type, HProp... styles) {
-        return of(type == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofType(type), styles);
+        return of(type == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofType(type), styles);
     }
 
     public static DefaultHStyleRule ofName(String name, HProp... styles) {
-        return of(name == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofName(name), styles);
+        return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofName(name), styles);
     }
 
     public static DefaultHStyleRule ofClass(String name, HProp... styles) {
-        return of(name == null ? DefaultHNodeSelector.ofAny() : DefaultHNodeSelector.ofClasses(name), styles);
+        return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofClasses(name), styles);
     }
 
-    public static DefaultHStyleRule of(HStyleRuleSelector filter, HProp... styles) {
+    public static DefaultHStyleRule of(NDocStyleRuleSelector filter, HProp... styles) {
         return new DefaultHStyleRule(filter, styles);
     }
 
-    public DefaultHStyleRule(HStyleRuleSelector selector, HProp... styles) {
-        this.styles = new HProperties();
+    public DefaultHStyleRule(NDocStyleRuleSelector selector, HProp... styles) {
+        this.styles = new NDocProperties();
         this.magnetude = new HStyleMagnitude(
                 0,
                 selector
@@ -57,21 +57,21 @@ public class DefaultHStyleRule implements HStyleRule {
     }
 
     @Override
-    public boolean acceptNode(HNode node) {
+    public boolean acceptNode(NDocNode node) {
         return selector.acceptNode(node);
     }
 
-    public HStyleRuleSelector selector() {
+    public NDocStyleRuleSelector selector() {
         return selector;
     }
 
     @Override
-    public HProperties styles() {
+    public NDocProperties styles() {
         return styles;
     }
 
     @Override
-    public HStyleRuleResult styles(HNode node) {
+    public HStyleRuleResult styles(NDocNode node) {
         if (selector == null || selector.acceptNode(node)) {
             return new HStyleRuleResult() {
                 @Override
