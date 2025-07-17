@@ -1,20 +1,19 @@
 package net.thevpc.ndoc.api.document;
 
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.log.NLogVerb;
 import net.thevpc.nuts.util.NMsg;
 
 import java.time.Instant;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class HLoggerDelegateImpl implements HLogger {
-    private HResource defaultSource;
-    private HLogger other;
+public class NDocLoggerDelegateImpl implements NDocLogger {
+    private NDocResource defaultSource;
+    private NDocLogger other;
     private int errorCount;
 
-    public HLoggerDelegateImpl(HResource defaultSource, HLogger other) {
+    public NDocLoggerDelegateImpl(NDocResource defaultSource, NDocLogger other) {
         this.defaultSource = defaultSource;
         this.other = other;
     }
@@ -24,7 +23,7 @@ public class HLoggerDelegateImpl implements HLogger {
     }
 
     @Override
-    public void log(HMsg message) {
+    public void log(NDocMsg message) {
         Instant time = Instant.now();
         NMsg msg = message.message();
         Level level = msg.getLevel();
@@ -33,7 +32,7 @@ public class HLoggerDelegateImpl implements HLogger {
         }
         Throwable error = message.error();
         msg = msg.withLevel(level);
-        HResource source = message.source();
+        NDocResource source = message.source();
         if (source == null) {
             source = defaultSource;
         }
@@ -50,7 +49,7 @@ public class HLoggerDelegateImpl implements HLogger {
             errorCount++;
         }
         if (other != null) {
-            other.log(HMsg.of(msg, error, source));
+            other.log(NDocMsg.of(msg, error, source));
         }
         NLog.of(getClass()).log(msg.getLevel(), NLogVerb.INFO, NMsg.ofC("%s %s",source, msg),error);
     }
