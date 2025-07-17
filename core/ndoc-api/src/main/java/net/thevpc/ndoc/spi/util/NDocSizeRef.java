@@ -1,22 +1,22 @@
 package net.thevpc.ndoc.spi.util;
 
-import net.thevpc.ndoc.api.model.elem2d.Double2;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
 
-public class HSizeRef {
+public class NDocSizeRef {
     private double rootWidth;
     private double rootHeight;
 
     private double parentWidth;
     private double parentHeight;
 
-    public HSizeRef(double parentWidth, double parentHeight) {
+    public NDocSizeRef(double parentWidth, double parentHeight) {
         this(parentWidth, parentHeight, parentWidth, parentHeight);
     }
 
-    public HSizeRef(double parentWidth, double parentHeight, double rootWidth, double rootHeight) {
+    public NDocSizeRef(double parentWidth, double parentHeight, double rootWidth, double rootHeight) {
         this.rootWidth = rootWidth;
         this.rootHeight = rootHeight;
         this.parentWidth = parentWidth;
@@ -90,7 +90,7 @@ public class HSizeRef {
         return NOptional.ofNamedEmpty("size");
     }
 
-    public Double2 apply(Double2 size) {
-        return new Double2(x(NElement.ofDouble(size.getX())).get(), y(NElement.ofDouble(size.getX())).get());
+    public NDocDouble2 apply(NDocDouble2 size) {
+        return new NDocDouble2(x(NElement.ofDouble(size.getX())).get(), y(NElement.ofDouble(size.getX())).get());
     }
 }
