@@ -31,8 +31,6 @@ import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementParser;
-import net.thevpc.nuts.elem.NElementPath;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.util.*;
@@ -260,7 +258,7 @@ public class DefaultNDocEngine implements NDocEngine {
             } else if (path.isDirectory()) {
                 NDocument document = documentFactory().ofDocument();
                 document.resources().add(path.resolve(HEngineUtils.NDOC_EXT_STAR));
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x)).toList();
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isNDocFile(x)).toList();
                 if (all.isEmpty()) {
                     messages1.log(
                             HMsg.of(NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere())
@@ -340,7 +338,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 }
                 return d;
             } else if (path.isDirectory()) {
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isHalfaFile(x.getName())).toList();
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isNDocFile(x.getName())).toList();
                 all.sort(HEngineUtils::comparePaths);
                 HItem node = null;
                 for (NPath nPath : all) {
@@ -599,7 +597,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 copyTemplate(nPath, to.resolve(nPath.getName()), vars);
             }
         } else if (from.isRegularFile()) {
-            if (HEngineUtils.isHalfaFile(from)) {
+            if (HEngineUtils.isNDocFile(from)) {
                 String code = from.readString();
                 to.writeString(NMsg.ofV(code, vars).toString());
             } else {
