@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model.node;
 
-public class HNodeType {
+public class NDocNodeType {
     public static final String PAGE_GROUP="page-group";
     public static final String PAGE="page";
     public static final String STACK="stack";
