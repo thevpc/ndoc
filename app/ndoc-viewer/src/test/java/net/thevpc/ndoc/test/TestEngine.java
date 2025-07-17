@@ -2,8 +2,8 @@ package net.thevpc.ndoc.test;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HDocumentLoadingResult;
-import net.thevpc.ndoc.api.document.DefaultHLogger;
+import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.Nuts;
 
@@ -24,11 +24,11 @@ public class TestEngine {
                 "}\n"
                 ;
         System.out.println(document);
-        DefaultHLogger messages = new DefaultHLogger(null);
-        HDocumentLoadingResult d = e.loadDocument(
+        DefaultNDocLogger messages = new DefaultNDocLogger(null);
+        NDocDocumentLoadingResult d = e.loadDocument(
                 new ByteArrayInputStream(document.getBytes()), messages
         );
         NDocument dd = d.get();
-        HDocumentLoadingResult c = e.compileDocument(dd, messages);
+        NDocDocumentLoadingResult c = e.compileDocument(dd, messages);
     }
 }
