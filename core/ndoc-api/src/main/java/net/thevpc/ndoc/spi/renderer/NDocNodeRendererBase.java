@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.spi.renderer;
 
 import net.thevpc.ndoc.api.model.elem2d.*;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.eval.NDocValueByType;
 import net.thevpc.ndoc.spi.NDocNodeRenderer;
@@ -18,8 +18,8 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
     }
 
     @Override
-    public NDocSizeRequirements sizeRequirements(HNode p, NDocNodeRendererContext ctx) {
-        Bounds2 bounds = ctx.getBounds();
+    public NDocSizeRequirements sizeRequirements(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocBounds2 bounds = ctx.getBounds();
         return new NDocSizeRequirements(
                 0,
                 bounds.getWidth(),
@@ -35,17 +35,17 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
         return types;
     }
 
-    public void render(HNode p, NDocNodeRendererContext ctx) {
+    public void render(NDocNode p, NDocNodeRendererContext ctx) {
         boolean v = NDocValueByName.isVisible(p, ctx);
         if (!v) {
             return;
         }
-        Bounds2 selfBounds = selfBounds(p, ctx);
+        NDocBounds2 selfBounds = selfBounds(p, ctx);
         NDocGraphics nv = null;
         try {
             if (!ctx.isDry()) {
             //if (!ctx.isDry()) {
-                Rotation rotation = NDocValueByType.getRotation(p, ctx, HPropName.ROTATE).orNull();
+                Rotation rotation = NDocValueByType.getRotation(p, ctx, NDocPropName.ROTATE).orNull();
                 if (rotation != null) {
                     double angle = NDocObjEx.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
@@ -81,13 +81,13 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
         }
     }
 
-    public abstract void renderMain(HNode p, NDocNodeRendererContext ctx);
+    public abstract void renderMain(NDocNode p, NDocNodeRendererContext ctx);
 
-    public Bounds2 bgBounds(HNode p, NDocNodeRendererContext ctx) {
+    public NDocBounds2 bgBounds(NDocNode p, NDocNodeRendererContext ctx) {
         return NDocValueByName.selfBounds(p, null, null, ctx);
     }
 
-    public Bounds2 selfBounds(HNode t, NDocNodeRendererContext ctx) {
+    public NDocBounds2 selfBounds(NDocNode t, NDocNodeRendererContext ctx) {
         return NDocValueByName.selfBounds(t, null, null, ctx);
     }
 
