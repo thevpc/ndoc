@@ -3,7 +3,7 @@ package net.thevpc.ndoc.api.model.elem2d;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 
-public class HImageOptions {
+public class NDocImageOptions {
     private Color transparentColor;
     private boolean disableAnimation;
     private ImageObserver imageObserver;
@@ -14,7 +14,7 @@ public class HImageOptions {
         return size;
     }
 
-    public HImageOptions setSize(Dimension size) {
+    public NDocImageOptions setSize(Dimension size) {
         this.size = size;
         return this;
     }
@@ -23,7 +23,7 @@ public class HImageOptions {
         return asyncLoad;
     }
 
-    public HImageOptions setAsyncLoad(Runnable asyncLoad) {
+    public NDocImageOptions setAsyncLoad(Runnable asyncLoad) {
         this.asyncLoad = asyncLoad;
         return this;
     }
@@ -32,7 +32,7 @@ public class HImageOptions {
         return imageObserver;
     }
 
-    public HImageOptions setImageObserver(ImageObserver imageObserver) {
+    public NDocImageOptions setImageObserver(ImageObserver imageObserver) {
         this.imageObserver = imageObserver;
         return this;
     }
@@ -41,7 +41,7 @@ public class HImageOptions {
         return transparentColor;
     }
 
-    public HImageOptions setTransparentColor(Color transparentColor) {
+    public NDocImageOptions setTransparentColor(Color transparentColor) {
         this.transparentColor = transparentColor;
         return this;
     }
@@ -50,7 +50,7 @@ public class HImageOptions {
         return disableAnimation;
     }
 
-    public HImageOptions setDisableAnimation(boolean disableAnimation) {
+    public NDocImageOptions setDisableAnimation(boolean disableAnimation) {
         this.disableAnimation = disableAnimation;
         return this;
     }
