@@ -6,11 +6,11 @@ import net.thevpc.nuts.elem.NElement;
 
 import java.util.function.Supplier;
 
-public class HDocumentPanel extends TsonPanel {
+public class NDocDocumentPanel extends TsonPanel {
     private Supplier<NDocument> model;
     private NDocEngine engine;
 
-    public HDocumentPanel(NDocEngine engine, Supplier<NDocument> model) {
+    public NDocDocumentPanel(NDocEngine engine, Supplier<NDocument> model) {
         this.model = model;
         this.engine = engine;
     }
