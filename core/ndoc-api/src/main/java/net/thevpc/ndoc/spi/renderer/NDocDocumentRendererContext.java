@@ -4,11 +4,11 @@
  */
 package net.thevpc.ndoc.spi.renderer;
 
-import net.thevpc.ndoc.api.document.HLogger;
+import net.thevpc.ndoc.api.document.NDocLogger;
 
 /**
  * @author vpc
  */
 public interface NDocDocumentRendererContext {
-    HLogger messages();
+    NDocLogger messages();
 }
