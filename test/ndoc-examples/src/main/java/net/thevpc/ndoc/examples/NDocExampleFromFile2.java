@@ -18,7 +18,7 @@ public class NDocExampleFromFile2 {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
-        NPath file = NPath.of("src/halfa/test1.ndoc").toAbsolute().normalize();
+        NPath file = NPath.of("src/ndoc/test1.ndoc").toAbsolute().normalize();
         NDocument doc = e.loadDocument(file, null).get();
 
         System.out.println(e.toElement(doc));
