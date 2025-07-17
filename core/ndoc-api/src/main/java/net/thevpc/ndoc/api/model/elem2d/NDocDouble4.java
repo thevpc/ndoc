@@ -3,13 +3,13 @@ package net.thevpc.ndoc.api.model.elem2d;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 
-public class Double4 implements NToElement {
+public class NDocDouble4 implements NToElement {
     private Double x1;
     private Double x2;
     private Double x3;
     private Double x4;
 
-    public Double4(Number x1, Number x2, Number x3, Number x4) {
+    public NDocDouble4(Number x1, Number x2, Number x3, Number x4) {
         this.x1 = x1 == null ? null : x1.doubleValue();
         this.x2 = x2 == null ? null : x2.doubleValue();
         this.x3 = x3 == null ? null : x3.doubleValue();
