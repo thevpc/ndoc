@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.main;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentRendererListener;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRendererConfig;
 
@@ -32,7 +32,7 @@ public class NDocDocumentRendererListenerList implements NDocDocumentRendererLis
     }
 
     @Override
-    public void onChangedPage(HNode page) {
+    public void onChangedPage(NDocNode page) {
         for (NDocDocumentRendererListener r : registeredHDocumentRendererListener) {
             r.onChangedPage(page);
         }
