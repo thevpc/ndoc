@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.api.util;
 
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
@@ -19,9 +19,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class HUtils {
-    public static final MinMax minMaxZ(HPoint3D[] points) {
+    public static final MinMax minMaxZ(NDocPoint3D[] points) {
         MinMax m = new MinMax();
-        for (HPoint3D point : points) {
+        for (NDocPoint3D point : points) {
             m.registerValue(point.z);
         }
         return m;
@@ -65,8 +65,8 @@ public class HUtils {
             if (source != null) {
                 if (source instanceof NPath) {
                     referencePath = (NPath) source;
-                } else if (source instanceof HResource) {
-                    referencePath = ((HResource) source).path().orNull();
+                } else if (source instanceof NDocResource) {
+                    referencePath = ((NDocResource) source).path().orNull();
                 }
             }
         }
@@ -86,7 +86,7 @@ public class HUtils {
         return base;
     }
 
-    public static String shortName(HResource a) {
+    public static String shortName(NDocResource a) {
         if (a == null) {
             return null;
         }
