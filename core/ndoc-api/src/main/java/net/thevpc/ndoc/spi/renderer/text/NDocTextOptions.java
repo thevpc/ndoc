@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.spi.renderer.text;
 
-import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
+import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
 import net.thevpc.nuts.util.NBlankable;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ public class NDocTextOptions implements Cloneable, NBlankable {
     public Boolean strikeThrough;
     public Font font;
     public Paint shadowColor;
-    public HPoint2D shadowTranslation;
+    public NDocPoint2D shadowTranslation;
     public Stroke stroke;
 
     @Override
@@ -186,11 +186,11 @@ public class NDocTextOptions implements Cloneable, NBlankable {
         return this;
     }
 
-    public HPoint2D getShadowTranslation() {
+    public NDocPoint2D getShadowTranslation() {
         return shadowTranslation;
     }
 
-    public NDocTextOptions setShadowTranslation(HPoint2D shadowTranslation) {
+    public NDocTextOptions setShadowTranslation(NDocPoint2D shadowTranslation) {
         this.shadowTranslation = shadowTranslation;
         return this;
     }
