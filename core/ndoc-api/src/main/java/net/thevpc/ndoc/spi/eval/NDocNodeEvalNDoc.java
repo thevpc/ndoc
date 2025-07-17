@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NNamedElement;
 import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.nuts.util.NOptional;
 
@@ -20,10 +19,10 @@ import net.thevpc.nuts.util.NOptional;
  */
 public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
 
-    private HNode node;
+    private NDocNode node;
     private List<NDocNodeEvalFunctionFactory> functions = new ArrayList<>();
 
-    public NDocNodeEvalNDoc(HNode node) {
+    public NDocNodeEvalNDoc(NDocNode node) {
         this.node = node;
     }
 
@@ -34,18 +33,18 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
     }
 
     public NElement evalVar(String varName) {
-        HNode nn = (node);
-//        HNode stop = null;
+        NDocNode nn = (node);
+//        NDocNode stop = null;
         while (nn != null) {
             NOptional<NElement> var = nn.getVar(varName);
             if (var.isPresent()) {
                 return var.get();
             }
-//            for (HNode cc : nn.children()) {
+//            for (NDocNode cc : nn.children()) {
 //                if (cc == stop) {
 //                    break;
 //                }
-//                if (HNodeType.ASSIGN.equals(cc.type())) {
+//                if (NDocNodeType.ASSIGN.equals(cc.type())) {
 //                    String oName = cc.getName();
 //                    if (Objects.equals(oName, varName)) {
 //                        Object pp = cc.getPropertyValue(HPropName.VALUE).orNull();
