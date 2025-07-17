@@ -1,4 +1,4 @@
-@(halfa,"1.0")
+@(ndoc,"1.0")
 {
     page{
         text("My Title 2", at:top, class:title),
