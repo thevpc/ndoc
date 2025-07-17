@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document;
 
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
@@ -8,23 +8,23 @@ import net.thevpc.nuts.util.NStringUtils;
 import java.time.Instant;
 import java.util.logging.Level;
 
-public class DefaultHLogger implements HLogger {
-    private HResource defaultSource;
+public class DefaultNDocLogger implements NDocLogger {
+    private NDocResource defaultSource;
 
-    public DefaultHLogger() {
+    public DefaultNDocLogger() {
 
     }
-    public DefaultHLogger(HResource defaultSource) {
+    public DefaultNDocLogger(NDocResource defaultSource) {
         this.defaultSource = defaultSource;
     }
 
     @Override
-    public void log(HMsg msg) {
+    public void log(NDocMsg msg) {
         Instant time = Instant.now();
         NMsg nmsg=msg.message();
         Level type=nmsg.getLevel();
         Throwable error=msg.error();
-        HResource source=msg.source();
+        NDocResource source=msg.source();
         if (type == null) {
             type = Level.INFO;
         }
