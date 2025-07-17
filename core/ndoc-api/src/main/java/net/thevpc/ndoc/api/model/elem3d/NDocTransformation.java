@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model.elem3d;
 
-public class Transformation {
+public class NDocTransformation {
 
     // Identity matrix
     public static double[][] identity() {
