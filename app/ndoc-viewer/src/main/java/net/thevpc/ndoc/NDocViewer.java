@@ -34,7 +34,7 @@ public class NDocViewer  {
                         .with("--reopen").matchTrueFlag(a->{
                             NPath p = mainFrame.getService().getLatestProjectPath();
                             if(p!=null){
-                                mainFrame.getService().openProject(NPath.of(a.stringValue()));
+                                mainFrame.getService().openProject(p);
                             }
                         })
                         .with("--open").matchEntry(a->
