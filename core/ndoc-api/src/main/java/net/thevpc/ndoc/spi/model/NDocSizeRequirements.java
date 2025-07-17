@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.spi.model;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 
 public class NDocSizeRequirements {
     public double minX;
@@ -23,14 +23,14 @@ public class NDocSizeRequirements {
         this.preferredY = preferredY;
     }
 
-    public Bounds2 toBounds2() {
-        return new Bounds2(
+    public NDocBounds2 toBounds2() {
+        return new NDocBounds2(
                 minX, minY,
                 maxX, maxY
         );
     }
 
-    public NDocSizeRequirements(Bounds2 b) {
+    public NDocSizeRequirements(NDocBounds2 b) {
         this.minX = b.getMinX();
         this.maxX = b.getMaxX();
         this.minY = b.getMinY();
