@@ -2,8 +2,8 @@ package net.thevpc.ndoc.api.model.elem3d.composite;
 
 import net.thevpc.ndoc.api.model.elem3d.*;
 
-public class Element3DUVSphere extends AbstractElement3D {
-    private HPoint3D origin;
+public class NDocElement3DUVSphere extends AbstractElement3D {
+    private NDocPoint3D origin;
     private int meridians;
     private int parallels;
     private double radiusX;
@@ -11,7 +11,7 @@ public class Element3DUVSphere extends AbstractElement3D {
     private double radiusZ;
     private boolean showMesh = true;
 
-    public Element3DUVSphere(HPoint3D origin
+    public NDocElement3DUVSphere(NDocPoint3D origin
             , double radiusX
             , double radiusY
             , double radiusZ
@@ -24,7 +24,7 @@ public class Element3DUVSphere extends AbstractElement3D {
         this.radiusZ = radiusZ;
     }
 
-    public HPoint3D getOrigin() {
+    public NDocPoint3D getOrigin() {
         return origin;
     }
 
