@@ -35,7 +35,7 @@ public class DocumentController {
     @GetMapping(value = "/images", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getDocumentImages(@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("/home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.ndoc")
+            NPath file = NPath.of("/home/mohamed/Desktop/stage/ndoc/documentation/tson-doc/main.ndoc")
                     .toAbsolute()
                     .normalize();
 
