@@ -2,8 +2,8 @@ package net.thevpc.ndoc.spi.renderer;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
         }
 
         @Override
-        public void onChangedPage(HNode page) {
+        public void onChangedPage(NDocNode page) {
             for (NDocDocumentRendererListener eventListener : eventListeners) {
                 eventListener.onChangedPage(page);
             }
@@ -50,7 +50,7 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
         }
     };
     protected final NDocEngine engine;
-    protected HLogger messages;
+    protected NDocLogger messages;
 
     public AbstractNDocDocumentRenderer(NDocEngine engine) {
         this.engine = engine;
@@ -74,12 +74,12 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
     }
 
     @Override
-    public HLogger log() {
+    public NDocLogger log() {
         return messages;
     }
 
     @Override
-    public NDocDocumentRenderer setLogger(HLogger logger) {
+    public NDocDocumentRenderer setLogger(NDocLogger logger) {
         this.messages = logger;
         return this;
     }
