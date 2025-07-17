@@ -8,10 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class NPathHResource extends DefaultHResource {
+public class NPathNDocResource extends DefaultNDocResource {
     private NPath path;
 
-    public NPathHResource(NPath path) {
+    public NPathNDocResource(NPath path) {
         this.path = path;
     }
 
@@ -82,7 +82,7 @@ public class NPathHResource extends DefaultHResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        NPathHResource that = (NPathHResource) o;
+        NPathNDocResource that = (NPathNDocResource) o;
         return Objects.equals(path, that.path);
     }
 
