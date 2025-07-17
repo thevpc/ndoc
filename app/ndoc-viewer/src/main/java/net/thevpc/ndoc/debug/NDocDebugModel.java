@@ -2,40 +2,40 @@ package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
-public class HDebugModel {
+public class NDocDebugModel {
     private NDocEngine engine;
     private NDocument rawDocument;
-    private HNode currentPage;
+    private NDocNode currentPage;
     private NDocument compiledDocument;
-    private HLogger messageList;
+    private NDocLogger messageList;
 
     public NDocEngine getEngine() {
         return engine;
     }
 
-    public HDebugModel setEngine(NDocEngine engine) {
+    public NDocDebugModel setEngine(NDocEngine engine) {
         this.engine = engine;
         return this;
     }
 
-    public HNode getCurrentPage() {
+    public NDocNode getCurrentPage() {
         return currentPage;
     }
 
-    public HDebugModel setCurrentPage(HNode currentPage) {
+    public NDocDebugModel setCurrentPage(NDocNode currentPage) {
         this.currentPage = currentPage;
         return this;
     }
 
-    public HDebugModel setRawDocument(NDocument rawDocument) {
+    public NDocDebugModel setRawDocument(NDocument rawDocument) {
         this.rawDocument = rawDocument;
         return this;
     }
 
-    public HDebugModel setCompiledDocument(NDocument compiledDocument) {
+    public NDocDebugModel setCompiledDocument(NDocument compiledDocument) {
         this.compiledDocument = compiledDocument;
         return this;
     }
@@ -48,11 +48,11 @@ public class HDebugModel {
         return compiledDocument;
     }
 
-    public HLogger messages() {
+    public NDocLogger messages() {
         return messageList;
     }
 
-    public HDebugModel setMessageList(HLogger messageList) {
+    public NDocDebugModel setMessageList(NDocLogger messageList) {
         this.messageList = messageList;
         return this;
     }
