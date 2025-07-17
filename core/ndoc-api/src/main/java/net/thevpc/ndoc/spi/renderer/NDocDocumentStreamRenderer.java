@@ -2,7 +2,7 @@ package net.thevpc.ndoc.spi.renderer;
 
 import java.io.OutputStream;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.io.NPath;
 
 /**
@@ -18,5 +18,5 @@ public interface NDocDocumentStreamRenderer extends NDocDocumentRenderer {
 
     NDocDocumentStreamRenderer setOutput(NPath stream);
 
-    NDocDocumentStreamRenderer renderNode(HNode part, OutputStream out);
+    NDocDocumentStreamRenderer renderNode(NDocNode part, OutputStream out);
 }
