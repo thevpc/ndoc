@@ -37,7 +37,7 @@ public class YLen {
         this.root = root;
     }
 
-    public double value(Bounds2 parentBounds, Bounds2 screenBounds) {
+    public double value(NDocBounds2 parentBounds, NDocBounds2 screenBounds) {
         if (this.root) {
             if (value >= 100) {
                 return screenBounds.getHeight();
