@@ -2,7 +2,6 @@ package net.thevpc.ndoc.config;
 
 import java.util.Date;
 
-//public List<HalfaProject>
 public class NDocProject {
     private String path;
     private Date lastAccess;
