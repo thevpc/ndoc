@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.spi.renderer;
 
-import net.thevpc.ndoc.api.document.HLogger;
+import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.nuts.util.NAssert;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ public class NDocNodeRendererConfig {
     private int width;
     private int height;
     private Map<String, Object> capabilities;
-    private HLogger messages;
+    private NDocLogger messages;
 
     public NDocNodeRendererConfig() {
     }
@@ -46,11 +46,11 @@ public class NDocNodeRendererConfig {
         return this;
     }
 
-    public HLogger getMessages() {
+    public NDocLogger getMessages() {
         return messages;
     }
 
-    public NDocNodeRendererConfig setMessages(HLogger messages) {
+    public NDocNodeRendererConfig setMessages(NDocLogger messages) {
         this.messages = messages;
         return this;
     }
