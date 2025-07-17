@@ -2,7 +2,7 @@ package net.thevpc.ndoc.api.model.elem3d;
 
 import java.awt.*;
 
-public abstract class AbstractElement3DPrimitive extends AbstractElement3D implements HElement3DPrimitive {
+public abstract class AbstractElement3DPrimitive extends AbstractElement3D implements NDocElement3DPrimitive {
     private Paint backgroundPaint;
     private Paint contourPaint;
     private Stroke contourStroke;
@@ -13,7 +13,7 @@ public abstract class AbstractElement3DPrimitive extends AbstractElement3D imple
         return composite;
     }
 
-    public HElement3DPrimitive setComposite(Composite composite) {
+    public NDocElement3DPrimitive setComposite(Composite composite) {
         this.composite = composite;
         return this;
     }
@@ -22,7 +22,7 @@ public abstract class AbstractElement3DPrimitive extends AbstractElement3D imple
         return backgroundPaint;
     }
 
-    public HElement3DPrimitive setBackgroundPaint(Paint backgroundPaint) {
+    public NDocElement3DPrimitive setBackgroundPaint(Paint backgroundPaint) {
         this.backgroundPaint = backgroundPaint;
         return this;
     }
@@ -31,7 +31,7 @@ public abstract class AbstractElement3DPrimitive extends AbstractElement3D imple
         return contourPaint;
     }
 
-    public HElement3DPrimitive setLinePaint(Paint contourPaint) {
+    public NDocElement3DPrimitive setLinePaint(Paint contourPaint) {
         this.contourPaint = contourPaint;
         return this;
     }
@@ -40,7 +40,7 @@ public abstract class AbstractElement3DPrimitive extends AbstractElement3D imple
         return contourStroke;
     }
 
-    public HElement3DPrimitive setLineStroke(Stroke contourStroke) {
+    public NDocElement3DPrimitive setLineStroke(Stroke contourStroke) {
         this.contourStroke = contourStroke;
         return this;
     }
