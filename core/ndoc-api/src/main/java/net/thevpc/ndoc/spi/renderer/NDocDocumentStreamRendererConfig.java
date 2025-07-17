@@ -3,7 +3,7 @@ package net.thevpc.ndoc.spi.renderer;
 import java.io.Serializable;
 
 public class NDocDocumentStreamRendererConfig implements Serializable, Cloneable {
-    private PageOrientation orientation;
+    private NDocPageOrientation orientation;
     private int gridX;
     private int gridY;
     private int pageWidth;
@@ -16,11 +16,11 @@ public class NDocDocumentStreamRendererConfig implements Serializable, Cloneable
     private float marginLeft;
     private float marginRight;
 
-    public PageOrientation getOrientation() {
+    public NDocPageOrientation getOrientation() {
         return orientation;
     }
 
-    public NDocDocumentStreamRendererConfig setOrientation(PageOrientation orientation) {
+    public NDocDocumentStreamRendererConfig setOrientation(NDocPageOrientation orientation) {
         this.orientation = orientation;
         return this;
     }
