@@ -20,18 +20,18 @@ public class NDocViewerConfigManager {
     }
 
     public NDocViewerConfigManager(NPath viewerConfigFile) {
-        String halfaViewerConfigName = "ndoc-viewer-config.tson";
+        String ndocViewerConfigName = "ndoc-viewer-config.tson";
         NPath appCacheFolder = NApp.of().getConfFolder();
         if (viewerConfigFile == null) {
             if (appCacheFolder == null) {
-                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ndoc:ndoc"), NStoreType.CACHE).resolve(halfaViewerConfigName);
+                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ndoc:ndoc"), NStoreType.CACHE).resolve(ndocViewerConfigName);
             } else {
-                viewerConfigFile = appCacheFolder.resolve(halfaViewerConfigName);
+                viewerConfigFile = appCacheFolder.resolve(ndocViewerConfigName);
             }
         } else if (viewerConfigFile.isDirectory()) {
-            viewerConfigFile = viewerConfigFile.resolve(halfaViewerConfigName);
+            viewerConfigFile = viewerConfigFile.resolve(ndocViewerConfigName);
         } else if (!viewerConfigFile.exists() && !viewerConfigFile.getName().endsWith(".tson")) {
-            viewerConfigFile = viewerConfigFile.resolve(halfaViewerConfigName);
+            viewerConfigFile = viewerConfigFile.resolve(ndocViewerConfigName);
         }
         this.viewerConfigFile = viewerConfigFile;
     }
