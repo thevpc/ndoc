@@ -193,7 +193,7 @@ public class ServiceHelper {
         return engine;
     }
 
-    private static boolean isHalfaDocFile(NPath x) {
+    private static boolean isNDocFile(NPath x) {
         return x.getName().endsWith(".ndoc");
     }
 
