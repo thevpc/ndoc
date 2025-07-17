@@ -3,16 +3,16 @@ package net.thevpc.ndoc.api.style;
 import java.util.Objects;
 
 public class HStyleMagnitude implements Comparable<HStyleMagnitude> {
-    private HStyleRuleSelector selector;
+    private NDocStyleRuleSelector selector;
     private int distance;
     private int support;
 
-    public HStyleMagnitude(int distance, HStyleRuleSelector selector) {
+    public HStyleMagnitude(int distance, NDocStyleRuleSelector selector) {
         this.distance = distance;
-        this.selector = selector == null ? DefaultHNodeSelector.ofAny() : selector;
+        this.selector = selector == null ? DefaultNDocNodeSelector.ofAny() : selector;
     }
 
-    public HStyleRuleSelector getSelector() {
+    public NDocStyleRuleSelector getSelector() {
         return selector;
     }
 
