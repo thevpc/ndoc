@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.spi.util;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.Double2;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.SizeD;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -15,7 +15,7 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
 
-public class HNodeRendererUtils {
+public class NDocNodeRendererUtils {
 
     public static SizeD mapDim(SizeD d, SizeD base) {
         return new SizeD(
@@ -24,7 +24,7 @@ public class HNodeRendererUtils {
         );
     }
 
-    public static Stroke resolveStroke(HNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
+    public static Stroke resolveStroke(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
         NElement strokeElem = NDocValueByName.getStroke(t, ctx);
         if (strokeElem != null) {
             return ctx.graphics().createStroke(strokeElem);
@@ -32,7 +32,7 @@ public class HNodeRendererUtils {
         return null;
     }
 
-    public static boolean withStroke(HNode t, NDocGraphics g, NDocNodeRendererContext ctx, Runnable r) {
+    public static boolean withStroke(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx, Runnable r) {
         Stroke strokeElem = resolveStroke(t, g, ctx);
         if (strokeElem != null) {
             Stroke o = g.getStroke();
@@ -46,7 +46,7 @@ public class HNodeRendererUtils {
         }
     }
 
-    public static boolean applyStroke(HNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
+    public static boolean applyStroke(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
         Stroke strokeElem = resolveStroke(t, g, ctx);
         if (strokeElem != null) {
             g.setStroke(strokeElem);
@@ -55,31 +55,31 @@ public class HNodeRendererUtils {
         return false;
     }
 
-    public static void applyFont(HNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
+    public static void applyFont(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
         g.setFont(NDocValueByName.getFont(t, ctx));
     }
 
     public static SizeD mapDim(double w, double h, NDocNodeRendererContext ctx) {
-        Bounds2 size = ctx.getBounds();
+        NDocBounds2 size = ctx.getBounds();
         return new SizeD(w / 100 * size.getWidth(), w / 100 * size.getHeight());
     }
 
-    public static Bounds2 bounds(HNode t, NDocNodeRendererContext ctx) {
-        NDocObjEx oSize = NDocObjEx.of(ctx.computePropertyValue(t, HPropName.SIZE));
+    public static NDocBounds2 bounds(NDocNode t, NDocNodeRendererContext ctx) {
+        NDocObjEx oSize = NDocObjEx.of(ctx.computePropertyValue(t, NDocPropName.SIZE));
         NOptional<NElement[]> a = oSize.asNArrayElement();
-        Double2 size=null;
+        NDocDouble2 size=null;
         if(a.isPresent()){
             NElement[] tt = a.get();
             switch (tt.length){
                 case 1:{
-                    size=new Double2(
+                    size=new NDocDouble2(
                             ctx.sizeRef().x(tt[0]).orElse(100.0),
                             ctx.sizeRef().y(tt[0]).orElse(100.0)
                     );
                     break;
                 }
                 case 2:{
-                    size=new Double2(
+                    size=new NDocDouble2(
                             ctx.sizeRef().x(tt[0]).orElse(100.0),
                             ctx.sizeRef().y(tt[1]).orElse(100.0)
                     );
@@ -88,9 +88,9 @@ public class HNodeRendererUtils {
             }
         }
         if (size == null) {
-            size = new Double2(ctx.getBounds().getWidth(), ctx.getBounds().getHeight());
+            size = new NDocDouble2(ctx.getBounds().getWidth(), ctx.getBounds().getHeight());
         }
-        return new Bounds2(
+        return new NDocBounds2(
                 ctx.getBounds().getX(),
                 ctx.getBounds().getY(),
                 size.getX(),
@@ -98,7 +98,7 @@ public class HNodeRendererUtils {
         );
     }
 
-    public static boolean applyForeground(HNode t, NDocGraphics g, NDocNodeRendererContext ctx, boolean force) {
+    public static boolean applyForeground(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx, boolean force) {
         if (ctx.isDry()) {
             return false;
         }
@@ -110,7 +110,7 @@ public class HNodeRendererUtils {
         return false;
     }
 
-    public static boolean applyBackgroundColor(HNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
+    public static boolean applyBackgroundColor(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx) {
         if (ctx.isDry()) {
             return false;
         }
@@ -122,7 +122,7 @@ public class HNodeRendererUtils {
         return false;
     }
 
-    public static boolean applyGridColor(HNode t, NDocGraphics g, NDocNodeRendererContext ctx, boolean force) {
+    public static boolean applyGridColor(NDocNode t, NDocGraphics g, NDocNodeRendererContext ctx, boolean force) {
         if (ctx.isDry()) {
             return false;
         }
@@ -138,11 +138,11 @@ public class HNodeRendererUtils {
         return false;
     }
 
-//    public static boolean applyLineColor(HNode t, HGraphics g, HNodeRendererContext ctx, boolean force) {
+//    public static boolean applyLineColor(NDocNode t, HGraphics g, NDocNodeRendererContext ctx, boolean force) {
 //        if (ctx.isDry()) {
 //            return false;
 //        }
-//        Paint color = HPropValueByNameParser.resolveForegroundColor(t, ctx);
+//        Paint color = NDocPropValueByNameParser.resolveForegroundColor(t, ctx);
 //        if (color != null) {
 //            g.setPaint(color);
 //            return true;
@@ -155,7 +155,7 @@ public class HNodeRendererUtils {
 //        return false;
 //    }
 
-    public static void paintDebugBox(HNode t, NDocNodeRendererContext ctx, NDocGraphics g, Bounds2 a, boolean force) {
+    public static void paintDebugBox(NDocNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a, boolean force) {
         if (ctx.isDry()) {
             return;
         }
@@ -165,7 +165,7 @@ public class HNodeRendererUtils {
                     net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinY()),
                     net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getWidth()), net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getHeight())
             );
-            Double2 origin = NDocValueByName.getOrigin(t, ctx,new Double2(a.getWidth(),a.getHeight()));
+            NDocDouble2 origin = NDocValueByName.getOrigin(t, ctx,new NDocDouble2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
             double y = origin.getY() + a.getY();
             g.setColor(NDocValueByName.getDebugColor(t, ctx));
@@ -177,7 +177,7 @@ public class HNodeRendererUtils {
         }
     }
 
-    public static void paintDebugBox(HNode t, NDocNodeRendererContext ctx, NDocGraphics g, Bounds2 a) {
+    public static void paintDebugBox(NDocNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
         paintDebugBox(t, ctx, g, a, false);
     }
 
@@ -188,7 +188,7 @@ public class HNodeRendererUtils {
         return NOptional.ofNamedEmpty("color");
     }
 
-    public static void paintBorderLine(HNode t, NDocNodeRendererContext ctx, NDocGraphics g, Bounds2 a) {
+    public static void paintBorderLine(NDocNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
         if (ctx.isDry()) {
             return;
         }
@@ -207,7 +207,7 @@ public class HNodeRendererUtils {
 
     }
 
-    public static void paintBackground(HNode t, NDocNodeRendererContext ctx, NDocGraphics g, Bounds2 a) {
+    public static void paintBackground(NDocNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
         if (ctx.isDry()) {
             return;
         }
