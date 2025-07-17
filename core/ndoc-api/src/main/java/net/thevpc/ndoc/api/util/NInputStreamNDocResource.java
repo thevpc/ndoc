@@ -6,7 +6,7 @@ import net.thevpc.nuts.util.NOptional;
 import java.io.InputStream;
 import java.util.Objects;
 
-class NInputStreamHResource extends DefaultHResource {
+class NInputStreamNDocResource extends DefaultNDocResource {
     private InputStream inputStream;
 
     @Override
@@ -14,7 +14,7 @@ class NInputStreamHResource extends DefaultHResource {
         return NOptional.ofNamedEmpty("path");
     }
 
-    public NInputStreamHResource(InputStream inputStream) {
+    public NInputStreamNDocResource(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
@@ -27,7 +27,7 @@ class NInputStreamHResource extends DefaultHResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        NInputStreamHResource that = (NInputStreamHResource) o;
+        NInputStreamNDocResource that = (NInputStreamNDocResource) o;
         return Objects.equals(inputStream, that.inputStream);
     }
 
