@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.spi.renderer;
 
-public enum PageOrientation {
+public enum NDocPageOrientation {
     LANDSCAPE,
     PORTRAIT,
 
