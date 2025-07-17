@@ -1,9 +1,9 @@
 cover{
-    @(title)       text("Halfa Document")
+    @(title)       text("NDoc")
     @(subtitle)    text("Text Based Presentation")
     @(subsubtitle) text("Open Source")
     @(author)      text("thevpc")
-    @(email)       text("https://github.com/thevpc/halfa")
+    @(email)       text("https://github.com/thevpc/ndoc")
     @(date)        text("2024-06-15")
     @(version)     text("v1.0")
 }
