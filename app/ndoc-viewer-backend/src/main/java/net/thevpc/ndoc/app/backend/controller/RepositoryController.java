@@ -2,9 +2,9 @@ package net.thevpc.ndoc.app.backend.controller;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.DefaultHLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.app.backend.service.GitService;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.io.NPath;
@@ -119,9 +119,9 @@ public class RepositoryController {
 
             NDocEngine e = new DefaultNDocEngine();
             NDocument doc = e.loadDocument(file, null).get();
-            HLogger messages = new DefaultHLogger(engine.computeSource(doc.root()));
+            NDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
 
-            List<HNode> pages = doc.pages();
+            List<NDocNode> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 GitService gitService = new GitService(engine);
