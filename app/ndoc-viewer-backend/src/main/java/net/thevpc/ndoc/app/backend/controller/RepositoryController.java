@@ -113,7 +113,7 @@ public class RepositoryController {
     public ResponseEntity<byte[]> getDocumentImages(
             @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("file:///home/mohamed/Desktop/stage/halfa/documentation/tson-doc/main.ndoc")
+            NPath file = NPath.of("file:///home/mohamed/Desktop/stage/ndoc/documentation/tson-doc/main.ndoc")
                     .toAbsolute()
                     .normalize();
 
