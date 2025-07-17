@@ -3,8 +3,8 @@ package net.thevpc.ndoc.spi.eval;
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.model.elem2d.*;
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.util.DefaultColorPalette;
 import net.thevpc.nuts.elem.*;
@@ -296,7 +296,7 @@ public class NDocObjEx {
 
     private boolean parsedChildren;
 
-    public static NDocObjEx ofProp(HNode n, String name) {
+    public static NDocObjEx ofProp(NDocNode n, String name) {
         if (n == null) {
             return of(null);
         }
@@ -779,8 +779,8 @@ public class NDocObjEx {
                 return NDocObjEx.of(te.toListContainer().get().children().toArray(new NElement[0])).asIntArray();
             }
         }
-        if (element instanceof Int2) {
-            return NOptional.of(new int[]{((Int2) element).getY(), ((Int2) element).getY()});
+        if (element instanceof NDocInt2) {
+            return NOptional.of(new int[]{((NDocInt2) element).getY(), ((NDocInt2) element).getY()});
         }
         return NOptional.ofNamedEmpty("int[] from " + element);
     }
@@ -855,21 +855,21 @@ public class NDocObjEx {
                 }
             }
         }
-        if (element instanceof Double2) {
-            return NDocObjEx.of(new double[]{((Double2) element).getX(), ((Double2) element).getY()}).asNArrayElement();
+        if (element instanceof NDocDouble2) {
+            return NDocObjEx.of(new double[]{((NDocDouble2) element).getX(), ((NDocDouble2) element).getY()}).asNArrayElement();
         }
-        if (element instanceof HPoint2D) {
-            return NDocObjEx.of(new double[]{((HPoint2D) element).getX(), ((HPoint2D) element).getY()}).asNArrayElement();
+        if (element instanceof NDocPoint2D) {
+            return NDocObjEx.of(new double[]{((NDocPoint2D) element).getX(), ((NDocPoint2D) element).getY()}).asNArrayElement();
         }
-        if (element instanceof HPoint3D) {
-            return NDocObjEx.of(new double[]{((HPoint3D) element).getX(), ((HPoint3D) element).getY(), ((HPoint3D) element).getZ()}).asNArrayElement();
+        if (element instanceof NDocPoint3D) {
+            return NDocObjEx.of(new double[]{((NDocPoint3D) element).getX(), ((NDocPoint3D) element).getY(), ((NDocPoint3D) element).getZ()}).asNArrayElement();
         }
-        if (element instanceof Double4) {
+        if (element instanceof NDocDouble4) {
             return NDocObjEx.of(new double[]{
-                    ((Double4) element).getX1(),
-                    ((Double4) element).getX2()
-                    , ((Double4) element).getX3()
-                    , ((Double4) element).getX4()
+                    ((NDocDouble4) element).getX1(),
+                    ((NDocDouble4) element).getX2()
+                    , ((NDocDouble4) element).getX3()
+                    , ((NDocDouble4) element).getX4()
             }).asNArrayElement();
         }
         return NOptional.ofNamedEmpty("NElement[] from " + element);
@@ -898,17 +898,17 @@ public class NDocObjEx {
                 return NDocObjEx.of(te.asListContainer().get().children().toArray(new NElement[0])).asDoubleArray();
             }
         }
-        if (element instanceof Double2) {
-            return NOptional.of(new double[]{((Double2) element).getX(), ((Double2) element).getY()});
+        if (element instanceof NDocDouble2) {
+            return NOptional.of(new double[]{((NDocDouble2) element).getX(), ((NDocDouble2) element).getY()});
         }
-        if (element instanceof HPoint2D) {
-            return NOptional.of(new double[]{((HPoint2D) element).getY(), ((HPoint2D) element).getY()});
+        if (element instanceof NDocPoint2D) {
+            return NOptional.of(new double[]{((NDocPoint2D) element).getY(), ((NDocPoint2D) element).getY()});
         }
-        if (element instanceof HPoint3D) {
-            return NOptional.of(new double[]{((HPoint3D) element).getY(), ((HPoint3D) element).getY(), ((HPoint3D) element).getZ()});
+        if (element instanceof NDocPoint3D) {
+            return NOptional.of(new double[]{((NDocPoint3D) element).getY(), ((NDocPoint3D) element).getY(), ((NDocPoint3D) element).getZ()});
         }
-        if (element instanceof Double4) {
-            Double4 d = (Double4) element;
+        if (element instanceof NDocDouble4) {
+            NDocDouble4 d = (NDocDouble4) element;
             return NOptional.of(new double[]{
                     d.getX1(),
                     d.getX2(),
@@ -1037,47 +1037,47 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("boolean[] from " + element);
     }
 
-    public NOptional<Int2> asInt2() {
-        if (element instanceof Int2) {
-            return NOptional.of((Int2) element);
+    public NOptional<NDocInt2> asInt2() {
+        if (element instanceof NDocInt2) {
+            return NOptional.of((NDocInt2) element);
         }
         NOptional<int[]> a = asIntArray();
         if (a.isPresent()) {
             int[] g = a.get();
             if (g.length == 2) {
-                return NOptional.of(new Int2(g[0], g[1]));
+                return NOptional.of(new NDocInt2(g[0], g[1]));
             }
         }
         return NOptional.ofNamedEmpty("int2 from " + element);
     }
 
-    public NOptional<Double2> asDouble2OrHAlign() {
-        NOptional<Double2> p = asDouble2();
+    public NOptional<NDocDouble2> asDouble2OrHAlign() {
+        NOptional<NDocDouble2> p = asDouble2();
         if (p.isPresent()) {
             return p;
         }
-        if (element instanceof HAlign) {
-            return ((HAlign) element).toPosition();
+        if (element instanceof NDocAlign) {
+            return ((NDocAlign) element).toPosition();
         }
         NOptional<String> k = asStringOrName();
         if (k.isPresent()) {
-            return HAlign.parse(k.get()).flatMap(x -> x.toPosition());
+            return NDocAlign.parse(k.get()).flatMap(x -> x.toPosition());
         }
         return NOptional.ofNamedEmpty("Double from " + element);
     }
 
-    public NOptional<ElemNumber2> asNNumberElement2Or1OrHAlign() {
+    public NOptional<NDocElemNumber2> asNNumberElement2Or1OrHAlign() {
         NOptional<NElement[]> ta = asNArrayElement();
         if (ta.isPresent()) {
             NElement[] taa = ta.get();
             switch (taa.length) {
                 case 1: {
                     if (taa[0].isNumber()) {
-                        return NOptional.of(new ElemNumber2((NNumberElement) taa[0], (NNumberElement) taa[0]));
+                        return NOptional.of(new NDocElemNumber2((NNumberElement) taa[0], (NNumberElement) taa[0]));
                     } else if (taa[0].isAnyString()) {
-                        Double2 size = HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                        NDocDouble2 size = NDocAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                         return NOptional.of(
-                                new ElemNumber2(
+                                new NDocElemNumber2(
                                         NElement.ofDouble(size.getX()).asNumber().get(),
                                         NElement.ofDouble(size.getY()).asNumber().get()
                                 )
@@ -1091,18 +1091,18 @@ public class NDocObjEx {
                     if (taa[0].isNumber()) {
                         xx = taa[0].asNumber().get();
                     } else if (taa[0].isAnyString()) {
-                        xx = NElement.ofDouble(HAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(HAlign::toPosition).get().getX()).asNumber().get();
+                        xx = NElement.ofDouble(NDocAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(NDocAlign::toPosition).get().getX()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
                     }
                     if (taa[1].isNumber()) {
                         yy = taa[1].asNumber().get();
                     } else if (taa[1].isAnyString()) {
-                        yy = NElement.ofDouble(HAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
+                        yy = NElement.ofDouble(NDocAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
                     }
-                    return NOptional.of(new ElemNumber2(xx, yy));
+                    return NOptional.of(new NDocElemNumber2(xx, yy));
                 }
             }
         }
@@ -1110,11 +1110,11 @@ public class NDocObjEx {
         if (te.isPresent()) {
             NElement taa = te.get();
             if (taa.isNumber()) {
-                return NOptional.of(new ElemNumber2((NNumberElement) taa, (NNumberElement) taa));
+                return NOptional.of(new NDocElemNumber2((NNumberElement) taa, (NNumberElement) taa));
             } else if (taa.isAnyString()) {
-                Double2 size = HAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                NDocDouble2 size = NDocAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                 return NOptional.of(
-                        new ElemNumber2(
+                        new NDocElemNumber2(
                                 NElement.ofDouble(size.getX()).asNumber().get(),
                                 NElement.ofDouble(size.getY()).asNumber().get()
                         )
@@ -1185,83 +1185,83 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("Rotation from " + element);
     }
 
-    public NOptional<Double4> asDouble4() {
-        if (element instanceof Double4) {
-            return NOptional.of((Double4) element);
+    public NOptional<NDocDouble4> asDouble4() {
+        if (element instanceof NDocDouble4) {
+            return NOptional.of((NDocDouble4) element);
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 4) {
-                return NOptional.of(new Double4(dd[0], dd[1], dd[2], dd[3]));
+                return NOptional.of(new NDocDouble4(dd[0], dd[1], dd[2], dd[3]));
             }
         }
         return NOptional.ofNamedEmpty("Double4 from " + element);
     }
 
-    public NOptional<Double2> asDouble2() {
-        if (element instanceof Double2) {
-            return NOptional.of((Double2) element);
+    public NOptional<NDocDouble2> asDouble2() {
+        if (element instanceof NDocDouble2) {
+            return NOptional.of((NDocDouble2) element);
         }
-        if (element instanceof HPoint2D) {
-            HPoint2D p = (HPoint2D) element;
-            return NOptional.of(new Double2(p.x, p.y));
+        if (element instanceof NDocPoint2D) {
+            NDocPoint2D p = (NDocPoint2D) element;
+            return NOptional.of(new NDocDouble2(p.x, p.y));
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 2) {
-                return NOptional.of(new Double2(dd[0], dd[1]));
+                return NOptional.of(new NDocDouble2(dd[0], dd[1]));
             }
         }
         return NOptional.ofNamedEmpty("Double2 from " + element);
     }
 
-    public NOptional<Double3> asDouble3() {
-        if (element instanceof Double3) {
-            return NOptional.of((Double3) element);
+    public NOptional<NDocDouble3> asDouble3() {
+        if (element instanceof NDocDouble3) {
+            return NOptional.of((NDocDouble3) element);
         }
-        if (element instanceof HPoint3D) {
-            HPoint3D p = (HPoint3D) element;
-            return NOptional.of(new Double3(p.x, p.y, p.z));
+        if (element instanceof NDocPoint3D) {
+            NDocPoint3D p = (NDocPoint3D) element;
+            return NOptional.of(new NDocDouble3(p.x, p.y, p.z));
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 3) {
-                return NOptional.of(new Double3(dd[0], dd[1], dd[2]));
+                return NOptional.of(new NDocDouble3(dd[0], dd[1], dd[2]));
             }
         }
         return NOptional.ofNamedEmpty("Double3 from " + element);
     }
 
-    public NOptional<HPoint2D> asHPoint2DOrDouble() {
-        if (element instanceof HPoint2D) {
-            return NOptional.of((HPoint2D) element);
+    public NOptional<NDocPoint2D> asHPoint2DOrDouble() {
+        if (element instanceof NDocPoint2D) {
+            return NOptional.of((NDocPoint2D) element);
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 2) {
-                return NOptional.of(new HPoint2D(dd[0], dd[1]));
+                return NOptional.of(new NDocPoint2D(dd[0], dd[1]));
             }
         }
         NOptional<Double> dd = asDouble();
         if (dd.isPresent()) {
-            return NOptional.of(new HPoint2D(dd.get(), dd.get()));
+            return NOptional.of(new NDocPoint2D(dd.get(), dd.get()));
         }
         return NOptional.ofNamedEmpty("HPoint2D from " + element);
     }
 
-    public NOptional<HPoint2D> asHPoint2D() {
-        if (element instanceof HPoint2D) {
-            return NOptional.of((HPoint2D) element);
+    public NOptional<NDocPoint2D> asHPoint2D() {
+        if (element instanceof NDocPoint2D) {
+            return NOptional.of((NDocPoint2D) element);
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 2) {
-                return NOptional.of(new HPoint2D(dd[0], dd[1]));
+                return NOptional.of(new NDocPoint2D(dd[0], dd[1]));
             }
         }
         return NOptional.ofNamedEmpty("HPoint2D from " + element);
@@ -1327,15 +1327,15 @@ public class NDocObjEx {
         return NOptional.ofNamedError("HArrow from " + element);
     }
 
-    public NOptional<HPoint3D> asHPoint3D() {
-        if (element instanceof HPoint3D) {
-            return NOptional.of((HPoint3D) element);
+    public NOptional<NDocPoint3D> asHPoint3D() {
+        if (element instanceof NDocPoint3D) {
+            return NOptional.of((NDocPoint3D) element);
         }
         NOptional<double[]> d = asDoubleArray();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 2) {
-                return NOptional.of(new HPoint3D(dd[0], dd[1], dd[2]));
+                return NOptional.of(new NDocPoint3D(dd[0], dd[1], dd[2]));
             }
         }
         return NOptional.ofNamedEmpty("HPoint3D from " + element);
@@ -1373,42 +1373,42 @@ public class NDocObjEx {
         }
     }
 
-    public NOptional<HPoint2D[]> asHPoint2DArray() {
-        NOptional<Double2[]> u = asDouble2Array();
+    public NOptional<NDocPoint2D[]> asHPoint2DArray() {
+        NOptional<NDocDouble2[]> u = asDouble2Array();
         if (u.isPresent()) {
             return NOptional.of(
-                    Arrays.stream(u.get()).map(x -> new HPoint2D(x.getX(), x.getY())).toArray(HPoint2D[]::new)
+                    Arrays.stream(u.get()).map(x -> new NDocPoint2D(x.getX(), x.getY())).toArray(NDocPoint2D[]::new)
             );
         } else {
             return (NOptional) u;
         }
     }
 
-    public NOptional<HPoint3D[]> asHPoint3DArray() {
-        NOptional<Double3[]> u = asDouble3Array();
+    public NOptional<NDocPoint3D[]> asHPoint3DArray() {
+        NOptional<NDocDouble3[]> u = asDouble3Array();
         if (u.isPresent()) {
             return NOptional.of(
-                    Arrays.stream(u.get()).map(x -> new HPoint3D(x.getX(), x.getY(), x.getZ())).toArray(HPoint3D[]::new)
+                    Arrays.stream(u.get()).map(x -> new NDocPoint3D(x.getX(), x.getY(), x.getZ())).toArray(NDocPoint3D[]::new)
             );
         } else {
             return (NOptional) u;
         }
     }
 
-    public NOptional<Double2[]> asDouble2Array() {
-        if (element instanceof Double2[]) {
-            return NOptional.of((Double2[]) element);
+    public NOptional<NDocDouble2[]> asDouble2Array() {
+        if (element instanceof NDocDouble2[]) {
+            return NOptional.of((NDocDouble2[]) element);
         }
-        if (element instanceof HPoint2D[]) {
+        if (element instanceof NDocPoint2D[]) {
             return NOptional.of(
-                    Arrays.stream((HPoint2D[]) element).map(x -> new Double2(x.getX(), x.getY())).toArray(Double2[]::new)
+                    Arrays.stream((NDocPoint2D[]) element).map(x -> new NDocDouble2(x.getX(), x.getY())).toArray(NDocDouble2[]::new)
             );
         }
         if (element instanceof NElement[]) {
             NElement[] arr = (NElement[]) element;
-            Double2[] aa = new Double2[arr.length];
+            NDocDouble2[] aa = new NDocDouble2[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Double2> d = NDocObjEx.of(arr[i]).asDouble2();
+                NOptional<NDocDouble2> d = NDocObjEx.of(arr[i]).asDouble2();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -1426,15 +1426,15 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("Double2[] from " + element);
     }
 
-    public NOptional<Double3[]> asDouble3Array() {
-        if (element instanceof Double3[]) {
-            return NOptional.of((Double3[]) element);
+    public NOptional<NDocDouble3[]> asDouble3Array() {
+        if (element instanceof NDocDouble3[]) {
+            return NOptional.of((NDocDouble3[]) element);
         }
         if (element instanceof NElement[]) {
             NElement[] arr = (NElement[]) element;
-            Double3[] aa = new Double3[arr.length];
+            NDocDouble3[] aa = new NDocDouble3[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Double3> d = NDocObjEx.of(arr[i]).asDouble3();
+                NOptional<NDocDouble3> d = NDocObjEx.of(arr[i]).asDouble3();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
