@@ -12,6 +12,6 @@
 * (2024-06-24) implement Custom Strokes
 * (2024-06-24) implement Custom Element with Parameters (example customize UL bullet as square and not always a sphere)
 * (2024-06-24) Compress output as TSOS (Type Safe Object Serialization)
-* (2024-06-24) Static Web Site Generator based on Halfa
+* (2024-06-24) Static Web Site Generator based on ndoc
 
 
