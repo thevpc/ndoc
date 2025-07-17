@@ -1,16 +1,16 @@
 package net.thevpc.ndoc.api.model.elem3d.primitives;
 
 import net.thevpc.ndoc.api.model.elem3d.AbstractElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.Element3DPrimitiveType;
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitiveType;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 
-public class Element3DArc extends AbstractElement3DPrimitive {
-    private HPoint3D from;
-    private HPoint3D to;
+public class NDocElement3DArc extends AbstractElement3DPrimitive {
+    private NDocPoint3D from;
+    private NDocPoint3D to;
     private double startAngle;
     private double endAngle;
 
-    public Element3DArc(HPoint3D from, HPoint3D to, double startAngle, double endAngle) {
+    public NDocElement3DArc(NDocPoint3D from, NDocPoint3D to, double startAngle, double endAngle) {
         this.from = from;
         this.to = to;
         this.startAngle = startAngle;
@@ -25,16 +25,16 @@ public class Element3DArc extends AbstractElement3DPrimitive {
         return endAngle;
     }
 
-    public HPoint3D getFrom() {
+    public NDocPoint3D getFrom() {
         return from;
     }
 
-    public HPoint3D getTo() {
+    public NDocPoint3D getTo() {
         return to;
     }
 
     @Override
-    public Element3DPrimitiveType type() {
-        return Element3DPrimitiveType.ARC;
+    public NDocElement3DPrimitiveType type() {
+        return NDocElement3DPrimitiveType.ARC;
     }
 }
