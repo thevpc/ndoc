@@ -12,7 +12,7 @@ public class TestPdf {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
-        NPath file = NPath.of("documentation/halfa-doc").toAbsolute().normalize();
+        NPath file = NPath.of("documentation/ndoc-doc").toAbsolute().normalize();
         NDocument doc = e.loadDocument(file, new DefaultHLogger(null)).get();
         NDocDocumentStreamRenderer renderer = e.newPdfRenderer().get();
         renderer.setOutput(file.resolve("output.pdf"));
