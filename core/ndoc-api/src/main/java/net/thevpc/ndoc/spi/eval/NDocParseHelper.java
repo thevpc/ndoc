@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.spi.eval;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElementAnnotation;
 import net.thevpc.nuts.util.NBlankable;
@@ -40,7 +40,7 @@ public class NDocParseHelper {
     }
 
 
-    public static boolean fillAnnotations(NElement e, HNode p) {
+    public static boolean fillAnnotations(NElement e, NDocNode p) {
         for (NElementAnnotation a : e.annotations()) {
             String nn = a.name();
             if (!NBlankable.isBlank(nn)) {
