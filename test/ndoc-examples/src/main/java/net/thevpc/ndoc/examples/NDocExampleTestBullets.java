@@ -49,7 +49,7 @@ public class NDocExampleTestBullets {
         renderer.render(d);
     }
 
-//    private static HGridContainer cc(HalfaDocumentFactory f){
+//    private static HGridContainer cc(NDocDocumentFactory f){
 //        List<HNode> all = new ArrayList<>();
 //        int nb=6;
 //        for (int i = 0; i < nb; i++) {
