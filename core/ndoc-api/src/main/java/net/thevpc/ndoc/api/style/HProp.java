@@ -4,9 +4,9 @@
  */
 package net.thevpc.ndoc.api.style;
 
-import net.thevpc.ndoc.api.model.elem2d.Double2;
-import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElement;
@@ -56,32 +56,32 @@ public class HProp implements HItem, NToElement {
         return new HProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
-    public static HProp ofDouble2(String name, Double2 d) {
+    public static HProp ofDouble2(String name, NDocDouble2 d) {
         return new HProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofHPoint2D(String name, HPoint2D d) {
+    public static HProp ofHPoint2D(String name, NDocPoint2D d) {
         return new HProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofHPoint3D(String name, HPoint3D d) {
+    public static HProp ofHPoint3D(String name, NDocPoint3D d) {
         return new HProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofDouble2Array(String name, Double2... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(Double2::toElement).toArray(NElement[]::new)));
+    public static HProp ofDouble2Array(String name, NDocDouble2... d) {
+        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
     }
 
     public static HProp ofDoubleArray(String name, double[] d) {
         return new HProp(name, NElement.ofDoubleArray(d));
     }
 
-    public static HProp ofHPoint2DArray(String name, HPoint2D... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(HPoint2D::toElement).toArray(NElement[]::new)));
+    public static HProp ofHPoint2DArray(String name, NDocPoint2D... d) {
+        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
     }
 
-    public static HProp ofHPoint3DArray(String name, HPoint3D... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(HPoint3D::toElement).toArray(NElement[]::new)));
+    public static HProp ofHPoint3DArray(String name, NDocPoint3D... d) {
+        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
     }
 
     public HProp(String name, NElement value) {
