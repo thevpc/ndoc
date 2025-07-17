@@ -1,5 +1,5 @@
 {
-  "name": "halfa-frent",
+  "name": "ndoc-front",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:Halfa_frent": "node dist/halfa-frent/server/server.mjs"
+    "serve:ssr:NDocFront": "node dist/ndoc-front/server/server.mjs"
   },
   "private": true,
   "dependencies": {
