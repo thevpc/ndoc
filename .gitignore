@@ -35,8 +35,8 @@ extensions/ndoc-extension-presenters/target
 /extensions/ndoc-extension-animated-gif/
 /extensions/ndoc-extension-latex/
 /extensions/ndoc-extension-plantuml/
-/app/halfa-viewer-backend/target/
-/app/halfa-viewer/target/
-/core/renderers/halfa-renderer-html/target/
+/app/ndoc-viewer-backend/target/
+/app/ndoc-viewer/target/
+/core/renderers/ndoc-renderer-web/target/
 /ndoc-full/target/
 
