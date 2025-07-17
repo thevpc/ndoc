@@ -1,4 +1,4 @@
-@(halfa,"1.0")
+@(ndoc,"1.0")
 {
     import("sty/*.ndoc"),
     import("lib/*.ndoc"),
