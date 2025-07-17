@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi.renderer;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 public interface NDocDocumentRendererListener {
 
@@ -11,7 +11,7 @@ public interface NDocDocumentRendererListener {
     default void onChangedRawDocument(NDocument rawDocument) {
     }
 
-    default void onChangedPage(HNode page) {
+    default void onChangedPage(NDocNode page) {
     }
 
     default void onSaveDocument(NDocument document, NDocDocumentStreamRendererConfig config) {
