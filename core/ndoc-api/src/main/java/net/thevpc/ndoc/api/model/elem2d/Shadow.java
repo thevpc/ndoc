@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Shadow{
 
-    private HPoint2D translation;
+    private NDocPoint2D translation;
     private Paint color;
-    private HPoint2D shear;
+    private NDocPoint2D shear;
 
     public void setColor(Paint color) {
         this.color = color;
@@ -17,17 +17,17 @@ public class Shadow{
         return color;
     }
 
-    public HPoint2D getTranslation() {
+    public NDocPoint2D getTranslation() {
         return translation;
     }
 
-    public void setTranslation(HPoint2D translation) {
+    public void setTranslation(NDocPoint2D translation) {
         this.translation = translation;
     }
 
-    public HPoint2D getShear() {return shear;}
+    public NDocPoint2D getShear() {return shear;}
 
-    public void setShear (HPoint2D shear) {this.shear = shear;}
+    public void setShear (NDocPoint2D shear) {this.shear = shear;}
 
     @Override
     public String toString() {
