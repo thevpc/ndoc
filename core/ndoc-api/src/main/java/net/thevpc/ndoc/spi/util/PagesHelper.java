@@ -1,41 +1,41 @@
 package net.thevpc.ndoc.spi.util;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PagesHelper {
-    public static List<HNode> resolvePages(NDocument document) {
-        List<HNode> all = new ArrayList<>();
+    public static List<NDocNode> resolvePages(NDocument document) {
+        List<NDocNode> all = new ArrayList<>();
         fillPages(document.root(), all);
         return all;
     }
 
-    public static List<HNode> resolvePages(HNode part) {
-        List<HNode> all = new ArrayList<>();
+    public static List<NDocNode> resolvePages(NDocNode part) {
+        List<NDocNode> all = new ArrayList<>();
         fillPages(part, all);
         return all;
     }
 
-    public static void fillPages(HNode part, List<HNode> all) {
+    public static void fillPages(NDocNode part, List<NDocNode> all) {
         switch (part.type()) {
-            case HNodeType.PAGE: {
-                HNode p = part;
+            case NDocNodeType.PAGE: {
+                NDocNode p = part;
                 if (!p.isDisabled()) {
                     all.add(p);
                 }
                 break;
             }
-            case HNodeType.PAGE_GROUP:
-            case HNodeType.FLOW:
-            case HNodeType.GRID:
-            case HNodeType.STACK: {
+            case NDocNodeType.PAGE_GROUP:
+            case NDocNodeType.FLOW:
+            case NDocNodeType.GRID:
+            case NDocNodeType.STACK: {
                 if (!part.isTemplate()) {
                     if (!part.isDisabled()) {
-                        for (HNode p : part.children()) {
+                        for (NDocNode p : part.children()) {
                             fillPages(p, all);
                         }
                     }
