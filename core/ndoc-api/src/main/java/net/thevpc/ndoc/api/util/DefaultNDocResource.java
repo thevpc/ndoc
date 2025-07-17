@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.api.util;
 
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 
 import java.util.Objects;
 
-public abstract class DefaultHResource implements HResource {
+public abstract class DefaultNDocResource implements NDocResource {
     private Object state;
 
     @Override
@@ -22,7 +22,7 @@ public abstract class DefaultHResource implements HResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DefaultHResource that = (DefaultHResource) o;
+        DefaultNDocResource that = (DefaultNDocResource) o;
         return Objects.equals(state, that.state);
     }
 
