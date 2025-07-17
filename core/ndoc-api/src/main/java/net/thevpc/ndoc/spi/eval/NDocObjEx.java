@@ -1355,10 +1355,10 @@ public class NDocObjEx {
             case "int": {
                 return (NOptional<T>) asInt();
             }
-            case "net.thevpc.halfa.api.model.elem2d.Double2": {
+            case "net.thevpc.ndoc.api.model.elem2d.Double2": {
                 return (NOptional<T>) asDouble2();
             }
-            case "[Lnet.thevpc.halfa.api.model.Double2;": {
+            case "[Lnet.thevpc.ndoc.api.model.Double2;": {
                 return (NOptional<T>) asDouble2Array();
             }
             case "[Ljava.lang.String;": {
