@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.app.backend.service;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
 import net.thevpc.nuts.io.NPath;
@@ -90,7 +90,7 @@ public class GitService {
         return new String(Files.readAllBytes(file.toPath()));
     }
 
-    public byte[] createPageImage(HNode page, int width, int height, HLogger messages) throws IOException {
+    public byte[] createPageImage(NDocNode page, int width, int height, NDocLogger messages) throws IOException {
         return engine.renderManager().renderImageBytes(
                 page,
                 new NDocNodeRendererConfig((int) width, (int) height)
