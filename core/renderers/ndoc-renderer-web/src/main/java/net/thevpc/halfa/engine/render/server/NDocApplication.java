@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HalfaApplication {
+public class NDocApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HalfaApplication.class, args);
+        SpringApplication.run(NDocApplication.class, args);
     }
 }
