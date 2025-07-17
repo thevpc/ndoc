@@ -1,22 +1,22 @@
 package net.thevpc.ndoc.api.util;
 
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.io.NPath;
 
 import java.io.InputStream;
 
 public class HResourceFactory {
-    public static HResource of(NPath p) {
+    public static NDocResource of(NPath p) {
         if (p == null) {
             return null;
         }
-        return new NPathHResource(p);
+        return new NPathNDocResource(p);
     }
 
-    public static HResource of(InputStream p) {
+    public static NDocResource of(InputStream p) {
         if (p == null) {
             return null;
         }
-        return new NInputStreamHResource(p);
+        return new NInputStreamNDocResource(p);
     }
 }
