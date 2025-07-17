@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.api.model.elem2d.primitives;
 
-import net.thevpc.ndoc.api.model.elem2d.Element2DPrimitive;
+import net.thevpc.ndoc.api.model.elem2d.NDocElement2DPrimitive;
 
 import java.awt.*;
 
-public abstract class AbstractElement2DPrimitive implements Element2DPrimitive {
+public abstract class AbstractNDocElement2DPrimitive implements NDocElement2DPrimitive {
     private Paint backgroundPaint;
     private Paint contourPaint;
     private Stroke contourStroke;
@@ -17,7 +17,7 @@ public abstract class AbstractElement2DPrimitive implements Element2DPrimitive {
     }
 
     @Override
-    public Element2DPrimitive setComposite(Composite composite) {
+    public NDocElement2DPrimitive setComposite(Composite composite) {
         this.composite = composite;
         return this;
     }
@@ -28,7 +28,7 @@ public abstract class AbstractElement2DPrimitive implements Element2DPrimitive {
     }
 
     @Override
-    public Element2DPrimitive setBackgroundPaint(Paint backgroundPaint) {
+    public NDocElement2DPrimitive setBackgroundPaint(Paint backgroundPaint) {
         this.backgroundPaint = backgroundPaint;
         return this;
     }
@@ -39,7 +39,7 @@ public abstract class AbstractElement2DPrimitive implements Element2DPrimitive {
     }
 
     @Override
-    public Element2DPrimitive setLinePaint(Paint contourPaint) {
+    public NDocElement2DPrimitive setLinePaint(Paint contourPaint) {
         this.contourPaint = contourPaint;
         return this;
     }
@@ -50,7 +50,7 @@ public abstract class AbstractElement2DPrimitive implements Element2DPrimitive {
     }
 
     @Override
-    public Element2DPrimitive setLineStroke(Stroke contourStroke) {
+    public NDocElement2DPrimitive setLineStroke(Stroke contourStroke) {
         this.contourStroke = contourStroke;
         return this;
     }
