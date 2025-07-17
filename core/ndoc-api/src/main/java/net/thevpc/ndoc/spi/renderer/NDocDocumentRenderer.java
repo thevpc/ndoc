@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi.renderer;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
+import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.nuts.io.NPath;
 
 public interface NDocDocumentRenderer {
@@ -14,7 +14,7 @@ public interface NDocDocumentRenderer {
 
     void addRendererListener(NDocDocumentRendererListener listener);
 
-    HLogger log();
+    NDocLogger log();
 
-    NDocDocumentRenderer setLogger(HLogger logger);
+    NDocDocumentRenderer setLogger(NDocLogger logger);
 }
