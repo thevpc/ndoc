@@ -8,7 +8,7 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 
-public enum HAlign implements NToElement {
+public enum NDocAlign implements NToElement {
     TOP_LEFT,
     TOP_RIGHT,
     TOP,
@@ -20,26 +20,26 @@ public enum HAlign implements NToElement {
     BOTTOM_RIGHT,
     NONE;
 
-    public NOptional<Double2> toPosition() {
+    public NOptional<NDocDouble2> toPosition() {
         switch (this) {
             case TOP:
-                return NOptional.of(new Double2(50, 0));
+                return NOptional.of(new NDocDouble2(50, 0));
             case BOTTOM:
-                return NOptional.of(new Double2(50, 100));
+                return NOptional.of(new NDocDouble2(50, 100));
             case LEFT:
-                return NOptional.of(new Double2(0, 50));
+                return NOptional.of(new NDocDouble2(0, 50));
             case RIGHT:
-                return NOptional.of(new Double2(100, 50));
+                return NOptional.of(new NDocDouble2(100, 50));
             case TOP_LEFT:
-                return NOptional.of(new Double2(0, 0));
+                return NOptional.of(new NDocDouble2(0, 0));
             case CENTER:
-                return NOptional.of(new Double2(50, 50));
+                return NOptional.of(new NDocDouble2(50, 50));
             case TOP_RIGHT:
-                return NOptional.of(new Double2(100, 0));
+                return NOptional.of(new NDocDouble2(100, 0));
             case BOTTOM_RIGHT:
-                return NOptional.of(new Double2(100, 100));
+                return NOptional.of(new NDocDouble2(100, 100));
             case BOTTOM_LEFT:
-                return NOptional.of(new Double2(0, 100));
+                return NOptional.of(new NDocDouble2(0, 100));
             case NONE: {
                 break;
             }
@@ -47,10 +47,10 @@ public enum HAlign implements NToElement {
         return NOptional.ofEmpty(NMsg.ofC("invalid Double2 from %s", this));
     }
 
-    public static NOptional<HAlign> parse(String e) {
+    public static NOptional<NDocAlign> parse(String e) {
         try {
             String u = NNameFormat.CONST_NAME.format(NStringUtils.trim(e));
-            HAlign p = valueOf(u);
+            NDocAlign p = valueOf(u);
             return NOptional.of(p);
         } catch (Exception ex) {
             //
