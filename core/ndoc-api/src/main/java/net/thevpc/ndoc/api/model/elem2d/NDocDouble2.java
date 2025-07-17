@@ -3,11 +3,11 @@ package net.thevpc.ndoc.api.model.elem2d;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 
-public class Double2 implements NToElement {
+public class NDocDouble2 implements NToElement {
     private Double x;
     private Double y;
 
-    public Double2(Number x, Number y) {
+    public NDocDouble2(Number x, Number y) {
         this.x = x == null ? null : x.doubleValue();
         this.y = y == null ? null : y.doubleValue();
     }
@@ -25,8 +25,8 @@ public class Double2 implements NToElement {
         return "(" + x + ", " + y + ')';
     }
 
-    public Double2 mul(double w, double h) {
-        return new Double2(
+    public NDocDouble2 mul(double w, double h) {
+        return new NDocDouble2(
                 x * w,
                 y * h
         );
