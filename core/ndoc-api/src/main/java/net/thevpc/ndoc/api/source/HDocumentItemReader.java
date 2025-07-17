@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.api.source;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 public interface HDocumentItemReader {
 
-    HNode read(HDocumentItemReaderContext context);
+    NDocNode read(HDocumentItemReaderContext context);
 }
