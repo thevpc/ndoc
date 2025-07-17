@@ -46,7 +46,7 @@ public class ServiceHelper {
     NDocViewerConfigManager configManager;
     NDocDocumentRendererListenerList currListeners = new NDocDocumentRendererListenerList();
 
-    private HMessageListList currentMessages = new HMessageListList();
+    private NDocMessageListList currentMessages = new NDocMessageListList();
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
