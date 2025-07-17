@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Halfa_frent": {
+    "NDocFront": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -24,7 +24,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/halfa-frent",
+            "outputPath": "dist/ndoc-front",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Halfa_frent:build:production"
+              "buildTarget": "NDocFront:build:production"
             },
             "development": {
-              "buildTarget": "Halfa_frent:build:development"
+              "buildTarget": "NDocFront:build:development"
             }
           },
           "defaultConfiguration": "development"
