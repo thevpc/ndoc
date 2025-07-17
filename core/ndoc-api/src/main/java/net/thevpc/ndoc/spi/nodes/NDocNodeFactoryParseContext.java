@@ -3,29 +3,29 @@ package net.thevpc.ndoc.spi.nodes;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 
 public interface NDocNodeFactoryParseContext {
 
-    HLogger messages();
+    NDocLogger messages();
 
     NDocEngine engine();
 
-    NDocNodeFactoryParseContext push(HNode node);
+    NDocNodeFactoryParseContext push(NDocNode node);
 
-    HNode node();
+    NDocNode node();
 
     NDocument document();
 
-    HNode[] nodePath();
+    NDocNode[] nodePath();
 
     NElement element();
 
-    HResource source();
+    NDocResource source();
 
     NPath resolvePath(String path);
 
