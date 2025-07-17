@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.extension.latex.eq;
 
-import net.thevpc.ndoc.api.model.elem2d.Double2;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.Colors;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
@@ -26,7 +26,7 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
     }
 
     @Override
-    public void buildText(String text, NDocTextOptions options, HNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+    public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
         if (!text.isEmpty()) {
             NDocRichTextToken r = new NDocRichTextToken(
                     NDocRichTextTokenType.IMAGE_PAINTER,
@@ -34,14 +34,14 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
             );
             double fontSize = NDocValueByName.getFontSize(p, ctx);
             r.imagePainter = this.createLatex(text, fontSize,options,p,ctx);
-            Double2 size = r.imagePainter.size();
+            NDocDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
         }
     }
 
 
-    public NDocTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NDocTextOptions options, HNode p, NDocNodeRendererContext ctx) {
+    public NDocTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx) {
         TeXFormula formula;
         boolean error = false;
         try {
@@ -86,8 +86,8 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
                 //g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
             }
 
-            public Double2 size() {
-                return new Double2(icon.getIconWidth(), icon.getIconHeight());
+            public NDocDouble2 size() {
+                return new NDocDouble2(icon.getIconWidth(), icon.getIconHeight());
             }
         };
     }

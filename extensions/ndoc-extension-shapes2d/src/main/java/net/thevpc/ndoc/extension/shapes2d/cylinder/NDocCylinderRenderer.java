@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.extension.shapes2d.cylinder;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.model.elem2d.Shadow;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.style.HProperties;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -24,36 +24,36 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 
 public class NDocCylinderRenderer extends NDocNodeRendererBase {
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
     private static final Color DEFAULT_SIDE_COLOR = new Color(0x00215E);
     //private static final Color DEFAULT_TOP_COLOR = new Color(0xD1D8C5);
 
     public NDocCylinderRenderer() {
-        super(HNodeType.CYLINDER);
+        super(NDocNodeType.CYLINDER);
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, HPropName.SHADOW, ctx);
+        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, NDocPropName.SHADOW, ctx);
 
 
-        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
         double height = b.getHeight();
 
-        double arcStroke = NDocObjEx.of(p.getPropertyValue(HPropName.STROKE)).asDouble().orElse(5.0);
-        double ellipse_height = NDocObjEx.of(p.getPropertyValue(HPropName.ELLIPSE_H)).asDouble().orElse(50.0);
+        double arcStroke = NDocObjEx.of(p.getPropertyValue(NDocPropName.STROKE)).asDouble().orElse(5.0);
+        double ellipse_height = NDocObjEx.of(p.getPropertyValue(NDocPropName.ELLIPSE_H)).asDouble().orElse(50.0);
         ellipse_height = ellipse_height / 100 * height;
         double arcY = y + height - ellipse_height / 2;
 
 
-        Color sideColor = NDocObjEx.of(p.getPropertyValue(HPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
-        Color topColor = NDocObjEx.of(p.getPropertyValue(HPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
+        Color sideColor = NDocObjEx.of(p.getPropertyValue(NDocPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
+        Color topColor = NDocObjEx.of(p.getPropertyValue(NDocPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
 
-        int segmentCount = NDocObjEx.of(p.getPropertyValue(HPropName.SEGMENT_COUNT)).asInt().orElse(0);
+        int segmentCount = NDocObjEx.of(p.getPropertyValue(NDocPropName.SEGMENT_COUNT)).asInt().orElse(0);
 
         boolean someBG = false;
         NDocGraphics g = ctx.graphics();
@@ -61,17 +61,17 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
         if (!ctx.isDry()) {
             if (shadowOptional.isPresent()) {
                 Shadow shadow = shadowOptional.get();
-                HPoint2D translation = shadow.getTranslation();
+                NDocPoint2D translation = shadow.getTranslation();
                 if (translation == null) {
-                    translation = new HPoint2D(0, 0);
+                    translation = new NDocPoint2D(0, 0);
                 }
                 Paint shadowColor = shadow.getColor();
                 if (shadowColor == null) {
                     shadowColor = sideColor.darker();
                 }
-                HPoint2D shear = shadow.getShear();
+                NDocPoint2D shear = shadow.getShear();
                 if (shear == null) {
-                    shear = new HPoint2D(0, 0);
+                    shear = new NDocPoint2D(0, 0);
                 }
 
                 g.setColor((Color) shadowColor);
@@ -87,9 +87,9 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
 
             }
             double finalEllipse_height = ellipse_height;
-            if (someBG = HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+            if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
 
-                HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
                     g.setColor(sideColor);
                     g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
                     g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, net.thevpc.ndoc.api.util.HUtils.intOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(finalEllipse_height));
@@ -125,8 +125,8 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
             }
 
 
-            if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-                HNodeRendererUtils.withStroke(p, g, ctx, () -> {
+            if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
+                NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
                     g.drawOval((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.doubleOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(finalEllipse_height));
 
                     g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
@@ -141,7 +141,7 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
                     }
                 });
             }
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 }

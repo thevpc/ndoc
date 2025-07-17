@@ -28,11 +28,11 @@ public class HDocumentRootRules {
 //                    HStyles.position(HAlign.LEFT)
 //            ),
 //
-//            DefaultHStyleRule.ofType(HNodeType.ELLIPSE,
+//            DefaultHStyleRule.ofType(NDocNodeType.ELLIPSE,
 //                    HStyles.position(HAlign.CENTER),
 //                    HStyles.origin(HAlign.CENTER)
 //            ),
-//            DefaultHStyleRule.ofType(HNodeType.ARC,
+//            DefaultHStyleRule.ofType(NDocNodeType.ARC,
 //                    HStyles.position(HAlign.CENTER),
 //                    HStyles.origin(HAlign.CENTER)
 //            ),

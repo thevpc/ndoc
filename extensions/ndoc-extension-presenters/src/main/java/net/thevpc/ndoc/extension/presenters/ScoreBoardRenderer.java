@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.presenters;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -16,8 +16,8 @@ public class ScoreBoardRenderer extends NDocNodeRendererBase {
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
-        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
 
         Paint color = NDocValueByName.getForegroundColor(p, ctx, true);
 
@@ -26,7 +26,7 @@ public class ScoreBoardRenderer extends NDocNodeRendererBase {
             g.setPaint(color);
 
 
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 

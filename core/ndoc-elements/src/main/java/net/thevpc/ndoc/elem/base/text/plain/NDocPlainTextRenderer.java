@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.elem.base.text.plain;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.elem.base.text.text.NDocTextRendererBuilderImpl;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -18,14 +18,14 @@ import java.awt.*;
 
 public class NDocPlainTextRenderer extends NDocTextBaseRenderer {
     public NDocPlainTextRenderer() {
-        super(HNodeType.PLAIN);
+        super(NDocNodeType.PLAIN);
     }
 
 
-    public NDocTextRendererBuilder createRichTextHelper(HNode p, NDocNodeRendererContext ctx) {
+    public NDocTextRendererBuilder createRichTextHelper(NDocNode p, NDocNodeRendererContext ctx) {
         Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
         NDocTextRendererBuilder helper = new NDocTextRendererBuilderImpl(fg);
-        NElement d = p.getPropertyValue(HPropName.VALUE).orElse(NElement.ofString(""));
+        NElement d = p.getPropertyValue(NDocPropName.VALUE).orElse(NElement.ofString(""));
         String message = NStringUtils.trim(d.asStringValue().get());
         String[] allLines = message.trim().split("[\n]");
         for (int i = 0; i < allLines.length; i++) {

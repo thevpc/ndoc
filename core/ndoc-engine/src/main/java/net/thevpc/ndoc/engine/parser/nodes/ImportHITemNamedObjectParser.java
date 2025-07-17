@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.parser.nodes;
 
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItemList;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.engine.HEngineUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -36,10 +36,10 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 if (uplet.isNamed()) {
                     List<NElement> u = uplet.params();
                     if (u == null || u.isEmpty()) {
-                        context.messages().log(HMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
+                        context.messages().log(NDocMsg.of(NMsg.ofC("missing path argument : %s", tsonElement).asSevere(), context.source()));
                         return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
                     }
-                    HNode putInto = context.node();
+                    NDocNode putInto = context.node();
                     List<HItem> loaded = new ArrayList<>();
                     NRef<Boolean> someLoaded = NRef.of(false);
                     for (NElement ee : u) {
@@ -63,11 +63,11 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 break;
             }
         }
-        context.messages().log(HMsg.of(NMsg.ofC("missing include elements from %s", tsonElement).asSevere(), context.source()));
+        context.messages().log(NDocMsg.of(NMsg.ofC("missing include elements from %s", tsonElement).asSevere(), context.source()));
         return NOptional.ofNamedEmpty("include elements");
     }
 
-    public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, NDocNodeFactoryParseContext context) {
+    public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, NDocNode putInto, NDocNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
         if (spp.isDirectory()) {
             spp = spp.resolve(HEngineUtils.NDOC_EXT_STAR_STAR);
@@ -81,7 +81,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 if (se.isPresent()) {
                     loaded.add(se.get());
                 } else {
-                    context.messages().log(HMsg.of(NMsg.ofC("invalid include. error loading : %s", nPath).asSevere(), context.source()));
+                    context.messages().log(NDocMsg.of(NMsg.ofC("invalid include. error loading : %s", nPath).asSevere(), context.source()));
                     return NOptional.ofError(() -> NMsg.ofC("invalid include. error loading : %s", nPath));
                 }
             }

@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.elem.base.container.ul;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.elem2d.HAlign;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HProperties;
-import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.style.NDocProperties;
+import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
@@ -16,20 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public NDocUnorderedListRenderer() {
-        super(HNodeType.UNORDERED_LIST);
+        super(NDocNodeType.UNORDERED_LIST);
     }
 
-    public HNode convert(HNode p, NDocNodeRendererContext ctx) {
+    public NDocNode convert(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         NDocDocumentFactory f = ctx.documentFactory();
-        List<HNode> all = new ArrayList<>();
-        for (HNode child : p.children()) {
+        List<NDocNode> all = new ArrayList<>();
+        for (NDocNode child : p.children()) {
             switch (child.type()) {
-                case HNodeType.UNORDERED_LIST:
-                case HNodeType.ORDERED_LIST: {
+                case NDocNodeType.UNORDERED_LIST:
+                case NDocNodeType.ORDERED_LIST: {
                     all.add(f.ofVoid().addStyleClasses("ul-bullet"));
                     break;
                 }
@@ -42,36 +42,36 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             }
             all.add(child.addStyleClasses("ul-item"));
         }
-        HNode newNode = f.ofGrid().addAll(all.toArray(new HNode[0]))
-                .setProperty(HPropName.COLUMNS, NElement.ofInt(2))
-                .setProperty(HPropName.ROWS, NElement.ofInt(2))
-                .setProperty(HPropName.ORIGIN, HAlign.TOP_LEFT)
-                .setProperty(HPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
+        NDocNode newNode = f.ofGrid().addAll(all.toArray(new NDocNode[0]))
+                .setProperty(NDocPropName.COLUMNS, NElement.ofInt(2))
+                .setProperty(NDocPropName.ROWS, NElement.ofInt(2))
+                .setProperty(NDocPropName.ORIGIN, NDocAlign.TOP_LEFT)
+                .setProperty(NDocPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
                 .setProperties(p.props().toArray(new HProp[0]));
         for (String s : new String[]{
-                HPropName.GRID_COLOR
-                , HPropName.ORIGIN
-                , HPropName.DRAW_GRID
-                , HPropName.DRAW_CONTOUR
-                , HPropName.COLUMNS_WEIGHT
-                , HPropName.BACKGROUND_COLOR
-                , HPropName.FILL_BACKGROUND
-                , HPropName.PADDING
-                , HPropName.MARGIN
-                , HPropName.AT
-                , HPropName.STROKE
-                , HPropName.CLASS
-                , HPropName.DEBUG
-                , HPropName.DEBUG_COLOR
-                , HPropName.HIDE
-                , HPropName.FOREGROUND_COLOR
-                , HPropName.FONT_BOLD
-                , HPropName.FONT_FAMILY
-                , HPropName.FONT_ITALIC
-                , HPropName.FONT_SIZE
-                , HPropName.FONT_UNDERLINED
-                , HPropName.FONT_STRIKE
-                , HPropName.FONT_STRIKE
+                NDocPropName.GRID_COLOR
+                , NDocPropName.ORIGIN
+                , NDocPropName.DRAW_GRID
+                , NDocPropName.DRAW_CONTOUR
+                , NDocPropName.COLUMNS_WEIGHT
+                , NDocPropName.BACKGROUND_COLOR
+                , NDocPropName.FILL_BACKGROUND
+                , NDocPropName.PADDING
+                , NDocPropName.MARGIN
+                , NDocPropName.AT
+                , NDocPropName.STROKE
+                , NDocPropName.CLASS
+                , NDocPropName.DEBUG
+                , NDocPropName.DEBUG_COLOR
+                , NDocPropName.HIDE
+                , NDocPropName.FOREGROUND_COLOR
+                , NDocPropName.FONT_BOLD
+                , NDocPropName.FONT_FAMILY
+                , NDocPropName.FONT_ITALIC
+                , NDocPropName.FONT_SIZE
+                , NDocPropName.FONT_UNDERLINED
+                , NDocPropName.FONT_STRIKE
+                , NDocPropName.FONT_STRIKE
         }) {
             NElement v = ctx.computePropertyValue(p, s).orNull();
             if (v != null) {
@@ -79,9 +79,9 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             }
         }
         if(NDocValueByName.isDebug(p, ctx)){
-            Object v = ctx.computePropertyValue(p, HPropName.DRAW_GRID).orNull();
+            Object v = ctx.computePropertyValue(p, NDocPropName.DRAW_GRID).orNull();
             if(v==null){
-                newNode.setProperty(HPropName.DRAW_GRID, NElement.ofBoolean(true));
+                newNode.setProperty(NDocPropName.DRAW_GRID, NElement.ofBoolean(true));
             }
         }
         return newNode;

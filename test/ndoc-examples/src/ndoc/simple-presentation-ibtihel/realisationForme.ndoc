@@ -102,31 +102,31 @@ page{
                 stack(size:(70,70), at:center){
                         uml(
                             """
-                                HNodeRendererBase <|-- HCylinderRenderer
-                                HNodeParserBase <|-- HCylinderImpl
-                                HNodeParser <|.. HNodeParserBase
-                                HNodeRenderer <|.. HNodeRendererBase
-                                HNodeRendererManager o-- HNodeRenderer
-                                HEngine *-- HNodeRendererManager
-                                HNodeParserManager o-- HNodeParser
-                                HEngine *-- HNodeParserManager
+                                NDocNodeRendererBase <|-- NDocCylinderRenderer
+                                NDocNodeParserBase <|-- NDocCylinderImpl
+                                NDocNodeParser <|.. NDocNodeParserBase
+                                NDocNodeRenderer <|.. NDocNodeRendererBase
+                                NDocNodeRendererManager o-- NDocNodeRenderer
+                                NDocEngine *-- NDocNodeRendererManager
+                                NDocNodeParserManager o-- NDocNodeParser
+                                NDocEngine *-- NDocNodeParserManager
 
 
-                                abstract class HNodeParserBase
-                                abstract class HNodeRendererBase
-                                interface HNodeParser
-                                interface HNodeRenderer
-                                interface HNodeRendererManager
-                                interface HNodeParserManager
-                                interface HEngine
+                                abstract class NDocNodeParserBase
+                                abstract class NDocNodeRendererBase
+                                interface NDocNodeParser
+                                interface NDocNodeRenderer
+                                interface NDocNodeRendererManager
+                                interface NDocNodeParserManager
+                                interface NDocEngine
 
-                                HCylinderImpl : HCylinderImpl()
-                                HCylinderImpl : processArg() : boolean
-                                HCylinderImpl : toTson(HNode) : NElement
+                                NDocCylinderImpl : NDocCylinderImpl()
+                                NDocCylinderImpl : processArg() : boolean
+                                NDocCylinderImpl : toTson(NDocNode) : NElement
 
-                                HCylinderRenderer : defaultStyles
-                                HCylinderRenderer : renderMain(HNode,RendererContext) : void
-                                HCylinderRenderer : renderShadow(HNode,RendererContext) : void
+                                NDocCylinderRenderer : defaultStyles
+                                NDocCylinderRenderer : renderMain(NDocNode,RendererContext) : void
+                                NDocCylinderRenderer : renderShadow(NDocNode,RendererContext) : void
                             """
                         )
                     }

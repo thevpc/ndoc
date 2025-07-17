@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.renderer.elem3d;
 
-import net.thevpc.ndoc.api.model.elem3d.HElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.HElement3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
 import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
-import net.thevpc.ndoc.api.model.elem3d.composite.Element3DGroup;
+import net.thevpc.ndoc.api.model.elem3d.composite.NDocElement3DGroup;
 import net.thevpc.ndoc.spi.NDocElement3DRenderer;
 
 import java.util.ArrayList;
@@ -12,18 +12,18 @@ import java.util.List;
 
 public class Element3DGroupPrimitiveBuilder implements NDocElement3DRenderer {
     @Override
-    public Class<? extends HElement3D> forType() {
-        return Element3DGroup.class;
+    public Class<? extends NDocElement3D> forType() {
+        return NDocElement3DGroup.class;
     }
 
     @Override
-    public HElement3DPrimitive[] toPrimitives(HElement3D e, RenderState3D renderState) {
-        Element3DGroup ee = (Element3DGroup) e;
-        List<HElement3D> elements = ee.getElements();
-        List<HElement3DPrimitive> all = new ArrayList<>();
-        for (HElement3D element : elements) {
+    public NDocElement3DPrimitive[] toPrimitives(NDocElement3D e, RenderState3D renderState) {
+        NDocElement3DGroup ee = (NDocElement3DGroup) e;
+        List<NDocElement3D> elements = ee.getElements();
+        List<NDocElement3DPrimitive> all = new ArrayList<>();
+        for (NDocElement3D element : elements) {
             all.addAll(Arrays.asList(renderState.toPrimitives(element)));
         }
-        return all.toArray(new HElement3DPrimitive[0]);
+        return all.toArray(new NDocElement3DPrimitive[0]);
     }
 }

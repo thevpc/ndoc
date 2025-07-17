@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 public interface NDocNodeFlowControlProcessor {
-    HNode[] process(HNode hNode, NDocNodeFlowControlProcessorContext context);
+    NDocNode[] process(NDocNode node, NDocNodeFlowControlProcessorContext context);
 }

@@ -2,11 +2,11 @@ package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.*;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.engine.control.CtrlHNodeCall;
+import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
 import net.thevpc.ndoc.engine.parser.nodes.*;
 import net.thevpc.ndoc.engine.parser.styles.StylesHITemNamedObjectParser;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -58,18 +58,18 @@ public class DefaultNDocDocumentItemParserFactory
                 return NCallableSupport.of(1, () -> {
                     NObjectElement object = c.asObject().get();
                     String templateName = object.name().get();
-                    List<HNodeDefParam> params;
+                    List<NDocNodeDefParam> params;
                     if (object.isParametrized()) {
                         params = object.asParametrizedContainer().get().params().get()
                                 .stream().map(x -> {
                                     if(x.isNamedPair()) {
                                         NPairElement p = x.asPair().get();
-                                        return new HNodeDefParamImpl(
+                                        return new NDocNodeDefParamImpl(
                                                 p.key().asStringValue().get(),
                                                 p.value()
                                         );
                                     }else if(x.isName()){
-                                        return new HNodeDefParamImpl(
+                                        return new NDocNodeDefParamImpl(
                                                 x.asStringValue().get(),
                                                 null
                                         );
@@ -80,10 +80,10 @@ public class DefaultNDocDocumentItemParserFactory
                     } else {
                         params = new ArrayList<>();
                     }
-                    HResource source = context.source();
-                    return new HNodeDefImpl(templateName,
-                            params.toArray(new HNodeDefParam[0]),
-                            object.children().stream().map(x -> engine.newNode(x, context).get()).toArray(HNode[]::new),
+                    NDocResource source = context.source();
+                    return new NDocNodeDefImpl(templateName,
+                            params.toArray(new NDocNodeDefParam[0]),
+                            object.children().stream().map(x -> engine.newNode(x, context).get()).toArray(NDocNode[]::new),
                             source
                     );
                 });
@@ -130,7 +130,7 @@ public class DefaultNDocDocumentItemParserFactory
             case LOCAL_TIME:
             case MATRIX:
             case ALIAS: {
-                NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                NDocNodeParser p = engine.nodeTypeFactory(NDocNodeType.TEXT).orNull();
                 if (p != null) {
                     return p.parseNode(context);
                 }
@@ -143,7 +143,7 @@ public class DefaultNDocDocumentItemParserFactory
                 if (p != null) {
                     return p.parseNode(context);
                 }
-                p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                p = engine.nodeTypeFactory(NDocNodeType.TEXT).orNull();
                 if (p != null) {
                     return p.parseNode(context);
                 }
@@ -186,7 +186,7 @@ public class DefaultNDocDocumentItemParserFactory
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY: {
                 if (c.type() == NElementType.UPLET) {
-                    NDocNodeParser p = engine.nodeTypeFactory(HNodeType.TEXT).orNull();
+                    NDocNodeParser p = engine.nodeTypeFactory(NDocNodeType.TEXT).orNull();
                     if (p != null) {
                         return p.parseNode(context);
                     }
@@ -218,19 +218,19 @@ public class DefaultNDocDocumentItemParserFactory
                     }
                 }
                 if (c.isNamedUplet() || c.isAnyObject()) {
-                    return NCallableSupport.of(10, () -> new CtrlHNodeCall(c, context.source()));
+                    return NCallableSupport.of(10, () -> new CtrlNDocNodeCall(c, context.source()));
                 }
-                context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
                 throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
             }
         }
-        context.messages().log(HMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
+        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c).asSevere(), context.source()));
         throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", HUtils.shortName(context.source()), c));
     }
 
 
     private boolean isRootBloc(NDocNodeFactoryParseContext context) {
-        HNode[] nodes = context.nodePath();
+        NDocNode[] nodes = context.nodePath();
         if (nodes.length == 0) {
             return true;
         }
@@ -238,7 +238,7 @@ public class DefaultNDocDocumentItemParserFactory
             return false;
         }
         if (nodes.length == 1) {
-            if (!Objects.equals(nodes[0].type(), HNodeType.PAGE_GROUP)) {
+            if (!Objects.equals(nodes[0].type(), NDocNodeType.PAGE_GROUP)) {
                 return false;
             }
         }
@@ -332,9 +332,9 @@ public class DefaultNDocDocumentItemParserFactory
                 }
             }
         }
-        HNode node = context.node();
+        NDocNode node = context.node();
         if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
-            HNode pg = f.ofStack();
+            NDocNode pg = f.ofStack();
             pg.setAncestors(allAncestors == null ? null : allAncestors.toArray(new String[0]));
             pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
             for (NElement child : ee.body()) {

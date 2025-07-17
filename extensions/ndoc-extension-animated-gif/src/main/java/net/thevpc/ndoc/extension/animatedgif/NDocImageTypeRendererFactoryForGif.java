@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
-import net.thevpc.ndoc.api.model.elem2d.HImageOptions;
+import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
 import net.thevpc.ndoc.spi.NDocImageTypeRendererFactory;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
@@ -16,7 +16,7 @@ public class NDocImageTypeRendererFactoryForGif implements NDocImageTypeRenderer
     private Map<String, FutureTask<NPath>> pendingCache = new HashMap<>();
 
     @Override
-    public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, HImageOptions options, NDocGraphics graphics) {
+    public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, NDocImageOptions options, NDocGraphics graphics) {
         if (!options.isDisableAnimation()) {
             if (path.getName().toLowerCase().endsWith(".gif")) {
                 return NCallableSupport.of(10,

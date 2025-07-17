@@ -8,7 +8,7 @@ import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.elem2d.HAlign;
+import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentRenderer;
 import net.thevpc.nuts.Nuts;
@@ -45,7 +45,7 @@ public class NDocExampleByCode1 {
                                                         .setPosition(50, 3)
                                                         .setForegroundColor("white")
                                                         .setFontSize(40)
-                                                        .setOrigin(HAlign.TOP)
+                                                        .setOrigin(NDocAlign.TOP)
                                         )
                                         .add(
                                                 f.ofCircle()
@@ -53,7 +53,7 @@ public class NDocExampleByCode1 {
                                                         .setSize(20)
                                                         .setForegroundColor("yellow")
                                                         .setBackgroundColor("#ffaa00")
-                                                        .setOrigin(HAlign.CENTER)
+                                                        .setOrigin(NDocAlign.CENTER)
                                         )
                                         .add(
                                                 f.ofRectangle()
@@ -62,7 +62,7 @@ public class NDocExampleByCode1 {
                                                         .setProperty(HProps.preserveShapeRatio())
                                                         .setForegroundColor("green")
                                                         .setBackgroundColor("#555500")
-                                                        .setOrigin(HAlign.CENTER)
+                                                        .setOrigin(NDocAlign.CENTER)
                                         )
                                         .add(
                                                 f.ofGrid(2, 2)
@@ -82,7 +82,7 @@ public class NDocExampleByCode1 {
                                         .add(
                                                 f.ofEquation("x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}")
                                                         .setPosition(10, 80)
-                                                        .setOrigin(HAlign.LEFT)
+                                                        .setOrigin(NDocAlign.LEFT)
                                         )
                         )
                 );

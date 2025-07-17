@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.engine.renderer.page;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.util.HSizeRef;
+import net.thevpc.ndoc.spi.util.NDocSizeRef;
 
 import net.thevpc.nuts.elem.NElement;
 
@@ -15,23 +15,23 @@ import java.awt.*;
 
 public class NDocPageRenderer extends NDocNodeRendererBase {
     public NDocPageRenderer() {
-        super(HNodeType.PAGE);
+        super(NDocNodeType.PAGE);
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
-        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
 
          drawBackground(ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
 
-        for (HNode child : p.children()) {
+        for (NDocNode child : p.children()) {
             ctx.render(child, ctx);
         }
         //perhaps add page sum ??
     }
 
-    private void drawGrid(NDocGraphics g, Bounds2 b) {
+    private void drawGrid(NDocGraphics g, NDocBounds2 b) {
         int width = b.getWidth().intValue();
         int height = b.getHeight().intValue();
         Color color = Color.gray;
@@ -45,7 +45,7 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
 
         g.setStroke(dashed);
 
-        HSizeRef sizeRef = new HSizeRef(b.getWidth(), b.getHeight(), b.getWidth(), b.getHeight());
+        NDocSizeRef sizeRef = new NDocSizeRef(b.getWidth(), b.getHeight(), b.getWidth(), b.getHeight());
         double rowsSizeEff = sizeRef.x(rowsSize).get();
         double columnsSizeEff = sizeRef.y(columnsSize).get();
 
@@ -65,7 +65,7 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
         g.setStroke(os);
     }
 
-    private void drawBackground(NDocGraphics g, NDocNodeRendererContext ctx, Bounds2 b) {
+    private void drawBackground(NDocGraphics g, NDocNodeRendererContext ctx, NDocBounds2 b) {
 
 //        g2d.setBackground(Color.white);
 //        g2d.clearRect(0, 0, size.width, size.height);

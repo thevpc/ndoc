@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.renderer.elem2d;
 
-import net.thevpc.ndoc.api.model.elem2d.Element2DPrimitive;
-import net.thevpc.ndoc.api.model.elem2d.HElement2D;
+import net.thevpc.ndoc.api.model.elem2d.NDocElement2DPrimitive;
+import net.thevpc.ndoc.api.model.elem2d.NDocElement2D;
 import net.thevpc.ndoc.spi.nodes.NDocElement2DPrimitiveBuilder;
 
 import java.util.HashMap;
@@ -17,9 +17,9 @@ public class Element2DUIFactory {
         map.put(c, f);
     }
 
-    public Element2DPrimitive[] toPrimitives(HElement2D e) {
-        if (e instanceof Element2DPrimitive) {
-            return new Element2DPrimitive[]{(Element2DPrimitive) e};
+    public NDocElement2DPrimitive[] toPrimitives(NDocElement2D e) {
+        if (e instanceof NDocElement2DPrimitive) {
+            return new NDocElement2DPrimitive[]{(NDocElement2DPrimitive) e};
         }
         NDocElement2DPrimitiveBuilder i = map.get(e.getClass());
         if (i != null) {

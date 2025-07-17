@@ -1,36 +1,36 @@
 package net.thevpc.ndoc.elem.base.container.grid;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HProperties;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocProperties;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 
 public class NDocGridContainerRenderer extends NDocNodeRendererBase {
 
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public NDocGridContainerRenderer() {
-        super(HNodeType.GRID);
+        super(NDocNodeType.GRID);
     }
 
 
     @Override
-    public Bounds2 selfBounds(HNode p, NDocNodeRendererContext ctx) {
+    public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        Bounds2 expectedBounds = super.selfBounds(p, ctx);
+        NDocBounds2 expectedBounds = super.selfBounds(p, ctx);
 //        HGraphics g = ctx.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
-        HGridRendererHelper h = new HGridRendererHelper(p.children());
+        NDocGridRendererHelper h = new NDocGridRendererHelper(p.children());
         return h.computeBound(p, ctx, expectedBounds);
     }
 
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        Bounds2 expectedBounds = selfBounds(p, ctx);
-        HGridRendererHelper h = new HGridRendererHelper(p.children());
+        NDocBounds2 expectedBounds = selfBounds(p, ctx);
+        NDocGridRendererHelper h = new NDocGridRendererHelper(p.children());
         h.render(p, ctx, expectedBounds);
     }
 

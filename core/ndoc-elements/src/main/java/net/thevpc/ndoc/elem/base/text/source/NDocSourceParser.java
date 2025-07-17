@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.elem.base.text.source;
 
-import net.thevpc.ndoc.api.document.HMsg;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -15,7 +15,7 @@ import net.thevpc.nuts.util.NOptional;
 public class NDocSourceParser extends NDocNodeParserBase {
 
     public NDocSourceParser() {
-        super(false, HNodeType.SOURCE);
+        super(false, NDocNodeType.SOURCE);
     }
 
     @Override
@@ -29,11 +29,11 @@ public class NDocSourceParser extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HPropName.VALUE, info.currentArg);
+                info.node.setProperty(NDocPropName.VALUE, info.currentArg);
                 return true;
             }
             case NAME: {
-                info.node.setProperty(HPropName.LANG, info.currentArg);
+                info.node.setProperty(NDocPropName.LANG, info.currentArg);
                 return true;
             }
             case PAIR: {
@@ -43,7 +43,7 @@ public class NDocSourceParser extends NDocNodeParserBase {
                         case "value":
                         case "code":
                         case "content": {
-                            info.node.setProperty(HPropName.VALUE, p.value());
+                            info.node.setProperty(NDocPropName.VALUE, p.value());
                             return true;
                         }
                         case "file": {
@@ -51,16 +51,16 @@ public class NDocSourceParser extends NDocNodeParserBase {
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElement.ofString(nPath.readString().trim()));
+                                info.node.setProperty(NDocPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
-                                        HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                        NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
                                 );
                             }
                             return true;
                         }
                         case "lang": {
-                            info.node.setProperty(HPropName.LANG, p.value());
+                            info.node.setProperty(NDocPropName.LANG, p.value());
                             return true;
                         }
                     }

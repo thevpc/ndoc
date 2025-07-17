@@ -1,4 +1,4 @@
-* (2024-06-24) HNodeFactoryParseContext::resolvePath should download remote files and unzip tarballs
+* (2024-06-24) NDocNodeFactoryParseContext::resolvePath should download remote files and unzip tarballs
 * (2024-06-24) implement SVG image rendering 
 * (2024-06-24) implement Animated GIF image rendering 
 * (2024-06-24) implement Element Animation 

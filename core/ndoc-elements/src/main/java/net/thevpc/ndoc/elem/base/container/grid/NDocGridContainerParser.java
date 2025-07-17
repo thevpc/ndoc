@@ -4,9 +4,9 @@
  */
 package net.thevpc.ndoc.elem.base.container.grid;
 
-import net.thevpc.ndoc.api.model.elem2d.Int2;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.elem2d.NDocInt2;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
@@ -21,7 +21,7 @@ import net.thevpc.nuts.elem.NElement;
 public class NDocGridContainerParser extends NDocNodeParserBase {
 
     public NDocGridContainerParser() {
-        super(true, HNodeType.GRID, "vgrid", "hgrid", "column", "row");
+        super(true, NDocNodeType.GRID, "vgrid", "hgrid", "column", "row");
     }
 
     @Override
@@ -29,21 +29,21 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
         switch (info.uid) {
             case "vgrid":
             case "column": {
-                if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElement.ofInt(1));
+                if(info.node.getProperty(NDocPropName.COLUMNS).isNotPresent()) {
+                    info.node.setProperty(NDocPropName.COLUMNS, NElement.ofInt(1));
                 }
-                if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElement.ofInt(-1));
+                if(info.node.getProperty(NDocPropName.ROWS).isNotPresent()) {
+                    info.node.setProperty(NDocPropName.ROWS, NElement.ofInt(-1));
                 }
                 break;
             }
             case "hgrid":
             case "row": {
-                if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()) {
-                    info.node.setProperty(HPropName.COLUMNS, NElement.ofInt(-1));
+                if(info.node.getProperty(NDocPropName.COLUMNS).isNotPresent()) {
+                    info.node.setProperty(NDocPropName.COLUMNS, NElement.ofInt(-1));
                 }
-                if(info.node.getProperty(HPropName.ROWS).isNotPresent()) {
-                    info.node.setProperty(HPropName.ROWS, NElement.ofInt(1));
+                if(info.node.getProperty(NDocPropName.ROWS).isNotPresent()) {
+                    info.node.setProperty(NDocPropName.ROWS, NElement.ofInt(1));
                 }
                 break;
             }
@@ -56,11 +56,11 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
             case UPLET:
             case NAMED_UPLET:
             {
-                NOptional<Int2> d = NDocObjEx.of(info.currentArg).asInt2();
+                NOptional<NDocInt2> d = NDocObjEx.of(info.currentArg).asInt2();
                 if (d.isPresent()) {
-                    Int2 dd = d.get();
-                    info.node.setProperty(HPropName.COLUMNS, NDocObjEx.of(dd.getX()).asTsonInt().get());
-                    info.node.setProperty(HPropName.ROWS, NDocObjEx.of(dd.getY()).asTsonInt().get());
+                    NDocInt2 dd = d.get();
+                    info.node.setProperty(NDocPropName.COLUMNS, NDocObjEx.of(dd.getX()).asTsonInt().get());
+                    info.node.setProperty(NDocPropName.ROWS, NDocObjEx.of(dd.getY()).asTsonInt().get());
                     return true;
                 }
                 return false;
@@ -77,14 +77,14 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
                     switch (HUtils.uid(n.get())) {
                         case "columns": {
                             if (id.equals("grid") || id.equals("hgrid") || id.equals("row")) {
-                                info.node.setProperty(HPropName.COLUMNS, NDocObjEx.of(v).asTsonInt().get());
+                                info.node.setProperty(NDocPropName.COLUMNS, NDocObjEx.of(v).asTsonInt().get());
                                 return true;
                             }
                             break;
                         }
                         case "rows": {
                             if (id.equals("grid") || id.equals("vgrid") || id.equals("column")) {
-                                info.node.setProperty(HPropName.ROWS, NDocObjEx.of(v).asTsonInt().get());
+                                info.node.setProperty(NDocPropName.ROWS, NDocObjEx.of(v).asTsonInt().get());
                                 return true;
                             }
                             break;
@@ -97,21 +97,21 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
         if(HParserUtils.isIntOrExprNonCommon(info.currentArg)){
             String id = HUtils.uid(info.id);
             if (id.equals("row")|| id.equals("hgrid")) {
-                if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()){
-                    info.node.setProperty(HPropName.COLUMNS,info.currentArg);
+                if(info.node.getProperty(NDocPropName.COLUMNS).isNotPresent()){
+                    info.node.setProperty(NDocPropName.COLUMNS,info.currentArg);
                     return true;
                 }
             }else if (id.equals("column")|| id.equals("vgrid")) {
-                if(info.node.getProperty(HPropName.ROWS).isNotPresent()){
-                    info.node.setProperty(HPropName.ROWS,info.currentArg);
+                if(info.node.getProperty(NDocPropName.ROWS).isNotPresent()){
+                    info.node.setProperty(NDocPropName.ROWS,info.currentArg);
                     return true;
                 }
             }else  if (id.equals("grid")) {
-                if(info.node.getProperty(HPropName.COLUMNS).isNotPresent()){
-                    info.node.setProperty(HPropName.COLUMNS,info.currentArg);
+                if(info.node.getProperty(NDocPropName.COLUMNS).isNotPresent()){
+                    info.node.setProperty(NDocPropName.COLUMNS,info.currentArg);
                     return true;
-                }else if(info.node.getProperty(HPropName.ROWS).isNotPresent()){
-                    info.node.setProperty(HPropName.ROWS,info.currentArg);
+                }else if(info.node.getProperty(NDocPropName.ROWS).isNotPresent()){
+                    info.node.setProperty(NDocPropName.ROWS,info.currentArg);
                     return true;
                 }
             }

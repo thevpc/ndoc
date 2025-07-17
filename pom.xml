@@ -30,7 +30,7 @@
         <module>extensions/ndoc-extension-presenters</module>
         <module>app/ndoc-viewer</module>
         <module>app/ndoc-viewer-backend</module>
-<!--        <module>core/renderers/ndoc-renderer-web</module>-->
+        <module>core/renderers/ndoc-renderer-web</module>
         <module>companions/nscoreboard</module>
         <module>ndoc-full</module>
     </modules>

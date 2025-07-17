@@ -1,16 +1,16 @@
 package net.thevpc.ndoc.extension.shapes2d.donut;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.style.HProperties;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;
@@ -19,17 +19,17 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public NDocDonutOrPieRenderer(String type) {
         super(type);
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
 
-        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -37,8 +37,8 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
 
         double outerRadius = Math.min(width, height) / 2;
         double innerRadius=0;
-        if(types()[0].equals(HNodeType.DONUT)) {
-            innerRadius = NDocObjEx.of(p.getPropertyValue(HPropName.INNER_RADIUS)).asDouble().orElse(0.0);
+        if(types()[0].equals(NDocNodeType.DONUT)) {
+            innerRadius = NDocObjEx.of(p.getPropertyValue(NDocPropName.INNER_RADIUS)).asDouble().orElse(0.0);
             if (innerRadius <= 0) {
                 innerRadius = 50;
             } else if (innerRadius >= 100) {
@@ -47,17 +47,17 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
             innerRadius = innerRadius / 100 * outerRadius;
         }
 
-        double startAngle = NDocObjEx.of(p.getPropertyValue(HPropName.START_ANGLE)).asDouble().orElse(0.0);
-        double extentAngle = NDocObjEx.of(p.getPropertyValue(HPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
-        double dash = NDocObjEx.of(p.getPropertyValue(HPropName.DASH)).asDouble().orElse(0.0);
+        double startAngle = NDocObjEx.of(p.getPropertyValue(NDocPropName.START_ANGLE)).asDouble().orElse(0.0);
+        double extentAngle = NDocObjEx.of(p.getPropertyValue(NDocPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
+        double dash = NDocObjEx.of(p.getPropertyValue(NDocPropName.DASH)).asDouble().orElse(0.0);
         NDocGraphics g = ctx.graphics();
 
-        String[] colors = NDocObjEx.of(p.getPropertyValue(HPropName.COLORS)).asStringArray().orElse(null);
+        String[] colors = NDocObjEx.of(p.getPropertyValue(NDocPropName.COLORS)).asStringArray().orElse(null);
         g.setColor(Color.black);
         if (!ctx.isDry()) {
             double finalInnerRadius = innerRadius;
-            HNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                int sliceCount = NDocObjEx.of(p.getPropertyValue(HPropName.SLICE_COUNT)).asInt().orElse(-1);
+            NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
+                int sliceCount = NDocObjEx.of(p.getPropertyValue(NDocPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
                     double sliceAngle = (extentAngle - sliceCount * dash) / sliceCount;
@@ -81,7 +81,7 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
                 //diff sizes
                 else {
 
-                    double[] slicePercentage = NDocObjEx.of(p.getPropertyValue(HPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
+                    double[] slicePercentage = NDocObjEx.of(p.getPropertyValue(NDocPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
                     slicePercentage = Arrays.stream(slicePercentage).filter(xx -> xx <= 0 || Double.isInfinite(xx) || Double.isNaN(xx)).toArray();
                     if (slicePercentage.length == 0) {
                         slicePercentage = new double[]{1, 1, 1};
@@ -117,8 +117,8 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
             });
 
 
-//            if (HNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
-//                HNodeRendererUtils.applyStroke(p, g, ctx);
+//            if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
+//                NDocNodeRendererUtils.applyStroke(p, g, ctx);
 //
 //                double centerX = x + width / 2;
 //                double centerY = y + height / 2;
@@ -127,7 +127,7 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
 //                g.drawOval((int) (centerX - innerRadius), (int) (centerY - innerRadius), (int) (innerRadius * 2), (int) (innerRadius * 2));
 //            }
 
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 
@@ -159,7 +159,7 @@ public abstract class NDocDonutOrPieRenderer extends NDocNodeRendererBase {
         }
     }
 
-    private double[] getSlicePercentage(HNode node) {
+    private double[] getSlicePercentage(NDocNode node) {
         return new double[]{};
     }
 }

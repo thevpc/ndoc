@@ -4,11 +4,11 @@
  */
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -27,7 +27,7 @@ import java.util.List;
 public class NDocTextParser extends NDocNodeParserBase {
 
     public NDocTextParser() {
-        super(false, HNodeType.TEXT);
+        super(false, NDocNodeType.TEXT);
     }
 
     @Override
@@ -94,23 +94,23 @@ public class NDocTextParser extends NDocNodeParserBase {
                         NDocObjEx.SimplePair spp = sp.get();
                         NDocObjEx v = spp.getValue();
                         switch (spp.getNameId()) {
-                            case HPropName.VALUE:
+                            case NDocPropName.VALUE:
                             case "content": {
                                 value=v.asTson().get();
                                 break;
                             }
-                            case HPropName.FILE: {
+                            case NDocPropName.FILE: {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
                                     value= NElement.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
-                                           HMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
+                                           NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
                                 }
                                 break;
                             }
-                            case HPropName.LANG: {
+                            case NDocPropName.LANG: {
                                 lang= v.asTson().get();
                                 break;
                             }
@@ -123,26 +123,26 @@ public class NDocTextParser extends NDocNodeParserBase {
         while(!others.isEmpty()) {
             if (lang == null && value == null) {
                 if (others.size() == 1) {
-                    info.node.setProperty(HPropName.VALUE, others.get(0));
+                    info.node.setProperty(NDocPropName.VALUE, others.get(0));
                     others.remove(0);
                 } else {
                     String v = others.get(0).asStringValue().get();
                     if (v.matches("[a-zA-Z0-9+._-]+")) {
-                        info.node.setProperty(HPropName.LANG, others.get(0));
+                        info.node.setProperty(NDocPropName.LANG, others.get(0));
                         others.remove(0);
                     } else {
-                        info.node.setProperty(HPropName.VALUE, others.get(0));
+                        info.node.setProperty(NDocPropName.VALUE, others.get(0));
                         others.remove(0);
                         others.clear();
                     }
                 }
             }else if (value == null) {
-                info.node.setProperty(HPropName.VALUE, others.get(0));
+                info.node.setProperty(NDocPropName.VALUE, others.get(0));
                 others.remove(0);
             }else if (lang == null) {
                 String v = others.get(0).asStringValue().get();
                 if (v.matches("[a-zA-Z0-9+._-]+")) {
-                    info.node.setProperty(HPropName.LANG, others.get(0));
+                    info.node.setProperty(NDocPropName.LANG, others.get(0));
                 }
                 others.remove(0);
             }else{
@@ -176,10 +176,10 @@ public class NDocTextParser extends NDocNodeParserBase {
                     NDocObjEx.SimplePair spp = sp.get();
                     NDocObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
-                        case HPropName.VALUE:
+                        case NDocPropName.VALUE:
                         case "content":
-                        case HPropName.FILE:
-                        case HPropName.LANG: {
+                        case NDocPropName.FILE:
+                        case NDocPropName.LANG: {
                             //already processed
                             return true;
                         }
@@ -192,10 +192,10 @@ public class NDocTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper
                 .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
+                .inlineStringProp(NDocPropName.VALUE)
                 .build();
     }
 }

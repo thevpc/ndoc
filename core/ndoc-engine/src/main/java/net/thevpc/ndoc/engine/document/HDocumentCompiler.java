@@ -3,20 +3,20 @@ package net.thevpc.ndoc.engine.document;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
 import net.thevpc.ndoc.api.model.node.*;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.style.HProperties;
+import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
-import net.thevpc.ndoc.engine.control.CtrlHNodeCall;
-import net.thevpc.ndoc.engine.control.IfHNodeFlowControlProcessorFactory;
-import net.thevpc.ndoc.engine.parser.HDocumentLoadingResultImpl;
-import net.thevpc.ndoc.engine.parser.HNodeDefParamImpl;
+import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
+import net.thevpc.ndoc.engine.control.IfNDocFlowControlProcessorFactory;
+import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
+import net.thevpc.ndoc.engine.parser.NDocNodeDefParamImpl;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessor;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessorContext;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NArrayElement;
@@ -31,29 +31,29 @@ import java.util.stream.Collectors;
 public class HDocumentCompiler {
 
     private NDocEngine engine;
-    private HLogger messages;
-    private IfHNodeFlowControlProcessorFactory flowControlProcessorFactory = new IfHNodeFlowControlProcessorFactory();
+    private NDocLogger messages;
+    private IfNDocFlowControlProcessorFactory flowControlProcessorFactory = new IfNDocFlowControlProcessorFactory();
 
-    public HDocumentCompiler(NDocEngine engine, HLogger messages) {
+    public HDocumentCompiler(NDocEngine engine, NDocLogger messages) {
         this.engine = engine;
         this.messages = messages;
     }
 
-    public HDocumentLoadingResult compile(NDocument document) {
-        HDocumentLoadingResultImpl result = new HDocumentLoadingResultImpl(engine.computeSource(document.root()), messages);
+    public NDocDocumentLoadingResult compile(NDocument document) {
+        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(engine.computeSource(document.root()), messages);
         result.setDocument(document);
-        HNode root = document.root();
+        NDocNode root = document.root();
         processUuid(root);
 //        root = processCalls(root, result);
         root = processInheritance(root, result);
         root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
-        HNode[] all = compileNodeTree(root);
+        NDocNode[] all = compileNodeTree(root);
         if (all.length == 0) {
-            root = new DefaultHNode(HNodeType.VOID);
+            root = new DefaultNDocNode(NDocNodeType.VOID);
         } else if (all.length == 1) {
             root = all[0];
         } else {
-            root = new DefaultHNode(HNodeType.PAGE_GROUP);
+            root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP);
             root.setChildren(all);
         }
 //        root = removeDeclarations(root, result);
@@ -61,30 +61,30 @@ public class HDocumentCompiler {
         return result;
     }
 
-    public boolean processRootPages(HNode node) {
+    public boolean processRootPages(NDocNode node) {
         switch (node.type()) {
-            case HNodeType.PAGE_GROUP: {
+            case NDocNodeType.PAGE_GROUP: {
                 if (NBlankable.isBlank(node.getUuid())) {
                     node.setUuid(UUID.randomUUID().toString());
                 }
                 boolean someChanges = false;
-                List<HNode> children = new ArrayList<>(node.children());
-                List<HNode> newChildren = new ArrayList<>();
-                List<HNode> pending = null;
-                for (HNode c : children) {
+                List<NDocNode> children = new ArrayList<>(node.children());
+                List<NDocNode> newChildren = new ArrayList<>();
+                List<NDocNode> pending = null;
+                for (NDocNode c : children) {
                     if (c == null) {
                         someChanges = true;
                     } else {
                         someChanges |= processRootPages(c);
-                        if (Objects.equals(c.type(), HNodeType.PAGE_GROUP)
-                                || Objects.equals(c.type(), HNodeType.PAGE)
+                        if (Objects.equals(c.type(), NDocNodeType.PAGE_GROUP)
+                                || Objects.equals(c.type(), NDocNodeType.PAGE)
                                 //assign are retained in the same level!
-                                || Objects.equals(c.type(), HNodeType.ASSIGN)
+                                || Objects.equals(c.type(), NDocNodeType.ASSIGN)
                         ) {
                             if (pending != null && !pending.isEmpty()) {
-                                HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
+                                NDocNode newPage = engine.documentFactory().of(NDocNodeType.PAGE);
                                 newChildren.add(newPage);
-                                newPage.addAll(pending.toArray(new HNode[0]));
+                                newPage.addAll(pending.toArray(new NDocNode[0]));
                                 pending = null;
                             }
                             newChildren.add(c);
@@ -98,13 +98,13 @@ public class HDocumentCompiler {
                     }
                 }
                 if (pending != null && pending.size() > 0) {
-                    HNode newPage = engine.documentFactory().of(HNodeType.PAGE);
-                    newPage.addAll(pending.toArray(new HNode[0]));
+                    NDocNode newPage = engine.documentFactory().of(NDocNodeType.PAGE);
+                    newPage.addAll(pending.toArray(new NDocNode[0]));
                     newChildren.add(newPage);
                 }
                 if (someChanges) {
                     node.children().clear();
-                    node.addAll(newChildren.toArray(new HNode[0]));
+                    node.addAll(newChildren.toArray(new NDocNode[0]));
                 }
                 return someChanges;
             }
@@ -114,37 +114,37 @@ public class HDocumentCompiler {
         }
     }
 
-    protected void processUuid(HNode node) {
+    protected void processUuid(NDocNode node) {
         if (NBlankable.isBlank(node.getUuid())) {
             node.setUuid(UUID.randomUUID().toString());
         }
-        for (HNode child : node.children()) {
+        for (NDocNode child : node.children()) {
             processUuid(child);
         }
     }
 
-    protected HNode processControlFlow(HNode root, HDocumentLoadingResultImpl result, NDocNodeFlowControlProcessorContext context) {
-        HNode oldRoot = root;
-        HNode[] multiRoot = processControlFlowCurrent(new HNode[]{root}, result, context);
+    protected NDocNode processControlFlow(NDocNode root, NDocDocumentLoadingResultImpl result, NDocNodeFlowControlProcessorContext context) {
+        NDocNode oldRoot = root;
+        NDocNode[] multiRoot = processControlFlowCurrent(new NDocNode[]{root}, result, context);
         if (multiRoot.length == 0) {
-            root = new DefaultHNode(HNodeType.PAGE);
+            root = new DefaultNDocNode(NDocNodeType.PAGE);
             root.setSource(oldRoot.source());
         } else {
-            root = new DefaultHNode(HNodeType.PAGE_GROUP);
+            root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP);
             root.setSource(oldRoot.source());
             root.setChildren(multiRoot);
         }
         return root;
     }
 
-    protected HNode[] processControlFlowCurrent(HNode[] nodes, HDocumentLoadingResultImpl result, NDocNodeFlowControlProcessorContext context) {
-        List<HNode> curr = new ArrayList<>(Arrays.asList(nodes));
+    protected NDocNode[] processControlFlowCurrent(NDocNode[] nodes, NDocDocumentLoadingResultImpl result, NDocNodeFlowControlProcessorContext context) {
+        List<NDocNode> curr = new ArrayList<>(Arrays.asList(nodes));
         for (NDocNodeFlowControlProcessor a : flowControlProcessorFactory.list()) {
-            List<HNode> result2 = new ArrayList<>();
+            List<NDocNode> result2 = new ArrayList<>();
             for (int i = 0; i < curr.size(); i++) {
-                HNode cc = curr.get(i);
+                NDocNode cc = curr.get(i);
                 if (cc != null) {
-                    HNode[] p = a.process(cc, context);
+                    NDocNode[] p = a.process(cc, context);
                     if (p == null) {
                         result2.add(cc);
                     } else {
@@ -154,14 +154,14 @@ public class HDocumentCompiler {
             }
             curr = result2;
         }
-        return curr.toArray(new HNode[0]);
+        return curr.toArray(new NDocNode[0]);
     }
 
-//    protected HNode removeDeclarations(HNode node, HDocumentLoadingResultImpl result) {
-//        List<HNode> children = node.children();
+//    protected NDocNode removeDeclarations(NDocNode node, NDocDocumentLoadingResultImpl result) {
+//        List<NDocNode> children = node.children();
 //        for (int i = children.size() - 1; i >= 0; i--) {
-//            HNode child = children.get(i);
-//            if (child.isTemplate() || HNodeType.DEFINE.equals(child.type())) {
+//            NDocNode child = children.get(i);
+//            if (child.isTemplate() || NDocNodeType.DEFINE.equals(child.type())) {
 //                children.remove(i);
 //            } else {
 //                removeDeclarations(child, result);
@@ -170,18 +170,18 @@ public class HDocumentCompiler {
 //        return node;
 //    }
 
-    protected void prepareInheritanceSingle(String a, HNode node, HDocumentLoadingResultImpl result,
+    protected void prepareInheritanceSingle(String a, NDocNode node, NDocDocumentLoadingResultImpl result,
                                             Set<String> newAncestors,
-                                            List<HNode> ancestorsList,
-                                            List<HNode> inheritedChildren,
-                                            HProperties inheritedProps,
+                                            List<NDocNode> ancestorsList,
+                                            List<NDocNode> inheritedChildren,
+                                            NDocProperties inheritedProps,
                                             List<HStyleRule> inheritedRules
     ) {
-        HNode aa = null;
+        NDocNode aa = null;
         try {
             aa = findAncestor(node, a);
         } catch (Exception ex) {
-            result.messages().log(HMsg.of(
+            result.messages().log(NDocMsg.of(
                             NMsg.ofC("invalid ancestor %s for %s : %s", a, net.thevpc.ndoc.api.util.HUtils.strSnapshot(node), ex).asSevere(),
                             engine.computeSource(node)
                     )
@@ -191,8 +191,8 @@ public class HDocumentCompiler {
             newAncestors.remove(a);
             for (HProp p : aa.getProperties()) {
                 switch (p.getName()) {
-                    case HPropName.NAME:
-                    case HPropName.TEMPLATE: {
+                    case NDocPropName.NAME:
+                    case NDocPropName.TEMPLATE: {
                         break;
                     }
                     default: {
@@ -202,8 +202,8 @@ public class HDocumentCompiler {
                 }
             }
             ancestorsList.add(aa);
-            for (HNode child : aa.children()) {
-                HResource source = computeSource(child);
+            for (NDocNode child : aa.children()) {
+                NDocResource source = computeSource(child);
                 child = child.copy();
                 child.setSource(source);
                 inheritedChildren.add(child);
@@ -211,7 +211,7 @@ public class HDocumentCompiler {
             inheritedRules.addAll(Arrays.asList(aa.rules()));
         } else {
             result.messages().log(
-                    HMsg.of(NMsg.ofC("missing ancestor '%s' for %s", a,
+                    NDocMsg.of(NMsg.ofC("missing ancestor '%s' for %s", a,
                                     net.thevpc.ndoc.api.util.HUtils.strSnapshot(node)
                             ).asWarning(),
                             engine.computeSource(node)
@@ -221,10 +221,10 @@ public class HDocumentCompiler {
         }
     }
 
-    public NOptional<HNodeDef> findDefinition(HNode node, String name) {
-        HNode currNode = node;
+    public NOptional<NDocNodeDef> findDefinition(NDocNode node, String name) {
+        NDocNode currNode = node;
         while (currNode != null) {
-            for (HNodeDef o : currNode.definitions()) {
+            for (NDocNodeDef o : currNode.definitions()) {
                 if (NNameFormat.equalsIgnoreFormat(o.name(), name)) {
                     return NOptional.of(o);
                 }
@@ -234,30 +234,30 @@ public class HDocumentCompiler {
         return NOptional.ofNamedEmpty("definition for " + name);
     }
 
-    protected HNode[] compileNodeTree(HNode node) {
-        if (HNodeType.CALL.equals(node.type())) {
+    protected NDocNode[] compileNodeTree(NDocNode node) {
+        if (NDocNodeType.CALL.equals(node.type())) {
             return _process_call(node);
         }
         node = node.copy();
-        List<HNode> newChildren = new ArrayList<>();
-        for (HNode child : node.children()) {
+        List<NDocNode> newChildren = new ArrayList<>();
+        for (NDocNode child : node.children()) {
             newChildren.addAll(Arrays.asList(compileNodeTree(child)));
         }
-        node.setChildren(newChildren.toArray(new HNode[0]));
-        return new HNode[]{node};
+        node.setChildren(newChildren.toArray(new NDocNode[0]));
+        return new NDocNode[]{node};
     }
 
-    private HNode[] _process_call(HNode node) {
-        if (HNodeType.CALL.equals(node.type())) {
-            CtrlHNodeCall c = (CtrlHNodeCall) node;
+    private NDocNode[] _process_call(NDocNode node) {
+        if (NDocNodeType.CALL.equals(node.type())) {
+            CtrlNDocNodeCall c = (CtrlNDocNodeCall) node;
             String uid = c.getCallName();
             NElement callDeclaration = c.getCallExpr();
             //                    String uid = HUtils.uid(ee.name());
-            HNode currNode = node.parent();
-            HNodeDef d = findDefinition(currNode, uid).get();
+            NDocNode currNode = node.parent();
+            NDocNodeDef d = findDefinition(currNode, uid).get();
             List<NElement> callArgs = c.getCallArgs();
-            HNodeDefParam[] expectedParams = d.params();
-            HNodeDefParam[] effectiveParams = new HNodeDefParam[expectedParams.length];
+            NDocNodeDefParam[] expectedParams = d.params();
+            NDocNodeDefParam[] effectiveParams = new NDocNodeDefParam[expectedParams.length];
             Map<String, NElement> extraProperties = new HashMap<>();
 
             if (callArgs.stream().allMatch(x -> x.isNamedPair())) {
@@ -266,7 +266,7 @@ public class HDocumentCompiler {
                     String n = p.key().asStringValue().get();
                     int pos = NArrays.indexOfByMatcher(expectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
                     if (pos >= 0) {
-                        effectiveParams[pos] = new HNodeDefParamImpl(expectedParams[pos].name(), p.value());
+                        effectiveParams[pos] = new NDocNodeDefParamImpl(expectedParams[pos].name(), p.value());
                     }
                 }
                 for (int i = 0; i < expectedParams.length; i++) {
@@ -276,7 +276,7 @@ public class HDocumentCompiler {
                             effectiveParams[i] = expectedParams[i];
                         } else {
                             NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", expectedParams[i].name(), uid, callDeclaration);
-                            messages.log(HMsg.of(errMsg, node.source()));
+                            messages.log(NDocMsg.of(errMsg, node.source()));
                             throw new NIllegalArgumentException(errMsg);
                         }
                     }
@@ -284,16 +284,16 @@ public class HDocumentCompiler {
             } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
                 if (expectedParams.length == callArgs.size()) {
                     for (int i = 0; i < expectedParams.length; i++) {
-                        effectiveParams[i] = new HNodeDefParamImpl(expectedParams[i].name(), callArgs.get(i));
+                        effectiveParams[i] = new NDocNodeDefParamImpl(expectedParams[i].name(), callArgs.get(i));
                     }
                 }
             } else {
                 NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
-                messages.log(HMsg.of(errMsg, node.source()));
+                messages.log(NDocMsg.of(errMsg, node.source()));
                 throw new NIllegalArgumentException(errMsg);
             }
 
-            HNode[] body = Arrays.copyOf(d.body(), d.body().length);
+            NDocNode[] body = Arrays.copyOf(d.body(), d.body().length);
             for (int i = 0; i < body.length; i++) {
                 body[i] = body[i].copy();
                 for (int j = effectiveParams.length - 1; j >= 0; j--) {
@@ -306,20 +306,20 @@ public class HDocumentCompiler {
     }
 
 
-    private HNode inlineNodeDefinitionCall(HNode objectDefNode, NElement callFunction) {
-        HNode inlinedNode = new DefaultHNode(HNodeType.STACK);
+    private NDocNode inlineNodeDefinitionCall(NDocNode objectDefNode, NElement callFunction) {
+        NDocNode inlinedNode = new DefaultNDocNode(NDocNodeType.STACK);
         NArrayElement objectDefArgsItem = (NArrayElement) objectDefNode.getPropertyValue("args").orNull();
         NElement[] objectDefArgs = objectDefArgsItem == null ? new NElement[0] : objectDefArgsItem.children().toArray(new NElement[0]);
         inlinedNode.setSource(objectDefNode.source());
         inlinedNode.setStyleClasses(objectDefNode.getStyleClasses());
         inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
-                HPropName.NAME.equals(x.getName())
-                        && !HPropName.ARGS.equals(x.getName())
+                NDocPropName.NAME.equals(x.getName())
+                        && !NDocPropName.ARGS.equals(x.getName())
         ).toArray(HProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
         List<NElement> passedArgs = callFunction.asUplet().map(x -> x.params()).orElse(Collections.emptyList());
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
-        inlinedNode.children().add(newAssign(HPropName.ARGS, NElement.ofArray(passedArgsArr)));
+        inlinedNode.children().add(newAssign(NDocPropName.ARGS, NElement.ofArray(passedArgsArr)));
         for (int i = 0; i < passedArgsArr.length; i++) {
             NElement passedArg = passedArgsArr[i];
             if (passedArg.isSimplePair()) {
@@ -335,7 +335,7 @@ public class HDocumentCompiler {
                     inlinedNode.children().add(newAssign(paramName, passedArg));
                 } else {
                     NMsg message = NMsg.ofC("[%s] invalid index %s for %s in %s", net.thevpc.ndoc.api.util.HUtils.shortName(objectDefNode.source()), (i + 1), objectDefNode.getName(), callFunction).asSevere();
-                    messages.log(HMsg.of(message, objectDefNode.source()));
+                    messages.log(NDocMsg.of(message, objectDefNode.source()));
                     throw new NIllegalArgumentException(message);
                 }
             }
@@ -343,7 +343,7 @@ public class HDocumentCompiler {
         //n.setParent(context.node().parent());
         inlinedNode.setParent(objectDefNode.parent());
         if (objectDefNode.children() != null) {
-            for (HNode newBodyElement : objectDefNode.children()) {
+            for (NDocNode newBodyElement : objectDefNode.children()) {
                 inlinedNode.children().add(newBodyElement.copy());
             }
         }
@@ -351,25 +351,25 @@ public class HDocumentCompiler {
         return inlinedNode;
     }
 
-    private HNode newAssign(String name, NElement value) {
-        HNode n = new DefaultHNode(HNodeType.ASSIGN);
-        n.setProperty(HPropName.NAME, NElement.ofString(name));
-        n.setProperty(HPropName.VALUE, value);
+    private NDocNode newAssign(String name, NElement value) {
+        NDocNode n = new DefaultNDocNode(NDocNodeType.ASSIGN);
+        n.setProperty(NDocPropName.NAME, NElement.ofString(name));
+        n.setProperty(NDocPropName.VALUE, value);
         return n;
     }
 
-    protected HNode processInheritance(HNode node, HDocumentLoadingResultImpl result) {
+    protected NDocNode processInheritance(NDocNode node, NDocDocumentLoadingResultImpl result) {
         String[] t = node.getAncestors();
         if (t.length > 0) {
             Set<String> newAncestors = new HashSet<>(Arrays.asList(t));
-            HProperties inheritedProps = new HProperties();
-            List<HNode> inheritedChildren = new ArrayList<>();
+            NDocProperties inheritedProps = new NDocProperties();
+            List<NDocNode> inheritedChildren = new ArrayList<>();
             List<HStyleRule> inheritedRules = new ArrayList<>();
-            List<HNode> ancestorsList = new ArrayList<>();
+            List<NDocNode> ancestorsList = new ArrayList<>();
             for (String a : t) {
                 prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
-            node.setProperty(HPropName.ANCESTORS, NElement.ofStringArray(newAncestors.toArray(new String[0])));
+            node.setProperty(NDocPropName.ANCESTORS, NElement.ofStringArray(newAncestors.toArray(new String[0])));
             for (HProp p : inheritedProps.toList()) {
                 NOptional<HProp> u = node.getProperty(p.getName());
                 if (!u.isPresent()) {
@@ -382,20 +382,20 @@ public class HDocumentCompiler {
                 node.setRules(inheritedRules.toArray(new HStyleRule[0]));
             }
             if (!inheritedChildren.isEmpty()) {
-                for (HNode child : node.children()) {
-                    HResource source = computeSource(child);
+                for (NDocNode child : node.children()) {
+                    NDocResource source = computeSource(child);
                     child = child.copy();
                     child.setSource(source);
                     inheritedChildren.add(child);
                 }
-                node.setChildren(inheritedChildren.toArray(new HNode[0]));
+                node.setChildren(inheritedChildren.toArray(new NDocNode[0]));
             }
             //return node;
         }
-        List<HNode> children = node.children();
+        List<NDocNode> children = node.children();
         for (int i = 0; i < children.size(); i++) {
-            HNode child = children.get(i);
-            HNode child2 = processInheritance(child, result);
+            NDocNode child = children.get(i);
+            NDocNode child2 = processInheritance(child, result);
             if (child2 != child) {
                 node.setChildAt(i, child2);
             }
@@ -403,11 +403,11 @@ public class HDocumentCompiler {
         return node;
     }
 
-    protected HNode findAncestor(HNode node, String name, HProp... args) {
-        HNodeDef ancestor0 = findAncestorDefinition(node, name);
-        HNode[] body = ancestor0.body();
+    protected NDocNode findAncestor(NDocNode node, String name, HProp... args) {
+        NDocNodeDef ancestor0 = findAncestorDefinition(node, name);
+        NDocNode[] body = ancestor0.body();
         if (body.length == 0) {
-            return new DefaultHNode(HNodeType.VOID);
+            return new DefaultNDocNode(NDocNodeType.VOID);
         }
         for (int i = 0; i < body.length; i++) {
             //apply args
@@ -416,23 +416,23 @@ public class HDocumentCompiler {
         if (body.length == 1) {
             return body[0];
         }
-        DefaultHNode stack = new DefaultHNode(HNodeType.STACK);
+        DefaultNDocNode stack = new DefaultNDocNode(NDocNodeType.STACK);
         stack.addAll(body);
         return stack;
     }
 
-    private HNode applyArgs(HNode hNode, HProp[] args) {
+    private NDocNode applyArgs(NDocNode nn, HProp[] args) {
         // TODO
-        return hNode.copy();
+        return nn.copy();
     }
 
-    protected HNodeDef findAncestorDefinition(HNode node, String name) {
-        HNodeDef temp = null;
-        HNode parent = node.parent();
+    protected NDocNodeDef findAncestorDefinition(NDocNode node, String name) {
+        NDocNodeDef temp = null;
+        NDocNode parent = node.parent();
         String finalName = net.thevpc.ndoc.api.util.HUtils.uid(name);
         while (parent != null) {
-            List<HNodeDef> r = new ArrayList<>();
-            for (HNodeDef x : parent.definitions()) {
+            List<NDocNodeDef> r = new ArrayList<>();
+            for (NDocNodeDef x : parent.definitions()) {
                 if (Objects.equals(HUtils.uid(x.name()), finalName)) {
                     r.add(x);
                 }
@@ -441,9 +441,9 @@ public class HDocumentCompiler {
                 StringBuilder sb = new StringBuilder();
                 sb.append("too many templates : ").append(finalName);
                 for (int i = 0; i < r.size(); i++) {
-                    HNodeDef hNode = r.get(i);
-                    HResource n = hNode.source();
-                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(net.thevpc.ndoc.api.util.HUtils.strSnapshot(hNode));
+                    NDocNodeDef nn = r.get(i);
+                    NDocResource n = nn.source();
+                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(net.thevpc.ndoc.api.util.HUtils.strSnapshot(nn));
                 }
                 throw new IllegalArgumentException(sb.toString());
             }
@@ -456,9 +456,9 @@ public class HDocumentCompiler {
         return temp;
     }
 
-    public HResource computeSource(HNode node) {
+    public NDocResource computeSource(NDocNode node) {
         while (node != null) {
-            HResource s = node.source();
+            NDocResource s = node.source();
             if (s != null) {
                 return s;
             }
@@ -467,27 +467,27 @@ public class HDocumentCompiler {
         return null;
     }
 
-    public HNode[] compilePage(HNode p) {
-        return new HNode[]{p};
+    public NDocNode[] compilePage(NDocNode p) {
+        return new NDocNode[]{p};
     }
 
     private static class MyNDocNodeFlowControlProcessorContext implements NDocNodeFlowControlProcessorContext {
         private NDocument document;
-        private HLogger messages;
+        private NDocLogger messages;
 
-        public MyNDocNodeFlowControlProcessorContext(NDocument document, HLogger messages) {
+        public MyNDocNodeFlowControlProcessorContext(NDocument document, NDocLogger messages) {
             this.document = document;
             this.messages = messages;
         }
 
         @Override
-        public NElement evalExpression(HNode node, NElement expression) {
+        public NElement evalExpression(NDocNode node, NElement expression) {
             NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(node);
             return ne.eval(NElemUtils.toElement(expression));
         }
 
         @Override
-        public NElement resolveVarValue(HNode node, String varName) {
+        public NElement resolveVarValue(NDocNode node, String varName) {
             return evalExpression(node, NElement.ofName("$" + varName));
         }
     }

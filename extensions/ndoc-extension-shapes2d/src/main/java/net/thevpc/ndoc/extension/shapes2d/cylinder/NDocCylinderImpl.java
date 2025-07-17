@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.shapes2d.cylinder;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
@@ -14,7 +14,7 @@ import net.thevpc.nuts.elem.NPairElement;
 public class NDocCylinderImpl extends NDocNodeParserBase {
 
     public NDocCylinderImpl(){
-        super(false, HNodeType.CYLINDER);
+        super(false, NDocNodeType.CYLINDER);
     }
 
     @Override
@@ -25,16 +25,16 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                     NPairElement pair = info.currentArg.asPair().get();
                     switch (HUtils.uid(pair.key().asStringValue().get())) {
                         case "ellipse-height": {
-                            info.node.setProperty(HPropName.ELLIPSE_H, pair.value());
+                            info.node.setProperty(NDocPropName.ELLIPSE_H, pair.value());
                             return true;
                         }
 
                         case "top-color": {
-                            info.node.setProperty(HPropName.TOP_COLOR, pair.value());
+                            info.node.setProperty(NDocPropName.TOP_COLOR, pair.value());
                             return true;
                         }
                         case "segment-count": {
-                            info.node.setProperty(HPropName.SEGMENT_COUNT, pair.value());
+                            info.node.setProperty(NDocPropName.SEGMENT_COUNT, pair.value());
                             return true;
                         }
 
@@ -48,10 +48,10 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
-        HProp ellipseHeight = item.getProperty(HPropName.ELLIPSE_H).orNull();
-        HProp topColor = item.getProperty(HPropName.TOP_COLOR).orNull();
-        HProp segmentCount = item.getProperty(HPropName.SEGMENT_COUNT).orNull();
+    public NElement toElem(NDocNode item) {
+        HProp ellipseHeight = item.getProperty(NDocPropName.ELLIPSE_H).orNull();
+        HProp topColor = item.getProperty(NDocPropName.TOP_COLOR).orNull();
+        HProp segmentCount = item.getProperty(NDocPropName.SEGMENT_COUNT).orNull();
         return ToElementHelper.of(
                         item,
                         engine()

@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.NDocNodeRenderer;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
@@ -13,17 +13,17 @@ import java.util.UUID;
 
 public class PageView extends JComponent {
     public static Dimension REF_SIZE = new Dimension(1000, 1000);
-    private HNode page;
+    private NDocNode page;
     private int index;
     private String uuid;
     private NDocNodeRendererManager rendererManager;
     private NDocEngine engine;
-    private HLogger messages;
+    private NDocLogger messages;
 
-    public PageView(HNode page, int index,
+    public PageView(NDocNode page, int index,
                     NDocEngine engine,
                     NDocNodeRendererManager rendererManager,
-                    HLogger messages
+                    NDocLogger messages
     ) {
         this.page = page;
         this.index = index;
@@ -77,8 +77,8 @@ public class PageView extends JComponent {
     }
 
 
-    public void render(HNode p, NDocNodeRendererContext ctx) {
-        for (HNode nn : engine.compileNodeBeforeRendering(p, ctx.log())) {
+    public void render(NDocNode p, NDocNodeRendererContext ctx) {
+        for (NDocNode nn : engine.compileNodeBeforeRendering(p, ctx.log())) {
             NDocNodeRenderer r = rendererManager.getRenderer(nn.type()).get();
             r.render(nn, ctx);
         }
@@ -88,7 +88,7 @@ public class PageView extends JComponent {
         return rendererManager;
     }
 
-    public HNode getPage() {
+    public NDocNode getPage() {
         return page;
     }
 }

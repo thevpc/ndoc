@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.control;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.resources.HResource;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
@@ -13,20 +13,20 @@ import net.thevpc.nuts.io.NPath;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CtrlHNodeCall extends CtrlHNodeBase {
+public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
     private String __name;
     private List<NElement> __args = new ArrayList<>();
     private NElement __callExpr;
     private List<NElement> __callBody = new ArrayList<>();
 
-    private CtrlHNodeCall() {
-        super(HNodeType.CALL);
+    private CtrlNDocNodeCall() {
+        super(NDocNodeType.CALL);
     }
 
-    public CtrlHNodeCall(NElement c, HResource source) {
-        super(HNodeType.CALL);
+    public CtrlNDocNodeCall(NElement c, NDocResource source) {
+        super(NDocNodeType.CALL);
         __name = HUtils.uid(c.asNamed().get().name().get());
-        this.setProperty(HPropName.NAME, NElement.ofString(HUtils.uid(__name)));
+        this.setProperty(NDocPropName.NAME, NElement.ofString(HUtils.uid(__name)));
 
         //inline current file path in the TsonElements
         if (source != null && source.path().orNull() != null) {
@@ -74,7 +74,7 @@ public class CtrlHNodeCall extends CtrlHNodeBase {
 
         }
         __callExpr = c;
-        this.setProperty(HPropName.VALUE, c);
+        this.setProperty(NDocPropName.VALUE, c);
     }
 
     public String getCallName() {
@@ -94,17 +94,17 @@ public class CtrlHNodeCall extends CtrlHNodeBase {
     }
 
     @Override
-    public HNode copy() {
-        CtrlHNodeCall c = new CtrlHNodeCall();
+    public NDocNode copy() {
+        CtrlNDocNodeCall c = new CtrlNDocNodeCall();
         copyTo(c);
         return this;
     }
 
     @Override
-    public void copyTo(HNode other) {
+    public void copyTo(NDocNode other) {
         super.copyTo(other);
-        if (other instanceof CtrlHNodeCall) {
-            CtrlHNodeCall oc = (CtrlHNodeCall) other;
+        if (other instanceof CtrlNDocNodeCall) {
+            CtrlNDocNodeCall oc = (CtrlNDocNodeCall) other;
             oc.__name = __name;
             oc.__args = new ArrayList<>(__args);
             oc.__callExpr = __callExpr;

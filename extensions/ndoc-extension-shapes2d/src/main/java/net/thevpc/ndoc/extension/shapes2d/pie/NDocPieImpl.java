@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.shapes2d.pie;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -13,7 +13,7 @@ import net.thevpc.nuts.util.NOptional;
 
 public class NDocPieImpl extends NDocNodeParserBase {
     public NDocPieImpl(){
-        super(false, HNodeType.PIE);
+        super(false, NDocNodeType.PIE);
     }
 
     @Override
@@ -26,27 +26,27 @@ public class NDocPieImpl extends NDocNodeParserBase {
                     NDocObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "start-angle": {
-                            info.node.setProperty(HProp.ofDouble(HPropName.START_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(NDocPropName.START_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "extent-angle": {
-                            info.node.setProperty(HProp.ofDouble(HPropName.EXTENT_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(NDocPropName.EXTENT_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "slice-count": {
-                            info.node.setProperty(HProp.ofInt(HPropName.SLICE_COUNT, v.asInt().get()));
+                            info.node.setProperty(HProp.ofInt(NDocPropName.SLICE_COUNT, v.asInt().get()));
                             return true;
                         }
                         case "dash": {
-                            info.node.setProperty(HProp.ofDouble(HPropName.DASH, v.asDouble().get()));
+                            info.node.setProperty(HProp.ofDouble(NDocPropName.DASH, v.asDouble().get()));
                             return true;
                         }
                         case "slices": {
-                            info.node.setProperty(HProp.ofDoubleArray(HPropName.SLICES, v.asDoubleArray().get()));
+                            info.node.setProperty(HProp.ofDoubleArray(NDocPropName.SLICES, v.asDoubleArray().get()));
                             return true;
                         }
                         case "colors": {
-                            info.node.setProperty(HProp.ofStringArray(HPropName.COLORS, v.asStringArray().get()));
+                            info.node.setProperty(HProp.ofStringArray(NDocPropName.COLORS, v.asStringArray().get()));
                             return true;
                         }
 
@@ -59,14 +59,14 @@ public class NDocPieImpl extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
 
-        HProp startAngle = item.getProperty(HPropName.START_ANGLE).orNull();
-        HProp extentAngle = item.getProperty(HPropName.EXTENT_ANGLE).orNull();
-        HProp sliceCount = item.getProperty(HPropName.SLICE_COUNT).orNull();
-        HProp dash = item.getProperty(HPropName.DASH).orNull();
-        HProp slices = item.getProperty(HPropName.SLICES).orNull();
-        HProp colors = item.getProperty(HPropName.COLORS).orNull();
+        HProp startAngle = item.getProperty(NDocPropName.START_ANGLE).orNull();
+        HProp extentAngle = item.getProperty(NDocPropName.EXTENT_ANGLE).orNull();
+        HProp sliceCount = item.getProperty(NDocPropName.SLICE_COUNT).orNull();
+        HProp dash = item.getProperty(NDocPropName.DASH).orNull();
+        HProp slices = item.getProperty(NDocPropName.SLICES).orNull();
+        HProp colors = item.getProperty(NDocPropName.COLORS).orNull();
 
 
 

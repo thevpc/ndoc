@@ -4,9 +4,9 @@
  */
 package net.thevpc.ndoc.elem.base.image;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -23,7 +23,7 @@ import java.util.Set;
 public class NDocImageParser extends NDocNodeParserBase {
 
     public NDocImageParser() {
-        super(false, HNodeType.IMAGE);
+        super(false, NDocNodeType.IMAGE);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                 case TRIPLE_ANTI_QUOTED_STRING:
                 case LINE_STRING:
                 {
-                    info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
+                    info.node.setProperty(NDocPropName.VALUE, info.context.asPathRef(currentArg));
                     processed.add(i);
                     found = true;
                     break;
@@ -51,8 +51,8 @@ public class NDocImageParser extends NDocNodeParserBase {
                         NPairElement p = currentArg.asPair().get();
                         String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().asStringValue().get());
                         switch (sid) {
-                            case HPropName.VALUE:
-                            case HPropName.FILE: {
+                            case NDocPropName.VALUE:
+                            case NDocPropName.FILE: {
                                 info.node.setProperty(sid, info.context.asPathRef(p.value()));
                                 processed.add(i);
                                 found = true;
@@ -60,7 +60,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                             }
                             case "content":
                             case "src": {
-                                info.node.setProperty(HPropName.VALUE, info.context.asPathRef(p.value()));
+                                info.node.setProperty(NDocPropName.VALUE, info.context.asPathRef(p.value()));
                                 processed.add(i);
                                 found = true;
                                 break;
@@ -77,7 +77,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                     NElement currentArg = info.arguments[i];
                     switch (currentArg.type()) {
                         case NAME: {
-                            info.node.setProperty(HPropName.VALUE, info.context.asPathRef(currentArg));
+                            info.node.setProperty(NDocPropName.VALUE, info.context.asPathRef(currentArg));
                             processed.add(i);
                             found = true;
                             break;
@@ -116,12 +116,12 @@ public class NDocImageParser extends NDocNodeParserBase {
                     NPairElement p = info.currentArg.asPair().get();
                     String sid = HUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
-                        case HPropName.TRANSPARENT_COLOR: {
+                        case NDocPropName.TRANSPARENT_COLOR: {
                             info.node.setProperty(sid, p.value());
                             return true;
                         }
-                        case HPropName.VALUE:
-                        case HPropName.FILE:
+                        case NDocPropName.VALUE:
+                        case NDocPropName.FILE:
                         case "content":
                         case "src": {
                             return true;
@@ -136,10 +136,10 @@ public class NDocImageParser extends NDocNodeParserBase {
 
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper
                 .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
+                .inlineStringProp(NDocPropName.VALUE)
                 .build();
     }
 }

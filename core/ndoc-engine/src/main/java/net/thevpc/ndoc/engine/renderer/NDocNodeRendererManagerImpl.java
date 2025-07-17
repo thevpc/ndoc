@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.NDocNodeRenderer;
@@ -62,12 +62,12 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
 
 
     @Override
-    public BufferedImage renderImage(HNode node, NDocNodeRendererConfig config) {
+    public BufferedImage renderImage(NDocNode node, NDocNodeRendererConfig config) {
         int sizeWidth = config.getWidth();
         int sizeHeight = config.getHeight();
         Dimension dimension=new Dimension(sizeWidth, sizeHeight);
         Map<String, Object> capabilities=config.getCapabilities();
-        HLogger messages=config.getMessages();
+        NDocLogger messages=config.getMessages();
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -88,7 +88,7 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
     }
 
     @Override
-    public byte[] renderImageBytes(HNode node, NDocNodeRendererConfig config) {
+    public byte[] renderImageBytes(NDocNode node, NDocNodeRendererConfig config) {
         BufferedImage newImage = renderImage(node, config);
         String imageTypeOk="png";
         if(config.getCapabilities()!=null) {

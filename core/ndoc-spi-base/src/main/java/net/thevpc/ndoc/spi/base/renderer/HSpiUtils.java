@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi.base.renderer;
 
 import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRendererConfig;
-import net.thevpc.ndoc.spi.renderer.PageOrientation;
+import net.thevpc.ndoc.spi.renderer.NDocPageOrientation;
 
 public class HSpiUtils {
     public static NDocDocumentStreamRendererConfig validateConfig(NDocDocumentStreamRendererConfig config0) {
@@ -17,7 +17,7 @@ public class HSpiUtils {
         config.setGridX(imagesPerRow);
         config.setGridY(imagesPerColumn);
         if (config.getOrientation() == null) {
-            config.setOrientation(PageOrientation.LANDSCAPE);
+            config.setOrientation(NDocPageOrientation.LANDSCAPE);
         }
         return config;
     }

@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.shapes2d.arrow;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
@@ -17,7 +17,7 @@ import net.thevpc.nuts.elem.NPairElement;
 public class NDocArrowImpl extends NDocNodeParserBase {
 
     public NDocArrowImpl() {
-        super(false, HNodeType.ARROW);
+        super(false, NDocNodeType.ARROW);
     }
 
     @Override
@@ -28,11 +28,11 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                     NPairElement p = info.currentArg.asPair().get();
                     switch (HUtils.uid(p.key().asStringValue().get())) {
                         case "width": {
-                            info.node.setProperty(HPropName.WIDTH, p.value());
+                            info.node.setProperty(NDocPropName.WIDTH, p.value());
                             return true;
                         }
                         case "height": {
-                            info.node.setProperty(HPropName.HEIGHT, p.value());
+                            info.node.setProperty(NDocPropName.HEIGHT, p.value());
                             return true;
                         }
                         case "base": {
@@ -53,9 +53,9 @@ public class NDocArrowImpl extends NDocNodeParserBase {
 
 
     @Override
-    public NElement toElem(HNode item) {
-        HProp width = item.getProperty(HPropName.WIDTH).orNull();
-        HProp height = item.getProperty(HPropName.HEIGHT).orNull();
+    public NElement toElem(NDocNode item) {
+        HProp width = item.getProperty(NDocPropName.WIDTH).orNull();
+        HProp height = item.getProperty(NDocPropName.HEIGHT).orNull();
         HProp base = item.getProperty("base").orNull();
         HProp hat = item.getProperty("hat").orNull();
 

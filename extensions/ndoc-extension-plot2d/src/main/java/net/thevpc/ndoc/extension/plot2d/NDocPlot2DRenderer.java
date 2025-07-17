@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.extension.plot2d;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.util.MinMax;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -16,12 +16,12 @@ public class NDocPlot2DRenderer extends NDocNodeRendererBase {
     DoubleToDoubleFunction f = x -> Math.sin(x);
 
     public NDocPlot2DRenderer() {
-        super(HNodeType.PLOT2D);
+        super(NDocNodeType.PLOT2D);
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
-        Bounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -39,7 +39,7 @@ public class NDocPlot2DRenderer extends NDocNodeRendererBase {
         if (!ctx.isDry()) {
             g.setPaint(color);
 
-            Bounds2 bounds = ctx.getBounds();
+            NDocBounds2 bounds = ctx.getBounds();
             int steps = (int) (bounds.getY() * 10);
             double[] xx = ArrayUtils.dtimes(minX, maxX, steps);
             double[] yy = new double[xx.length];
@@ -86,7 +86,7 @@ public class NDocPlot2DRenderer extends NDocNodeRendererBase {
                     }
                 }
             }
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 

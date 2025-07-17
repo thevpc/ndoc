@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
-import net.thevpc.ndoc.api.model.elem2d.HImageOptions;
+import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -26,7 +26,7 @@ class GifNDocImageDrawer implements NDocGraphicsImageDrawer {
     }
 
     @Override
-    public void drawImage(double x, double y, HImageOptions options, NDocGraphics g) {
+    public void drawImage(double x, double y, NDocImageOptions options, NDocGraphics g) {
         Color transparentColor = options.getTransparentColor();
         Dimension size = options.getSize();
         FutureTask<NPath> location = GifResizer.transformWithCache(ic, null,

@@ -1,21 +1,21 @@
 package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
-public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
-    private HResource source;
+public class NDocDocumentLoadingResultImpl implements NDocDocumentLoadingResult {
+    private NDocResource source;
     private NDocument document;
-    private HLoggerDelegateImpl messageList;
+    private NDocLoggerDelegateImpl messageList;
 
-    public HDocumentLoadingResultImpl(HResource source, HLogger messageList) {
+    public NDocDocumentLoadingResultImpl(NDocResource source, NDocLogger messageList) {
         this.source = source;
         if (messageList == null) {
-            messageList = new DefaultHLogger(source);
+            messageList = new DefaultNDocLogger(source);
         }
-        this.messageList = new HLoggerDelegateImpl(source, messageList);
+        this.messageList = new NDocLoggerDelegateImpl(source, messageList);
     }
 
     @Override
@@ -24,11 +24,11 @@ public class HDocumentLoadingResultImpl implements HDocumentLoadingResult {
     }
 
     @Override
-    public HResource source() {
+    public NDocResource source() {
         return source;
     }
 
-    public HLoggerDelegateImpl messages() {
+    public NDocLoggerDelegateImpl messages() {
         return messageList;
     }
 

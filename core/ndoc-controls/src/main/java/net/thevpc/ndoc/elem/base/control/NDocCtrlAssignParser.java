@@ -3,9 +3,9 @@ package net.thevpc.ndoc.elem.base.control;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -22,7 +22,7 @@ import net.thevpc.nuts.util.NStringUtils;
 public class NDocCtrlAssignParser extends NDocNodeParserBase {
 
     public NDocCtrlAssignParser() {
-        super(false, HNodeType.ASSIGN);
+        super(false, NDocNodeType.ASSIGN);
     }
 
     @Override
@@ -74,17 +74,17 @@ public class NDocCtrlAssignParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         Object varName = "var";
         Object varValue = null;
 
-        NOptional<NElement> s = item.getPropertyValue(HPropName.NAME);
+        NOptional<NElement> s = item.getPropertyValue(NDocPropName.NAME);
 
         if (!s.isEmpty()) {
             varName = s.get();
         }
 
-        s = item.getPropertyValue(HPropName.VALUE);
+        s = item.getPropertyValue(NDocPropName.VALUE);
         if (!s.isEmpty()) {
             varValue = s.get();
         }

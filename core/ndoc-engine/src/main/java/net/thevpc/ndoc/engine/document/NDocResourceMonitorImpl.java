@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.resources.HResource;
-import net.thevpc.ndoc.api.resources.HResourceMonitor;
-import net.thevpc.ndoc.api.util.DefaultHResource;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
+import net.thevpc.ndoc.api.util.DefaultNDocResource;
 import net.thevpc.ndoc.api.util.HResourceFactory;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
@@ -12,14 +12,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class HResourceMonitorImpl extends DefaultHResource implements HResourceMonitor {
-    private Set<HResource> resources = new HashSet<>();
+public class NDocResourceMonitorImpl extends DefaultNDocResource implements NDocResourceMonitor {
+    private Set<NDocResource> resources = new HashSet<>();
     @Override
     public NOptional<NPath> path() {
         return NOptional.ofNamedEmpty("path");
     }
 
-    public HResourceMonitorImpl() {
+    public NDocResourceMonitorImpl() {
     }
 
     @Override
@@ -56,16 +56,16 @@ public class HResourceMonitorImpl extends DefaultHResource implements HResourceM
     }
 
     public void clear() {
-        for (HResource r : resources.toArray(new HResource[0])) {
+        for (NDocResource r : resources.toArray(new NDocResource[0])) {
             remove(r);
         }
     }
 
-    public void remove(HResource r) {
+    public void remove(NDocResource r) {
         resources.remove(r);
     }
 
-    public void add(HResource r) {
+    public void add(NDocResource r) {
         if (r != null) {
             resources.add(r);
         }
@@ -83,7 +83,7 @@ public class HResourceMonitorImpl extends DefaultHResource implements HResourceM
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        HResourceMonitorImpl that = (HResourceMonitorImpl) o;
+        NDocResourceMonitorImpl that = (NDocResourceMonitorImpl) o;
         return Objects.equals(resources, that.resources);
     }
 

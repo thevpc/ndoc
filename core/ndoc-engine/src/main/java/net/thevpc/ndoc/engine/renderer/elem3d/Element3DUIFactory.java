@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.renderer.elem3d;
 
-import net.thevpc.ndoc.api.model.elem3d.HElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.HElement3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
 import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
 import net.thevpc.ndoc.spi.NDocElement3DRenderer;
 
@@ -21,9 +21,9 @@ public class Element3DUIFactory {
         map.put(c, f);
     }
 
-    public HElement3DPrimitive[] toPrimitives(HElement3D e, RenderState3D renderState) {
-        if (e instanceof HElement3DPrimitive) {
-            return new HElement3DPrimitive[]{(HElement3DPrimitive) e};
+    public NDocElement3DPrimitive[] toPrimitives(NDocElement3D e, RenderState3D renderState) {
+        if (e instanceof NDocElement3DPrimitive) {
+            return new NDocElement3DPrimitive[]{(NDocElement3DPrimitive) e};
         }
         NDocElement3DRenderer i = map.get(e.getClass());
         if (i != null) {

@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.examples;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
@@ -30,7 +30,7 @@ public class NDocExampleTestGrid {
                 .add(f.ofPage()
                         .add(
                                 f.ofGrid(3, 2)
-                                        .setProperty(HPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 2, 3, 4, 5, 6))
+                                        .setProperty(NDocPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 2, 3, 4, 5, 6))
                                         .add(f.ofRectangle()
                                                 .setProperty(HProps.backgroundColor(Color.BLUE))
                                                 .setProperty(HProps.colspan(4))

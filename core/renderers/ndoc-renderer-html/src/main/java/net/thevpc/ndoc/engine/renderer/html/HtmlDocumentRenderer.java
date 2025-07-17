@@ -10,10 +10,10 @@ import java.io.PrintStream;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.DefaultHLogger;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
@@ -30,9 +30,9 @@ public class HtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer imp
     }
 
     protected void renderStream(NDocument document, OutputStream os) {
-        HLogger messages2 = this.messages;
+        NDocLogger messages2 = this.messages;
         if (messages2 == null) {
-            messages2 = new DefaultHLogger(engine.computeSource(document.root()));
+            messages2 = new DefaultNDocLogger(engine.computeSource(document.root()));
         }
         document = engine.compileDocument(document, messages2).get();
         PrintStream out = new PrintStream(os);
@@ -69,13 +69,13 @@ public class HtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer imp
     }
 
     @Override
-    public NDocDocumentStreamRenderer renderNode(HNode part, OutputStream out) {
+    public NDocDocumentStreamRenderer renderNode(NDocNode part, OutputStream out) {
         switch (part.type()) {
-            case HNodeType.PAGE_GROUP:
+            case NDocNodeType.PAGE_GROUP:
                 break;
-            case HNodeType.PAGE: {
+            case NDocNodeType.PAGE: {
                 PrintStream o = psOf(out);
-                for (HNode pp : part.children()) {
+                for (NDocNode pp : part.children()) {
                     renderNode(pp, o);
                 }
                 o.flush();
@@ -108,7 +108,7 @@ public class HtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer imp
         }
 
         @Override
-        public HLogger messages() {
+        public NDocLogger messages() {
             return messages;
         }
     }

@@ -3,11 +3,11 @@ package net.thevpc.ndoc.elem.base.control;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
@@ -21,7 +21,7 @@ import java.util.List;
 public class NDocCtrlCallParser extends NDocNodeParserBase {
 
     public NDocCtrlCallParser() {
-        super(false, HNodeType.CALL);
+        super(false, NDocNodeType.CALL);
     }
 
     @Override
@@ -37,17 +37,17 @@ public class NDocCtrlCallParser extends NDocNodeParserBase {
                 if(p.isNamed()) {
                     return NCallableSupport.of(10, () -> {
                         List<NElement> args = p.params();
-                        HNode node = new DefaultHNode(HNodeType.CALL);
+                        NDocNode node = new DefaultNDocNode(NDocNodeType.CALL);
                         for (NElement arg : args) {
                             if (arg.isSimplePair()) {
                                 NPairElement pair = arg.asPair().get();
                                 switch (HUtils.uid(pair.key().asStringValue().get())) {
-                                    case HPropName.NAME: {
-                                        node.setProperty(HPropName.NAME, pair.key());
+                                    case NDocPropName.NAME: {
+                                        node.setProperty(NDocPropName.NAME, pair.key());
                                         break;
                                     }
-                                    case HPropName.VALUE: {
-                                        node.setProperty(HPropName.VALUE, pair.value());
+                                    case NDocPropName.VALUE: {
+                                        node.setProperty(NDocPropName.VALUE, pair.value());
                                         break;
                                     }
                                 }

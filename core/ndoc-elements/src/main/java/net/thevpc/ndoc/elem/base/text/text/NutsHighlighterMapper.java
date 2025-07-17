@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -30,12 +30,12 @@ public class NutsHighlighterMapper {
             new Color(0x6495ED)
     };
 
-    public static void highlightNutsText(String lang, String rawText, NText parsedText, HNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder result) {
+    public static void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder result) {
         Map<String, NDocTextPartStyle> cache = new HashMap<>();
         result.setLang(lang);
         result.setCode(rawText);
         NDocGraphics g = ctx.graphics();
-        HNodeRendererUtils.applyFont(p, g, ctx);
+        NDocNodeRendererUtils.applyFont(p, g, ctx);
         //String[] allLines = code.trim().split("[\n]");
         NTexts ttt = NTexts.of();
         NTextTransformConfig nTextTransformConfig = new NTextTransformConfig();
@@ -49,7 +49,7 @@ public class NutsHighlighterMapper {
         result.computeBound(ctx);
     }
 
-    private static void applyOptions(NDocTextOptions to, NTextStyle nTextStyle, HNode p, NDocNodeRendererContext ctx, Map<String, NDocTextPartStyle> cache) {
+    private static void applyOptions(NDocTextOptions to, NTextStyle nTextStyle, NDocNode p, NDocNodeRendererContext ctx, Map<String, NDocTextPartStyle> cache) {
         switch (nTextStyle.getType()) {
             case BOLD: {
                 to.setBold(true);
@@ -139,7 +139,7 @@ public class NutsHighlighterMapper {
         }
     }
 
-    private static void processNTextRecursively(NText nText, NDocTextRendererBuilder result, NDocNodeRendererContext ctx, NTextStyle[] styles, HNode p, Map<String, NDocTextPartStyle> cache) {
+    private static void processNTextRecursively(NText nText, NDocTextRendererBuilder result, NDocNodeRendererContext ctx, NTextStyle[] styles, NDocNode p, Map<String, NDocTextPartStyle> cache) {
         NDocGraphics g = ctx.graphics();
         if(styles==null){
             styles=new NTextStyle[0];
@@ -194,7 +194,7 @@ public class NutsHighlighterMapper {
         }
     }
 
-    private static NDocTextPartStyle resolveCodeStyle(NTextStyle nTextStyle, HNode node, NDocNodeRendererContext ctx, Map<String, NDocTextPartStyle> cache) {
+    private static NDocTextPartStyle resolveCodeStyle(NTextStyle nTextStyle, NDocNode node, NDocNodeRendererContext ctx, Map<String, NDocTextPartStyle> cache) {
         String styleTypeId = nTextStyle.getType().id();
         String prefix = "source-" + styleTypeId + "-";
         NDocTextPartStyle ss = cache.get(nTextStyle.id());

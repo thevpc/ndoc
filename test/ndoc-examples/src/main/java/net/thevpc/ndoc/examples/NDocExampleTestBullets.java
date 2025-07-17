@@ -50,7 +50,7 @@ public class NDocExampleTestBullets {
     }
 
 //    private static HGridContainer cc(NDocDocumentFactory f){
-//        List<HNode> all = new ArrayList<>();
+//        List<NDocNode> all = new ArrayList<>();
 //        int nb=6;
 //        for (int i = 0; i < nb; i++) {
 //            all.add(f.circle(50)
@@ -65,7 +65,7 @@ public class NDocExampleTestBullets {
 //                all.add(f.rectangle().set(HStyles.backgroundColor(Color.RED)).set(HStyles.anchor(HAnchor.LEFT)));
 //            }
 //        }
-//        return f.grid(2, nb, all.toArray(new HNode[0]))
+//        return f.grid(2, nb, all.toArray(new NDocNode[0]))
 //                .set(HStyles.columnsWeight(1, 20))
 //                ;
 //    }

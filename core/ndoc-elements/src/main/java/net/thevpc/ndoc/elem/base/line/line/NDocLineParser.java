@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.elem.base.line.line;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -13,7 +13,7 @@ import net.thevpc.nuts.util.NOptional;
 
 public class NDocLineParser extends NDocNodeParserBase {
     public NDocLineParser() {
-        super(false, HNodeType.LINE);
+        super(false, NDocNodeType.LINE);
     }
 
     @Override
@@ -28,10 +28,10 @@ public class NDocLineParser extends NDocNodeParserBase {
                 if (n.isPresent()) {
                     String uid = HUtils.uid(n.get());
                     switch (uid) {
-                        case HPropName.FROM:
-                        case HPropName.TO:
-                        case HPropName.END_ARROW:
-                        case HPropName.START_ARROW: {
+                        case NDocPropName.FROM:
+                        case NDocPropName.TO:
+                        case NDocPropName.END_ARROW:
+                        case NDocPropName.START_ARROW: {
                             info.node.setProperty(uid, v);
                             return true;
                         }
@@ -43,10 +43,10 @@ public class NDocLineParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper.of(
                         item, engine()
-                ).addChildProps(new String[]{HPropName.FROM, HPropName.TO, HPropName.START_ARROW, HPropName.END_ARROW})
+                ).addChildProps(new String[]{NDocPropName.FROM, NDocPropName.TO, NDocPropName.START_ARROW, NDocPropName.END_ARROW})
                 .build();
     }
 

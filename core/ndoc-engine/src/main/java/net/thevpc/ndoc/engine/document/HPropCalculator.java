@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.util.NOptional;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class HPropCalculator {
 
 
-    public NOptional<HProp> computeProperty(HNode node, String[] propertyNames) {
+    public NOptional<HProp> computeProperty(NDocNode node, String[] propertyNames) {
         return computePropertyMagnetude(node, propertyNames).map(HStyleAndMagnitude::getStyle);
     }
 
@@ -44,7 +44,7 @@ public class HPropCalculator {
         }
     }
 
-    private HStyleRuleResult2[] _HStyleRuleResult2s(HNode t, HNode p) {
+    private HStyleRuleResult2[] _HStyleRuleResult2s(NDocNode t, NDocNode p) {
         HStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
         for (HStyleRule rule : rules) {
@@ -57,7 +57,7 @@ public class HPropCalculator {
         return rr.toArray(new HStyleRuleResult2[0]);
     }
 
-    private HStyleRuleResult2[] _HStyleRuleResult2(HNode t, HNode p, String[] propertyNames) {
+    private HStyleRuleResult2[] _HStyleRuleResult2(NDocNode t, NDocNode p, String[] propertyNames) {
         HStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
         for (HStyleRule rule : rules) {
@@ -72,18 +72,18 @@ public class HPropCalculator {
         return rr.toArray(new HStyleRuleResult2[0]);
     }
 
-    public NOptional<HStyleAndMagnitude> computePropertyMagnetude(HNode node, String[] propertyNames) {
+    public NOptional<HStyleAndMagnitude> computePropertyMagnetude(NDocNode node, String[] propertyNames) {
         propertyNames = HUtils.uids(propertyNames);
         NOptional<HProp> u = node.getProperty(propertyNames);
         if (u.isPresent()) {
             return NOptional.of(
                     new HStyleAndMagnitude(
                             u.get(),
-                            new HStyleMagnitude(0, DefaultHNodeSelector.ofImportant())
+                            new HStyleMagnitude(0, DefaultNDocNodeSelector.ofImportant())
                     )
             );
         }
-        HNode p = node.parent();
+        NDocNode p = node.parent();
         int distance = 1;
         HProp bestStyle = null;
         HStyleMagnitude bestMag = null;
@@ -122,17 +122,17 @@ public class HPropCalculator {
         return NOptional.ofNamedEmpty("no style : " + Arrays.asList(propertyNames));
     }
 
-    public List<HStyleAndMagnitude> computePropertiesMagnetude(HNode node) {
+    public List<HStyleAndMagnitude> computePropertiesMagnetude(NDocNode node) {
         Map<String, HStyleAndMagnitude> found = new LinkedHashMap<>();
         for (HProp property : node.getProperties()) {
             found.put(property.getName(),
                     new HStyleAndMagnitude(
                             property,
-                            new HStyleMagnitude(0, DefaultHNodeSelector.ofImportant())
+                            new HStyleMagnitude(0, DefaultNDocNodeSelector.ofImportant())
                     )
             );
         }
-        HNode p = node.parent();
+        NDocNode p = node.parent();
         int distance = 1;
         while (p != null) {
             HStyleRuleResult2[] validRules = _HStyleRuleResult2s(node, p);
@@ -149,17 +149,17 @@ public class HPropCalculator {
         return new ArrayList<>(found.values());
     }
 
-    public List<HProp> computeProperties(HNode node) {
+    public List<HProp> computeProperties(NDocNode node) {
         return computePropertiesMagnetude(node).stream().map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
-    public List<HProp> computeInheritedProperties(HNode node) {
+    public List<HProp> computeInheritedProperties(NDocNode node) {
         return computePropertiesMagnetude(node).stream()
                 .filter(x -> x.getMagnetude().getDistance() > 0)
                 .map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
-    public <T> NOptional<T> computePropertyValue(HNode t, String... s) {
+    public <T> NOptional<T> computePropertyValue(NDocNode t, String... s) {
         if (t != null) {
             return computeProperty(t, s).map(HProp::getValue).map(x -> {
                 try {

@@ -4,9 +4,9 @@
  */
 package net.thevpc.ndoc.elem.base.text.plain;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
@@ -17,7 +17,7 @@ import net.thevpc.nuts.elem.NElement;
 public class NDocPlainTextParser extends NDocNodeParserBase {
 
     public NDocPlainTextParser() {
-        super(false, HNodeType.PLAIN);
+        super(false, NDocNodeType.PLAIN);
     }
 
     protected String acceptTypeName(NElement e) {
@@ -47,7 +47,7 @@ public class NDocPlainTextParser extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HPropName.VALUE, info.currentArg);
+                info.node.setProperty(NDocPropName.VALUE, info.currentArg);
                 return true;
             }
         }
@@ -55,10 +55,10 @@ public class NDocPlainTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper
                 .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
+                .inlineStringProp(NDocPropName.VALUE)
                 .build();
     }
 }

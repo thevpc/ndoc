@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.engine.render.server;
 
-import net.thevpc.ndoc.api.HEngine;
-import net.thevpc.ndoc.api.document.HDocument;
-import net.thevpc.ndoc.api.document.HMessageList;
-import net.thevpc.ndoc.api.document.HMessageListImpl;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.engine.DefaultHEngine;
-import net.thevpc.ndoc.spi.renderer.HNodeRendererConfig;
+import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.NDocDocument;
+import net.thevpc.ndoc.api.document.NDocMessageList;
+import net.thevpc.ndoc.api.document.NDocMessageListImpl;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.engine.DefaultNDocEngine;
+import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class DocumentController {
 
-    private final HEngine engine;
+    private final NDocEngine engine;
 
     @Autowired
-    public DocumentController(HEngine engine) {
+    public DocumentController(NDocEngine engine) {
         this.engine = engine;
     }
 
@@ -41,16 +41,16 @@ public class DocumentController {
 
             int sizeWidth = 1200;
             int sizeHeight = 1000;
-            HEngine e = new DefaultHEngine();
-            HDocument doc = e.loadDocument(file, null).get();
-            HMessageList messages = new HMessageListImpl(engine.computeSource(doc.root()));
+            NDocEngine e = new DefaultNDocEngine();
+            NDocDocument doc = e.loadDocument(file, null).get();
+            NDocMessageList messages = new NDocMessageListImpl(engine.computeSource(doc.root()));
 
-            List<HNode> pages = doc.pages();
+            List<NDocNode> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 byte[] imageData = engine.renderManager().renderImageBytes(
                         pages.get(pageNumber),
-                        new HNodeRendererConfig(sizeWidth, sizeHeight)
+                        new NDocNodeRendererConfig(sizeWidth, sizeHeight)
                                 .withAnimate(false)
                                 .setMessages(messages)
                 );

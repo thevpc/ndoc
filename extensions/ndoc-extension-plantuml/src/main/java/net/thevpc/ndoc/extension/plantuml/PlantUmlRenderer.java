@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
-import net.thevpc.ndoc.api.document.HMsg;
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
-import net.thevpc.ndoc.api.style.HPropName;
-import net.thevpc.ndoc.api.style.HProperties;
+import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -23,13 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public class PlantUmlRenderer extends NDocNodeRendererBase {
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public PlantUmlRenderer() {
         super("plantuml", "diagram");
     }
 
-    private String prepare(String type, String txt, Bounds2 b) {
+    private String prepare(String type, String txt, NDocBounds2 b) {
         return "@start" + type + "\n"
                 + "scale " + (b.getWidth().intValue()) + "*" + (b.getHeight().intValue()) + "\n"
                 + "skinparam backgroundcolor transparent\n"
@@ -39,16 +39,16 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
     }
 
     @Override
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String txt = NDocObjEx.of(p.getPropertyValue(HPropName.VALUE).orNull()).asStringOrName().orNull();
-        String mode = NDocObjEx.of(p.getPropertyValue(HPropName.MODE).orNull()).asStringOrName().orNull();
+        String txt = NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
+        String mode = NDocObjEx.of(p.getPropertyValue(NDocPropName.MODE).orNull()).asStringOrName().orNull();
         mode = HUtils.uid(mode);
         if (NBlankable.isBlank(txt)) {
             return;
         }
         NDocGraphics g = ctx.graphics();
-        Bounds2 b = selfBounds(p, ctx);
+        NDocBounds2 b = selfBounds(p, ctx);
         double x = b.getX();
         double y = b.getY();
         BufferedImage image = null;
@@ -97,18 +97,18 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
                 reader.outputImage(bos);
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
-                HResource src = ctx.engine().computeSource(p);
-                ctx.log().log(HMsg.of(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src));
+                NDocResource src = ctx.engine().computeSource(p);
+                ctx.log().log(NDocMsg.of(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src));
             }
         }
         if (image != null) {
 
             if (!ctx.isDry()) {
-                if (HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+                if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                     g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()));
                 }
 
-                HNodeRendererUtils.applyForeground(p, g, ctx, false);
+                NDocNodeRendererUtils.applyForeground(p, g, ctx, false);
                 if (image != null) {
                     // would resize?
                     int w = net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth());
@@ -119,7 +119,7 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
                     }
                 }
             }
-            HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
         }
     }
 }

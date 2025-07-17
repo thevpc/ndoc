@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.spi.base.renderer;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -28,21 +28,21 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     private NDocGraphics g3;
     private NDocEngine engine;
-    private Bounds2 globalBound;
-    private Bounds2 bound;
-    private HLogger log;
+    private NDocBounds2 globalBound;
+    private NDocBounds2 bound;
+    private NDocLogger log;
     private Map<String, Object> capabilities = new HashMap<>();
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, Bounds2 globalBound, HLogger log) {
+    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound, NDocLogger log) {
         this.engine=engine;
-        this.bound = new Bounds2(0, 0, bound.getWidth(), bound.getHeight());
+        this.bound = new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.g3 = g;
         this.log = log;
     }
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, HLogger log) {
-        this(engine,g, bound, new Bounds2(0, 0, bound.getWidth(), bound.getHeight()), log);
+    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocLogger log) {
+        this(engine,g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()), log);
     }
 
     @Override
@@ -93,7 +93,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     }
 
     @Override
-    public HLogger log() {
+    public NDocLogger log() {
         return log;
     }
 
@@ -107,16 +107,16 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         return g3;
     }
 
-    public Bounds2 getGlobalBounds() {
+    public NDocBounds2 getGlobalBounds() {
         return globalBound;
     }
 
-    public Bounds2 getBounds() {
+    public NDocBounds2 getBounds() {
         return bound;
     }
 
     @Override
-    public NOptional<NElement> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
         NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
@@ -130,7 +130,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         return (NOptional) r;
     }
 
-    private NOptional<NElement> computePropertyValueImpl(HNode t, String... all) {
+    private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
         if (t != null) {
             for (String s : all) {
                 NOptional<HProp> o = engine().computeProperty(t, s);
@@ -149,12 +149,12 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     }
 
     @Override
-    public void render(HNode p, NDocNodeRendererContext ctx) {
+    public void render(NDocNode p, NDocNodeRendererContext ctx) {
         manager().getRenderer(p.type()).get().render(p, ctx);
     }
 
     @Override
-    public List<HProp> computeProperties(HNode t) {
+    public List<HProp> computeProperties(NDocNode t) {
         return engine().computeProperties(t);
     }
 

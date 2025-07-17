@@ -1,16 +1,16 @@
 package net.thevpc.ndoc.elem.base.image;
 
-import net.thevpc.ndoc.api.document.HMsg;
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.HImageOptions;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
-import net.thevpc.ndoc.api.style.HProperties;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.style.NDocProperties;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByType;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
@@ -25,23 +25,23 @@ import java.awt.*;
 
 public class NDocImageRenderer extends NDocNodeRendererBase {
 
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public NDocImageRenderer() {
-        super(HNodeType.IMAGE);
+        super(NDocNodeType.IMAGE);
     }
 
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        Bounds2 b = selfBounds(p, ctx);
+        NDocBounds2 b = selfBounds(p, ctx);
         int w = net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth());
         int h = net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight());
         if (w <= 0 || h <= 0) {
             return;
         }
 
-        Color transparentColor = NDocValueByType.getColor(p, ctx, HPropName.TRANSPARENT_COLOR).orNull();
-        HImageOptions options = new HImageOptions();
+        Color transparentColor = NDocValueByType.getColor(p, ctx, NDocPropName.TRANSPARENT_COLOR).orNull();
+        NDocImageOptions options = new NDocImageOptions();
         options.setTransparentColor(transparentColor);
         options.setDisableAnimation(!ctx.isAnimate());
         NDocNodeRendererContext finalCtx = ctx;
@@ -49,7 +49,7 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
         options.setImageObserver(ctx.imageObserver());
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
-        Object img = p.getPropertyValue(HPropName.VALUE).orNull();
+        Object img = p.getPropertyValue(NDocPropName.VALUE).orNull();
         NOptional<NElement> imgStr = NDocObjEx.of(img).asTsonStringOrName();
         if (imgStr.isPresent()) {
             img = ctx.resolvePath(imgStr.get(), p);
@@ -61,11 +61,11 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
         double y = b.getY();
 
         if (!ctx.isDry()) {
-            if (HNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+            if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
                 g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
             }
 
-            HNodeRendererUtils.applyForeground(p, g, ctx, false);
+            NDocNodeRendererUtils.applyForeground(p, g, ctx, false);
             if (img instanceof NPath) {
                 NPath imgPath = (NPath) img;
                 NPath vp = resolveImagePath(imgPath);
@@ -73,8 +73,8 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
                     try {
                         g.drawImage(vp, x, y, options);
                     } catch (Exception ex) {
-                        HResource src = ctx.engine().computeSource(p);
-                        ctx.log().log(HMsg.of(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
+                        NDocResource src = ctx.engine().computeSource(p);
+                        ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
                                 src == null ? null : src.shortName(),
                                 vp, ex).asSevere(), src));
 
@@ -82,14 +82,14 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
                 } else {
                     int descent = g.getFontMetrics().getAscent();
                     g.drawString("Image not found "+imgPath, x, y+descent,new NDocTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
-                    HResource src = ctx.engine().computeSource(p);
-                    ctx.log().log(HMsg.of(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                    NDocResource src = ctx.engine().computeSource(p);
+                    ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
                             img).asSevere(), src));
                 }
             }
         }
-        HNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+        NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
     }
 
     private NPath resolveImagePath(NPath p) {

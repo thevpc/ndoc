@@ -4,10 +4,10 @@ import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessor;
 
 import java.util.*;
 
-public class IfHNodeFlowControlProcessorFactory {
+public class IfNDocFlowControlProcessorFactory {
     private List<NDocNodeFlowControlProcessor> map = new ArrayList<>();
 
-    public IfHNodeFlowControlProcessorFactory() {
+    public IfNDocFlowControlProcessorFactory() {
         ServiceLoader<NDocNodeFlowControlProcessor> serviceLoader = ServiceLoader.load(NDocNodeFlowControlProcessor.class);
         for (NDocNodeFlowControlProcessor element3DPrimitiveBuilder : serviceLoader) {
             register(element3DPrimitiveBuilder);

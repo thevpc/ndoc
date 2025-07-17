@@ -1,96 +1,96 @@
 package net.thevpc.ndoc;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 public interface NDocDocumentFactory {
 
     NDocument ofDocument();
 
-    HNode ofPage();
+    NDocNode ofPage();
 
-    HNode ofPageGroup();
+    NDocNode ofPageGroup();
 
-    HNode of(String type);
+    NDocNode of(String type);
 
-    HNode ofPlain(String text);
+    NDocNode ofPlain(String text);
 
-    HNode ofText(String text);
+    NDocNode ofText(String text);
 
-    HNode ofPlain();
+    NDocNode ofPlain();
 
-    HNode ofVoid();
+    NDocNode ofVoid();
 
-    HNode ofGlue();
+    NDocNode ofGlue();
 
-    HNode ofGlueV();
+    NDocNode ofGlueV();
 
-    HNode ofGlueH();
+    NDocNode ofGlueH();
 
-    HNode ofStrutV(double w);
+    NDocNode ofStrutV(double w);
 
-    HNode ofStrutH(double w);
+    NDocNode ofStrutH(double w);
 
-    HNode ofStrut(double w, double h);
+    NDocNode ofStrut(double w, double h);
 
-    HNode ofArc(double from, double to);
+    NDocNode ofArc(double from, double to);
 
-    HNode ofArc();
+    NDocNode ofArc();
 
-    HNode ofAssign();
+    NDocNode ofAssign();
 
-    HNode ofAssign(String name, NElement value);
+    NDocNode ofAssign(String name, NElement value);
 
-    HNode ofFlow();
+    NDocNode ofFlow();
 
-    HNode ofStack();
+    NDocNode ofStack();
 
-    HNode ofUnorderedList();
+    NDocNode ofUnorderedList();
 
-    HNode ofOrderedList();
+    NDocNode ofOrderedList();
 
-    HNode ofGrid(int cols, int rows);
+    NDocNode ofGrid(int cols, int rows);
 
-    HNode ofGrid();
+    NDocNode ofGrid();
 
-    HNode ofGridV();
+    NDocNode ofGridV();
 
-    HNode ofGridH();
+    NDocNode ofGridH();
 
-    HNode ofSphere();
+    NDocNode ofSphere();
 
-    HNode ofEllipsoid();
+    NDocNode ofEllipsoid();
 
-    HNode ofRectangle();
+    NDocNode ofRectangle();
 
-    HNode ofSquare();
+    NDocNode ofSquare();
 
-    HNode ofEllipse();
+    NDocNode ofEllipse();
 
-    HNode ofCircle();
+    NDocNode ofCircle();
 
-    HNode ofTriangle();
+    NDocNode ofTriangle();
 
-    HNode ofHexagon();
+    NDocNode ofHexagon();
 
-    HNode ofOctagon();
+    NDocNode ofOctagon();
 
-    HNode ofPentagon();
+    NDocNode ofPentagon();
 
-    HNode ofPolygon();
+    NDocNode ofPolygon();
 
-    HNode ofPolyline();
+    NDocNode ofPolyline();
 
-    HNode ofLine();
+    NDocNode ofLine();
 
-    HNode ofImage();
+    NDocNode ofImage();
 
-    HNode ofEquation();
+    NDocNode ofEquation();
 
-    HNode ofEquation(String value);
+    NDocNode ofEquation(String value);
 
-    HNode ofText();
+    NDocNode ofText();
 
-    HNode ofSource();
+    NDocNode ofSource();
 }

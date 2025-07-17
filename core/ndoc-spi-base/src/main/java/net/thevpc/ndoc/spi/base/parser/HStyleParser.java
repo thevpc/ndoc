@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi.base.parser;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -21,44 +21,44 @@ public class HStyleParser {
     static Set<String> COMMON_STYLE_PROPS = new HashSet<>();
 
     static {
-        COMMON_STYLE_PROPS.addAll(Arrays.asList(HPropName.STROKE,
-                HPropName.SHADOW,
-                HPropName.POSITION,
-                HPropName.ORIGIN,
-                HPropName.SIZE,
-                HPropName.NAME,
-                HPropName.COLUMNS,
-                HPropName.ROWS,
-                HPropName.COLSPAN,
-                HPropName.ROWSPAN,
-                HPropName.GRID_COLOR,
+        COMMON_STYLE_PROPS.addAll(Arrays.asList(NDocPropName.STROKE,
+                NDocPropName.SHADOW,
+                NDocPropName.POSITION,
+                NDocPropName.ORIGIN,
+                NDocPropName.SIZE,
+                NDocPropName.NAME,
+                NDocPropName.COLUMNS,
+                NDocPropName.ROWS,
+                NDocPropName.COLSPAN,
+                NDocPropName.ROWSPAN,
+                NDocPropName.GRID_COLOR,
 //                HPropName.LINE_COLOR,
-                HPropName.ROTATE,
-                HPropName.PADDING,
-                HPropName.MARGIN,
-                HPropName.FONT_SIZE,
-                HPropName.DEBUG,
-                HPropName.DEBUG_COLOR,
-                HPropName.FONT_FAMILY,
-                HPropName.RAISED,
-                HPropName.FONT_BOLD,
-                HPropName.FONT_ITALIC,
-                HPropName.FONT_UNDERLINED,
-                HPropName.FONT_STRIKE,
-                HPropName.BACKGROUND_COLOR,
-                HPropName.FOREGROUND_COLOR,
-                HPropName.FILL_BACKGROUND,
-                HPropName.HIDE,
-                HPropName.DRAW_GRID,
-                HPropName.COLUMNS_WEIGHT,
-                HPropName.ROWS_WEIGHT,
-                HPropName.PRESERVE_ASPECT_RATIO,
-                HPropName.THEED,
-                HPropName.DRAW_CONTOUR,
-                HPropName.CLASS,
-                HPropName.ANCESTORS,
-                HPropName.AT,
-                HPropName.TEMPLATE));
+                NDocPropName.ROTATE,
+                NDocPropName.PADDING,
+                NDocPropName.MARGIN,
+                NDocPropName.FONT_SIZE,
+                NDocPropName.DEBUG,
+                NDocPropName.DEBUG_COLOR,
+                NDocPropName.FONT_FAMILY,
+                NDocPropName.RAISED,
+                NDocPropName.FONT_BOLD,
+                NDocPropName.FONT_ITALIC,
+                NDocPropName.FONT_UNDERLINED,
+                NDocPropName.FONT_STRIKE,
+                NDocPropName.BACKGROUND_COLOR,
+                NDocPropName.FOREGROUND_COLOR,
+                NDocPropName.FILL_BACKGROUND,
+                NDocPropName.HIDE,
+                NDocPropName.DRAW_GRID,
+                NDocPropName.COLUMNS_WEIGHT,
+                NDocPropName.ROWS_WEIGHT,
+                NDocPropName.PRESERVE_ASPECT_RATIO,
+                NDocPropName.THEED,
+                NDocPropName.DRAW_CONTOUR,
+                NDocPropName.CLASS,
+                NDocPropName.ANCESTORS,
+                NDocPropName.AT,
+                NDocPropName.TEMPLATE));
 
         for (NTextStyleType z : NTextStyleType.values()) {
             if (!z.basic()) {
@@ -88,7 +88,7 @@ public class HStyleParser {
     }
 
 
-    public static NOptional<HStyleRuleSelector> parseStyleRuleSelector(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<NDocStyleRuleSelector> parseStyleRuleSelector(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -100,19 +100,19 @@ public class HStyleParser {
             {
                 String s = e.asStringValue().get();
                 if (s.isEmpty() || s.equals("*")) {
-                    return NOptional.of(DefaultHNodeSelector.ofAny());
+                    return NOptional.of(DefaultNDocNodeSelector.ofAny());
                 }
                 if (s.startsWith(".")) {
-                    return NOptional.of(DefaultHNodeSelector.ofClasses(s.substring(1)));
+                    return NOptional.of(DefaultNDocNodeSelector.ofClasses(s.substring(1)));
                 }
-                return NOptional.of(DefaultHNodeSelector.ofName(s));
+                return NOptional.of(DefaultNDocNodeSelector.ofName(s));
             }
             case NAME: {
                 String n = e.asStringValue().get();
                 if (n.startsWith(".")) {
-                    return NOptional.of(DefaultHNodeSelector.ofClasses(n.substring(1)));
+                    return NOptional.of(DefaultNDocNodeSelector.ofClasses(n.substring(1)));
                 }
-                return NOptional.of(DefaultHNodeSelector.ofType(n));
+                return NOptional.of(DefaultNDocNodeSelector.ofType(n));
             }
             case UPLET:
             case NAMED_UPLET:
@@ -133,7 +133,7 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
                                         }
                                     }
@@ -143,7 +143,7 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                                             return NOptional.ofEmpty(
                                                     NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e)
                                             );
@@ -155,17 +155,17 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
                                         }
                                     }
                                     default: {
-                                        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                                         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
                                     }
                                 }
                             } else {
-                                context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                                 return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
                             }
                         }
@@ -199,20 +199,20 @@ public class HStyleParser {
                             break;
                         }
                         default: {
-                            context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e).asSevere(), context.source()));
+                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e).asSevere(), context.source()));
                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
                         }
                     }
 
                 }
-                return NOptional.of(DefaultHNodeSelector.of(
+                return NOptional.of(DefaultNDocNodeSelector.of(
                         names.toArray(new String[0]),
                         types.toArray(new String[0]),
                         classes.toArray(new String[0])
                 ));
             }
             default: {
-                context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
                 return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
             }
         }
@@ -221,7 +221,7 @@ public class HStyleParser {
     public static NOptional<HStyleRule[]> parseStyleRule(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<HStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
+                NOptional<NDocStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
@@ -251,7 +251,7 @@ public class HStyleParser {
                 break;
             }
         }
-        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
+        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e).asSevere(), context.source()));
         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), e));
     }
 

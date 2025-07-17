@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.base.parser.HTextUtils;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
@@ -16,7 +16,7 @@ public class NDocTextRendererFlavorNTF implements NDocTextRendererFlavor {
     }
 
     @Override
-    public void buildText(String text, NDocTextOptions options, HNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+    public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
         String lang = "ntf";
         String codeStr = text;
         codeStr = HTextUtils.trimBloc(codeStr);

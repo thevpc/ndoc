@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.plantuml;
 
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
@@ -59,9 +59,9 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    public void onStartParsingItem(String id, HNode node, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, NDocNode node, NElement tsonElement, NDocNodeFactoryParseContext context) {
         super.onStartParsingItem(id, node, tsonElement, context);
-        node.setProperty(HPropName.MODE, NElement.ofString(id));
+        node.setProperty(NDocPropName.MODE, NElement.ofString(id));
     }
 
     @Override
@@ -75,7 +75,7 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HPropName.VALUE, info.currentArg);
+                info.node.setProperty(NDocPropName.VALUE, info.currentArg);
                 return true;
             }
             case PAIR: {
@@ -83,26 +83,26 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
                     NPairElement p = info.currentArg.asPair().get();
                     String sid = HUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
-                        case HPropName.VALUE:
+                        case NDocPropName.VALUE:
                         case "content": {
-                            info.node.setProperty(HPropName.VALUE, p.value());
+                            info.node.setProperty(NDocPropName.VALUE, p.value());
                             return true;
                         }
-                        case HPropName.FILE: {
+                        case NDocPropName.FILE: {
                             String path = p.value().asStringValue().get().trim();
                             NPath nPath = info.context.resolvePath(path);
                             info.context.document().resources().add(nPath);
                             try {
-                                info.node.setProperty(HPropName.VALUE, NElement.ofString(nPath.readString().trim()));
+                                info.node.setProperty(NDocPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
-                                        HMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                        NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
                                 );
                             }
                             return true;
                         }
-                        case HPropName.MODE: {
-                            info.node.setProperty(HPropName.MODE, p.value());
+                        case NDocPropName.MODE: {
+                            info.node.setProperty(NDocPropName.MODE, p.value());
                             return true;
                         }
                     }
@@ -122,10 +122,10 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper
                 .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
+                .inlineStringProp(NDocPropName.VALUE)
                 .build();
     }
 }

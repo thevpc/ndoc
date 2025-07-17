@@ -22,10 +22,10 @@ import java.util.function.Supplier;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.DefaultHLogger;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.base.renderer.HSpiUtils;
 import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.ndoc.spi.util.PagesHelper;
@@ -78,12 +78,12 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
             pdfDocument.open();
             addContent(pdfDocument);
 
-            HLogger messages = this.messages != null ? this.messages : new DefaultHLogger(engine.computeSource(document.root()));
+            NDocLogger messages = this.messages != null ? this.messages : new DefaultNDocLogger(engine.computeSource(document.root()));
 
             int imagesPerRow = config.getGridX();
             int imagesPerColumn = config.getGridY();
             int imagesPerPage = imagesPerRow * imagesPerColumn;
-            List<HNode> pages = document.pages();
+            List<NDocNode> pages = document.pages();
             int imageCount = 0;
             float margin = 10f;
             float marginLeft = config.getMarginLeft() >= 0 ? config.getMarginLeft() : 0;
@@ -94,7 +94,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
             float usableWidth;
             float usableHeight;
 
-            if (config.getOrientation() == PageOrientation.LANDSCAPE) {
+            if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
                 usableWidth = PageSize.A4.getHeight() - marginLeft - marginRight - 10f;
                 usableHeight = PageSize.A4.getWidth() - marginTop - marginBottom - 10f;
             } else {
@@ -110,7 +110,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 
             PdfPTable table = null;
 
-            for (HNode page : pages) {
+            for (NDocNode page : pages) {
                 if (imageCount % imagesPerPage == 0) {
                     if (table != null) {
                         pdfDocument.add(table);
@@ -202,7 +202,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 
     private void applyConfigSettings(Document document, PdfWriter pdfWriter) throws DocumentException {
         NDocDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
-        if (config.getOrientation() == PageOrientation.LANDSCAPE) {
+        if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
             document.setPageSize(PageSize.A4.rotate());
         } else {
             document.setPageSize(PageSize.A4);
@@ -255,14 +255,14 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 //}
 //
 //
-//    private byte[] createPageImage(int sizeWidth, int sizeHeight, HNode page, HMessageList messages2) {
+//    private byte[] createPageImage(int sizeWidth, int sizeHeight, NDocNode page, NDocMessageList messages2) {
 //        BufferedImage newImage = new BufferedImage(
 //                sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
 //
 //        Graphics2D g = newImage.createGraphics();
-//        HGraphics gh = engine.createGraphics(g);
-//        HNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
-//        renderer.render(page, new PdfHNodeRendererContext(engine, gh, new Dimension(sizeWidth, sizeHeight), session, messages2));
+//        NDocGraphics gh = engine.createGraphics(g);
+//        NDocNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
+//        renderer.render(page, new PdfNDocNodeRendererContext(engine, gh, new Dimension(sizeWidth, sizeHeight), session, messages2));
 //        ByteArrayOutputStream bos = new ByteArrayOutputStream();
 //        try {
 //            ImageIO.write(newImage, "png", bos);
@@ -273,16 +273,16 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 //    }
 
 
-//    public void renderStream(HDocument document, OutputStream stream) {
+//    public void renderStream(NDocDocument document, OutputStream stream) {
 //        try {
-//            HMessageList messages2 = this.messages;
+//            NDocMessageList messages2 = this.messages;
 //            if (messages2 == null) {
-//                messages2 = new HMessageListImpl(session, engine.computeSource(document.root()));
+//                messages2 = new NDocMessageListImpl(session, engine.computeSource(document.root()));
 //            }
 //            document = engine.compileDocument(document, messages2).get();
-//            HDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
+//            NDocDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
 //            List<Supplier<InputStream>> all = new ArrayList<>();
-//            for (HNode page : document.pages()) {
+//            for (NDocNode page : document.pages()) {
 //                Supplier<InputStream> y = renderPage(page, htmlRenderer);
 //                if (y != null) {
 //                    all.add(y);
@@ -295,11 +295,11 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 //    }
 
     @Override
-    public NDocDocumentStreamRenderer renderNode(HNode part, OutputStream out) {
+    public NDocDocumentStreamRenderer renderNode(NDocNode part, OutputStream out) {
         try {
             NDocDocumentStreamRenderer htmlRenderer = engine.newHtmlRenderer().get();
             List<Supplier<InputStream>> all = new ArrayList<>();
-            for (HNode page : PagesHelper.resolvePages(part)) {
+            for (NDocNode page : PagesHelper.resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
@@ -312,7 +312,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
         return this;
     }
 
-    public Supplier<InputStream> renderPage(HNode part, NDocDocumentStreamRenderer htmlRenderer) {
+    public Supplier<InputStream> renderPage(NDocNode part, NDocDocumentStreamRenderer htmlRenderer) {
         try {
             ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -386,11 +386,11 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
         document.close();
     }
 
-    public void renderPagePart(HNode part, PrintStream out) {
+    public void renderPagePart(NDocNode part, PrintStream out) {
         switch (part.type()) {
-            case HNodeType.PAGE_GROUP:
+            case NDocNodeType.PAGE_GROUP:
                 break;
-            case HNodeType.PAGE:
+            case NDocNodeType.PAGE:
                 break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);
@@ -403,7 +403,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
         }
 
         @Override
-        public HLogger messages() {
+        public NDocLogger messages() {
             return messages;
         }
     }

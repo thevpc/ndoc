@@ -4,10 +4,10 @@
  */
 package net.thevpc.ndoc.extension.latex.eq;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
@@ -18,7 +18,7 @@ import net.thevpc.nuts.elem.NElement;
 public class NDocEquationParser extends NDocNodeParserBase {
 
     public NDocEquationParser() {
-        super(false, HNodeType.EQUATION, "eq");
+        super(false, NDocNodeType.EQUATION, "eq");
     }
 
     protected String acceptTypeName(NElement e) {
@@ -48,7 +48,7 @@ public class NDocEquationParser extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HProp.ofString(HPropName.VALUE, info.currentArg.asStringValue().get()));
+                info.node.setProperty(HProp.ofString(NDocPropName.VALUE, info.currentArg.asStringValue().get()));
                 return true;
             }
         }
@@ -56,10 +56,10 @@ public class NDocEquationParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         return ToElementHelper
                 .of(item, engine())
-                .inlineStringProp(HPropName.VALUE)
+                .inlineStringProp(NDocPropName.VALUE)
                 .build();
     }
 }

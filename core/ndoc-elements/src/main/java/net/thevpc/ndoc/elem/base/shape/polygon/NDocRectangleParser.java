@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.elem.base.shape.polygon;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -12,7 +12,7 @@ import net.thevpc.nuts.elem.NElement;
 public class NDocRectangleParser extends NDocNodeParserBase {
 
     public NDocRectangleParser() {
-        super(false, HNodeType.RECTANGLE);
+        super(false, NDocNodeType.RECTANGLE);
     }
 
 
@@ -28,9 +28,9 @@ public class NDocRectangleParser extends NDocNodeParserBase {
                 if (n.isPresent()) {
                     String uid = net.thevpc.ndoc.api.util.HUtils.uid(n.get());
                     switch (uid) {
-                        case HPropName.ROUND_CORNER:
-                        case HPropName.THEED:
-                        case HPropName.RAISED:
+                        case NDocPropName.ROUND_CORNER:
+                        case NDocPropName.THEED:
+                        case NDocPropName.RAISED:
                         {
                             info.node.setProperty(uid, v);
                             return true;
@@ -45,9 +45,9 @@ public class NDocRectangleParser extends NDocNodeParserBase {
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
                     switch (uid) {
-                        case HPropName.ROUND_CORNER:
-                        case HPropName.THEED:
-                        case HPropName.RAISED:
+                        case NDocPropName.ROUND_CORNER:
+                        case NDocPropName.THEED:
+                        case NDocPropName.RAISED:
                         {
                             info.node.setProperty(uid, NElement.ofBoolean(true));
                             return true;

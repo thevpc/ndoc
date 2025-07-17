@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.elem.base.container.ul;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 
 /**
@@ -12,7 +12,7 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
  */
 public class NDocUnorderedListParser extends NDocNodeParserBase {
     public NDocUnorderedListParser() {
-        super(true, HNodeType.UNORDERED_LIST, "ul");
+        super(true, NDocNodeType.UNORDERED_LIST, "ul");
     }
 
 

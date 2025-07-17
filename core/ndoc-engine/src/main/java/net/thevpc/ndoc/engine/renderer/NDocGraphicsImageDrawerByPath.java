@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer;
 
-import net.thevpc.ndoc.api.model.elem2d.HImageOptions;
+import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
@@ -39,7 +39,7 @@ public class NDocGraphicsImageDrawerByPath implements NDocGraphicsImageDrawer {
     }
 
     @Override
-    public void drawImage(double x, double y, HImageOptions options, NDocGraphics g) {
+    public void drawImage(double x, double y, NDocImageOptions options, NDocGraphics g) {
         BufferedImage image = loadBufferedImage(ic);
         if (image == null) {
             return;

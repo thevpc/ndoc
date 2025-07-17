@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.elem.base.control;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
 
@@ -13,7 +13,7 @@ import net.thevpc.nuts.elem.NElement;
  */
 public class NDocIfParser extends NDocNodeParserBase {
     public NDocIfParser() {
-        super(true, HNodeType.IF);
+        super(true, NDocNodeType.IF);
     }
 
     protected boolean processArguments(ParseArgumentInfo info) {

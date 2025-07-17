@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.extension.latex.eq;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.Double2;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HProperties;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocProperties;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
@@ -22,16 +22,16 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 import java.awt.*;
 
 public class NDocEquationRenderer extends NDocNodeRendererBase {
-    HProperties defaultStyles = new HProperties();
+    NDocProperties defaultStyles = new NDocProperties();
 
     public NDocEquationRenderer() {
-        super(HNodeType.EQUATION);
+        super(NDocNodeType.EQUATION);
     }
 
     //    @Override
-//    public HSizeRequirements computeSizeRequirements(HNode p, HNodeRendererContext ctx) {
+//    public HSizeRequirements computeSizeRequirements(NDocNode p, NDocNodeRendererContext ctx) {
 //        ctx=ctx.withDefaultStyles(p,defaultStyles);
-//        String message = ObjEx.ofProp(p, HPropName.VALUE).asStringValue().orNull();
+//        String message = ObjEx.ofProp(p, NDocPropName.VALUE).asStringValue().orNull();
 //        if (message == null) {
 //            message = "";
 //        }
@@ -55,9 +55,9 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
 //        return r;
 //    }
     @Override
-    public NDocSizeRequirements sizeRequirements(HNode p, NDocNodeRendererContext ctx) {
-        Bounds2 s = selfBounds(p, ctx);
-        Bounds2 bb = ctx.getBounds();
+    public NDocSizeRequirements sizeRequirements(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocBounds2 s = selfBounds(p, ctx);
+        NDocBounds2 bb = ctx.getBounds();
         return new NDocSizeRequirements(
                 s.getWidth(),
                 Math.max(bb.getWidth(), s.getWidth()),
@@ -68,15 +68,15 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
         );
     }
 
-    public Bounds2 selfBounds(HNode p, NDocNodeRendererContext ctx) {
-        String message = NDocObjEx.ofProp(p, HPropName.VALUE).asStringOrName().orNull();
+    public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx) {
+        String message = NDocObjEx.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
         NDocGraphics g = ctx.graphics();
         String msg = NStringUtils.trim(message);
         if (msg.isEmpty()) {
-            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
+            return new NDocBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
         } else {
             TeXFormula formula;
             try {
@@ -90,13 +90,13 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
-            return new Bounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
+            return new NDocBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
         }
     }
 
 
-    public void renderMain(HNode p, NDocNodeRendererContext ctx) {
-        String message = NDocObjEx.ofProp(p, HPropName.VALUE).asStringOrName().orNull();
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
+        String message = NDocObjEx.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
@@ -105,11 +105,11 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
 
         String msg = NStringUtils.trim(message);
         if (msg.isEmpty()) {
-            Bounds2 selfBounds = selfBounds(p, ctx);
+            NDocBounds2 selfBounds = selfBounds(p, ctx);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
             if (!ctx.isDry()) {
-                if (HNodeRendererUtils.applyBackgroundColor((HNode) p, g, ctx)) {
+                if (NDocNodeRendererUtils.applyBackgroundColor((NDocNode) p, g, ctx)) {
                     g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(selfBounds.getWidth()), HUtils.intOf(selfBounds.getHeight()));
                 }
             }
@@ -129,24 +129,24 @@ public class NDocEquationRenderer extends NDocNodeRendererBase {
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            Bounds2 selfBounds = NDocValueByName.selfBounds((HNode) p
-                    , new Double2(icon.getIconWidth(), icon.getIconHeight())
+            NDocBounds2 selfBounds = NDocValueByName.selfBounds((NDocNode) p
+                    , new NDocDouble2(icon.getIconWidth(), icon.getIconHeight())
                     , null
                     , ctx);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
             if (!ctx.isDry()) {
-                HNodeRendererUtils.paintBackground(p, ctx, g, selfBounds);
+                NDocNodeRendererUtils.paintBackground(p, ctx, g, selfBounds);
                 if (error) {
                     g.setColor(Color.RED);
                     g.fillRect(selfBounds);
                 }
                 Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
-                icon.setForeground(HNodeRendererUtils.colorFromPaint(fg).orElse(Color.BLACK));
+                icon.setForeground(NDocNodeRendererUtils.colorFromPaint(fg).orElse(Color.BLACK));
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
 
-                HNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
+                NDocNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
             }
         }
     }

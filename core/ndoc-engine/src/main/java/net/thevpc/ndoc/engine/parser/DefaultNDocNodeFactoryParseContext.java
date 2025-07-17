@@ -3,9 +3,9 @@ package net.thevpc.ndoc.engine.parser;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -16,21 +16,21 @@ import net.thevpc.nuts.util.NBlankable;
 import java.util.*;
 
 public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseContext {
-    private final HLogger messages;
+    private final NDocLogger messages;
     private final NDocument document;
     private final NElement element;
     private final NDocEngine engine;
-    private final List<HNode> nodePath = new ArrayList<>();
-    private final HResource source;
+    private final List<NDocNode> nodePath = new ArrayList<>();
+    private final NDocResource source;
 
     public DefaultNDocNodeFactoryParseContext(
             NDocument document
             , NElement element
             , NDocEngine engine
             ,
-            List<HNode> nodePath
-            , HResource source
-            , HLogger messages
+            List<NDocNode> nodePath
+            , NDocResource source
+            , NDocLogger messages
     ) {
         this.messages = messages;
         this.document = document;
@@ -53,7 +53,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
             }
             if(!pathString.trim().isEmpty()) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
-                    HResource resource = engine().computeSource(nodePath.get(i));
+                    NDocResource resource = engine().computeSource(nodePath.get(i));
                     if (resource!=null) {
                         if(resource.path().isPresent()) {
                             NPath nPath = HUtils.resolvePath(element, resource);
@@ -69,7 +69,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public HLogger messages() {
+    public NDocLogger messages() {
         return messages;
     }
 
@@ -78,11 +78,11 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public NDocNodeFactoryParseContext push(HNode node) {
+    public NDocNodeFactoryParseContext push(NDocNode node) {
         if (node == null) {
             return this;
         }
-        List<HNode> nodePath2 = new ArrayList<>();
+        List<NDocNode> nodePath2 = new ArrayList<>();
         nodePath2.addAll(Arrays.asList(nodePath()));
         nodePath2.add(node);
         return new DefaultNDocNodeFactoryParseContext(document(), element, engine(), nodePath2, source, messages);
@@ -93,12 +93,12 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
         return engine().documentFactory();
     }
 
-    public HResource source() {
+    public NDocResource source() {
         return source;
     }
 
     @Override
-    public HNode node() {
+    public NDocNode node() {
         if (nodePath.isEmpty()) {
             return null;
         }
@@ -106,8 +106,8 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public HNode[] nodePath() {
-        return nodePath.toArray(new HNode[0]);
+    public NDocNode[] nodePath() {
+        return nodePath.toArray(new NDocNode[0]);
     }
 
     @Override
@@ -136,12 +136,12 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
         if (GitHelper.isGithubFolder(path)) {
             return resolvePath(GitHelper.resolveGithubPath(path, messages));
         }
-        HResource src = source;
+        NDocResource src = source;
         if (src == null) {
             if (nodePath != null) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
                     if (nodePath.get(i) != null) {
-                        HResource ss = engine().computeSource(nodePath.get(i));
+                        NDocResource ss = engine().computeSource(nodePath.get(i));
                         if (ss != null) {
                             src = ss;
                             break;

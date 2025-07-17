@@ -2,14 +2,14 @@ package net.thevpc.ndoc.elem.base.control;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HItemList;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
@@ -27,7 +27,7 @@ import java.util.List;
 public class NDocCtrlDefineParser extends NDocNodeParserBase {
 
     public NDocCtrlDefineParser() {
-        super(false, HNodeType.DEFINE);
+        super(false, NDocNodeType.DEFINE);
     }
 
     @Override
@@ -47,24 +47,24 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
                         return NCallableSupport.of(10, () -> {
                             List<NElement> definitionArguments = object.params().orElse(Collections.emptyList());
                             List<NElement> definitionBody = object.children();
-                            HNode node = new DefaultHNode(HNodeType.DEFINE);
-                            node.setProperty(HPropName.NAME, NElement.ofString(name));
-                            node.setProperty(HPropName.ARGS, definitionArguments == null ? null : NElement.ofArray(definitionArguments.toArray(new NElement[0])));
+                            NDocNode node = new DefaultNDocNode(NDocNodeType.DEFINE);
+                            node.setProperty(NDocPropName.NAME, NElement.ofString(name));
+                            node.setProperty(NDocPropName.ARGS, definitionArguments == null ? null : NElement.ofArray(definitionArguments.toArray(new NElement[0])));
                             for (NElement element : definitionBody) {
                                 NOptional<HItem> o = context.engine().newNode(element, context);
                                 if (!o.isPresent()) {
                                     NMsg nMsg = NMsg.ofC("[%s] unable to resolve node : %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), c)
                                             .asSevere();
-                                    context.messages().log(HMsg.of(nMsg));
+                                    context.messages().log(NDocMsg.of(nMsg));
                                     throw new NIllegalArgumentException(nMsg);
                                 }
                                 HItem hItem = o.get();
                                 if (hItem instanceof HItemList) {
                                     for (HItem hItem0 : ((HItemList) hItem).getItems()) {
-                                        node.children().add((HNode) hItem0);
+                                        node.children().add((NDocNode) hItem0);
                                     }
                                 } else {
-                                    node.children().add((HNode) hItem);
+                                    node.children().add((NDocNode) hItem);
                                 }
                             }
                             return node;
@@ -78,17 +78,17 @@ public class NDocCtrlDefineParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NElement toElem(HNode item) {
+    public NElement toElem(NDocNode item) {
         Object varName = "var";
         Object varValue = null;
 
-        NOptional<NElement> s = item.getPropertyValue(HPropName.NAME);
+        NOptional<NElement> s = item.getPropertyValue(NDocPropName.NAME);
 
         if (!s.isEmpty()) {
             varName = s.get();
         }
 
-        s = item.getPropertyValue(HPropName.VALUE);
+        s = item.getPropertyValue(NDocPropName.VALUE);
         if (!s.isEmpty()) {
             varValue = s.get();
         }

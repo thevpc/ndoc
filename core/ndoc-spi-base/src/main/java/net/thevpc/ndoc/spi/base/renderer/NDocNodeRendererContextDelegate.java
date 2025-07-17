@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.spi.base.renderer;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HProperties;
+import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -19,21 +19,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
-import net.thevpc.nuts.elem.NElement;
 
 public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBaseBase {
 
     private NDocNodeRendererContext base;
-    private Bounds2 bounds;
-    private HNode basePart;
-    private HProperties defaultStyles;
+    private NDocBounds2 bounds;
+    private NDocNode basePart;
+    private NDocProperties defaultStyles;
     private NDocGraphics graphics;
     private boolean dry;
 
-    public NDocNodeRendererContextDelegate(HNode basePart,
+    public NDocNodeRendererContextDelegate(NDocNode basePart,
                                            NDocNodeRendererContext base,
-                                           Bounds2 bounds,
-                                           HProperties defaultStyles,
+                                           NDocBounds2 bounds,
+                                           NDocProperties defaultStyles,
                                            boolean dry,
                                            NDocGraphics graphics
     ) {
@@ -51,7 +50,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public HLogger log() {
+    public NDocLogger log() {
         return base.log();
     }
 
@@ -61,12 +60,12 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NDocNodeRendererContext withDefaultStyles(HNode node, HProperties defaultStyles) {
+    public NDocNodeRendererContext withDefaultStyles(NDocNode node, NDocProperties defaultStyles) {
         return new NDocNodeRendererContextDelegate(node, base, bounds, defaultStyles == null ? this.defaultStyles : defaultStyles, dry, graphics);
     }
 
     @Override
-    public NDocNodeRendererContext withBounds(HNode t, Bounds2 bounds2) {
+    public NDocNodeRendererContext withBounds(NDocNode t, NDocBounds2 bounds2) {
         return new NDocNodeRendererContextDelegate(t, base, bounds2, defaultStyles, dry, graphics);
     }
 
@@ -94,11 +93,11 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public Bounds2 getGlobalBounds() {
+    public NDocBounds2 getGlobalBounds() {
         return base.getGlobalBounds();
     }
 
-    public Bounds2 getBounds() {
+    public NDocBounds2 getBounds() {
         if (bounds != null) {
             return bounds;
         }
@@ -106,7 +105,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public void render(HNode p, NDocNodeRendererContext ctx) {
+    public void render(NDocNode p, NDocNodeRendererContext ctx) {
         base.render(p, ctx);
     }
 
@@ -116,9 +115,9 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public List<HProp> computeProperties(HNode t) {
+    public List<HProp> computeProperties(NDocNode t) {
         List<HProp> inherited = engine().computeInheritedProperties(t);
-        HProperties hp = new HProperties();
+        NDocProperties hp = new NDocProperties();
         if (this.defaultStyles != null) {
             hp.set(this.defaultStyles.toArray());
         }
@@ -132,7 +131,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NOptional<NElement> computePropertyValue(HNode t, String s, String... others) {
+    public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
         NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
@@ -146,7 +145,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
         return (NOptional) r;
     }
 
-    private NOptional<NElement> computePropertyValueImpl(HNode t, String... all) {
+    private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
         NOptional y = null;
         if (t != null) {
             y = engine().computeProperty(t, all).map(HProp::getValue).filter(x -> x != null);

@@ -2,13 +2,13 @@ package net.thevpc.ndoc.spi.base.parser;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.HItemList;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.util.HUtils;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
+import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocParseHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -82,7 +82,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         public String id;
         public String uid;
         public NElement tsonElement;
-        public HNode node;
+        public NDocNode node;
         public NElement currentArg;
         public NElement[] arguments;
         public int currentArgIndex;
@@ -121,9 +121,9 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return false;
     }
 
-    protected boolean isAncestorScene3D(HNode p) {
+    protected boolean isAncestorScene3D(NDocNode p) {
         while (p != null) {
-            if (p.type() == HNodeType.SCENE3D) {
+            if (p.type() == NDocNodeType.SCENE3D) {
                 return true;
             }
             p = p.parent();
@@ -215,11 +215,11 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return HUtils.uid(id);
     }
 
-    public void onStartParsingItem(String id, HNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, NDocNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
 
     }
 
-    public void onFinishParsingItem(String id, HNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onFinishParsingItem(String id, NDocNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
 
     }
 
@@ -227,7 +227,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         if (HParserUtils.isCommonStyleProperty(info.id)) {
             NDocObjEx es = NDocObjEx.of(info.currentArg);
             if (es.isFunction()) {
-                info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.context.source(),
                         info.currentArg,
                         es.name(), NElement.ofUplet(es.args().toArray(new NElement[0]))
@@ -235,10 +235,10 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 // empty result
                 return false;
             }
-            info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
+            info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
             return false;
         } else {
-            info.context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
+            info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
             return false;
         }
     }
@@ -258,7 +258,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = context.documentFactory();
-        HNode p = context.documentFactory().of(resolveEffectiveId(id));
+        NDocNode p = context.documentFactory().of(resolveEffectiveId(id));
         NDocNodeFactoryParseContext context2 = context.push(p);
         onStartParsingItem(id, p, tsonElement, context);
         switch (tsonElement.type()) {
@@ -299,7 +299,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.f = f;
                 info.context = context2;
                 if (!processArguments(info)) {
-                    context2.messages().log(HMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), info.arguments, tsonElement).asSevere(), context2.source()));
+                    context2.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", context2.source(), info.arguments, tsonElement).asSevere(), context2.source()));
                     return NOptional.of(new HItemList());
                 }
                 processImplicitStyles(info);
@@ -309,7 +309,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                         p.append(u.get());
                     } else {
                         NOptional<HItem> finalU = u;
-                        context2.messages().log(HMsg.of(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source()));
+                        context2.messages().log(NDocMsg.of(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source()));
                         return NOptional.of(new HItemList());
                     }
                 }
@@ -321,18 +321,18 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     }
 
     @Override
-    public NElement toElem(HNode item) {
-        return ToElementHelper.of((HNode) item, engine)
+    public NElement toElem(NDocNode item) {
+        return ToElementHelper.of((NDocNode) item, engine)
                 .build();
     }
 
     @Override
-    public HNode newNode() {
-        return new DefaultHNode(id());
+    public NDocNode newNode() {
+        return new DefaultNDocNode(id());
     }
 
     @Override
-    public boolean validateNode(HNode node) {
+    public boolean validateNode(NDocNode node) {
         return false;
     }
 }

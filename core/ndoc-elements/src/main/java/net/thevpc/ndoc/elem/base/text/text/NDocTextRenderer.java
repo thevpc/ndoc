@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -22,7 +22,7 @@ public class NDocTextRenderer extends NDocTextBaseRenderer {
     private NDocTextRendererFlavor defaultFlavor = new NDocTextRendererFlavorDefault();
 
     public NDocTextRenderer() {
-        super(HNodeType.TEXT);
+        super(NDocNodeType.TEXT);
         ServiceLoader<NDocTextRendererFlavor> all=ServiceLoader.load(NDocTextRendererFlavor.class);
         for (NDocTextRendererFlavor h : all) {
             String t = h.type();
@@ -34,11 +34,11 @@ public class NDocTextRenderer extends NDocTextBaseRenderer {
         flavors.put("ntf", new NDocTextRendererFlavorNTF());
     }
 
-    public NDocTextRendererBuilder createRichTextHelper(HNode p, NDocNodeRendererContext ctx) {
+    public NDocTextRendererBuilder createRichTextHelper(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-//        List<HNode> all=new ArrayList<>();
-        String lang = NStringUtils.trim(NDocObjEx.of(p.getPropertyValue(HPropName.LANG).orNull()).asStringOrName().orElse(""));
-        String text = NDocObjEx.of(p.getPropertyValue(HPropName.VALUE).orNull()).asStringOrName().orElse("");
+//        List<NDocNode> all=new ArrayList<>();
+        String lang = NStringUtils.trim(NDocObjEx.of(p.getPropertyValue(NDocPropName.LANG).orNull()).asStringOrName().orElse(""));
+        String text = NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orElse("");
         NDocTextRendererFlavor f = flavors.get(lang);
         if (f == null) {
             f = defaultFlavor;

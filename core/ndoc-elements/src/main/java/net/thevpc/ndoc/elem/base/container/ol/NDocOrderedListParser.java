@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.elem.base.container.ol;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 
 /**
@@ -12,7 +12,7 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
  */
 public class NDocOrderedListParser extends NDocNodeParserBase {
     public NDocOrderedListParser() {
-        super(true, HNodeType.ORDERED_LIST, "ol");
+        super(true, NDocNodeType.ORDERED_LIST, "ol");
     }
 
 }

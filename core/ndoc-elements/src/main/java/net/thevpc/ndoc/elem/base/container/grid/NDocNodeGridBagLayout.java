@@ -27,53 +27,53 @@ package net.thevpc.ndoc.elem.base.container.grid;
  * questions.
  */
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.Double2;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.SizeD;
-import net.thevpc.ndoc.api.model.elem2d.primitives.EditableBounds2;
+import net.thevpc.ndoc.api.model.elem2d.primitives.NDocEditableBounds2;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 
-public class HNodeGridBagLayout {
+public class NDocNodeGridBagLayout {
 
     static final int EMPIRICMULTIPLIER = 2;
     private static final int MINSIZE = 1;
     private static final int PREFERREDSIZE = 2;
 
-    private java.util.List<HNodeGridNodeExt> children;
+    private java.util.List<NDocNodeGridNodeExt> children;
 
-    private HNodeGridBagLayoutInfo layoutInfo;
+    private NDocNodeGridBagLayoutInfo layoutInfo;
     private int columnWidths[];
     private int rowHeights[];
     private double columnWeights[];
     private double rowWeights[];
-    private HNodeGridNodeExt componentAdjusting;
+    private NDocNodeGridNodeExt componentAdjusting;
     private Insets parentInsets;
-    private Bounds2 parentBounds;
+    private NDocBounds2 parentBounds;
     boolean rightToLeft = false;
 
-    public HNodeGridBagLayout(Insets parentInsets, boolean rightToLeft, Bounds2 parentBounds, HNodeGridNode[] children) {
+    public NDocNodeGridBagLayout(Insets parentInsets, boolean rightToLeft, NDocBounds2 parentBounds, NDocNodeGridNode[] children) {
         this.parentInsets = parentInsets;
-        this.children = Arrays.asList(children).stream().map(x -> new HNodeGridNodeExt(x)).collect(Collectors.toList());
+        this.children = Arrays.asList(children).stream().map(x -> new NDocNodeGridNodeExt(x)).collect(Collectors.toList());
         this.rightToLeft = rightToLeft;
         this.parentBounds = parentBounds;
     }
 
-    public HNodeGridNode[] children() {
-        return children.stream().map(x->x.base).toArray(HNodeGridNode[]::new);
+    public NDocNodeGridNode[] children() {
+        return children.stream().map(x->x.base).toArray(NDocNodeGridNode[]::new);
     }
 
-    public Double2 getLayoutOrigin() {
+    public NDocDouble2 getLayoutOrigin() {
         double x = 0;
         double y = 0;
         if (layoutInfo != null) {
             x = layoutInfo.startx;
             y = layoutInfo.starty;
         }
-        return new Double2(x, y);
+        return new NDocDouble2(x, y);
     }
 
     public int[][] getLayoutDimensions() {
@@ -141,9 +141,9 @@ public class HNodeGridBagLayout {
     }
 
     private long[] preInitMaximumArraySizes() {
-        HNodeGridNode[] components = this.children.toArray(new HNodeGridNode[0]);
-        HNodeGridNode comp;
-        HNodeGridNode constraints;
+        NDocNodeGridNode[] components = this.children.toArray(new NDocNodeGridNode[0]);
+        NDocNodeGridNode comp;
+        NDocNodeGridNode constraints;
         int curX, curY;
         int curWidth, curHeight;
         int preMaximumArrayXIndex = 0;
@@ -195,12 +195,12 @@ public class HNodeGridBagLayout {
         return returnArray;
     } //PreInitMaximumSizes
 
-    private HNodeGridBagLayoutInfo getLayoutInfo(int sizeflag) {
-        HNodeGridBagLayoutInfo r;
-//        HNodeGridNodeExt comp;
-        HNodeGridNodeExt constraints;
+    private NDocNodeGridBagLayoutInfo getLayoutInfo(int sizeflag) {
+        NDocNodeGridBagLayoutInfo r;
+//        NDocNodeGridNodeExt comp;
+        NDocNodeGridNodeExt constraints;
         SizeD d;
-        HNodeGridNodeExt[] components = children.toArray(new HNodeGridNodeExt[0]);
+        NDocNodeGridNodeExt[] components = children.toArray(new NDocNodeGridNodeExt[0]);
         // Code below will address index curX+curWidth in the case of yMaxArray, weightY
         // ( respectively curY+curHeight for xMaxArray, weightX ) where
         //  curX in 0 to preInitMaximumArraySizes.y
@@ -354,7 +354,7 @@ public class HNodeGridBagLayout {
         if (rowHeights != null && layoutHeight < rowHeights.length)
             layoutHeight = rowHeights.length;
 
-        r = new HNodeGridBagLayoutInfo(layoutWidth, layoutHeight);
+        r = new NDocNodeGridBagLayoutInfo(layoutWidth, layoutHeight);
 
         /*
          * Pass #2
@@ -749,7 +749,7 @@ public class HNodeGridBagLayout {
      * baseline resize behavior are set from the component; and true is
      * returned. Otherwise false is returned.
      */
-    private boolean calculateBaseline(HNodeGridNodeExt constraints,
+    private boolean calculateBaseline(NDocNodeGridNodeExt constraints,
                                       SizeD size) {
         Anchor anchor = constraints.anchor;
         if (anchor == Anchor.BASELINE ||
@@ -783,8 +783,8 @@ public class HNodeGridBagLayout {
         }
     }
 
-    private void adjustForGravity(HNodeGridNodeExt constraints,
-                                  EditableBounds2 r) {
+    private void adjustForGravity(NDocNodeGridNodeExt constraints,
+                                  NDocEditableBounds2 r) {
         double diffx, diffy;
         double cellY = r.y;
         double cellHeight = r.height;
@@ -943,7 +943,7 @@ public class HNodeGridBagLayout {
      * @param r          available bounds for the component, is padded by insets and
      *                   ipady
      */
-    private void alignOnBaseline(HNodeGridNodeExt cons, EditableBounds2 r,
+    private void alignOnBaseline(NDocNodeGridNodeExt cons, NDocEditableBounds2 r,
                                  double cellY, double cellHeight) {
         if (cons.ascent >= 0) {
             if (cons.baselineResizeBehavior == Component.
@@ -1071,7 +1071,7 @@ public class HNodeGridBagLayout {
      * the bottom edge of the component will be aligned along the baseline.
      * If the row does not have a baseline, this centers the component.
      */
-    private void alignAboveBaseline(HNodeGridNodeExt cons, EditableBounds2 r,
+    private void alignAboveBaseline(NDocNodeGridNodeExt cons, NDocEditableBounds2 r,
                                     double cellY, double cellHeight) {
         if (layoutInfo.hasBaseline(cons.tempY)) {
             double maxY; // Baseline for the row
@@ -1100,7 +1100,7 @@ public class HNodeGridBagLayout {
     /**
      * Positions below the baseline.
      */
-    private void alignBelowBaseline(HNodeGridNodeExt cons, EditableBounds2 r,
+    private void alignBelowBaseline(NDocNodeGridNodeExt cons, NDocEditableBounds2 r,
                                     double cellY, double cellHeight) {
         if (layoutInfo.hasBaseline(cons.tempY)) {
             if (layoutInfo.hasConstantDescent(cons.tempY)) {
@@ -1118,7 +1118,7 @@ public class HNodeGridBagLayout {
         }
     }
 
-    private void centerVertically(HNodeGridNodeExt cons, EditableBounds2 r,
+    private void centerVertically(NDocNodeGridNodeExt cons, NDocEditableBounds2 r,
                                   double cellHeight) {
         if (!cons.isVerticallyResizable()) {
             r.y += Math.max(0, (cellHeight - cons.insets.top -
@@ -1127,7 +1127,7 @@ public class HNodeGridBagLayout {
         }
     }
 
-    private SizeD getMinSize(HNodeGridBagLayoutInfo info) {
+    private SizeD getMinSize(NDocNodeGridBagLayoutInfo info) {
         double width = 0;
         double height = 0;
         int i, t;
@@ -1148,17 +1148,17 @@ public class HNodeGridBagLayout {
 
 
     public void doLayout() {
-        HNodeGridNodeExt comp;
+        NDocNodeGridNodeExt comp;
         int compindex;
-        HNodeGridNodeExt constraints;
+        NDocNodeGridNodeExt constraints;
         Insets insets = parentInsets;
-        HNodeGridNodeExt[] components = children.toArray(new HNodeGridNodeExt[0]);
+        NDocNodeGridNodeExt[] components = children.toArray(new NDocNodeGridNodeExt[0]);
         SizeD d;
-        EditableBounds2 r = new EditableBounds2(0.0, 0.0, 0.0, 0.0);
+        NDocEditableBounds2 r = new NDocEditableBounds2(0.0, 0.0, 0.0, 0.0);
         int i;
         double diffw, diffh;
         double weight;
-        HNodeGridBagLayoutInfo info;
+        NDocNodeGridBagLayoutInfo info;
 
 
         /*
@@ -1322,9 +1322,9 @@ public class HNodeGridBagLayout {
              */
 
             if ((r.width <= 0) || (r.height <= 0)) {
-                comp.bounds = new Bounds2(parentBounds.getX(), parentBounds.getY(), 0, 0);
+                comp.bounds = new NDocBounds2(parentBounds.getX(), parentBounds.getY(), 0, 0);
             } else {
-                comp.bounds = new Bounds2(parentBounds.getX() + r.x, parentBounds.getY() + r.y, r.width, r.height);
+                comp.bounds = new NDocBounds2(parentBounds.getX() + r.x, parentBounds.getY() + r.y, r.width, r.height);
             }
             comp.propagate();
         }
@@ -1340,8 +1340,8 @@ public class HNodeGridBagLayout {
         SOUTHEAST, PAGE_END, SOUTH, SOUTHWEST, LAST_LINE_END, LAST_LINE_START, FIRST_LINE_END, FIRST_LINE_START, LINE_END, LINE_START, NORTHWEST, WEST;
     }
 
-    private static class HNodeGridNodeExt extends HNodeGridNode implements Cloneable {
-        HNodeGridNode base;
+    private static class NDocNodeGridNodeExt extends NDocNodeGridNode implements Cloneable {
+        NDocNodeGridNode base;
         int tempX;
         int tempY;
         int tempWidth;
@@ -1353,13 +1353,13 @@ public class HNodeGridBagLayout {
         transient double centerPadding;
         transient double centerOffset;
 
-        public HNodeGridNodeExt(HNodeGridNode o) {
+        public NDocNodeGridNodeExt(NDocNodeGridNode o) {
             super(o);
             this.base = o;
         }
 
-        public HNodeGridNodeExt copy() {
-            return (HNodeGridNodeExt) clone();
+        public NDocNodeGridNodeExt copy() {
+            return (NDocNodeGridNodeExt) clone();
         }
 
         /**
@@ -1377,7 +1377,7 @@ public class HNodeGridBagLayout {
         }
     }
 
-    public static class HNodeGridNode implements Cloneable {
+    public static class NDocNodeGridNode implements Cloneable {
         public static final int RELATIVE = -1;
         public static final int REMAINDER = 0;
         public int baseline = -1;
@@ -1386,7 +1386,7 @@ public class HNodeGridBagLayout {
         boolean visible = true;
         SizeD preferredSize;
         SizeD minimumSize;
-        Bounds2 bounds;
+        NDocBounds2 bounds;
         int index;
 
 
@@ -1402,7 +1402,7 @@ public class HNodeGridBagLayout {
         public int ipadx;
         public int ipady;
 
-        public HNodeGridNode(HNodeGridNode o) {
+        public NDocNodeGridNode(NDocNodeGridNode o) {
             this.baseline = o.baseline;
             this.baselineResizeBehavior = o.baselineResizeBehavior;
             this.node = o.node;
@@ -1428,7 +1428,7 @@ public class HNodeGridBagLayout {
             return preferredSize;
         }
 
-        public HNodeGridNode setPreferredSize(SizeD preferredSize) {
+        public NDocNodeGridNode setPreferredSize(SizeD preferredSize) {
             this.preferredSize = preferredSize;
             return this;
         }
@@ -1437,16 +1437,16 @@ public class HNodeGridBagLayout {
             return minimumSize;
         }
 
-        public HNodeGridNode setMinimumSize(SizeD minimumSize) {
+        public NDocNodeGridNode setMinimumSize(SizeD minimumSize) {
             this.minimumSize = minimumSize;
             return this;
         }
 
-        public Bounds2 getBounds() {
+        public NDocBounds2 getBounds() {
             return bounds;
         }
 
-        public HNodeGridNode setBounds(Bounds2 bounds) {
+        public NDocNodeGridNode setBounds(NDocBounds2 bounds) {
             this.bounds = bounds;
             return this;
         }
@@ -1455,7 +1455,7 @@ public class HNodeGridBagLayout {
             return gridx;
         }
 
-        public HNodeGridNode setGridx(int gridx) {
+        public NDocNodeGridNode setGridx(int gridx) {
             this.gridx = gridx;
             return this;
         }
@@ -1464,7 +1464,7 @@ public class HNodeGridBagLayout {
             return gridy;
         }
 
-        public HNodeGridNode setGridy(int gridy) {
+        public NDocNodeGridNode setGridy(int gridy) {
             this.gridy = gridy;
             return this;
         }
@@ -1473,7 +1473,7 @@ public class HNodeGridBagLayout {
             return gridwidth;
         }
 
-        public HNodeGridNode setGridwidth(int gridwidth) {
+        public NDocNodeGridNode setGridwidth(int gridwidth) {
             this.gridwidth = gridwidth;
             return this;
         }
@@ -1482,7 +1482,7 @@ public class HNodeGridBagLayout {
             return gridheight;
         }
 
-        public HNodeGridNode setGridheight(int gridheight) {
+        public NDocNodeGridNode setGridheight(int gridheight) {
             this.gridheight = gridheight;
             return this;
         }
@@ -1491,7 +1491,7 @@ public class HNodeGridBagLayout {
             return weightx;
         }
 
-        public HNodeGridNode setWeightx(double weightx) {
+        public NDocNodeGridNode setWeightx(double weightx) {
             this.weightx = weightx;
             return this;
         }
@@ -1500,7 +1500,7 @@ public class HNodeGridBagLayout {
             return weighty;
         }
 
-        public HNodeGridNode setWeighty(double weighty) {
+        public NDocNodeGridNode setWeighty(double weighty) {
             this.weighty = weighty;
             return this;
         }
@@ -1509,7 +1509,7 @@ public class HNodeGridBagLayout {
             return anchor;
         }
 
-        public HNodeGridNode setAnchor(Anchor anchor) {
+        public NDocNodeGridNode setAnchor(Anchor anchor) {
             this.anchor = anchor;
             return this;
         }
@@ -1518,7 +1518,7 @@ public class HNodeGridBagLayout {
             return fill;
         }
 
-        public HNodeGridNode setFill(Fill fill) {
+        public NDocNodeGridNode setFill(Fill fill) {
             this.fill = fill;
             return this;
         }
@@ -1527,7 +1527,7 @@ public class HNodeGridBagLayout {
             return insets;
         }
 
-        public HNodeGridNode setInsets(Insets insets) {
+        public NDocNodeGridNode setInsets(Insets insets) {
             this.insets = insets;
             return this;
         }
@@ -1536,7 +1536,7 @@ public class HNodeGridBagLayout {
             return ipadx;
         }
 
-        public HNodeGridNode setIpadx(int ipadx) {
+        public NDocNodeGridNode setIpadx(int ipadx) {
             this.ipadx = ipadx;
             return this;
         }
@@ -1545,7 +1545,7 @@ public class HNodeGridBagLayout {
             return ipady;
         }
 
-        public HNodeGridNode setIpady(int ipady) {
+        public NDocNodeGridNode setIpady(int ipady) {
             this.ipady = ipady;
             return this;
         }
@@ -1554,7 +1554,7 @@ public class HNodeGridBagLayout {
             return visible;
         }
 
-        public HNodeGridNode setVisible(boolean visible) {
+        public NDocNodeGridNode setVisible(boolean visible) {
             this.visible = visible;
             return this;
         }
@@ -1563,13 +1563,13 @@ public class HNodeGridBagLayout {
             return node;
         }
 
-        public HNodeGridNode setNode(Object node) {
+        public NDocNodeGridNode setNode(Object node) {
             this.node = node;
             return this;
         }
 
 
-        public HNodeGridNode(Object node) {
+        public NDocNodeGridNode(Object node) {
             this.node = node;
             gridx = RELATIVE;
             gridy = RELATIVE;
@@ -1586,7 +1586,7 @@ public class HNodeGridBagLayout {
             ipady = 0;
         }
 
-        public HNodeGridNode() {
+        public NDocNodeGridNode() {
             gridx = RELATIVE;
             gridy = RELATIVE;
             gridwidth = 1;
@@ -1602,11 +1602,11 @@ public class HNodeGridBagLayout {
             ipady = 0;
         }
 
-        public HNodeGridNode(int gridx, int gridy,
-                             int gridwidth, int gridheight,
-                             double weightx, double weighty,
-                             Anchor anchor, Fill fill,
-                             Insets insets, int ipadx, int ipady) {
+        public NDocNodeGridNode(int gridx, int gridy,
+                                int gridwidth, int gridheight,
+                                double weightx, double weighty,
+                                Anchor anchor, Fill fill,
+                                Insets insets, int ipadx, int ipady) {
             this.gridx = gridx;
             this.gridy = gridy;
             this.gridwidth = gridwidth;
@@ -1620,8 +1620,8 @@ public class HNodeGridBagLayout {
             this.weighty = weighty;
         }
 
-        public HNodeGridNode copy() {
-            return (HNodeGridNode) clone();
+        public NDocNodeGridNode copy() {
+            return (NDocNodeGridNode) clone();
         }
 
         /**
@@ -1631,7 +1631,7 @@ public class HNodeGridBagLayout {
          */
         protected Object clone() {
             try {
-                HNodeGridNode c = (HNodeGridNode) super.clone();
+                NDocNodeGridNode c = (NDocNodeGridNode) super.clone();
                 c.insets = (Insets) insets.clone();
                 return c;
             } catch (CloneNotSupportedException e) {
@@ -1644,19 +1644,19 @@ public class HNodeGridBagLayout {
             return (fill == Fill.BOTH || fill == Fill.VERTICAL);
         }
 
-        public HNodeGridNode pos(int x, int y) {
+        public NDocNodeGridNode pos(int x, int y) {
             setGridx(x);
             setGridy(y);
             return this;
         }
 
-        public HNodeGridNode span(int x, int y) {
+        public NDocNodeGridNode span(int x, int y) {
             setGridwidth(x);
             setGridheight(y);
             return this;
         }
 
-        public HNodeGridNode weight(int x, int y) {
+        public NDocNodeGridNode weight(int x, int y) {
             setWeightx(x);
             setWeighty(y);
             return this;
@@ -1664,7 +1664,7 @@ public class HNodeGridBagLayout {
 
         @Override
         public String toString() {
-            return "HNodeGridNode{" +
+            return "NDocNodeGridNode{" +
                     ", node=" + node +
                     ", index=" + index +
                     ", bounds=" + bounds +
@@ -1691,7 +1691,7 @@ public class HNodeGridBagLayout {
         }
     }
 
-    static class HNodeGridBagLayoutInfo {
+    static class NDocNodeGridBagLayoutInfo {
         int width, height;          /* number of  cells: horizontal and vertical */
         double startx, starty;         /* starting point for layout */
         int[] minWidth;             /* largest minWidth in each column */
@@ -1717,7 +1717,7 @@ public class HNodeGridBagLayout {
          * @param height the rows
          * @since 6.0
          */
-        HNodeGridBagLayoutInfo(int width, int height) {
+        NDocNodeGridBagLayoutInfo(int width, int height) {
             this.width = width;
             this.height = height;
         }

@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.elem.base.filler;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 
 /**
@@ -13,6 +13,6 @@ import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 public class NDocVoidParser extends NDocNodeParserBase {
 
     public NDocVoidParser() {
-        super(false, HNodeType.VOID);
+        super(false, NDocNodeType.VOID);
     }
 }

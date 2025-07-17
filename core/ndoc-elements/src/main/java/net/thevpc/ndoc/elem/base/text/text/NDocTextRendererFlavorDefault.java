@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.spi.NDocTextRendererFlavor;
@@ -21,7 +21,7 @@ public class NDocTextRendererFlavorDefault implements NDocTextRendererFlavor {
 
 
     @Override
-    public void buildText(String text, NDocTextOptions options, HNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+    public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
         NReservedSimpleCharQueue cq = new NReservedSimpleCharQueue(HTextUtils.trimBloc(text).toCharArray());
         while (cq.hasNext()) {
             SpecialToken a = readAny(cq);
@@ -29,7 +29,7 @@ public class NDocTextRendererFlavorDefault implements NDocTextRendererFlavor {
         }
     }
 
-    private void consumeSpecialTokenType(SpecialToken a, HNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+    private void consumeSpecialTokenType(SpecialToken a, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
         if (a == null) {
             return;
         }

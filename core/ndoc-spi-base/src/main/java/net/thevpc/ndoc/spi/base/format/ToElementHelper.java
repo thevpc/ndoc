@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.spi.base.format;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -19,19 +19,19 @@ public class ToElementHelper {
     List<NElement> args = new ArrayList<>();
     List<NElement> children = new ArrayList<>();
     private String name;
-    private HNode node;
+    private NDocNode node;
     private Predicate<String> exclude;
     private Set<String> excludeSet = new HashSet<>();
-    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(HPropName.CLASS, HPropName.ANCESTORS));
+    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(NDocPropName.CLASS, NDocPropName.ANCESTORS));
     private NDocEngine engine;
 
-    public static ToElementHelper of(HNode node, NDocEngine engine) {
+    public static ToElementHelper of(NDocNode node, NDocEngine engine) {
         return new ToElementHelper(
                 net.thevpc.ndoc.api.util.HUtils.uid(node.type())
                 , node, engine);
     }
 
-    public ToElementHelper(String name, HNode node, NDocEngine engine) {
+    public ToElementHelper(String name, NDocNode node, NDocEngine engine) {
         this.name = name;
         this.node = node;
         this.engine = engine;
@@ -63,7 +63,7 @@ public class ToElementHelper {
                 );
             }
             ch.addAll(children);
-            for (HNode child : node.children()) {
+            for (NDocNode child : node.children()) {
                 ch.add(
                         engine.nodeTypeFactory(child.type()).get().toElem(child)
                 );
@@ -82,7 +82,7 @@ public class ToElementHelper {
         for (String ancestor : node.getAncestors()) {
             u.addAnnotation(ancestor);
         }
-        NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(HPropName.CLASS).orNull()).asStringArrayOrString();
+        NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(NDocPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
                     Arrays.stream(sa.get()).map(x -> NElement.ofString(x)).toArray(NElement[]::new)

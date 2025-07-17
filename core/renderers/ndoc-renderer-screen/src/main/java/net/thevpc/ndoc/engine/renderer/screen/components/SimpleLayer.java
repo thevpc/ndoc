@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.screen.components;
 
-import net.thevpc.ndoc.api.model.elem2d.HAlign;
+import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 
 public abstract class SimpleLayer implements HDocumentLayer {
 
-    protected void drawStr(String str, HAlign a, Dimension size, NDocGraphics g2d) {
+    protected void drawStr(String str, NDocAlign a, Dimension size, NDocGraphics g2d) {
 
         Rectangle2D b = g2d.getStringBounds(str);
 

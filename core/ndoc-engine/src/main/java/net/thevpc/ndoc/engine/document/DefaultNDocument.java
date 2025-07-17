@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.thevpc.ndoc.api.document.HDocumentClass;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.document.NDocDocumentClass;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.spi.base.model.DefaultHNode;
-import net.thevpc.ndoc.api.resources.HResourceMonitor;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
 import net.thevpc.ndoc.spi.util.PagesHelper;
 import net.thevpc.nuts.util.NOptional;
 
@@ -22,31 +22,31 @@ import net.thevpc.nuts.util.NOptional;
  */
 public class DefaultNDocument implements NDocument, Cloneable {
 
-    private HDocumentClass documentClass;
+    private NDocDocumentClass documentClass;
     private Properties properties = new Properties();
-    private DefaultHNode root = new DefaultHNode(HNodeType.PAGE_GROUP);
-    private HResourceMonitor resources = new HResourceMonitorImpl();
+    private DefaultNDocNode root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP);
+    private NDocResourceMonitor resources = new NDocResourceMonitorImpl();
 
     public DefaultNDocument() {
     }
 
     @Override
-    public HResourceMonitor resources() {
+    public NDocResourceMonitor resources() {
         return resources;
     }
 
     @Override
-    public HDocumentClass documentClass() {
+    public NDocDocumentClass documentClass() {
         return documentClass;
     }
 
     @Override
-    public void setDocumentClass(HDocumentClass documentClass) {
+    public void setDocumentClass(NDocDocumentClass documentClass) {
         this.documentClass = documentClass;
     }
 
     @Override
-    public HNode root() {
+    public NDocNode root() {
         return root;
     }
 
@@ -71,7 +71,7 @@ public class DefaultNDocument implements NDocument, Cloneable {
     }
 
     @Override
-    public NDocument add(HNode part) {
+    public NDocument add(NDocNode part) {
         root().add(part);
         return this;
     }
@@ -109,7 +109,7 @@ public class DefaultNDocument implements NDocument, Cloneable {
             throw new IllegalArgumentException(ex);
         }
         if (cloned.root != null) {
-            cloned.root = (DefaultHNode) cloned.root.copy();
+            cloned.root = (DefaultNDocNode) cloned.root.copy();
         }
         if (cloned.properties != null) {
             cloned.properties = new Properties();
@@ -119,7 +119,7 @@ public class DefaultNDocument implements NDocument, Cloneable {
     }
 
     @Override
-    public List<HNode> pages() {
+    public List<NDocNode> pages() {
         return PagesHelper.resolvePages(this);
     }
 }

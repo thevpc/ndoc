@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.elem.base.text.source;
 
-import net.thevpc.ndoc.api.model.node.HNodeType;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.elem.base.text.text.NDocTextRendererBuilderImpl;
 import net.thevpc.ndoc.elem.base.text.text.NutsHighlighterMapper;
 import net.thevpc.ndoc.spi.base.parser.HTextUtils;
@@ -21,12 +21,12 @@ import java.awt.*;
 public class NDocSourceRenderer extends NDocTextBaseRenderer {
 
     public NDocSourceRenderer() {
-        super(HNodeType.SOURCE);
+        super(NDocNodeType.SOURCE);
     }
 
-    protected NDocTextRendererBuilder createRichTextHelper(HNode p, NDocNodeRendererContext ctx) {
-        String lang = NStringUtils.trim(NDocObjEx.of(p.getPropertyValue(HPropName.LANG)).asStringOrName().orElse(""));
-        String codeStr = (NDocObjEx.of(p.getPropertyValue(HPropName.VALUE)).asStringOrName().orElse(""));
+    protected NDocTextRendererBuilder createRichTextHelper(NDocNode p, NDocNodeRendererContext ctx) {
+        String lang = NStringUtils.trim(NDocObjEx.of(p.getPropertyValue(NDocPropName.LANG)).asStringOrName().orElse(""));
+        String codeStr = (NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE)).asStringOrName().orElse(""));
         codeStr = HTextUtils.trimBloc(codeStr);
         NTexts ttt = NTexts.of();
         NTextCode ncode = ttt.ofCode(lang, codeStr);

@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.spi.base.model;
 
 import net.thevpc.ndoc.api.model.node.*;
-import net.thevpc.ndoc.api.model.elem2d.Double2;
-import net.thevpc.ndoc.api.model.elem2d.HAlign;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -14,18 +14,18 @@ import net.thevpc.nuts.util.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultHNode implements HNode {
+public class DefaultNDocNode implements NDocNode {
     private String uuid;
     private String nodeType;
-    private HResource source;
-    protected HNode parent;
-    private HProperties properties = new HProperties();
+    private NDocResource source;
+    protected NDocNode parent;
+    private NDocProperties properties = new NDocProperties();
     private Map<String, NElement> vars = new LinkedHashMap<>();
-    private List<HNode> children = new ArrayList<>();
+    private List<NDocNode> children = new ArrayList<>();
     private List<HStyleRule> styleRules = new ArrayList<>();
-    private List<HNodeDef> definitions = new ArrayList<>();
+    private List<NDocNodeDef> definitions = new ArrayList<>();
 
-    public DefaultHNode(String nodeType) {
+    public DefaultNDocNode(String nodeType) {
         this.nodeType = nodeType;
     }
 
@@ -34,7 +34,7 @@ public class DefaultHNode implements HNode {
         return uuid;
     }
 
-    public HNode setUuid(String uuid) {
+    public NDocNode setUuid(String uuid) {
         this.uuid = uuid;
         return this;
     }
@@ -45,7 +45,7 @@ public class DefaultHNode implements HNode {
     }
 
     public String[] getAncestors() {
-        NOptional<NElement> style = getPropertyValue(HPropName.ANCESTORS);
+        NOptional<NElement> style = getPropertyValue(NDocPropName.ANCESTORS);
         if (style.isEmpty()) {
             return new String[0];
         }
@@ -66,7 +66,7 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String[] getStyleClasses() {
-        NOptional<NElement> style = getPropertyValue(HPropName.CLASS);
+        NOptional<NElement> style = getPropertyValue(NDocPropName.CLASS);
         if (style.isEmpty()) {
             return new String[0];
         }
@@ -81,12 +81,12 @@ public class DefaultHNode implements HNode {
                 ;
     }
 
-    public DefaultHNode setAncestors(String[] parentTemplate) {
+    public DefaultNDocNode setAncestors(String[] parentTemplate) {
         setProperty(HProps.ancestors(parentTemplate));
         return this;
     }
 
-    public HResource source() {
+    public NDocResource source() {
         return source;
     }
 
@@ -96,14 +96,14 @@ public class DefaultHNode implements HNode {
         return new ArrayList<>(properties.toSet());
     }
 
-    public HNode setSource(HResource source) {
+    public NDocNode setSource(NDocResource source) {
         this.source = source;
         return this;
     }
 
     @Override
     public boolean isTemplate() {
-        NOptional<NElement> style = getPropertyValue(HPropName.TEMPLATE);
+        NOptional<NElement> style = getPropertyValue(NDocPropName.TEMPLATE);
         if (style.isEmpty()) {
             return false;
         }
@@ -122,14 +122,14 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setTemplate(boolean template) {
+    public NDocNode setTemplate(boolean template) {
         setProperty(HProps.template(true));
         return this;
     }
 
     @Override
     public boolean isDisabled() {
-        NOptional<NElement> style = getPropertyValue(HPropName.HIDE);
+        NOptional<NElement> style = getPropertyValue(NDocPropName.HIDE);
         if (style.isEmpty()) {
             return false;
         }
@@ -141,13 +141,13 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setDisabled(boolean disabled) {
+    public NDocNode setDisabled(boolean disabled) {
         setProperty(HProps.disabled(disabled));
         return this;
     }
 
     public String name() {
-        NOptional<NElement> style = getPropertyValue(HPropName.NAME);
+        NOptional<NElement> style = getPropertyValue(NDocPropName.NAME);
         if (style.isEmpty()) {
             return null;
         }
@@ -159,7 +159,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setName(String name) {
+    public NDocNode setName(String name) {
         setProperty(HProps.name(name));
         return this;
     }
@@ -179,19 +179,19 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setProperty(String name, NElement value) {
+    public NDocNode setProperty(String name, NElement value) {
         properties.set(name, value);
         return this;
     }
 
     @Override
-    public HNode setProperty(String name, NToElement value) {
+    public NDocNode setProperty(String name, NToElement value) {
         properties.set(name, value == null ? null : value.toElement());
         return this;
     }
 
     @Override
-    public HNode setVar(String name, NElement value) {
+    public NDocNode setVar(String name, NElement value) {
         if (value == null) {
             vars.remove(name);
         } else {
@@ -201,24 +201,24 @@ public class DefaultHNode implements HNode {
     }
 
 
-    public HNode setProperty(HProp s) {
+    public NDocNode setProperty(HProp s) {
         properties.set(s);
         return this;
     }
 
-    public HNode unsetProperty(String s) {
+    public NDocNode unsetProperty(String s) {
         properties.unset(s);
         return this;
     }
 
     @Override
-    public HNode parent() {
+    public NDocNode parent() {
         return parent;
     }
 
 
     private Set<String> _oldClassNames() {
-        NOptional<HProp> y = properties.get(HPropName.CLASS);
+        NOptional<HProp> y = properties.get(NDocPropName.CLASS);
         if (y.isPresent()) {
             return new LinkedHashSet<>(Arrays.asList(NDocObjEx.of(y.get().getValue()).asStringArray().orElse(new String[0])).stream()
                     .filter(x -> x != null && x.trim().length() > 0)
@@ -229,7 +229,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode addStyleClass(String className) {
+    public NDocNode addStyleClass(String className) {
         className = validateClassName(className);
         if (className != null) {
             Set<String> s = _oldClassNames();
@@ -255,7 +255,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode addStyleClasses(String... classNames) {
+    public NDocNode addStyleClasses(String... classNames) {
         if (classNames != null) {
             Set<String> s = _oldClassNames();
             for (String c : classNames) {
@@ -278,7 +278,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode removeClass(String className) {
+    public NDocNode removeClass(String className) {
         className = validateClassName(className);
         if (className != null) {
             Set<String> s = _oldClassNames();
@@ -303,13 +303,13 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setParent(HNode parent) {
+    public NDocNode setParent(NDocNode parent) {
         this.parent = parent;
         return this;
     }
 
     @Override
-    public HNode mergeNode(HItem other) {
+    public NDocNode mergeNode(HItem other) {
         if (other != null) {
             if (other instanceof HItemList) {
                 for (HItem item : ((HItemList) other).getItems()) {
@@ -317,16 +317,16 @@ public class DefaultHNode implements HNode {
                 }
             } else if (other instanceof HProp) {
                 setProperty((HProp) other);
-            } else if (other instanceof HNodeDef) {
-                addDefinition((HNodeDef) other);
-            } else if (other instanceof HNode) {
-                HNode hn = (HNode) other;
+            } else if (other instanceof NDocNodeDef) {
+                addDefinition((NDocNodeDef) other);
+            } else if (other instanceof NDocNode) {
+                NDocNode hn = (NDocNode) other;
                 if (this.source == null) {
                     this.source = hn.source();
                 }
                 this.properties.set(hn.props());
                 addRules(hn.rules());
-                for (HNode child : hn.children()) {
+                for (NDocNode child : hn.children()) {
                     add(child);
                 }
             }
@@ -349,11 +349,11 @@ public class DefaultHNode implements HNode {
             } else if (a instanceof HStyleRule) {
                 addRule((HStyleRule) a);
                 return true;
-            } else if (a instanceof HNode) {
-                add((HNode) a);
+            } else if (a instanceof NDocNode) {
+                add((NDocNode) a);
                 return true;
-            } else if (a instanceof HNodeDef) {
-                addDefinition((HNodeDef) a);
+            } else if (a instanceof NDocNodeDef) {
+                addDefinition((NDocNodeDef) a);
                 return true;
             }
         }
@@ -361,77 +361,77 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setPosition(HAlign align) {
-        setProperty(HPropName.POSITION, align);
+    public NDocNode setPosition(NDocAlign align) {
+        setProperty(NDocPropName.POSITION, align);
         return this;
     }
 
     @Override
-    public HNode setPosition(Number x, Number y) {
-        setPosition(new Double2(x, y));
+    public NDocNode setPosition(Number x, Number y) {
+        setPosition(new NDocDouble2(x, y));
         return this;
     }
 
     @Override
-    public HNode setPosition(Double2 d) {
-        setProperty(HPropName.POSITION, d);
+    public NDocNode setPosition(NDocDouble2 d) {
+        setProperty(NDocPropName.POSITION, d);
         return this;
     }
 
     @Override
-    public HNode setOrigin(HAlign align) {
-        setProperty(HPropName.ORIGIN, align);
+    public NDocNode setOrigin(NDocAlign align) {
+        setProperty(NDocPropName.ORIGIN, align);
         return this;
     }
 
     @Override
-    public HNode setOrigin(Number x, Number y) {
-        setOrigin(new Double2(x, y));
+    public NDocNode setOrigin(Number x, Number y) {
+        setOrigin(new NDocDouble2(x, y));
         return this;
     }
 
     @Override
-    public HNode setOrigin(Double2 d) {
-        setProperty(HPropName.ORIGIN, d);
+    public NDocNode setOrigin(NDocDouble2 d) {
+        setProperty(NDocPropName.ORIGIN, d);
         return this;
     }
 
     @Override
-    public HNode at(HAlign align) {
+    public NDocNode at(NDocAlign align) {
         setPosition(align);
         setOrigin(align);
         return this;
     }
 
     @Override
-    public HNode at(Number x, Number y) {
+    public NDocNode at(Number x, Number y) {
         setPosition(x, y);
         setOrigin(x, y);
         return this;
     }
 
     @Override
-    public HNode at(Double2 d) {
+    public NDocNode at(NDocDouble2 d) {
         setPosition(d);
         setOrigin(d);
         return this;
     }
 
     @Override
-    public HNode setSize(Number size) {
-        return setSize(new Double2(size, size));
+    public NDocNode setSize(Number size) {
+        return setSize(new NDocDouble2(size, size));
     }
 
     @Override
-    public HNode setSize(Double2 size) {
-        NElement old = getPropertyValue(HPropName.SIZE).orNull();
-        Double2 oo = old == null ? null : NDocObjEx.of(old).asDouble2().orNull();
+    public NDocNode setSize(NDocDouble2 size) {
+        NElement old = getPropertyValue(NDocPropName.SIZE).orNull();
+        NDocDouble2 oo = old == null ? null : NDocObjEx.of(old).asDouble2().orNull();
         if (oo == null) {
-            oo = new Double2(null, null);
+            oo = new NDocDouble2(null, null);
         }
         Number w = size == null ? null : size.getX();
         Number h = size == null ? null : size.getY();
-        setProperty(HPropName.SIZE, new Double2(
+        setProperty(NDocPropName.SIZE, new NDocDouble2(
                 NUtils.firstNonNull(w, oo.getX()),
                 NUtils.firstNonNull(h, oo.getY())
         ));
@@ -439,68 +439,68 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setSize(Number w, Number h) {
-        setSize(new Double2(w, h));
+    public NDocNode setSize(Number w, Number h) {
+        setSize(new NDocDouble2(w, h));
         return this;
     }
 
     @Override
-    public HNode setFontSize(Number w) {
-        setProperty(HPropName.FONT_SIZE, NElement.ofNumber(w));
+    public NDocNode setFontSize(Number w) {
+        setProperty(NDocPropName.FONT_SIZE, NElement.ofNumber(w));
         return this;
     }
 
     @Override
-    public HNode setFontFamily(String w) {
-        setProperty(HPropName.FONT_FAMILY, NElement.ofString(w));
+    public NDocNode setFontFamily(String w) {
+        setProperty(NDocPropName.FONT_FAMILY, NElement.ofString(w));
         return this;
     }
 
     @Override
-    public HNode setFontBold(Boolean w) {
-        setProperty(HPropName.FONT_BOLD, NElement.ofBoolean(w));
+    public NDocNode setFontBold(Boolean w) {
+        setProperty(NDocPropName.FONT_BOLD, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
-    public HNode setFontItalic(Boolean w) {
-        setProperty(HPropName.FONT_ITALIC, NElement.ofBoolean(w));
+    public NDocNode setFontItalic(Boolean w) {
+        setProperty(NDocPropName.FONT_ITALIC, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
-    public HNode setFontUnderlined(Boolean w) {
-        setProperty(HPropName.FONT_UNDERLINED, NElement.ofBoolean(w));
+    public NDocNode setFontUnderlined(Boolean w) {
+        setProperty(NDocPropName.FONT_UNDERLINED, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
-    public HNode setFontStrike(Boolean w) {
-        setProperty(HPropName.FONT_STRIKE, NElement.ofBoolean(w));
+    public NDocNode setFontStrike(Boolean w) {
+        setProperty(NDocPropName.FONT_STRIKE, NElement.ofBoolean(w));
         return this;
     }
 
     @Override
-    public HNode setForegroundColor(String w) {
-        setProperty(HPropName.FOREGROUND_COLOR, NElement.ofString(w));
+    public NDocNode setForegroundColor(String w) {
+        setProperty(NDocPropName.FOREGROUND_COLOR, NElement.ofString(w));
         return this;
     }
 
     @Override
-    public HNode setBackgroundColor(String w) {
-        setProperty(HPropName.BACKGROUND_COLOR, NElement.ofString(w));
+    public NDocNode setBackgroundColor(String w) {
+        setProperty(NDocPropName.BACKGROUND_COLOR, NElement.ofString(w));
         return this;
     }
 
 //    @Override
-//    public HNode setLineColor(String w) {
-//        setProperty(HPropName.LINE_COLOR, w);
+//    public NDocNode setLineColor(String w) {
+//        setProperty(NDocPropName.LINE_COLOR, w);
 //        return this;
 //    }
 
     @Override
-    public HNode setGridColor(String w) {
-        setProperty(HPropName.GRID_COLOR, NElement.ofString(w));
+    public NDocNode setGridColor(String w) {
+        setProperty(NDocPropName.GRID_COLOR, NElement.ofString(w));
         return this;
     }
 
@@ -510,7 +510,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setProperties(HProp... props) {
+    public NDocNode setProperties(HProp... props) {
         if (props != null) {
             for (HProp prop : props) {
                 setProperty(prop);
@@ -520,16 +520,16 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setChildren(HNode... children) {
+    public NDocNode setChildren(NDocNode... children) {
         this.children.clear();
         addAll(children);
         return this;
     }
 
     @Override
-    public HNode addAll(HNode... a) {
+    public NDocNode addAll(NDocNode... a) {
         if (a != null) {
-            for (HNode n : a) {
+            for (NDocNode n : a) {
                 add(n);
             }
         }
@@ -537,7 +537,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode add(HNode a) {
+    public NDocNode add(NDocNode a) {
         if (a != null) {
             children.add(a);
             a.setParent(this);
@@ -546,12 +546,12 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public List<HNode> children() {
+    public List<NDocNode> children() {
         return children;
     }
 
     @Override
-    public HNode addRule(HStyleRule s) {
+    public NDocNode addRule(HStyleRule s) {
         if (s != null) {
             styleRules.add(s);
         }
@@ -559,14 +559,14 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode setRules(HStyleRule[] rules) {
+    public NDocNode setRules(HStyleRule[] rules) {
         styleRules.clear();
         addRules(rules);
         return this;
     }
 
     @Override
-    public HNode addRules(HStyleRule... rules) {
+    public NDocNode addRules(HStyleRule... rules) {
         if (rules != null) {
             for (HStyleRule rule : rules) {
                 addRule(rule);
@@ -576,25 +576,25 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode removeRule(HStyleRule s) {
+    public NDocNode removeRule(HStyleRule s) {
         styleRules.remove(s);
         return this;
     }
 
     @Override
-    public HNode clearRules() {
+    public NDocNode clearRules() {
         for (HStyleRule rule : rules()) {
             removeRule(rule);
         }
         return this;
     }
 
-    public HNodeDef[] definitions() {
-        return definitions.toArray(new HNodeDef[0]);
+    public NDocNodeDef[] definitions() {
+        return definitions.toArray(new NDocNodeDef[0]);
     }
 
     @Override
-    public HNode addDefinition(HNodeDef s) {
+    public NDocNode addDefinition(NDocNodeDef s) {
         if (s != null) {
             definitions.add(s);
         }
@@ -602,7 +602,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public HNode removeDefinition(HNodeDef s) {
+    public NDocNode removeDefinition(NDocNodeDef s) {
         if (s != null) {
             definitions.remove(s);
         }
@@ -614,33 +614,33 @@ public class DefaultHNode implements HNode {
         return styleRules.toArray(new HStyleRule[0]);
     }
 
-    public HNode copy() {
-        DefaultHNode o = new DefaultHNode(nodeType);
+    public NDocNode copy() {
+        DefaultNDocNode o = new DefaultNDocNode(nodeType);
         copyTo(o);
         return o;
     }
 
-    public void copyTo(HNode other) {
+    public void copyTo(NDocNode other) {
         other.setUuid(UUID.randomUUID().toString());
         other.setSource(source());
         other.setProperties(properties.toArray());
-        other.addAll(children().stream().map(HNode::copy).toArray(HNode[]::new));
+        other.addAll(children().stream().map(NDocNode::copy).toArray(NDocNode[]::new));
         other.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
         other.addDefinitions(definitions());
     }
 
     @Override
-    public HNode addDefinitions(HNodeDef... definitions) {
-        for (HNodeDef definition : definitions) {
+    public NDocNode addDefinitions(NDocNodeDef... definitions) {
+        for (NDocNodeDef definition : definitions) {
             addDefinition(definition);
         }
         return this;
     }
 
     //    @Override
-//    public HNode addRule(HProp... s) {
+//    public NDocNode addRule(HProp... s) {
 //        if (s != null) {
-//            Set<HProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
+//            Set<NDocProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
 //            if (!ss.isEmpty()) {
 //                addRule(DefaultHStyleRule.ofAny(s));
 //            }
@@ -649,8 +649,8 @@ public class DefaultHNode implements HNode {
 //    }
 //
     private NElement toTson0() {
-        if (HNodeType.ASSIGN.equals(type())) {
-            return NElement.ofPair("$" + getName(), getPropertyValue(HPropName.VALUE).orNull());
+        if (NDocNodeType.ASSIGN.equals(type())) {
+            return NElement.ofPair("$" + getName(), getPropertyValue(NDocPropName.VALUE).orNull());
         }
         String[] a = getAncestors();
         String[] styleClasses = getStyleClasses();
@@ -673,8 +673,8 @@ public class DefaultHNode implements HNode {
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {
-                    case HPropName.ANCESTORS:
-                    case HPropName.CLASS: {
+                    case NDocPropName.ANCESTORS:
+                    case NDocPropName.CLASS: {
                         break;
                     }
                     default: {
@@ -685,9 +685,9 @@ public class DefaultHNode implements HNode {
             if (!styleRules.isEmpty()) {
                 o.add("rules", NElement.ofObject(styleRules.stream().map(x -> x.toElement()).toArray(NElement[]::new)));
             }
-            for (HNode child : children()) {
-                if (child instanceof DefaultHNode) {
-                    o.add(((DefaultHNode) child).toTson0());
+            for (NDocNode child : children()) {
+                if (child instanceof DefaultNDocNode) {
+                    o.add(((DefaultNDocNode) child).toTson0());
                 } else {
                     o.add(NElement.ofString(child.toString()));
                 }
@@ -712,8 +712,8 @@ public class DefaultHNode implements HNode {
             }
             for (HProp p : properties.toList()) {
                 switch (p.getName()) {
-                    case HPropName.ANCESTORS:
-                    case HPropName.CLASS: {
+                    case NDocPropName.ANCESTORS:
+                    case NDocPropName.CLASS: {
                         break;
                     }
                     default: {
@@ -732,12 +732,12 @@ public class DefaultHNode implements HNode {
 
     @Override
     public String getName() {
-        String n = NDocObjEx.of(getPropertyValue(HPropName.NAME).orNull()).asStringOrName().orNull();
+        String n = NDocObjEx.of(getPropertyValue(NDocPropName.NAME).orNull()).asStringOrName().orNull();
         if (n != null) {
             return n;
         }
         //check if It's a template, and return template name
-        NDocObjEx template = NDocObjEx.of(getPropertyValue(HPropName.TEMPLATE).orNull());
+        NDocObjEx template = NDocObjEx.of(getPropertyValue(NDocPropName.TEMPLATE).orNull());
         if (template.isStringOrName()) {
             return template.asStringOrName().get();
         }
@@ -745,7 +745,7 @@ public class DefaultHNode implements HNode {
     }
 
     @Override
-    public void setChildAt(int i, HNode c) {
+    public void setChildAt(int i, NDocNode c) {
         NAssert.requireNonNull(c, "node");
         children.set(i, c);
     }

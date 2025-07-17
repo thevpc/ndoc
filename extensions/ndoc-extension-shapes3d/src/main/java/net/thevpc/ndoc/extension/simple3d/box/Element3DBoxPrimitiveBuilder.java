@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.extension.simple3d.box;
 
-import net.thevpc.ndoc.api.model.elem3d.HElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.HElement3D;
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
-import net.thevpc.ndoc.api.model.elem3d.composite.Element3DBox;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DLine;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DPolygon;
+import net.thevpc.ndoc.api.model.elem3d.composite.NDocElement3DBox;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DLine;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DPolygon;
 import net.thevpc.ndoc.spi.NDocElement3DRenderer;
 
 import java.util.ArrayList;
@@ -14,26 +14,26 @@ import java.util.List;
 
 public class Element3DBoxPrimitiveBuilder implements NDocElement3DRenderer {
     @Override
-    public Class<? extends HElement3D> forType() {
-        return Element3DBox.class;
+    public Class<? extends NDocElement3D> forType() {
+        return NDocElement3DBox.class;
     }
 
     @Override
-    public HElement3DPrimitive[] toPrimitives(HElement3D e, RenderState3D renderState) {
-        Element3DBox ee = (Element3DBox) e;
-        HPoint3D origin = ee.getOrigin();
+    public NDocElement3DPrimitive[] toPrimitives(NDocElement3D e, RenderState3D renderState) {
+        NDocElement3DBox ee = (NDocElement3DBox) e;
+        NDocPoint3D origin = ee.getOrigin();
         double sizeX = ee.getSizeX();
         double sizeY = ee.getSizeY();
         double sizeZ = ee.getSizeZ();
-        HPoint3D[] vertices = {
-                new HPoint3D(origin.x, origin.y, origin.z),
-                new HPoint3D(origin.x + sizeX, origin.y, origin.z),
-                new HPoint3D(origin.x + sizeX, origin.y + sizeY, origin.z),
-                new HPoint3D(origin.x, origin.y + sizeY, origin.z),
-                new HPoint3D(origin.x, origin.y, origin.z + sizeZ),
-                new HPoint3D(origin.x + sizeX, origin.y, origin.z + sizeZ),
-                new HPoint3D(origin.x + sizeX, origin.y + sizeY, origin.z + sizeZ),
-                new HPoint3D(origin.x, origin.y + sizeY, origin.z + sizeZ)
+        NDocPoint3D[] vertices = {
+                new NDocPoint3D(origin.x, origin.y, origin.z),
+                new NDocPoint3D(origin.x + sizeX, origin.y, origin.z),
+                new NDocPoint3D(origin.x + sizeX, origin.y + sizeY, origin.z),
+                new NDocPoint3D(origin.x, origin.y + sizeY, origin.z),
+                new NDocPoint3D(origin.x, origin.y, origin.z + sizeZ),
+                new NDocPoint3D(origin.x + sizeX, origin.y, origin.z + sizeZ),
+                new NDocPoint3D(origin.x + sizeX, origin.y + sizeY, origin.z + sizeZ),
+                new NDocPoint3D(origin.x, origin.y + sizeY, origin.z + sizeZ)
         };
         // Define the edges of the cube
         int[][] edges = {
@@ -49,19 +49,19 @@ public class Element3DBoxPrimitiveBuilder implements NDocElement3DRenderer {
                 {1, 2, 6, 5}, //RIGHT
                 {0, 3, 7, 4}, //LEFT
         };
-        List<HElement3DPrimitive> elements = new ArrayList<>();
+        List<NDocElement3DPrimitive> elements = new ArrayList<>();
         for (int i = 0; i < surfaces.length; i++) {
             int[] surface = surfaces[i];
-            HPoint3D[] points = new HPoint3D[surface.length];
+            NDocPoint3D[] points = new NDocPoint3D[surface.length];
             for (int j = 0; j < points.length; j++) {
                 points[j] = vertices[surface[j]];
             }
-            elements.add(new Element3DPolygon(points, true, false));
+            elements.add(new NDocElement3DPolygon(points, true, false));
         }
         for (int i = 0; i < edges.length; i++) {
             int[] edge = edges[i];
-            elements.add(new Element3DLine(vertices[edge[0]], vertices[edge[1]]));
+            elements.add(new NDocElement3DLine(vertices[edge[0]], vertices[edge[1]]));
         }
-        return elements.toArray(new HElement3DPrimitive[0]);
+        return elements.toArray(new NDocElement3DPrimitive[0]);
     }
 }

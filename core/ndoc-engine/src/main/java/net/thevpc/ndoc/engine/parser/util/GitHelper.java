@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.parser.util;
 
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.spi.NScopeType;
@@ -25,7 +25,7 @@ public class GitHelper {
                 ;
     }
 
-    public static NPath resolveGithubPath(String githubPath, HLogger messages) {
+    public static NPath resolveGithubPath(String githubPath, NDocLogger messages) {
         NPath userConfHome;
         NPath appCacheFolder = NApp.of().getCacheFolder();
         if (appCacheFolder == null) {
@@ -68,7 +68,7 @@ public class GitHelper {
         throw new IllegalArgumentException("invalid github path : " + githubPath);
     }
 
-    private static void cloneOrPull(NPath userConfHome, String user, String repo, String githubPath, HLogger messages) {
+    private static void cloneOrPull(NPath userConfHome, String user, String repo, String githubPath, NDocLogger messages) {
         userConfHome.resolve(user).mkdirs();
         NPath localRepo = userConfHome.resolve(user).resolve(repo);
         boolean pulling = false;
@@ -90,7 +90,7 @@ public class GitHelper {
                 } else {
                     NMsg message = NMsg.ofC("ignored pull repo %s to %s", NPath.of(githubPath), localRepo).asWarning();
                     if (messages != null) {
-                        messages.log(HMsg.of(message));
+                        messages.log(NDocMsg.of(message));
                     }
                     if (session.isTrace()) {
                         session.out().println(message);
@@ -114,7 +114,7 @@ public class GitHelper {
                 NMsg message = NMsg.ofC("took %s and failed to %s repo %s to %s : %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo, errorMessage)
                         .asSevere();
                 if (messages != null) {
-                    messages.log(HMsg.of(message));
+                    messages.log(NDocMsg.of(message));
                 }
                 if (session.isTrace()) {
                     session.out().println(message);
@@ -122,7 +122,7 @@ public class GitHelper {
             } else {
                 NMsg message = NMsg.ofC("took %s to %s repo %s to %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo).asWarning();
                 if (messages != null) {
-                    messages.log(HMsg.of(message));
+                    messages.log(NDocMsg.of(message));
                 }
                 if (session.isTrace()) {
                     session.out().println(message);

@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.parser.styles;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.document.HMsg;
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.HItemList;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.style.HStyleRule;
@@ -23,12 +23,12 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
 
     @Override
     public boolean accept(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
-//        HNode node = context.node();
+//        NDocNode node = context.node();
         return true;
 //        if(node==null){
 //            return true;
 //        }
-//        if(node instanceof HContainer){
+//        if(node instanceof NDocContainer){
 //            return true;
 //        }
 //        return  false;
@@ -49,7 +49,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
                         HStyleParser.parseStyleRule(yy, f, context).get();
-                        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()).asSevere(), context.source()));
+                        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()).asSevere(), context.source()));
                         return NOptional.ofEmpty(() -> NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()));
                     }
                     for (HStyleRule r : u.get()) {
@@ -66,7 +66,7 @@ public class StylesHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 for (NElement yy : tsonElement.toArray().get().children()) {
                     NOptional<HStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                     if (!u.isPresent()) {
-                        context.messages().log(HMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get().asSevere(), context.source())));
+                        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get().asSevere(), context.source())));
                         NOptional.ofEmpty(() -> NMsg.ofC("[%s] invalid style rule  %s :: %s", net.thevpc.ndoc.api.util.HUtils.shortName(context.source()), yy, u.getMessage().get()));
                     }
                     for (HStyleRule r : u.get()) {

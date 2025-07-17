@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.model.node.HNodeType;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HProp;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.HProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
@@ -27,133 +27,133 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public HNode of(String type) {
+    public NDocNode of(String type) {
         NAssert.requireNonNull(type, "type");
         return engine.nodeTypeFactory(type)
                 .get().newNode();
     }
 
     @Override
-    public HNode ofPage() {
-        return of(HNodeType.PAGE);
+    public NDocNode ofPage() {
+        return of(NDocNodeType.PAGE);
     }
 
     @Override
-    public HNode ofPageGroup() {
-        return of(HNodeType.PAGE_GROUP);
+    public NDocNode ofPageGroup() {
+        return of(NDocNodeType.PAGE_GROUP);
     }
 
 
     @Override
-    public HNode ofVoid() {
-        return of(HNodeType.VOID);
+    public NDocNode ofVoid() {
+        return of(NDocNodeType.VOID);
     }
 
     @Override
-    public HNode ofGlue() {
-        return of(HNodeType.FILLER)
+    public NDocNode ofGlue() {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.maxX(100))
                 .setProperty(HProps.maxY(100))
                 ;
     }
 
     @Override
-    public HNode ofGlueV() {
-        return of(HNodeType.FILLER)
+    public NDocNode ofGlueV() {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.maxX(0))
                 .setProperty(HProps.maxY(100))
                 ;
     }
 
     @Override
-    public HNode ofGlueH() {
-        return of(HNodeType.FILLER)
+    public NDocNode ofGlueH() {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.maxX(100))
                 .setProperty(HProps.maxY(0))
                 ;
     }
 
     @Override
-    public HNode ofStrutV(double w) {
-        return of(HNodeType.FILLER)
+    public NDocNode ofStrutV(double w) {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.size(0, 100))
                 ;
     }
 
     @Override
-    public HNode ofStrutH(double w) {
-        return of(HNodeType.FILLER)
+    public NDocNode ofStrutH(double w) {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.size(100, 0))
                 ;
     }
 
     @Override
-    public HNode ofStrut(double w, double h) {
-        return of(HNodeType.FILLER)
+    public NDocNode ofStrut(double w, double h) {
+        return of(NDocNodeType.FILLER)
                 .setProperty(HProps.size(w, 0))
                 ;
     }
 
     @Override
-    public HNode ofArc(double from, double to) {
-        return of(HNodeType.ARC)
-                .setProperty(HProp.ofDouble(HPropName.FROM, from))
-                .setProperty(HProp.ofDouble(HPropName.FROM, to))
+    public NDocNode ofArc(double from, double to) {
+        return of(NDocNodeType.ARC)
+                .setProperty(HProp.ofDouble(NDocPropName.FROM, from))
+                .setProperty(HProp.ofDouble(NDocPropName.FROM, to))
                 ;
     }
 
     @Override
-    public HNode ofArc() {
-        return of(HNodeType.ARC);
+    public NDocNode ofArc() {
+        return of(NDocNodeType.ARC);
     }
 
     @Override
-    public HNode ofAssign() {
-        return of(HNodeType.ASSIGN);
+    public NDocNode ofAssign() {
+        return of(NDocNodeType.ASSIGN);
     }
 
     @Override
-    public HNode ofAssign(String name, NElement value) {
+    public NDocNode ofAssign(String name, NElement value) {
         return ofAssign()
-                .setProperty(HPropName.NAME, NElement.ofString(name))
-                .setProperty(HPropName.VALUE, value)
+                .setProperty(NDocPropName.NAME, NElement.ofString(name))
+                .setProperty(NDocPropName.VALUE, value)
                 ;
     }
 
     @Override
-    public HNode ofFlow() {
-        return of(HNodeType.FLOW);
+    public NDocNode ofFlow() {
+        return of(NDocNodeType.FLOW);
     }
 
     @Override
-    public HNode ofStack() {
-        return of(HNodeType.STACK);
+    public NDocNode ofStack() {
+        return of(NDocNodeType.STACK);
     }
 
     @Override
-    public HNode ofUnorderedList() {
-        return of(HNodeType.UNORDERED_LIST);
+    public NDocNode ofUnorderedList() {
+        return of(NDocNodeType.UNORDERED_LIST);
     }
 
     @Override
-    public HNode ofOrderedList() {
-        return of(HNodeType.ORDERED_LIST);
+    public NDocNode ofOrderedList() {
+        return of(NDocNodeType.ORDERED_LIST);
     }
 
     @Override
-    public HNode ofGrid(int cols, int rows) {
+    public NDocNode ofGrid(int cols, int rows) {
         return ofGrid()
-                .setProperty(HPropName.COLUMNS, NElement.ofInt(cols))
-                .setProperty(HPropName.ROWS, NElement.ofInt(rows))
+                .setProperty(NDocPropName.COLUMNS, NElement.ofInt(cols))
+                .setProperty(NDocPropName.ROWS, NElement.ofInt(rows))
                 ;
     }
 
-    public HNode ofGrid() {
-        return of(HNodeType.GRID);
+    public NDocNode ofGrid() {
+        return of(NDocNodeType.GRID);
     }
 
     @Override
-    public HNode ofGridV() {
+    public NDocNode ofGridV() {
         return ofGrid()
                 .setProperty(HProps.columns(1))
                 .setProperty(HProps.rows(-1))
@@ -161,7 +161,7 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public HNode ofGridH() {
+    public NDocNode ofGridH() {
         return ofGrid()
                 .setProperty(HProps.columns(-1))
                 .setProperty(HProps.rows(1))
@@ -169,82 +169,82 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public HNode ofPlain(String text) {
-        return ofPlain().setProperty(HPropName.VALUE, NElement.ofString(text));
+    public NDocNode ofPlain(String text) {
+        return ofPlain().setProperty(NDocPropName.VALUE, NElement.ofString(text));
     }
 
     @Override
-    public HNode ofText(String text) {
-        return ofText().setProperty(HPropName.VALUE, NElement.ofString(text));
+    public NDocNode ofText(String text) {
+        return ofText().setProperty(NDocPropName.VALUE, NElement.ofString(text));
     }
 
     @Override
-    public HNode ofPlain() {
-        return of(HNodeType.PLAIN);
+    public NDocNode ofPlain() {
+        return of(NDocNodeType.PLAIN);
     }
 
     @Override
-    public HNode ofRectangle() {
-        return of(HNodeType.RECTANGLE);
+    public NDocNode ofRectangle() {
+        return of(NDocNodeType.RECTANGLE);
     }
 
     @Override
-    public HNode ofSphere() {
-        return of(HNodeType.SPHERE);
+    public NDocNode ofSphere() {
+        return of(NDocNodeType.SPHERE);
     }
 
     @Override
-    public HNode ofEllipsoid() {
-        return of(HNodeType.ELLIPSOID);
+    public NDocNode ofEllipsoid() {
+        return of(NDocNodeType.ELLIPSOID);
     }
 
     @Override
-    public HNode ofSquare() {
-        return of(HNodeType.SQUARE);
-    }
-
-
-    @Override
-    public HNode ofEllipse() {
-        return of(HNodeType.ELLIPSE);
-    }
-
-    @Override
-    public HNode ofSource() {
-        return of(HNodeType.SOURCE);
+    public NDocNode ofSquare() {
+        return of(NDocNodeType.SQUARE);
     }
 
 
     @Override
-    public HNode ofCircle() {
-        return of(HNodeType.CIRCLE);
+    public NDocNode ofEllipse() {
+        return of(NDocNodeType.ELLIPSE);
     }
 
     @Override
-    public HNode ofTriangle() {
-        return of(HNodeType.TRIANGLE);
+    public NDocNode ofSource() {
+        return of(NDocNodeType.SOURCE);
+    }
+
+
+    @Override
+    public NDocNode ofCircle() {
+        return of(NDocNodeType.CIRCLE);
     }
 
     @Override
-    public HNode ofHexagon() {
-        return of(HNodeType.HEXAGON);
+    public NDocNode ofTriangle() {
+        return of(NDocNodeType.TRIANGLE);
     }
 
     @Override
-    public HNode ofOctagon() {
-        return of(HNodeType.OCTAGON);
+    public NDocNode ofHexagon() {
+        return of(NDocNodeType.HEXAGON);
     }
 
     @Override
-    public HNode ofPentagon() {
-        return of(HNodeType.PENTAGON);
+    public NDocNode ofOctagon() {
+        return of(NDocNodeType.OCTAGON);
     }
 
-    public HNode ofPolygon() {
-        return of(HNodeType.POLYGON);
+    @Override
+    public NDocNode ofPentagon() {
+        return of(NDocNodeType.PENTAGON);
+    }
+
+    public NDocNode ofPolygon() {
+        return of(NDocNodeType.POLYGON);
     }
 //    @Override
-//    public HNode ofPolygon(int edges) {
+//    public NDocNode ofPolygon(int edges) {
 //        if(edges<=2){
 //            throw new IllegalArgumentException("invalid edges "+edges+". must be >2");
 //        }
@@ -280,32 +280,32 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
 //    }
 
     @Override
-    public HNode ofPolyline() {
-        return of(HNodeType.POLYLINE);
+    public NDocNode ofPolyline() {
+        return of(NDocNodeType.POLYLINE);
     }
 
     @Override
-    public HNode ofLine() {
-        return of(HNodeType.LINE);
+    public NDocNode ofLine() {
+        return of(NDocNodeType.LINE);
     }
 
     @Override
-    public HNode ofImage() {
-        return of(HNodeType.IMAGE);
+    public NDocNode ofImage() {
+        return of(NDocNodeType.IMAGE);
     }
 
     @Override
-    public HNode ofEquation() {
-        return of(HNodeType.EQUATION);
+    public NDocNode ofEquation() {
+        return of(NDocNodeType.EQUATION);
     }
 
     @Override
-    public HNode ofEquation(String value) {
-        return ofEquation().setProperty(HPropName.VALUE, NElement.ofString(value));
+    public NDocNode ofEquation(String value) {
+        return ofEquation().setProperty(NDocPropName.VALUE, NElement.ofString(value));
     }
 
     @Override
-    public HNode ofText() {
-        return of(HNodeType.TEXT);
+    public NDocNode ofText() {
+        return of(NDocNodeType.TEXT);
     }
 }

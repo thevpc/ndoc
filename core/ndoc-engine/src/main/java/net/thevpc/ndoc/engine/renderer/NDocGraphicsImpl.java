@@ -5,16 +5,16 @@ import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.model.elem2d.*;
 import net.thevpc.ndoc.api.model.elem2d.primitives.*;
 import net.thevpc.ndoc.api.model.elem3d.*;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DTriangle;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DArc;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DLine;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DPolygon;
-import net.thevpc.ndoc.api.model.elem3d.primitives.Element3DPolyline;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DTriangle;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DArc;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DLine;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DPolygon;
+import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DPolyline;
 import net.thevpc.ndoc.api.util.Colors;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.engine.renderer.elem2d.Element2DUIFactory;
 import net.thevpc.ndoc.engine.renderer.elem2d.ShapeFactory;
-import net.thevpc.ndoc.engine.renderer.elem3d.Light3DImpl;
+import net.thevpc.ndoc.engine.renderer.elem3d.NDocLight3DImpl;
 import net.thevpc.ndoc.engine.renderer.elem2d.strokes.CompositeStroke;
 import net.thevpc.ndoc.engine.renderer.elem2d.strokes.StrokeFactory;
 import net.thevpc.ndoc.engine.renderer.elem3d.Element3DUIFactory;
@@ -46,9 +46,9 @@ public class NDocGraphicsImpl implements NDocGraphics {
 
     private Graphics2D g;
     private Color secondaryColor;
-    private Projection3D projection3D = new Projection3D(1000);
-    private Matrix3D transform3D = Matrix3D.identity();
-    private Light3DImpl light3D = new Light3DImpl();
+    private NDocProjection3D projection3D = new NDocProjection3D(1000);
+    private NDocMatrix3D transform3D = NDocMatrix3D.identity();
+    private NDocLight3DImpl light3D = new NDocLight3DImpl();
     private Element2DUIFactory element2DUIFactory = new Element2DUIFactory();
     private Element3DUIFactory element3DUIFactory = new Element3DUIFactory();
     private List<NDocImageTypeRendererFactory> imageTypeRendererFactories = new ArrayList<>();
@@ -56,12 +56,12 @@ public class NDocGraphicsImpl implements NDocGraphics {
 
     private RenderState3D state = new RenderState3D() {
         @Override
-        public HVector3D lightOrientation() {
+        public NDocVector3D lightOrientation() {
             return light3D.orientation();
         }
 
         @Override
-        public HElement3DPrimitive[] toPrimitives(HElement3D e) {
+        public NDocElement3DPrimitive[] toPrimitives(NDocElement3D e) {
             return element3DUIFactory.toPrimitives(e, this);
         }
     };
@@ -98,12 +98,12 @@ public class NDocGraphicsImpl implements NDocGraphics {
 
 
     @Override
-    public Light3D getLight3D() {
+    public NDocLight3D getLight3D() {
         return light3D;
     }
 
     @Override
-    public Light3D setLight3D(Light3D light3D) {
+    public NDocLight3D setLight3D(NDocLight3D light3D) {
         return light3D;
     }
 
@@ -201,7 +201,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void drawArrayHead(HPoint2D origin, Vector2D direction, HArrow arrow) {
+    public void drawArrayHead(NDocPoint2D origin, Vector2D direction, HArrow arrow) {
         if (arrow == null || arrow.getType() == null) {
             return;
         }
@@ -324,28 +324,28 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void draw2D(HElement2D element2D) {
-        Element2DPrimitive[] primitives = element2DUIFactory.toPrimitives(element2D);
-        for (Element2DPrimitive primitive : primitives) {
+    public void draw2D(NDocElement2D element2D) {
+        NDocElement2DPrimitive[] primitives = element2DUIFactory.toPrimitives(element2D);
+        for (NDocElement2DPrimitive primitive : primitives) {
             switch (primitive.type()) {
                 case LINE: {
-                    draw2DHElement2DLine((HElement2DLine) primitive);
+                    draw2DHElement2DLine((NDocElement2DLine) primitive);
                     break;
                 }
                 case QUAD_CURVE: {
-                    draw2DHElement2DQuadCurve((HElement2DQuadCurve) primitive);
+                    draw2DHElement2DQuadCurve((NDocElement2DQuadCurve) primitive);
                     break;
                 }
                 case CUBIC_CURVE: {
-                    draw2DHElement2DCubicCurve((HElement2DCubicCurve) primitive);
+                    draw2DHElement2DCubicCurve((NDocElement2DCubicCurve) primitive);
                     break;
                 }
                 case POLYLINE: {
-                    draw2DHElement2DPolyline((HElement2DPolyline) primitive);
+                    draw2DHElement2DPolyline((NDocElement2DPolyline) primitive);
                     break;
                 }
                 case POLYGON: {
-                    draw2DHElement2DPolygon((HElement2DPolygon) primitive);
+                    draw2DHElement2DPolygon((NDocElement2DPolygon) primitive);
                     break;
                 }
             }
@@ -353,31 +353,31 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void draw3D(HElement3D element3D, HPoint2D origin) {
-        HElement3DPrimitive[] primitives = element3DUIFactory.toPrimitives(element3D, state);
+    public void draw3D(NDocElement3D element3D, NDocPoint2D origin) {
+        NDocElement3DPrimitive[] primitives = element3DUIFactory.toPrimitives(element3D, state);
         double x = origin.x;
         double y = origin.y;
-        for (HElement3DPrimitive primitive : primitives) {
+        for (NDocElement3DPrimitive primitive : primitives) {
             switch (primitive.type()) {
                 case LINE: {
-                    draw3DElement3DLine((Element3DLine) primitive, origin);
+                    draw3DElement3DLine((NDocElement3DLine) primitive, origin);
                     break;
                 }
                 case ARC: {
-                    draw3DElement3DArc((Element3DArc) primitive, origin);
+                    draw3DElement3DArc((NDocElement3DArc) primitive, origin);
                     break;
                 }
                 case POLYGON: {
-                    draw3DElement3DPolygon((Element3DPolygon) primitive, origin);
+                    draw3DElement3DPolygon((NDocElement3DPolygon) primitive, origin);
                     break;
                 }
 
                 case POLYLINE: {
-                    draw3DElement3DPolyline((Element3DPolyline) primitive, origin);
+                    draw3DElement3DPolyline((NDocElement3DPolyline) primitive, origin);
                     break;
                 }
                 case TRIANGLE: {
-                    draw3DElement3DTriangle((Element3DTriangle) primitive, origin);
+                    draw3DElement3DTriangle((NDocElement3DTriangle) primitive, origin);
                     break;
                 }
             }
@@ -433,7 +433,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void fillRect(Bounds2 a) {
+    public void fillRect(NDocBounds2 a) {
         fillRect(
                 net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinY()),
                 net.thevpc.ndoc.api.util.HUtils.intOf(a.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getHeight())
@@ -441,7 +441,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void drawRect(Bounds2 a) {
+    public void drawRect(NDocBounds2 a) {
         drawRect(
                 net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinY()),
                 net.thevpc.ndoc.api.util.HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
@@ -477,8 +477,8 @@ public class NDocGraphicsImpl implements NDocGraphics {
         if (options.getFont() != null) {
             g.setFont(options.getFont());
         }
-        HPoint2D sht = options.getShadowTranslation();
-        if (options.getShadowColor() != null && sht != null && !sht.equals(new HPoint2D(0, 0))) {
+        NDocPoint2D sht = options.getShadowTranslation();
+        if (options.getShadowColor() != null && sht != null && !sht.equals(new NDocPoint2D(0, 0))) {
             if (options.isStyled()) {
                 AttributedString attrStr = options.createShadowAttributedString(str, g);
                 g.drawString(attrStr.getIterator(), (float) (x + sht.getX()), (float) (y + sht.getY()));
@@ -595,7 +595,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void drawImage(NPath nPath, double x, double y, HImageOptions options) {
+    public void drawImage(NPath nPath, double x, double y, NDocImageOptions options) {
         NDocGraphicsImageDrawer o = imageCache.get(nPath);
         if (o == null) {
             NOptional<NDocGraphicsImageDrawer> tr = NCallableSupport.resolve(
@@ -678,14 +678,14 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
 
-    public void transform3D(Matrix3D transform3D) {
+    public void transform3D(NDocMatrix3D transform3D) {
         if (transform3D != null) {
             this.transform3D = this.transform3D.multiply(transform3D);
         }
     }
 
     @Override
-    public void project3D(Projection3D projection3D) {
+    public void project3D(NDocProjection3D projection3D) {
         if (projection3D != null) {
             this.projection3D = projection3D;
         }
@@ -699,15 +699,15 @@ public class NDocGraphicsImpl implements NDocGraphics {
     /// ////////////////////////////////////////////////////
 
 
-    private void draw3DElement3DLine(Element3DLine pr, HPoint2D origin) {
-        HPoint3D p1 = pr.getFrom().transform(transform3D);
-        HPoint3D p2 = pr.getTo().transform(transform3D);
+    private void draw3DElement3DLine(NDocElement3DLine pr, NDocPoint2D origin) {
+        NDocPoint3D p1 = pr.getFrom().transform(transform3D);
+        NDocPoint3D p2 = pr.getTo().transform(transform3D);
 
-        HPoint2D point1 = projection3D.project(p1).plus(origin);
-        HPoint2D point2 = projection3D.project(p2).plus(origin);
+        NDocPoint2D point1 = projection3D.project(p1).plus(origin);
+        NDocPoint2D point2 = projection3D.project(p2).plus(origin);
 
         draw2D(
-                new HElement2DLine(point1, point2)
+                new NDocElement2DLine(point1, point2)
                         .setStartArrow(pr.getStartArrow())
                         .setEndArrow(pr.getEndArrow())
                         .setComposite(pr.getComposite())
@@ -717,14 +717,14 @@ public class NDocGraphicsImpl implements NDocGraphics {
         );
     }
 
-    private void draw3DElement3DArc(Element3DArc pr, HPoint2D origin) {
+    private void draw3DElement3DArc(NDocElement3DArc pr, NDocPoint2D origin) {
         double x = origin.x;
         double y = origin.y;
-        HPoint3D p1 = pr.getFrom().transform(transform3D);
-        HPoint3D p2 = pr.getTo().transform(transform3D);
+        NDocPoint3D p1 = pr.getFrom().transform(transform3D);
+        NDocPoint3D p2 = pr.getTo().transform(transform3D);
 
-        HPoint2D point1 = projection3D.project(p1);
-        HPoint2D point2 = projection3D.project(p2);
+        NDocPoint2D point1 = projection3D.project(p1);
+        NDocPoint2D point2 = projection3D.project(p2);
         double xmin = Math.min(point1.x + x, point2.x + x);
         double w = Math.abs(point1.x - point2.x);
         double ymin = Math.min(point1.y + y, point2.y + y);
@@ -748,19 +748,19 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw3DElement3DPolygon(Element3DPolygon pr, HPoint2D origin) {
+    private void draw3DElement3DPolygon(NDocElement3DPolygon pr, NDocPoint2D origin) {
         double x = origin.x;
         double y = origin.y;
-        HPoint3D[] nodes = pr.getNodes();
+        NDocPoint3D[] nodes = pr.getNodes();
         double[] xx = new double[nodes.length];
         double[] yy = new double[nodes.length];
         for (int i = 0; i < xx.length; i++) {
-            HPoint3D p = nodes[i].transform(transform3D);
-            HPoint2D pp = projection3D.project(p);
+            NDocPoint3D p = nodes[i].transform(transform3D);
+            NDocPoint2D pp = projection3D.project(p);
             xx[i] = (pp.x + x);
             yy[i] = (pp.y + y);
         }
-        double d = D3Utils.surfaceNormal(nodes[0], nodes[1], nodes[2]).dot(getLight3D().orientation());
+        double d = NDocD3Utils.surfaceNormal(nodes[0], nodes[1], nodes[2]).dot(getLight3D().orientation());
         if (pr.isFill()) {
 
             Paint oldPaint = g.getPaint();
@@ -808,15 +808,15 @@ public class NDocGraphicsImpl implements NDocGraphics {
         }
     }
 
-    private void draw3DElement3DPolyline(Element3DPolyline pr, HPoint2D origin) {
+    private void draw3DElement3DPolyline(NDocElement3DPolyline pr, NDocPoint2D origin) {
         double x = origin.x;
         double y = origin.y;
-        HPoint3D[] nodes = pr.getNodes();
+        NDocPoint3D[] nodes = pr.getNodes();
         double[] xx = new double[nodes.length];
         double[] yy = new double[nodes.length];
         for (int i = 0; i < xx.length; i++) {
-            HPoint3D p = nodes[i].transform(transform3D);
-            HPoint2D pp = projection3D.project(p);
+            NDocPoint3D p = nodes[i].transform(transform3D);
+            NDocPoint2D pp = projection3D.project(p);
             xx[i] = (pp.x + x);
             yy[i] = (pp.y + y);
         }
@@ -833,28 +833,28 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw3DElement3DTriangle(Element3DTriangle pr, HPoint2D origin) {
+    private void draw3DElement3DTriangle(NDocElement3DTriangle pr, NDocPoint2D origin) {
         double x = origin.x;
         double y = origin.y;
         double[] xx = new double[3];
         double[] yy = new double[3];
 
-        HPoint3D p1 = pr.getP1();
-        HPoint2D pp1 = projection3D.project(p1.transform(transform3D));
+        NDocPoint3D p1 = pr.getP1();
+        NDocPoint2D pp1 = projection3D.project(p1.transform(transform3D));
         xx[0] = (pp1.x + x);
         yy[0] = (pp1.y + y);
 
-        HPoint3D p2 = pr.getP2();
-        HPoint2D pp2 = projection3D.project(p2.transform(transform3D));
+        NDocPoint3D p2 = pr.getP2();
+        NDocPoint2D pp2 = projection3D.project(p2.transform(transform3D));
         xx[1] = (pp2.x + x);
         yy[1] = (pp2.y + y);
 
-        HPoint3D p3 = pr.getP3();
-        HPoint2D pp3 = projection3D.project(p3.transform(transform3D));
+        NDocPoint3D p3 = pr.getP3();
+        NDocPoint2D pp3 = projection3D.project(p3.transform(transform3D));
         xx[2] = (pp3.x + x);
         yy[2] = (pp3.y + y);
 
-        double d = D3Utils.surfaceNormal(p1, p2, p3).dot(getLight3D().orientation());
+        double d = NDocD3Utils.surfaceNormal(p1, p2, p3).dot(getLight3D().orientation());
         if (true/*d < 0*/) {
             if (pr.isFill()) {
                 Paint oldPaint = g.getPaint();
@@ -904,9 +904,9 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
 
-    private void draw2DHElement2DLine(HElement2DLine pr) {
-        HPoint2D a = pr.getFrom();
-        HPoint2D b = pr.getTo();
+    private void draw2DHElement2DLine(NDocElement2DLine pr) {
+        NDocPoint2D a = pr.getFrom();
+        NDocPoint2D b = pr.getTo();
         Paint oldPaint = g.getPaint();
         Stroke oldStroke = g.getStroke();
         if (pr.getLinePaint() != null) {
@@ -929,10 +929,10 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw2DHElement2DQuadCurve(HElement2DQuadCurve pr) {
-        HPoint2D a = pr.getFrom();
-        HPoint2D b = pr.getTo();
-        HPoint2D c = pr.getCtrl();
+    private void draw2DHElement2DQuadCurve(NDocElement2DQuadCurve pr) {
+        NDocPoint2D a = pr.getFrom();
+        NDocPoint2D b = pr.getTo();
+        NDocPoint2D c = pr.getCtrl();
         Paint oldPaint = g.getPaint();
         Stroke oldStroke = g.getStroke();
         if (pr.getLinePaint() != null) {
@@ -955,11 +955,11 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw2DHElement2DCubicCurve(HElement2DCubicCurve pr) {
-        HPoint2D a = pr.getFrom();
-        HPoint2D b = pr.getTo();
-        HPoint2D c1 = pr.getCtrl1();
-        HPoint2D c2 = pr.getCtrl2();
+    private void draw2DHElement2DCubicCurve(NDocElement2DCubicCurve pr) {
+        NDocPoint2D a = pr.getFrom();
+        NDocPoint2D b = pr.getTo();
+        NDocPoint2D c1 = pr.getCtrl1();
+        NDocPoint2D c2 = pr.getCtrl2();
         Paint oldPaint = g.getPaint();
         Stroke oldStroke = g.getStroke();
         if (pr.getLinePaint() != null) {
@@ -985,7 +985,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw2DHElement2DPolyline(HElement2DPolyline pr) {
+    private void draw2DHElement2DPolyline(NDocElement2DPolyline pr) {
         Paint oldPaint = g.getPaint();
         Stroke oldStroke = g.getStroke();
         if (pr.getLinePaint() != null) {
@@ -994,11 +994,11 @@ public class NDocGraphicsImpl implements NDocGraphics {
         if (pr.getLineStroke() != null) {
             setStroke(pr.getLineStroke());
         }
-        HPoint2D[] nodes = pr.getNodes();
+        NDocPoint2D[] nodes = pr.getNodes();
         int[] xx = new int[nodes.length];
         int[] yy = new int[nodes.length];
         for (int i = 0; i < xx.length; i++) {
-            HPoint2D pp = nodes[i];
+            NDocPoint2D pp = nodes[i];
             xx[i] = (int) (pp.x);
             yy[i] = (int) (pp.y);
         }
@@ -1012,7 +1012,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
         setStroke(oldStroke);
     }
 
-    private void draw2DHElement2DPolygon(HElement2DPolygon pr) {
+    private void draw2DHElement2DPolygon(NDocElement2DPolygon pr) {
         Paint oldPaint = g.getPaint();
         Stroke oldStroke = g.getStroke();
         if (pr.getLinePaint() != null) {
@@ -1021,11 +1021,11 @@ public class NDocGraphicsImpl implements NDocGraphics {
         if (pr.getLineStroke() != null) {
             setStroke(pr.getLineStroke());
         }
-        HPoint2D[] nodes = pr.getNodes();
+        NDocPoint2D[] nodes = pr.getNodes();
         int[] xx = new int[nodes.length];
         int[] yy = new int[nodes.length];
         for (int i = 0; i < xx.length; i++) {
-            HPoint2D pp = nodes[i];
+            NDocPoint2D pp = nodes[i];
             xx[i] = (int) (pp.x);
             yy[i] = (int) (pp.y);
         }

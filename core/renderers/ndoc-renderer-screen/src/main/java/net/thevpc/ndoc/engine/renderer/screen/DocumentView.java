@@ -2,10 +2,10 @@ package net.thevpc.ndoc.engine.renderer.screen;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
-import net.thevpc.ndoc.api.resources.HResourceMonitor;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
 import net.thevpc.ndoc.engine.renderer.elem2d.text.util.TextUtils;
 import net.thevpc.ndoc.engine.renderer.screen.components.*;
 
@@ -46,14 +46,14 @@ public class DocumentView {
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
     private Throwable currentThrowable;
-    private HLogger messages;
+    private NDocLogger messages;
     private NDocDocumentRendererListener listener;
     private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
     private boolean isShown;
 
     public DocumentView(NDocDocumentRendererSupplier documentSupplier,
                         NDocEngine engine, NDocDocumentRendererListener listener,
-                        HLogger messages) {
+                        NDocLogger messages) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.engine = engine;
@@ -107,7 +107,7 @@ public class DocumentView {
                 return;
             }
             if (document != null) {
-                HResourceMonitor r = document.resources();
+                NDocResourceMonitor r = document.resources();
                 if (r.changed()) {
                     reloadDocumentAsync();
                 }
@@ -128,8 +128,8 @@ public class DocumentView {
     public String getPageSourceName() {
         Object s = getPageSource();
         if (s != null) {
-            if (s instanceof HResource) {
-                NPath path = ((HResource) s).path().orNull();
+            if (s instanceof NDocResource) {
+                NPath path = ((NDocResource) s).path().orNull();
                 if (path != null) {
                     return path.getName();
                 }
@@ -150,7 +150,7 @@ public class DocumentView {
     }
 
     public Object getPageSource() {
-        HNode p = currentShowingPage == null ? null : currentShowingPage.getPage();
+        NDocNode p = currentShowingPage == null ? null : currentShowingPage.getPage();
         Object s = null;
         while (p != null && s == null) {
             s = p.source();
@@ -159,7 +159,7 @@ public class DocumentView {
         return s;
     }
 
-    public HLogger messages() {
+    public NDocLogger messages() {
         return messages;
     }
 
@@ -272,7 +272,7 @@ public class DocumentView {
             }
         });
 
-        HResource source = document.root().source();
+        NDocResource source = document.root().source();
         if (source != null) {
             NPath path = source.path().orNull();
             if (path != null) {
@@ -337,7 +337,7 @@ public class DocumentView {
             this.currentThrowable = null;
             try {
                 NDocument rawDocument = documentSupplier.get(rendererContext);
-                HResource source = rawDocument.root().source();
+                NDocResource source = rawDocument.root().source();
                 SwingUtilities.invokeLater(() -> {
                     if (source == null) {
                         frame.setTitle("H Document Viewer");
@@ -356,13 +356,13 @@ public class DocumentView {
                 document = engine.documentFactory().ofDocument();
             }
             document.resources().save();
-            List<HNode> pages = PagesHelper.resolvePages(document);
+            List<NDocNode> pages = PagesHelper.resolvePages(document);
             pageViews.clear();
             contentPane.removeAll();
             pagesMapById.clear();
             pagesMapByIndex.clear();
             for (int i = 0; i < pages.size(); i++) {
-                HNode page = pages.get(i);
+                NDocNode page = pages.get(i);
                 pageViews.add(createPageView(page, i));
             }
             if (pageViews.isEmpty()) {
@@ -406,7 +406,7 @@ public class DocumentView {
         showPage(0);
     }
 
-    public PageView createPageView(HNode node, int index) {
+    public PageView createPageView(NDocNode node, int index) {
         return new PageView(
                 node, index,
                 engine(),
@@ -477,7 +477,7 @@ public class DocumentView {
         }
 
         @Override
-        public HLogger messages() {
+        public NDocLogger messages() {
             return messages;
         }
     }
@@ -623,7 +623,7 @@ public class DocumentView {
 
         public NDocDocumentStreamRendererConfig getConfig() {
             NDocDocumentStreamRendererConfig config = new NDocDocumentStreamRendererConfig();
-            config.setOrientation(portraitRadioButton.isSelected() ? PageOrientation.PORTRAIT : PageOrientation.LANDSCAPE);
+            config.setOrientation(portraitRadioButton.isSelected() ? NDocPageOrientation.PORTRAIT : NDocPageOrientation.LANDSCAPE);
             config.setGridX(NLiteral.of(gridXField.getText()).asInt().orElse(1));
             config.setGridY(NLiteral.of(gridYField.getText()).asInt().orElse(1));
             switch ((String) sizePageComboBox.getSelectedItem()) {

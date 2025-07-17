@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.elem2d.Bounds2;
-import net.thevpc.ndoc.api.model.elem2d.Double2;
+import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.Shadow;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.style.HPropName;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.NDocTextRendererFlavor;
 import net.thevpc.ndoc.spi.renderer.text.*;
-import net.thevpc.ndoc.spi.util.HNodeRendererUtils;
+import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -47,12 +47,12 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         this.defaultColor = defaultColor;
     }
 
-    public void appendNText(String lang, String rawText, NText text, HNode node, NDocNodeRendererContext ctx) {
+    public void appendNText(String lang, String rawText, NText text, NDocNode node, NDocNodeRendererContext ctx) {
         NutsHighlighterMapper.highlightNutsText(lang, rawText, text, node, ctx, this);
     }
 
     @Override
-    public void appendText(String rawText, NDocTextOptions options, HNode node, NDocNodeRendererContext ctx) {
+    public void appendText(String rawText, NDocTextOptions options, NDocNode node, NDocNodeRendererContext ctx) {
         if (rawText == null || rawText.isEmpty()) {
             return;
         }
@@ -91,7 +91,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
     }
 
     @Override
-    public void appendCustom(String lang, String rawText, NDocTextOptions options, HNode node, NDocNodeRendererContext ctx) {
+    public void appendCustom(String lang, String rawText, NDocTextOptions options, NDocNode node, NDocNodeRendererContext ctx) {
         if (rawText == null || rawText.isEmpty()) {
             return;
         }
@@ -102,7 +102,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         hTextRendererFlavor.buildText(rawText, options, node, ctx, this);
     }
 
-    public void appendEq(String text, HNode node, NDocNodeRendererContext ctx) {
+    public void appendEq(String text, NDocNode node, NDocNodeRendererContext ctx) {
         if (!text.isEmpty()) {
             NDocRichTextToken r = new NDocRichTextToken(
                     NDocRichTextTokenType.IMAGE_PAINTER,
@@ -110,7 +110,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
             );
             double fontSize = NDocValueByName.getFontSize(node, ctx);
             r.imagePainter = this.createLatex(text, fontSize);
-            Double2 size = r.imagePainter.size();
+            NDocDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             this.currRow().addToken(r);
         }
@@ -161,7 +161,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         return rows.get(rows.size() - 1);
     }
 
-    public Bounds2 computeBound(NDocNodeRendererContext ctx) {
+    public NDocBounds2 computeBound(NDocNodeRendererContext ctx) {
         NDocGraphics g = ctx.graphics();
         bounds = new Rectangle2D.Double(0, 0, 0, 0);
         double maxxY = 0;
@@ -195,7 +195,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
             Rectangle2D.Double.union(bounds, row.textBounds, bounds);
             maxxY = row.yOffset + row.textBounds.getHeight();
         }
-        return new Bounds2(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), maxxY);
+        return new NDocBounds2(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), maxxY);
     }
 
     public void setLang(String lang) {
@@ -237,8 +237,8 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
                 g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
             }
 
-            public Double2 size() {
-                return new Double2(icon.getIconWidth(), icon.getIconHeight());
+            public NDocDouble2 size() {
+                return new NDocDouble2(icon.getIconWidth(), icon.getIconHeight());
             }
         };
     }
@@ -252,7 +252,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         return rows.isEmpty();
     }
 
-    public void render(HNode p, NDocNodeRendererContext ctx, Bounds2 bgBounds, Bounds2 selfBounds) {
+    public void render(NDocNode p, NDocNodeRendererContext ctx, NDocBounds2 bgBounds, NDocBounds2 selfBounds) {
         boolean debug = NDocValueByName.isDebug(p, ctx);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
@@ -262,8 +262,8 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
                 .setForegroundColor(NDocValueByName.getForegroundColor(p, ctx, true));
 
 
-        HNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, HPropName.SHADOW, ctx);
+        NDocNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
+        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, NDocPropName.SHADOW, ctx);
         int ascent = g.getFontMetrics(textOptions.getFont()).getAscent();
         if (shadowOptional.isPresent()) {
             Shadow shadow = shadowOptional.get();
@@ -293,7 +293,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
                     }
                     case IMAGE_PAINTER: {
                         Rectangle2D b1 = col.bounds;
-                        Double2 b2 = col.imagePainter.size();
+                        NDocDouble2 b2 = col.imagePainter.size();
                         col.imagePainter.paint(g, (x + col.xOffset), y + row.yOffset);
                         if (debug) {
                             g.drawRect(
@@ -308,6 +308,6 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
                 }
             }
         }
-        HNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
+        NDocNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
     }
 }

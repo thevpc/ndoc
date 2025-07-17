@@ -2,7 +2,7 @@ package net.thevpc.ndoc.examples;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.DefaultHLogger;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRenderer;
 import net.thevpc.nuts.Nuts;
@@ -13,7 +13,7 @@ public class TestPdf {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
         NPath file = NPath.of("documentation/ndoc-doc").toAbsolute().normalize();
-        NDocument doc = e.loadDocument(file, new DefaultHLogger(null)).get();
+        NDocument doc = e.loadDocument(file, new DefaultNDocLogger(null)).get();
         NDocDocumentStreamRenderer renderer = e.newPdfRenderer().get();
         renderer.setOutput(file.resolve("output.pdf"));
         renderer.render(doc);
