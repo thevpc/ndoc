@@ -1,19 +1,19 @@
 package net.thevpc.ndoc.api.model.elem3d;
 
-import net.thevpc.ndoc.api.model.elem2d.HPoint2D;
+import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
 
-public class Projection3D {
+public class NDocProjection3D {
     double focalLength;
 
-    public Projection3D(double focalLength) {
+    public NDocProjection3D(double focalLength) {
         this.focalLength = focalLength;
     }
 
     // Project a 3D point onto a 2D plane
-    public HPoint2D project(HPoint3D point) {
+    public NDocPoint2D project(NDocPoint3D point) {
         double factor = focalLength / (focalLength + point.z);
         int x = (int) (point.x * factor);
         int y = (int) (point.y * factor);
-        return new HPoint2D(x, y);
+        return new NDocPoint2D(x, y);
     }
 }
