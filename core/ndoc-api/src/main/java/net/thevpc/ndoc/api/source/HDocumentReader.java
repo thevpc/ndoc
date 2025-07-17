@@ -2,9 +2,9 @@ package net.thevpc.ndoc.api.source;
 
 import java.io.BufferedReader;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 
 public interface HDocumentReader {
 
-    HNode read(BufferedReader stream);
+    NDocNode read(BufferedReader stream);
 }
