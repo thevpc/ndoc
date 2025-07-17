@@ -17,7 +17,7 @@ public class NDocExampleFromFolder {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
-        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\halfa\\test\\halfa-examples\\src\\halfa\\ibtihel").toAbsolute().normalize();
+        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\ndoc\\test\\halfa-examples\\src\\ndoc\\ibtihel").toAbsolute().normalize();
         e.newScreenRenderer().get().renderPath(file);
     }
 }
