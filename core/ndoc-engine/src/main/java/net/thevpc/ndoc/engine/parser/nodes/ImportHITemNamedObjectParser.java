@@ -70,7 +70,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, HNode putInto, NDocNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
         if (spp.isDirectory()) {
-            spp = spp.resolve(HEngineUtils.HALFA_EXT_STAR_STAR);
+            spp = spp.resolve(HEngineUtils.NDOC_EXT_STAR_STAR);
         }
         context.document().resources().add(spp);
         List<NPath> list = spp.walkGlob().toList();
