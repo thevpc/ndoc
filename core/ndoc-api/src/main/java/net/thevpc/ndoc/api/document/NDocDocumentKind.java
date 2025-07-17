@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document;
 
-public enum HDocumentKind {
+public enum NDocDocumentKind {
     REPORT,
     PRESENTATION,
 }
