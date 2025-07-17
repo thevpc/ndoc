@@ -2,13 +2,13 @@ package net.thevpc.ndoc.api.model.elem2d;
 
 import net.thevpc.ndoc.api.util.HUtils;
 
-public class Bounds2 {
+public class NDocBounds2 {
     private Double x;
     private Double y;
     private Double w;
     private Double h;
 
-    public Bounds2(Number x, Number y, Number w, Number h) {
+    public NDocBounds2(Number x, Number y, Number w, Number h) {
         this.x = x == null ? null : x.doubleValue();
         this.y = y == null ? null : y.doubleValue();
         this.w = w == null ? null : w.doubleValue();
@@ -72,16 +72,16 @@ public class Bounds2 {
         return "(" + x + ", " + y + ", " + w + ", " + h + ')';
     }
 
-    public Bounds2 expand(Bounds2 s) {
+    public NDocBounds2 expand(NDocBounds2 s) {
         if (s == null) {
-            return new Bounds2(x, y, w, h);
+            return new NDocBounds2(x, y, w, h);
         }
 
         Double xx1 = net.thevpc.ndoc.api.util.HUtils.min(getMinX(), s.getMinX());
         Double yy1 = net.thevpc.ndoc.api.util.HUtils.min(getMinY(), s.getMinY());
         Double xx2 = net.thevpc.ndoc.api.util.HUtils.max(getMaxX(), s.getMaxX());
         Double yy2 = net.thevpc.ndoc.api.util.HUtils.max(getMaxY(), s.getMaxY());
-        return new Bounds2(
+        return new NDocBounds2(
                 xx1,
                 yy1,
                 net.thevpc.ndoc.api.util.HUtils.doubleOf(xx2) - net.thevpc.ndoc.api.util.HUtils.doubleOf(xx1),
