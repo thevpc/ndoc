@@ -4,7 +4,7 @@ package net.thevpc.ndoc.api.style;
  *
  * @author vpc
  */
-public class HPropName {
+public class NDocPropName {
 
     public static final String WIDTH="width";
     public static final String HEIGHT="height";
