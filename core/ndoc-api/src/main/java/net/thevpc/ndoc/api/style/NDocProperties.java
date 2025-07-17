@@ -5,7 +5,7 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
 
-public class HProperties {
+public class NDocProperties {
     private Map<String, HProp> map = new HashMap<>();
 
     public boolean containsKey(String k) {
@@ -71,7 +71,7 @@ public class HProperties {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HProperties hStyleMap = (HProperties) o;
+        NDocProperties hStyleMap = (NDocProperties) o;
         return Objects.equals(map, hStyleMap.map);
     }
 
