@@ -2,8 +2,8 @@ package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentRendererListener;
 import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRendererConfig;
@@ -14,7 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class HDebugFrame extends JFrame {
-    private HDebugPanel debugPanel;
+    private NDocDebugPanel debugPanel;
     private Runnable onClose;
     NDocDocumentRendererListener hDocumentRendererListener = new NDocDocumentRendererListener() {
         @Override
@@ -30,7 +30,7 @@ public class HDebugFrame extends JFrame {
         }
 
         @Override
-        public void onChangedPage(HNode page) {
+        public void onChangedPage(NDocNode page) {
             model().setCurrentPage(page);
             updateContent();
         }
@@ -61,7 +61,7 @@ public class HDebugFrame extends JFrame {
     public HDebugFrame(NDocEngine engine) {
 
         setTitle("DebugFrame");
-        setContentPane(debugPanel = new HDebugPanel(engine));
+        setContentPane(debugPanel = new NDocDebugPanel(engine));
         setMinimumSize(new Dimension(400, 600));
         this.setIconImage(
                 HImageUtils.resizeImage(
@@ -110,7 +110,7 @@ public class HDebugFrame extends JFrame {
         });
     }
 
-    public HLogger messages() {
+    public NDocLogger messages() {
         return model().messages();
     }
 
@@ -118,7 +118,7 @@ public class HDebugFrame extends JFrame {
         return hDocumentRendererListener;
     }
 
-    public HDebugModel model() {
+    public NDocDebugModel model() {
         return debugPanel.model();
     }
 
