@@ -249,7 +249,7 @@ public class DefaultNDocDocumentItemParserFactory
             if (!NBlankable.isBlank(nn)) {
                 return false;
             }
-            boolean foundHalfa = false;
+            boolean foundNDoc = false;
             boolean foundVersion = false;
             boolean foundOther = false;
             List<NElement> params = a.params();
@@ -257,7 +257,7 @@ public class DefaultNDocDocumentItemParserFactory
                 for (NElement cls : params) {
                     if (cls.isAnyString()) {
                         if (cls.asStringValue().get().equalsIgnoreCase("ndoc")) {
-                            foundHalfa = true;
+                            foundNDoc = true;
                         } else if (isVersionString(cls.asStringValue().get())) {
                             foundVersion = true;
                         } else {
@@ -275,7 +275,7 @@ public class DefaultNDocDocumentItemParserFactory
                     }
                 }
             }
-            if (foundHalfa) {
+            if (foundNDoc) {
                 return true;
             }
         }
