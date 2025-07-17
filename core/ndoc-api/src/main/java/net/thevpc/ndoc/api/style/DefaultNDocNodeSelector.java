@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.style;
 
-import net.thevpc.ndoc.api.model.node.HNode;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
@@ -8,20 +8,20 @@ import net.thevpc.nuts.util.NStringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultHNodeSelector implements HStyleRuleSelector {
+public class DefaultNDocNodeSelector implements NDocStyleRuleSelector {
 
-    private static DefaultHNodeSelector ANY = new DefaultHNodeSelector(null, null, null, false);
-    private static DefaultHNodeSelector IMPORTANT = new DefaultHNodeSelector(null, null, null, true);
+    private static DefaultNDocNodeSelector ANY = new DefaultNDocNodeSelector(null, null, null, false);
+    private static DefaultNDocNodeSelector IMPORTANT = new DefaultNDocNodeSelector(null, null, null, true);
     private final Set<String> names = new HashSet<>();
     private final Set<String> types = new HashSet<>();
     private final Set<String> classes = new HashSet<>();
     private final boolean important;
 
-    public static DefaultHNodeSelector ofAny() {
+    public static DefaultNDocNodeSelector ofAny() {
         return ANY;
     }
 
-    public static DefaultHNodeSelector of(String[] names, String[] types, String[] classes) {
+    public static DefaultNDocNodeSelector of(String[] names, String[] types, String[] classes) {
         if (
                 (names == null || names.length == 0)
                         && (types == null || types.length == 0)
@@ -29,22 +29,22 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         ) {
             return ofAny();
         }
-        return new DefaultHNodeSelector(names, types, classes, false);
+        return new DefaultNDocNodeSelector(names, types, classes, false);
     }
 
-    public static DefaultHNodeSelector ofClasses(String... cls) {
+    public static DefaultNDocNodeSelector ofClasses(String... cls) {
         return ANY.andClass(cls);
     }
 
-    public static DefaultHNodeSelector ofName(String... names) {
+    public static DefaultNDocNodeSelector ofName(String... names) {
         return ANY.andName(names);
     }
 
-    public static DefaultHNodeSelector ofType(String... types) {
+    public static DefaultNDocNodeSelector ofType(String... types) {
         return ANY.andType(types);
     }
 
-    public DefaultHNodeSelector(String[] names, String[] types, String[] classes, boolean important) {
+    public DefaultNDocNodeSelector(String[] names, String[] types, String[] classes, boolean important) {
         this.important = important;
         if (names != null) {
             for (String i : names) {
@@ -84,23 +84,23 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         }
     }
 
-    public static HStyleRuleSelector ofImportant() {
+    public static NDocStyleRuleSelector ofImportant() {
         return IMPORTANT;
     }
 
-    public DefaultHNodeSelector andName(String... names) {
+    public DefaultNDocNodeSelector andName(String... names) {
         return and(names, null, null, important);
     }
 
-    public DefaultHNodeSelector andType(String... types) {
+    public DefaultNDocNodeSelector andType(String... types) {
         return and(null, types, null, important);
     }
 
-    public DefaultHNodeSelector andClass(String... classes) {
+    public DefaultNDocNodeSelector andClass(String... classes) {
         return and(null, null, classes, important);
     }
 
-    public DefaultHNodeSelector and(String[] names, String[] types, String[] classes, boolean important) {
+    public DefaultNDocNodeSelector and(String[] names, String[] types, String[] classes, boolean important) {
         if (
                 (names == null || names.length == 0 || (names.length == 1 && names[0] == null))
                         && (types == null || types.length == 0 || (types.length == 1 && types[0] == null))
@@ -123,7 +123,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         if (important) {
             return IMPORTANT;
         }
-        DefaultHNodeSelector c = new DefaultHNodeSelector(
+        DefaultNDocNodeSelector c = new DefaultNDocNodeSelector(
                 names0.toArray(new String[0]),
                 types0.toArray(new String[0]),
                 classes0.toArray(new String[0]),
@@ -135,7 +135,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
         return c;
     }
 
-    private Set<String> computeClasses(HNode n) {
+    private Set<String> computeClasses(NDocNode n) {
         Set<String> all = new HashSet<>();
         while (n != null) {
             all.addAll(n.styleClasses());
@@ -145,7 +145,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     }
 
     @Override
-    public boolean acceptNode(HNode n) {
+    public boolean acceptNode(NDocNode n) {
         if (important) {
             return true;
         }
@@ -232,12 +232,12 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     }
 
     @Override
-    public int compareTo(HStyleRuleSelector o) {
+    public int compareTo(NDocStyleRuleSelector o) {
         if (o == null) {
             return -1;
         }
-        if (o instanceof DefaultHNodeSelector) {
-            DefaultHNodeSelector op = (DefaultHNodeSelector) o;
+        if (o instanceof DefaultNDocNodeSelector) {
+            DefaultNDocNodeSelector op = (DefaultNDocNodeSelector) o;
             if (this.important && op.important) {
                 return 0;
             }
@@ -295,7 +295,7 @@ public class DefaultHNodeSelector implements HStyleRuleSelector {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DefaultHNodeSelector that = (DefaultHNodeSelector) o;
+        DefaultNDocNodeSelector that = (DefaultNDocNodeSelector) o;
         return
                 important == that.important
                         && Objects.equals(names, that.names)
