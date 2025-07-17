@@ -11,11 +11,11 @@ import java.util.function.Function;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.HDocumentLoadingResult;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.HProp;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
@@ -47,29 +47,29 @@ public interface NDocEngine {
 
     NOptional<NDocDocumentRenderer> newRenderer(String type);
 
-    HDocumentLoadingResult compileDocument(NDocument document, HLogger messages);
+    NDocDocumentLoadingResult compileDocument(NDocument document, NDocLogger messages);
 
-    boolean validateNode(HNode node);
+    boolean validateNode(NDocNode node);
 
-    HDocumentLoadingResult loadDocument(NPath of, HLogger messages);
+    NDocDocumentLoadingResult loadDocument(NPath of, NDocLogger messages);
 
-    NOptional<HItem> loadNode(HNode into, NPath of, NDocument document, HLogger messages);
+    NOptional<HItem> loadNode(NDocNode into, NPath of, NDocument document, NDocLogger messages);
 
-    HDocumentLoadingResult loadDocument(InputStream is, HLogger messages);
+    NDocDocumentLoadingResult loadDocument(InputStream is, NDocLogger messages);
 
     NElement toElement(NDocument doc);
 
-    NElement toElement(HNode node);
+    NElement toElement(NDocNode node);
 
-    NOptional<HProp> computeProperty(HNode node, String... propertyNames);
+    NOptional<HProp> computeProperty(NDocNode node, String... propertyNames);
 
-    List<HProp> computeInheritedProperties(HNode node);
+    List<HProp> computeInheritedProperties(NDocNode node);
 
-    List<HProp> computeProperties(HNode node);
+    List<HProp> computeProperties(NDocNode node);
 
-    <T> NOptional<T> computePropertyValue(HNode node, String... propertyNames);
+    <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames);
 
-    HResource computeSource(HNode node);
+    NDocResource computeSource(NDocNode node);
 
     NDocNodeRendererManager renderManager();
 
@@ -81,5 +81,5 @@ public interface NDocEngine {
 
     String getDefaultTemplateUrl();
 
-    HNode[] compileNodeBeforeRendering(HNode p, HLogger messages);
+    NDocNode[] compileNodeBeforeRendering(NDocNode p, NDocLogger messages);
 }
