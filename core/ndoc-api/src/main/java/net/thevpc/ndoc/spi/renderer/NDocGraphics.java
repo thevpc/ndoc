@@ -2,10 +2,10 @@ package net.thevpc.ndoc.spi.renderer;
 
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.elem2d.*;
-import net.thevpc.ndoc.api.model.elem3d.HElement3D;
-import net.thevpc.ndoc.api.model.elem3d.Light3D;
-import net.thevpc.ndoc.api.model.elem3d.Matrix3D;
-import net.thevpc.ndoc.api.model.elem3d.Projection3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocLight3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocMatrix3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocProjection3D;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
@@ -21,11 +21,11 @@ public interface NDocGraphics {
 
     NDocGraphics copy();
 
-    Light3D getLight3D();
+    NDocLight3D getLight3D();
 
-    Light3D setLight3D(Light3D light3D);
+    NDocLight3D setLight3D(NDocLight3D light3D);
 
-    void drawArrayHead(HPoint2D origin, Vector2D direction, HArrow arrow);
+    void drawArrayHead(NDocPoint2D origin, Vector2D direction, HArrow arrow);
 
     AffineTransform getTransform();
 
@@ -44,9 +44,9 @@ public interface NDocGraphics {
     void drawRect(double x, double y, double w, double h);
 
 
-    void fillRect(Bounds2 b);
+    void fillRect(NDocBounds2 b);
 
-    void drawRect(Bounds2 a);
+    void drawRect(NDocBounds2 a);
 
     Rectangle2D getStringBounds(String str);
 
@@ -94,7 +94,7 @@ public interface NDocGraphics {
 
     void drawImage(Image image, double x, double y, ImageObserver o);
 
-    void drawImage(NPath image, double x, double y, HImageOptions options);
+    void drawImage(NPath image, double x, double y, NDocImageOptions options);
 
     Color getSecondaryColor();
 
@@ -112,13 +112,13 @@ public interface NDocGraphics {
 
     Stroke getStroke();
 
-    void draw3D(HElement3D element3D, HPoint2D origin);
+    void draw3D(NDocElement3D element3D, NDocPoint2D origin);
 
-    void draw2D(HElement2D element2D);
+    void draw2D(NDocElement2D element2D);
 
-    void transform3D(Matrix3D transform3D);
+    void transform3D(NDocMatrix3D transform3D);
 
-    void project3D(Projection3D projection3D);
+    void project3D(NDocProjection3D projection3D);
 
     void shear(double shx, double shy);
 
