@@ -20,11 +20,11 @@ public class NDocViewerConfigManager {
     }
 
     public NDocViewerConfigManager(NPath viewerConfigFile) {
-        String halfaViewerConfigName = "halfa-viewer-config.tson";
+        String halfaViewerConfigName = "ndoc-viewer-config.tson";
         NPath appCacheFolder = NApp.of().getConfFolder();
         if (viewerConfigFile == null) {
             if (appCacheFolder == null) {
-                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.halfa:halfa"), NStoreType.CACHE).resolve(halfaViewerConfigName);
+                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ndoc:ndoc"), NStoreType.CACHE).resolve(halfaViewerConfigName);
             } else {
                 viewerConfigFile = appCacheFolder.resolve(halfaViewerConfigName);
             }
