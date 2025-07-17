@@ -3,18 +3,18 @@ package net.thevpc.ndoc.api.document;
 import java.util.List;
 import java.util.Properties;
 
-import net.thevpc.ndoc.api.model.node.HNode;
-import net.thevpc.ndoc.api.resources.HResourceMonitor;
+import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 
 public interface NDocument {
-    HResourceMonitor resources();
+    NDocResourceMonitor resources();
 
-    NDocument add(HNode part);
+    NDocument add(NDocNode part);
 
-    HDocumentClass documentClass();
+    NDocDocumentClass documentClass();
 
-    HNode root();
+    NDocNode root();
 
     NOptional<String> name();
 
@@ -22,7 +22,7 @@ public interface NDocument {
 
     NOptional<String> getProperty(String name);
 
-    void setDocumentClass(HDocumentClass documentClass);
+    void setDocumentClass(NDocDocumentClass documentClass);
 
     NDocument setProperty(String name, String value);
 
@@ -30,5 +30,5 @@ public interface NDocument {
 
     NDocument copy();
 
-    List<HNode> pages();
+    List<NDocNode> pages();
 }
