@@ -6,29 +6,29 @@ import net.thevpc.ndoc.api.NDocEngine;
 import javax.swing.*;
 import java.awt.*;
 
-public class HDebugPanel extends JPanel {
-    private HDebugModel model = new HDebugModel();
-    private HDocumentPanel compiledDocument;
-    private HDocumentPanel rawDocument;
-    private HNodePanel page;
-    private JTextAreaHMessageList textAreaHMessageList;
+public class NDocDebugPanel extends JPanel {
+    private NDocDebugModel model = new NDocDebugModel();
+    private NDocDocumentPanel compiledDocument;
+    private NDocDocumentPanel rawDocument;
+    private NDocNodePanel page;
+    private JTextAreaNDocMessageList textAreaHMessageList;
 
-    public HDebugPanel(NDocEngine engine) {
+    public NDocDebugPanel(NDocEngine engine) {
         super(new BorderLayout());
         model.setEngine(engine);
-        textAreaHMessageList = new JTextAreaHMessageList();
+        textAreaHMessageList = new JTextAreaNDocMessageList();
         model.setMessageList(textAreaHMessageList);
         JTabbedPane pane = new JTabbedPane();
         add(pane);
-        pane.addTab("Page", page = new HNodePanel(
+        pane.addTab("Page", page = new NDocNodePanel(
                 model.getEngine(),
                 () -> model.getCurrentPage()
         ));
-        pane.addTab("Document", compiledDocument = new HDocumentPanel(
+        pane.addTab("Document", compiledDocument = new NDocDocumentPanel(
                 model.getEngine(),
                 () -> model.getCompiledDocument()
         ));
-        pane.addTab("Raw", rawDocument = new HDocumentPanel(
+        pane.addTab("Raw", rawDocument = new NDocDocumentPanel(
                 model.getEngine(),
                 () -> model.getRawDocument()
         ));
@@ -42,7 +42,7 @@ public class HDebugPanel extends JPanel {
         textAreaHMessageList.updateContent();
     }
 
-    public HDebugModel model() {
+    public NDocDebugModel model() {
         return model;
     }
 }
