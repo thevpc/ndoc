@@ -2,18 +2,18 @@ package net.thevpc.ndoc.api.model.elem3d.primitives;
 
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.elem3d.AbstractElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.Element3DPrimitiveType;
-import net.thevpc.ndoc.api.model.elem3d.HPoint3D;
+import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitiveType;
+import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 
 import java.util.Objects;
 
-public class Element3DLine extends AbstractElement3DPrimitive {
-    private HPoint3D from;
-    private HPoint3D to;
+public class NDocElement3DLine extends AbstractElement3DPrimitive {
+    private NDocPoint3D from;
+    private NDocPoint3D to;
     private HArrow startArrow = null;
     private HArrow endArrow = null;
 
-    public Element3DLine(HPoint3D from, HPoint3D to) {
+    public NDocElement3DLine(NDocPoint3D from, NDocPoint3D to) {
         this.from = from;
         this.to = to;
     }
@@ -22,7 +22,7 @@ public class Element3DLine extends AbstractElement3DPrimitive {
         return startArrow;
     }
 
-    public Element3DLine setStartArrow(HArrow startArrow) {
+    public NDocElement3DLine setStartArrow(HArrow startArrow) {
         this.startArrow = startArrow;
         return this;
     }
@@ -31,29 +31,29 @@ public class Element3DLine extends AbstractElement3DPrimitive {
         return endArrow;
     }
 
-    public Element3DLine setEndArrow(HArrow endArrow) {
+    public NDocElement3DLine setEndArrow(HArrow endArrow) {
         this.endArrow = endArrow;
         return this;
     }
 
-    public HPoint3D getFrom() {
+    public NDocPoint3D getFrom() {
         return from;
     }
 
-    public HPoint3D getTo() {
+    public NDocPoint3D getTo() {
         return to;
     }
 
     @Override
-    public Element3DPrimitiveType type() {
-        return Element3DPrimitiveType.LINE;
+    public NDocElement3DPrimitiveType type() {
+        return NDocElement3DPrimitiveType.LINE;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Element3DLine that = (Element3DLine) o;
+        NDocElement3DLine that = (NDocElement3DLine) o;
         return Objects.equals(from, that.from) && Objects.equals(to, that.to);
     }
 
