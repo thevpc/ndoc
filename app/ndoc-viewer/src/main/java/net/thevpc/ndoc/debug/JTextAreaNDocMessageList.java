@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.debug;
 
-import net.thevpc.ndoc.api.document.HLogger;
-import net.thevpc.ndoc.api.document.HMsg;
-import net.thevpc.ndoc.api.resources.HResource;
+import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 
 import javax.swing.*;
@@ -10,22 +10,22 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.logging.Level;
 
-public class JTextAreaHMessageList extends JPanel implements HLogger {
+public class JTextAreaNDocMessageList extends JPanel implements NDocLogger {
     private JTextArea view;
 
-    public JTextAreaHMessageList() {
+    public JTextAreaNDocMessageList() {
         super(new BorderLayout());
         view = new JTextArea();
         add(new JScrollPane(view));
     }
 
     @Override
-    public void log(HMsg msg) {
+    public void log(NDocMsg msg) {
         Instant time = Instant.now();
         NMsg nmsg=msg.message();
         Level type=nmsg.getLevel();
         Throwable error=msg.error();
-        HResource source=msg.source();
+        NDocResource source=msg.source();
         if (type == null) {
             type = Level.INFO;
         }
