@@ -13,27 +13,27 @@ public class DefaultHStyleRule implements HStyleRule {
     private final NDocProperties styles;
     private final NDocStyleRuleSelector selector;
 
-    public static DefaultHStyleRule ofAny(HProp... styles) {
+    public static DefaultHStyleRule ofAny(NDocProp... styles) {
         return new DefaultHStyleRule(DefaultNDocNodeSelector.ofAny(), styles);
     }
 
-    public static DefaultHStyleRule ofType(String type, HProp... styles) {
+    public static DefaultHStyleRule ofType(String type, NDocProp... styles) {
         return of(type == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofType(type), styles);
     }
 
-    public static DefaultHStyleRule ofName(String name, HProp... styles) {
+    public static DefaultHStyleRule ofName(String name, NDocProp... styles) {
         return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofName(name), styles);
     }
 
-    public static DefaultHStyleRule ofClass(String name, HProp... styles) {
+    public static DefaultHStyleRule ofClass(String name, NDocProp... styles) {
         return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofClasses(name), styles);
     }
 
-    public static DefaultHStyleRule of(NDocStyleRuleSelector filter, HProp... styles) {
+    public static DefaultHStyleRule of(NDocStyleRuleSelector filter, NDocProp... styles) {
         return new DefaultHStyleRule(filter, styles);
     }
 
-    public DefaultHStyleRule(NDocStyleRuleSelector selector, HProp... styles) {
+    public DefaultHStyleRule(NDocStyleRuleSelector selector, NDocProp... styles) {
         this.styles = new NDocProperties();
         this.magnetude = new HStyleMagnitude(
                 0,
@@ -85,7 +85,7 @@ public class DefaultHStyleRule implements HStyleRule {
                 }
 
                 @Override
-                public Set<HProp> value() {
+                public Set<NDocProp> value() {
                     return styles.toSet();
                 }
             };
@@ -102,7 +102,7 @@ public class DefaultHStyleRule implements HStyleRule {
             }
 
             @Override
-            public Set<HProp> value() {
+            public Set<NDocProp> value() {
                 throw new IllegalArgumentException("not supported");
             }
         };
