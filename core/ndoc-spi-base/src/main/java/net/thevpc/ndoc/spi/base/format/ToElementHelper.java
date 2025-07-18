@@ -2,7 +2,7 @@ package net.thevpc.ndoc.spi.base.format;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.ndoc.api.util.HUtils;
@@ -41,7 +41,7 @@ public class ToElementHelper {
         List<NElement> args2 = new ArrayList<>();
         List<NElement> ch = new ArrayList<>();
         args2.addAll(args);
-        for (HProp p : node.props()) {
+        for (NDocProp p : node.props()) {
             if (
                     (exclude == null || !exclude.test(p.getName()))
                             && !excludeSet.contains(p.getName())
