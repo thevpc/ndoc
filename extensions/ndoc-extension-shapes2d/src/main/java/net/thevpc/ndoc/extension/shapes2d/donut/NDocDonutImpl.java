@@ -2,7 +2,7 @@ package net.thevpc.ndoc.extension.shapes2d.donut;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -27,31 +27,31 @@ public class NDocDonutImpl extends NDocNodeParserBase {
                     NDocObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "inner-radius": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.INNER_RADIUS, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.INNER_RADIUS, v.asDouble().get()));
                             return true;
                         }
                         case "start-angle": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.START_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.START_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "extent-angle": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.EXTENT_ANGLE, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.EXTENT_ANGLE, v.asDouble().get()));
                             return true;
                         }
                         case "slice-count": {
-                            info.node.setProperty(HProp.ofInt(NDocPropName.SLICE_COUNT, v.asInt().get()));
+                            info.node.setProperty(NDocProp.ofInt(NDocPropName.SLICE_COUNT, v.asInt().get()));
                             return true;
                         }
                         case "dash": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.DASH, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.DASH, v.asDouble().get()));
                             return true;
                         }
                         case "slices": {
-                            info.node.setProperty(HProp.ofDoubleArray(NDocPropName.SLICES, v.asDoubleArray().get()));
+                            info.node.setProperty(NDocProp.ofDoubleArray(NDocPropName.SLICES, v.asDoubleArray().get()));
                             return true;
                         }
                         case "colors": {
-                            info.node.setProperty(HProp.ofStringArray(NDocPropName.COLORS, v.asStringArray().get()));
+                            info.node.setProperty(NDocProp.ofStringArray(NDocPropName.COLORS, v.asStringArray().get()));
                             return true;
                         }
 
@@ -66,13 +66,13 @@ public class NDocDonutImpl extends NDocNodeParserBase {
     @Override
     public NElement toElem(NDocNode item) {
 
-        HProp innerRadius = item.getProperty(NDocPropName.INNER_RADIUS).orNull();
-        HProp startAngle = item.getProperty(NDocPropName.START_ANGLE).orNull();
-        HProp extentAngle = item.getProperty(NDocPropName.EXTENT_ANGLE).orNull();
-        HProp sliceCount = item.getProperty(NDocPropName.SLICE_COUNT).orNull();
-        HProp dash = item.getProperty(NDocPropName.DASH).orNull();
-        HProp slices = item.getProperty(NDocPropName.SLICES).orNull();
-        HProp colors = item.getProperty(NDocPropName.COLORS).orNull();
+        NDocProp innerRadius = item.getProperty(NDocPropName.INNER_RADIUS).orNull();
+        NDocProp startAngle = item.getProperty(NDocPropName.START_ANGLE).orNull();
+        NDocProp extentAngle = item.getProperty(NDocPropName.EXTENT_ANGLE).orNull();
+        NDocProp sliceCount = item.getProperty(NDocPropName.SLICE_COUNT).orNull();
+        NDocProp dash = item.getProperty(NDocPropName.DASH).orNull();
+        NDocProp slices = item.getProperty(NDocPropName.SLICES).orNull();
+        NDocProp colors = item.getProperty(NDocPropName.COLORS).orNull();
 
 
 
