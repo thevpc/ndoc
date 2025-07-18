@@ -3,7 +3,7 @@ package net.thevpc.ndoc.spi.renderer.text;
 import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.spi.model.NDocSizeRequirements;
@@ -94,7 +94,7 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
                                         if (n == null) {
                                             return n;
                                         }
-                                        return new HProp(x, n);
+                                        return new NDocProp(x, n);
                                     }
                             ).filter(x -> x != null).collect(Collectors.toList())
                             + "\n",
