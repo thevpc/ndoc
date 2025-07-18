@@ -2,7 +2,7 @@ package net.thevpc.ndoc.extension.plot2d;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
@@ -30,17 +30,17 @@ public class NDocPlot2DImpl extends NDocNodeParserBase {
                     NDocObjEx v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "width": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.WIDTH, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.WIDTH, v.asDouble().get()));
                             return true;
                         }
                         case "height": {
-                            info.node.setProperty(HProp.ofDouble(NDocPropName.HEIGHT, v.asDouble().get()));
+                            info.node.setProperty(NDocProp.ofDouble(NDocPropName.HEIGHT, v.asDouble().get()));
                             return true;
                         }
                         case "fun":
                         case "function":
                         {
-                            info.node.setProperty(HProp.ofObject("function", v.asTson().get()));
+                            info.node.setProperty(NDocProp.ofObject("function", v.asTson().get()));
                             return true;
                         }
                     }
@@ -54,9 +54,9 @@ public class NDocPlot2DImpl extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(NDocNode item) {
-        HProp width = item.getProperty(NDocPropName.WIDTH).orNull();
-        HProp height = item.getProperty(NDocPropName.HEIGHT).orNull();
-        HProp points = item.getProperty("function").orNull();
+        NDocProp width = item.getProperty(NDocPropName.WIDTH).orNull();
+        NDocProp height = item.getProperty(NDocPropName.HEIGHT).orNull();
+        NDocProp points = item.getProperty("function").orNull();
 
         return ToElementHelper.of(
                 item,
