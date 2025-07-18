@@ -3,26 +3,26 @@ package net.thevpc.ndoc.engine.document;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.HProps;
+import net.thevpc.ndoc.api.style.NDocProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 
 
-public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
+public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     private DefaultNDocEngine engine;
 
-    public HDocDocumentFactoryImpl(DefaultNDocEngine engine) {
+    public NDocDocumentFactoryImpl(DefaultNDocEngine engine) {
         this.engine = engine;
     }
 
     @Override
     public NDocument ofDocument() {
         DefaultNDocument d = new DefaultNDocument();
-        d.root().addRules(HDocumentRootRules.DEFAULT);
+        d.root().addRules(NDocDocumentRootRules.DEFAULT);
         return d;
     }
 
@@ -52,53 +52,53 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public NDocNode ofGlue() {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.maxX(100))
-                .setProperty(HProps.maxY(100))
+                .setProperty(NDocProps.maxX(100))
+                .setProperty(NDocProps.maxY(100))
                 ;
     }
 
     @Override
     public NDocNode ofGlueV() {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.maxX(0))
-                .setProperty(HProps.maxY(100))
+                .setProperty(NDocProps.maxX(0))
+                .setProperty(NDocProps.maxY(100))
                 ;
     }
 
     @Override
     public NDocNode ofGlueH() {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.maxX(100))
-                .setProperty(HProps.maxY(0))
+                .setProperty(NDocProps.maxX(100))
+                .setProperty(NDocProps.maxY(0))
                 ;
     }
 
     @Override
     public NDocNode ofStrutV(double w) {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.size(0, 100))
+                .setProperty(NDocProps.size(0, 100))
                 ;
     }
 
     @Override
     public NDocNode ofStrutH(double w) {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.size(100, 0))
+                .setProperty(NDocProps.size(100, 0))
                 ;
     }
 
     @Override
     public NDocNode ofStrut(double w, double h) {
         return of(NDocNodeType.FILLER)
-                .setProperty(HProps.size(w, 0))
+                .setProperty(NDocProps.size(w, 0))
                 ;
     }
 
     @Override
     public NDocNode ofArc(double from, double to) {
         return of(NDocNodeType.ARC)
-                .setProperty(HProp.ofDouble(NDocPropName.FROM, from))
-                .setProperty(HProp.ofDouble(NDocPropName.FROM, to))
+                .setProperty(NDocProp.ofDouble(NDocPropName.FROM, from))
+                .setProperty(NDocProp.ofDouble(NDocPropName.FROM, to))
                 ;
     }
 
@@ -155,16 +155,16 @@ public class HDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public NDocNode ofGridV() {
         return ofGrid()
-                .setProperty(HProps.columns(1))
-                .setProperty(HProps.rows(-1))
+                .setProperty(NDocProps.columns(1))
+                .setProperty(NDocProps.rows(-1))
                 ;
     }
 
     @Override
     public NDocNode ofGridH() {
         return ofGrid()
-                .setProperty(HProps.columns(-1))
-                .setProperty(HProps.rows(1))
+                .setProperty(NDocProps.columns(-1))
+                .setProperty(NDocProps.rows(1))
                 ;
     }
 
