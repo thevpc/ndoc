@@ -42,12 +42,6 @@ public class NDocParseHelper {
 
     public static boolean fillAnnotations(NElement e, NDocNode p) {
         for (NElementAnnotation a : e.annotations()) {
-            String nn = a.name();
-            if (!NBlankable.isBlank(nn)) {
-                HashSet<String> o = new HashSet<>(Arrays.asList(p.getAncestors()));
-                o.add(HUtils.uid(nn));
-                p.setAncestors(o.toArray(new String[0]));
-            }
             // add classes as well
             Set<String> allClasses = new HashSet<>();
             List<NElement> params = a.params();
