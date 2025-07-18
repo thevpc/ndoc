@@ -6,7 +6,7 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public abstract class SimpleLayer implements HDocumentLayer {
+public abstract class SimpleLayer implements NDocDocumentLayer {
 
     protected void drawStr(String str, NDocAlign a, Dimension size, NDocGraphics g2d) {
 
