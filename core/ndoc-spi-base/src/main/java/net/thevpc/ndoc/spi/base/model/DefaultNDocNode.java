@@ -47,25 +47,6 @@ public class DefaultNDocNode implements NDocNode {
         return this.nodeType;
     }
 
-    public String[] getAncestors() {
-        NOptional<NElement> style = getPropertyValue(NDocPropName.ANCESTORS);
-        if (style.isEmpty()) {
-            return new String[0];
-        }
-        NElement v = style.get();
-        if (v == null) {
-            return new String[0];
-        }
-        String[] v1 = NDocObjEx.of(v).asStringArray().orNull();
-        if (v1 == null) {
-            return new String[0];
-        }
-        return Arrays.stream(v1).filter(x -> !NBlankable.isBlank(x))
-                .map(net.thevpc.ndoc.api.util.HUtils::uid)
-                .distinct()
-                .toArray(String[]::new)
-                ;
-    }
 
     @Override
     public String[] getStyleClasses() {
@@ -82,11 +63,6 @@ public class DefaultNDocNode implements NDocNode {
                 .distinct()
                 .toArray(String[]::new)
                 ;
-    }
-
-    public DefaultNDocNode setAncestors(String[] parentTemplate) {
-        setProperty(NDocProps.ancestors(parentTemplate));
-        return this;
     }
 
     public NDocResource source() {
@@ -635,20 +611,10 @@ public class DefaultNDocNode implements NDocNode {
         if (NDocNodeType.ASSIGN.equals(type())) {
             return NElement.ofPair("$" + getName(), getPropertyValue(NDocPropName.VALUE).orNull());
         }
-        String[] a = getAncestors();
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
             NObjectElementBuilder o = NElement.ofObjectBuilder(nodeType);
-            if (a.length > 0) {
-                for (int i = 0; i < a.length; i++) {
-                    String s = a[i];
-                    if (i == a.length - 1) {
-                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
-                    } else {
-                        o.addAnnotation(s);
-                    }
-                }
-            } else if (styleClasses.length > 0) {
+            if (styleClasses.length > 0) {
                 o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
@@ -656,7 +622,6 @@ public class DefaultNDocNode implements NDocNode {
             }
             for (NDocProp p : properties.toList()) {
                 switch (p.getName()) {
-                    case NDocPropName.ANCESTORS:
                     case NDocPropName.CLASS: {
                         break;
                     }
@@ -678,16 +643,7 @@ public class DefaultNDocNode implements NDocNode {
             return o.build();
         } else {
             NUpletElementBuilder o = NElement.ofUpletBuilder().name(nodeType);
-            if (a.length > 0) {
-                for (int i = 0; i < a.length; i++) {
-                    String s = a[i];
-                    if (i == a.length - 1) {
-                        o.addAnnotation(s, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
-                    } else {
-                        o.addAnnotation(s);
-                    }
-                }
-            } else if (styleClasses.length > 0) {
+            if (styleClasses.length > 0) {
                 o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
             }
             if (source != null) {
@@ -695,7 +651,6 @@ public class DefaultNDocNode implements NDocNode {
             }
             for (NDocProp p : properties.toList()) {
                 switch (p.getName()) {
-                    case NDocPropName.ANCESTORS:
                     case NDocPropName.CLASS: {
                         break;
                     }
