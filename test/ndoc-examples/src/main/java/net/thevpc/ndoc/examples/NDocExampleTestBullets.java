@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.examples;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.style.HProps;
+import net.thevpc.ndoc.api.style.NDocProps;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
@@ -28,8 +28,8 @@ public class NDocExampleTestBullets {
                         .add(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
                                 f.ofUnorderedList()
-                                        .setProperty(HProps.gridColor(Color.GRAY))
-                                        .add(f.ofPlain("Example 1").setProperty(HProps.backgroundColor(Color.CYAN)))
+                                        .setProperty(NDocProps.gridColor(Color.GRAY))
+                                        .add(f.ofPlain("Example 1").setProperty(NDocProps.backgroundColor(Color.CYAN)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.YELLOW)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.RED)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.BLUE)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
