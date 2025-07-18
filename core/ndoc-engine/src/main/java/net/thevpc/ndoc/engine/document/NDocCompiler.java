@@ -2,9 +2,12 @@ package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
+import net.thevpc.ndoc.api.model.fct.NDocFunction;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.*;
 import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.style.HStyleRule;
@@ -21,6 +24,7 @@ import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.*;
 
@@ -28,20 +32,20 @@ import net.thevpc.nuts.util.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class HDocumentCompiler {
+public class NDocCompiler {
 
     private NDocEngine engine;
     private NDocLogger messages;
     private IfNDocFlowControlProcessorFactory flowControlProcessorFactory = new IfNDocFlowControlProcessorFactory();
 
-    public HDocumentCompiler(NDocEngine engine, NDocLogger messages) {
+    public NDocCompiler(NDocEngine engine, NDocLogger messages) {
         this.engine = engine;
         this.messages = messages;
     }
 
     public NDocDocumentLoadingResult compile(NDocument document) {
+        document=document.copy();
         NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(engine.computeSource(document.root()), messages);
-        result.setDocument(document);
         NDocNode root = document.root();
         processUuid(root);
 //        root = processCalls(root, result);
@@ -58,6 +62,8 @@ public class HDocumentCompiler {
         }
 //        root = removeDeclarations(root, result);
         processRootPages(root);
+        document.root().copyFrom(root);
+        result.setDocument(document);
         return result;
     }
 
@@ -189,10 +195,9 @@ public class HDocumentCompiler {
         }
         if (aa != null) {
             newAncestors.remove(a);
-            for (HProp p : aa.getProperties()) {
+            for (NDocProp p : aa.getProperties()) {
                 switch (p.getName()) {
-                    case NDocPropName.NAME:
-                    case NDocPropName.TEMPLATE: {
+                    case NDocPropName.NAME: {
                         break;
                     }
                     default: {
@@ -224,7 +229,7 @@ public class HDocumentCompiler {
     public NOptional<NDocNodeDef> findDefinition(NDocNode node, String name) {
         NDocNode currNode = node;
         while (currNode != null) {
-            for (NDocNodeDef o : currNode.definitions()) {
+            for (NDocNodeDef o : currNode.nodeDefinitions()) {
                 if (NNameFormat.equalsIgnoreFormat(o.name(), name)) {
                     return NOptional.of(o);
                 }
@@ -235,16 +240,21 @@ public class HDocumentCompiler {
     }
 
     protected NDocNode[] compileNodeTree(NDocNode node) {
+        NDocNode[] nDocNodes0=new NDocNode[]{node};
         if (NDocNodeType.CALL.equals(node.type())) {
-            return _process_call(node);
+            nDocNodes0 = _process_call(node);
         }
-        node = node.copy();
-        List<NDocNode> newChildren = new ArrayList<>();
-        for (NDocNode child : node.children()) {
-            newChildren.addAll(Arrays.asList(compileNodeTree(child)));
+        List<NDocNode> aa=new ArrayList<>();
+        for (NDocNode n : nDocNodes0) {
+            n = n.copy();
+            List<NDocNode> newChildren = new ArrayList<>();
+            for (NDocNode child : n.children()) {
+                newChildren.addAll(Arrays.asList(compileNodeTree(child)));
+            }
+            n.setChildren(newChildren.toArray(new NDocNode[0]));
+            aa.add(n);
         }
-        node.setChildren(newChildren.toArray(new NDocNode[0]));
-        return new NDocNode[]{node};
+        return aa.toArray(new NDocNode[0]);
     }
 
     private NDocNode[] _process_call(NDocNode node) {
@@ -254,53 +264,92 @@ public class HDocumentCompiler {
             NElement callDeclaration = c.getCallExpr();
             //                    String uid = HUtils.uid(ee.name());
             NDocNode currNode = node.parent();
-            NDocNodeDef d = findDefinition(currNode, uid).get();
+            NOptional<NDocNodeDef> dd = findDefinition(currNode, uid);
             List<NElement> callArgs = c.getCallArgs();
-            NDocNodeDefParam[] expectedParams = d.params();
-            NDocNodeDefParam[] effectiveParams = new NDocNodeDefParam[expectedParams.length];
-            Map<String, NElement> extraProperties = new HashMap<>();
+            List<NDocProp> extraParams=new ArrayList<>();
+            if (dd.isPresent()) {
+                NDocNodeDef d = dd.get();
+                NDocNodeDefParam[] expectedParams = d.params();
+                NDocNodeDefParam[] allExpectedParams = Arrays.copyOf(expectedParams, expectedParams.length + 1);
+                allExpectedParams[expectedParams.length]=new NDocNodeDefParamImpl("body",NElement.ofArray(c.getCallBody().toArray(new NElement[0])));
+                NDocNodeDefParam[] effectiveParams = new NDocNodeDefParam[allExpectedParams.length];
 
-            if (callArgs.stream().allMatch(x -> x.isNamedPair())) {
-                for (NElement e : callArgs) {
-                    NPairElement p = e.asPair().get();
-                    String n = p.key().asStringValue().get();
-                    int pos = NArrays.indexOfByMatcher(expectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
-                    if (pos >= 0) {
-                        effectiveParams[pos] = new NDocNodeDefParamImpl(expectedParams[pos].name(), p.value());
+                if (callArgs.stream().allMatch(x -> x.isNamedPair())) {
+                    for (NElement e : callArgs) {
+                        NPairElement p = e.asPair().get();
+                        String n = p.key().asStringValue().get();
+                        int pos = NArrays.indexOfByMatcher(allExpectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
+                        if (pos >= 0) {
+                            effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), p.value());
+                        }else{
+                            extraParams.add(new NDocProp(n,p.value()));
+                        }
                     }
-                }
-                for (int i = 0; i < expectedParams.length; i++) {
-                    if (effectiveParams[i] == null) {
-                        NElement v = expectedParams[i].value();
-                        if (v != null) {
-                            effectiveParams[i] = expectedParams[i];
-                        } else {
-                            NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", expectedParams[i].name(), uid, callDeclaration);
+                    for (Map.Entry<String, NElement> e : c.getBodyVars().entrySet()) {
+                        String n = e.getKey();
+                        int pos = NArrays.indexOfByMatcher(allExpectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
+                        if (pos >= 0) {
+                            effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), e.getValue());
+                        }else{
+                            NMsg errMsg = NMsg.ofC("undefined param %s for %s in %s. ignored", n, uid, callDeclaration);
                             messages.log(NDocMsg.of(errMsg, node.source()));
-                            throw new NIllegalArgumentException(errMsg);
+                        }
+                    }
+                    for (int i = 0; i < allExpectedParams.length; i++) {
+                        if (effectiveParams[i] == null) {
+                            NElement v = allExpectedParams[i].value();
+                            if (v != null) {
+                                effectiveParams[i] = allExpectedParams[i];
+                            } else {
+                                NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", allExpectedParams[i].name(), uid, callDeclaration);
+                                messages.log(NDocMsg.of(errMsg, node.source()));
+                                //throw new NIllegalArgumentException(errMsg);
+                            }
+                        }
+                    }
+                } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
+                    if (expectedParams.length == callArgs.size()) {
+                        for (int i = 0; i < expectedParams.length; i++) {
+                            effectiveParams[i] = new NDocNodeDefParamImpl(allExpectedParams[i].name(), callArgs.get(i));
+                        }
+                    }
+                } else {
+                    NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
+                    messages.log(NDocMsg.of(errMsg, node.source()));
+                    throw new NIllegalArgumentException(errMsg);
+                }
+
+                NDocNode[] body = Arrays.copyOf(d.body(), d.body().length);
+                for (int i = 0; i < body.length; i++) {
+                    body[i] = body[i].copy();
+                    for (NDocProp extraParam : extraParams) {
+                        body[i].setProperty(extraParam);
+                    }
+                    for (int j = effectiveParams.length - 1; j >= 0; j--) {
+                        if(effectiveParams[j]!=null) {
+                            body[i].children().add(0, newAssign(effectiveParams[j].name(), effectiveParams[j].value()));
                         }
                     }
                 }
-            } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
-                if (expectedParams.length == callArgs.size()) {
-                    for (int i = 0; i < expectedParams.length; i++) {
-                        effectiveParams[i] = new NDocNodeDefParamImpl(expectedParams[i].name(), callArgs.get(i));
-                    }
-                }
+                return body;
             } else {
-                NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
-                messages.log(NDocMsg.of(errMsg, node.source()));
-                throw new NIllegalArgumentException(errMsg);
-            }
-
-            NDocNode[] body = Arrays.copyOf(d.body(), d.body().length);
-            for (int i = 0; i < body.length; i++) {
-                body[i] = body[i].copy();
-                for (int j = effectiveParams.length - 1; j >= 0; j--) {
-                    body[i].children().add(0, newAssign(effectiveParams[i].name(), effectiveParams[i].value()));
+                NOptional<NDocFunction> t = engine.findFunction(currNode, uid);
+                if (t.isPresent()) {
+                    NDocFunctionContext ctx = engine.createFunctionContext(currNode);
+                    Object result = t.get().invoke(callArgs.stream().map(x -> ctx.createRawArg(x)).toArray(NDocFunctionArg[]::new), ctx);
+                    if (result == null) {
+                        return new NDocNode[0];
+                    }
+                    if (result instanceof NDocNode) {
+                        NDocNode n = (NDocNode) result;
+                        return new NDocNode[]{n};
+                    }
+                    DefaultNDocNode tn = new DefaultNDocNode(NDocNodeType.TEXT);
+                    tn.setProperty(NDocPropName.VALUE, NElements.of().toElement(result));
+                    return new NDocNode[]{tn};
                 }
+
             }
-            return body;
         }
         throw new NIllegalArgumentException(NMsg.ofC("unexpected node type %s", node.type()));
     }
@@ -315,7 +364,7 @@ public class HDocumentCompiler {
         inlinedNode.setProperties(objectDefNode.getProperties().stream().filter(x ->
                 NDocPropName.NAME.equals(x.getName())
                         && !NDocPropName.ARGS.equals(x.getName())
-        ).toArray(HProp[]::new));
+        ).toArray(NDocProp[]::new));
         inlinedNode.setRules(objectDefNode.rules());
         List<NElement> passedArgs = callFunction.asUplet().map(x -> x.params()).orElse(Collections.emptyList());
         NElement[] passedArgsArr = passedArgs == null ? new NElement[0] : passedArgs.toArray(new NElement[0]);
@@ -370,8 +419,8 @@ public class HDocumentCompiler {
                 prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
             }
             node.setProperty(NDocPropName.ANCESTORS, NElement.ofStringArray(newAncestors.toArray(new String[0])));
-            for (HProp p : inheritedProps.toList()) {
-                NOptional<HProp> u = node.getProperty(p.getName());
+            for (NDocProp p : inheritedProps.toList()) {
+                NOptional<NDocProp> u = node.getProperty(p.getName());
                 if (!u.isPresent()) {
                     node.setProperty(p);
                 }
@@ -403,7 +452,7 @@ public class HDocumentCompiler {
         return node;
     }
 
-    protected NDocNode findAncestor(NDocNode node, String name, HProp... args) {
+    protected NDocNode findAncestor(NDocNode node, String name, NDocProp... args) {
         NDocNodeDef ancestor0 = findAncestorDefinition(node, name);
         NDocNode[] body = ancestor0.body();
         if (body.length == 0) {
@@ -421,7 +470,7 @@ public class HDocumentCompiler {
         return stack;
     }
 
-    private NDocNode applyArgs(NDocNode nn, HProp[] args) {
+    private NDocNode applyArgs(NDocNode nn, NDocProp[] args) {
         // TODO
         return nn.copy();
     }
@@ -432,7 +481,7 @@ public class HDocumentCompiler {
         String finalName = net.thevpc.ndoc.api.util.HUtils.uid(name);
         while (parent != null) {
             List<NDocNodeDef> r = new ArrayList<>();
-            for (NDocNodeDef x : parent.definitions()) {
+            for (NDocNodeDef x : parent.nodeDefinitions()) {
                 if (Objects.equals(HUtils.uid(x.name()), finalName)) {
                     r.add(x);
                 }
