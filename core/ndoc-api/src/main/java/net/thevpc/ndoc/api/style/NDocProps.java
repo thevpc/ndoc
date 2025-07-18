@@ -176,10 +176,6 @@ public class NDocProps {
         return new NDocProp(NDocPropName.HIDE, NElement.ofBoolean(b));
     }
 
-    public static NDocProp ancestors(String[] ancestors) {
-        return new NDocProp(NDocPropName.ANCESTORS, NElement.ofStringArray(ancestors));
-    }
-
     public static NDocProp name(String name) {
         return new NDocProp(NDocPropName.NAME, NElement.ofString(name));
     }
