@@ -57,8 +57,8 @@ public class HStyleParser {
                 NDocPropName.DRAW_CONTOUR,
                 NDocPropName.CLASS,
                 NDocPropName.ANCESTORS,
-                NDocPropName.AT,
-                NDocPropName.TEMPLATE));
+                NDocPropName.AT
+        ));
 
         for (NTextStyleType z : NTextStyleType.values()) {
             if (!z.basic()) {
@@ -232,9 +232,9 @@ public class HStyleParser {
                     case PARAMETRIZED_OBJECT:
                     case NAMED_OBJECT:
                     {
-                        List<HProp> styles = new ArrayList<>();
+                        List<NDocProp> styles = new ArrayList<>();
                         for (NElement el : v.toObject().get().children()) {
-                            NOptional<HProp[]> s = parseStyle(el, f, context);
+                            NOptional<NDocProp[]> s = parseStyle(el, f, context);
                             if (!s.isPresent()) {
                                 s = parseStyle(el, f, context);
                                 return NOptional.ofEmpty(s.getMessage());
@@ -243,7 +243,7 @@ public class HStyleParser {
                         }
                         return NOptional.of(
                                 new HStyleRule[]{
-                                        DefaultHStyleRule.of(r.get(), styles.toArray(new HProp[0]))
+                                        DefaultHStyleRule.of(r.get(), styles.toArray(new NDocProp[0]))
                                 }
                         );
                     }
@@ -256,14 +256,14 @@ public class HStyleParser {
     }
 
 
-    public static NOptional<HProp[]> parseStyle(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<NDocProp[]> parseStyle(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NDocObjEx h = NDocObjEx.of(e.asPair().get().key());
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = net.thevpc.ndoc.api.util.HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, e.asPair().get().value())});
+                    return NOptional.of(new NDocProp[]{new NDocProp(uid, e.asPair().get().value())});
                 }
                 break;
             }
@@ -272,7 +272,7 @@ public class HStyleParser {
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = HUtils.uid(u.get());
-                    return NOptional.of(new HProp[]{new HProp(uid, NElement.ofBoolean(true))});
+                    return NOptional.of(new NDocProp[]{new NDocProp(uid, NElement.ofBoolean(true))});
                 }
                 break;
             }
