@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.parser;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.model.node.HItemList;
 import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.spi.base.parser.HStyleParser;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
@@ -11,7 +11,7 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
-public class HItemListParser {
+public class NDocItemListParser {
     public static NOptional<HItemList> readHItemList(NElement ff, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         HItemList pg = new HItemList();
 
@@ -30,9 +30,9 @@ public class HItemListParser {
             {
                 NDocObjEx ee = NDocObjEx.of(ff);
                 for (NElement e : ee.args()) {
-                    NOptional<HProp[]> u = HStyleParser.parseStyle(e, f, context);
+                    NOptional<NDocProp[]> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {
-                        for (HProp s : u.get()) {
+                        for (NDocProp s : u.get()) {
                             pg.add(s);
                         }
                     } else {
