@@ -49,7 +49,6 @@ public class NDocCompiler {
         NDocNode root = document.root();
         processUuid(root);
 //        root = processCalls(root, result);
-        root = processInheritance(root, result);
         root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
         NDocNode[] all = compileNodeTree(root);
         if (all.length == 0) {
@@ -176,55 +175,6 @@ public class NDocCompiler {
 //        return node;
 //    }
 
-    protected void prepareInheritanceSingle(String a, NDocNode node, NDocDocumentLoadingResultImpl result,
-                                            Set<String> newAncestors,
-                                            List<NDocNode> ancestorsList,
-                                            List<NDocNode> inheritedChildren,
-                                            NDocProperties inheritedProps,
-                                            List<HStyleRule> inheritedRules
-    ) {
-        NDocNode aa = null;
-        try {
-            aa = findAncestor(node, a);
-        } catch (Exception ex) {
-            result.messages().log(NDocMsg.of(
-                            NMsg.ofC("invalid ancestor %s for %s : %s", a, net.thevpc.ndoc.api.util.HUtils.strSnapshot(node), ex).asSevere(),
-                            engine.computeSource(node)
-                    )
-            );
-        }
-        if (aa != null) {
-            newAncestors.remove(a);
-            for (NDocProp p : aa.getProperties()) {
-                switch (p.getName()) {
-                    case NDocPropName.NAME: {
-                        break;
-                    }
-                    default: {
-                        inheritedProps.set(p);
-                        break;
-                    }
-                }
-            }
-            ancestorsList.add(aa);
-            for (NDocNode child : aa.children()) {
-                NDocResource source = computeSource(child);
-                child = child.copy();
-                child.setSource(source);
-                inheritedChildren.add(child);
-            }
-            inheritedRules.addAll(Arrays.asList(aa.rules()));
-        } else {
-            result.messages().log(
-                    NDocMsg.of(NMsg.ofC("missing ancestor '%s' for %s", a,
-                                    net.thevpc.ndoc.api.util.HUtils.strSnapshot(node)
-                            ).asWarning(),
-                            engine.computeSource(node)
-                    )
-            );
-            //throw new IllegalArgumentException("ancestor not found " + a + " for " + node);
-        }
-    }
 
     public NOptional<NDocNodeDef> findDefinition(NDocNode node, String name) {
         NDocNode currNode = node;
@@ -407,103 +357,7 @@ public class NDocCompiler {
         return n;
     }
 
-    protected NDocNode processInheritance(NDocNode node, NDocDocumentLoadingResultImpl result) {
-        String[] t = node.getAncestors();
-        if (t.length > 0) {
-            Set<String> newAncestors = new HashSet<>(Arrays.asList(t));
-            NDocProperties inheritedProps = new NDocProperties();
-            List<NDocNode> inheritedChildren = new ArrayList<>();
-            List<HStyleRule> inheritedRules = new ArrayList<>();
-            List<NDocNode> ancestorsList = new ArrayList<>();
-            for (String a : t) {
-                prepareInheritanceSingle(a, node, result, newAncestors, ancestorsList, inheritedChildren, inheritedProps, inheritedRules);
-            }
-            node.setProperty(NDocPropName.ANCESTORS, NElement.ofStringArray(newAncestors.toArray(new String[0])));
-            for (NDocProp p : inheritedProps.toList()) {
-                NOptional<NDocProp> u = node.getProperty(p.getName());
-                if (!u.isPresent()) {
-                    node.setProperty(p);
-                }
-            }
-            if (!inheritedRules.isEmpty()) {
-                //must add them upfront
-                inheritedRules.addAll(Arrays.asList(node.rules()));
-                node.setRules(inheritedRules.toArray(new HStyleRule[0]));
-            }
-            if (!inheritedChildren.isEmpty()) {
-                for (NDocNode child : node.children()) {
-                    NDocResource source = computeSource(child);
-                    child = child.copy();
-                    child.setSource(source);
-                    inheritedChildren.add(child);
-                }
-                node.setChildren(inheritedChildren.toArray(new NDocNode[0]));
-            }
-            //return node;
-        }
-        List<NDocNode> children = node.children();
-        for (int i = 0; i < children.size(); i++) {
-            NDocNode child = children.get(i);
-            NDocNode child2 = processInheritance(child, result);
-            if (child2 != child) {
-                node.setChildAt(i, child2);
-            }
-        }
-        return node;
-    }
 
-    protected NDocNode findAncestor(NDocNode node, String name, NDocProp... args) {
-        NDocNodeDef ancestor0 = findAncestorDefinition(node, name);
-        NDocNode[] body = ancestor0.body();
-        if (body.length == 0) {
-            return new DefaultNDocNode(NDocNodeType.VOID);
-        }
-        for (int i = 0; i < body.length; i++) {
-            //apply args
-            body[i] = applyArgs(body[i], args);
-        }
-        if (body.length == 1) {
-            return body[0];
-        }
-        DefaultNDocNode stack = new DefaultNDocNode(NDocNodeType.STACK);
-        stack.addAll(body);
-        return stack;
-    }
-
-    private NDocNode applyArgs(NDocNode nn, NDocProp[] args) {
-        // TODO
-        return nn.copy();
-    }
-
-    protected NDocNodeDef findAncestorDefinition(NDocNode node, String name) {
-        NDocNodeDef temp = null;
-        NDocNode parent = node.parent();
-        String finalName = net.thevpc.ndoc.api.util.HUtils.uid(name);
-        while (parent != null) {
-            List<NDocNodeDef> r = new ArrayList<>();
-            for (NDocNodeDef x : parent.nodeDefinitions()) {
-                if (Objects.equals(HUtils.uid(x.name()), finalName)) {
-                    r.add(x);
-                }
-            }
-            if (r.size() > 1) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("too many templates : ").append(finalName);
-                for (int i = 0; i < r.size(); i++) {
-                    NDocNodeDef nn = r.get(i);
-                    NDocResource n = nn.source();
-                    sb.append("\n\t[").append(n).append("] (").append(i + 1).append("/").append(r.size()).append(") : ").append(net.thevpc.ndoc.api.util.HUtils.strSnapshot(nn));
-                }
-                throw new IllegalArgumentException(sb.toString());
-            }
-            if (r.size() == 1) {
-                temp = r.get(0);
-                break;
-            }
-            parent = parent.parent();
-        }
-        return temp;
-    }
 
     public NDocResource computeSource(NDocNode node) {
         while (node != null) {
