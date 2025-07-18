@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.engine.render.server;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocDocument;
-import net.thevpc.ndoc.api.document.NDocMessageList;
-import net.thevpc.ndoc.api.document.NDocMessageListImpl;
+import net.thevpc.ndoc.api.document.DefaultNDocLogger;
+import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
@@ -42,8 +41,8 @@ public class DocumentController {
             int sizeWidth = 1200;
             int sizeHeight = 1000;
             NDocEngine e = new DefaultNDocEngine();
-            NDocDocument doc = e.loadDocument(file, null).get();
-            NDocMessageList messages = new NDocMessageListImpl(engine.computeSource(doc.root()));
+            NDocument doc = e.loadDocument(file, null).get();
+            DefaultNDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
 
             List<NDocNode> pages = doc.pages();
 
