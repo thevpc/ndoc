@@ -18,11 +18,9 @@ public interface NDocNode extends HItem {
 
     NDocNode setUuid(String uuid);
 
-    String[] getAncestors();
 
     String[] getStyleClasses();
 
-    HItem setAncestors(String[] parentTemplate);
 
     HItem setStyleClasses(String[] classNames);
 
