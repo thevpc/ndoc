@@ -3,7 +3,7 @@ package net.thevpc.ndoc.elem.base.container.ul;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.model.node.NDocNode;
@@ -47,7 +47,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
                 .setProperty(NDocPropName.ROWS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ORIGIN, NDocAlign.TOP_LEFT)
                 .setProperty(NDocPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
-                .setProperties(p.props().toArray(new HProp[0]));
+                .setProperties(p.props().toArray(new NDocProp[0]));
         for (String s : new String[]{
                 NDocPropName.GRID_COLOR
                 , NDocPropName.ORIGIN
