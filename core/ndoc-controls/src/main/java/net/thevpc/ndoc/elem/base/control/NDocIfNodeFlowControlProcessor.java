@@ -2,7 +2,7 @@ package net.thevpc.ndoc.elem.base.control;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.spi.NDocNodeFlowControlProcessor;
@@ -89,7 +89,7 @@ public class NDocIfNodeFlowControlProcessor implements NDocNodeFlowControlProces
     }
 
     private void processEvalVars(NDocNode nn, NDocNodeFlowControlProcessorContext context) {
-        for (HProp property : nn.getProperties().toArray(new HProp[0])) {
+        for (NDocProp property : nn.getProperties().toArray(new NDocProp[0])) {
             String n = property.getName();
             Object value = property.getValue();
             nn.setProperty(n, context.evalExpression(nn, NElemUtils.toElement(value)));
