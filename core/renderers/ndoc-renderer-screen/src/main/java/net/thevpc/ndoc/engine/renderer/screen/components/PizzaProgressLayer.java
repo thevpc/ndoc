@@ -9,7 +9,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
-public class PizzaProgressLayer implements HDocumentLayer {
+public class PizzaProgressLayer implements NDocDocumentLayer {
     public void draw(DocumentView doc, Dimension size, NDocGraphics g) {
         if (doc.isLoading()) {
             return;
