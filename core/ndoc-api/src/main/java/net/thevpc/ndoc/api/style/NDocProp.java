@@ -19,77 +19,77 @@ import java.util.Objects;
 /**
  * @author vpc
  */
-public class HProp implements HItem, NToElement {
+public class NDocProp implements HItem, NToElement {
 
     private String name;
     private NElement value;
 
-    public static HProp ofDouble(String name, Double value) {
-        return new HProp(name, NElement.ofDouble(value));
+    public static NDocProp ofDouble(String name, Double value) {
+        return new NDocProp(name, NElement.ofDouble(value));
     }
 
-    public static HProp ofInt(String name, Integer value) {
-        return new HProp(name, NElement.ofInt(value));
+    public static NDocProp ofInt(String name, Integer value) {
+        return new NDocProp(name, NElement.ofInt(value));
     }
 
-    public static HProp ofBoolean(String name, Boolean value) {
-        return new HProp(name, NElement.ofBoolean(value));
+    public static NDocProp ofBoolean(String name, Boolean value) {
+        return new NDocProp(name, NElement.ofBoolean(value));
     }
 
-    public static HProp ofString(String name, String value) {
-        return new HProp(name, NElement.ofString(value));
+    public static NDocProp ofString(String name, String value) {
+        return new NDocProp(name, NElement.ofString(value));
     }
 
-    public static HProp ofObject(String name, NElement value) {
-        return new HProp(name, value);
+    public static NDocProp ofObject(String name, NElement value) {
+        return new NDocProp(name, value);
     }
 
-    public static HProp ofStringArray(String name, String[] value) {
-        return new HProp(name, NElement.ofStringArray(value));
+    public static NDocProp ofStringArray(String name, String[] value) {
+        return new NDocProp(name, NElement.ofStringArray(value));
     }
 
-    public static HProp ofDouble2(String name, double x, double y) {
-        return new HProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+    public static NDocProp ofDouble2(String name, double x, double y) {
+        return new NDocProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
-    public static HProp ofHPoint2D(String name, double x, double y) {
-        return new HProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+    public static NDocProp ofHPoint2D(String name, double x, double y) {
+        return new NDocProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
-    public static HProp ofDouble2(String name, NDocDouble2 d) {
-        return new HProp(name, d == null ? null : d.toElement());
+    public static NDocProp ofDouble2(String name, NDocDouble2 d) {
+        return new NDocProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofHPoint2D(String name, NDocPoint2D d) {
-        return new HProp(name, d == null ? null : d.toElement());
+    public static NDocProp ofHPoint2D(String name, NDocPoint2D d) {
+        return new NDocProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofHPoint3D(String name, NDocPoint3D d) {
-        return new HProp(name, d == null ? null : d.toElement());
+    public static NDocProp ofHPoint3D(String name, NDocPoint3D d) {
+        return new NDocProp(name, d == null ? null : d.toElement());
     }
 
-    public static HProp ofDouble2Array(String name, NDocDouble2... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
+    public static NDocProp ofDouble2Array(String name, NDocDouble2... d) {
+        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
     }
 
-    public static HProp ofDoubleArray(String name, double[] d) {
-        return new HProp(name, NElement.ofDoubleArray(d));
+    public static NDocProp ofDoubleArray(String name, double[] d) {
+        return new NDocProp(name, NElement.ofDoubleArray(d));
     }
 
-    public static HProp ofHPoint2DArray(String name, NDocPoint2D... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
+    public static NDocProp ofHPoint2DArray(String name, NDocPoint2D... d) {
+        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
     }
 
-    public static HProp ofHPoint3DArray(String name, NDocPoint3D... d) {
-        return new HProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
+    public static NDocProp ofHPoint3DArray(String name, NDocPoint3D... d) {
+        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
     }
 
-    public HProp(String name, NElement value) {
+    public NDocProp(String name, NElement value) {
         this.name = name;
         this.value = value;
     }
 
-    public HProp(String name, NToElement value) {
+    public NDocProp(String name, NToElement value) {
         this.name = name;
         this.value = value == null ? null : value.toElement();
     }
@@ -122,7 +122,7 @@ public class HProp implements HItem, NToElement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final HProp other = (HProp) obj;
+        final NDocProp other = (NDocProp) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
