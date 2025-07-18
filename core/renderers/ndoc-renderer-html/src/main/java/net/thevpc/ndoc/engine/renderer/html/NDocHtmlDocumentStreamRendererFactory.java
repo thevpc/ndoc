@@ -11,12 +11,12 @@ import net.thevpc.nuts.util.NMsg;
 /**
  * @author vpc
  */
-public class HtmlDocumentStreamRendererFactory implements NDocDocumentRendererFactory {
+public class NDocHtmlDocumentStreamRendererFactory implements NDocDocumentRendererFactory {
     @Override
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "html":
-                return NCallableSupport.of(10, () -> new HtmlDocumentRenderer(context.engine()));
+                return NCallableSupport.of(10, () -> new NDocHtmlDocumentRenderer(context.engine()));
             default:
                 return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
         }
