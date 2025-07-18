@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HPropUtils;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -58,9 +58,9 @@ public class NDocPolygonParser extends NDocNodeParserBase {
                         }
                         case "points": {
                             if (isAncestorScene3D(info.node)) {
-                                info.node.setProperty(HProp.ofHPoint3DArray(NDocPropName.POINTS, v.asHPoint3DArray().get()));
+                                info.node.setProperty(NDocProp.ofHPoint3DArray(NDocPropName.POINTS, v.asHPoint3DArray().get()));
                             } else {
-                                info.node.setProperty(HProp.ofHPoint2DArray(NDocPropName.POINTS, v.asHPoint2DArray().get()));
+                                info.node.setProperty(NDocProp.ofHPoint2DArray(NDocPropName.POINTS, v.asHPoint2DArray().get()));
                             }
                             return true;
                         }
