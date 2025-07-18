@@ -13,38 +13,42 @@
         }
     }
 
-    @define course{
-        page(name:'course'){
-            circle(),
+    @define course(titleComponent,title){
+        page{
+            either(
+                $titleComponent,
+                @(title) text(either($title,"Title"),at:top),
+            )
+            rectangle(
+                size:(50,50),
+                background:$palette[3],
+                rotate:45,
+                color:$palette[1],
+    //            stroke:basic(dash:[30],width:5)
+                stroke:sloppy
+            )
+            either($body,
+                circle()
+            )
         }
     }
 
-    course{
-        @(title) text("My Title",at:top),
-        rectangle(
-            size:(50,50),
-            background:$palette[3],
-            rotate:45,
-            color:$palette[1],
-//            stroke:basic(dash:[30],width:5)
-            stroke:sloppy
-        )
+    course(title:"My Title Page 2"){
+        @let titleComponent:  @(title) text(either($title,"Title"),at:top-left),
         equation("""
             x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
             """,
             at:(50,50),
-            origin:center){
-
-        },
+            origin:center)
     },
-    page{
-        @(title) text("My Title Page 2",at:top),
-        equation("""
-            x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
-            """,
-            at:(50,50),
-            origin:center){
-
-        },
-    },
+//    page{
+//        @(title) text("My Title Page 2",at:top),
+//        equation("""
+//            x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
+//            """,
+//            at:(50,50),
+//            origin:center){
+//
+//        },
+//    },
 }
