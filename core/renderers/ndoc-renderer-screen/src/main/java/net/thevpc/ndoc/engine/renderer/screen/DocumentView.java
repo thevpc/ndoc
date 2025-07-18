@@ -166,7 +166,7 @@ public class DocumentView {
     public class ContentPanel extends JPanel {
 
         CardLayout cardLayout;
-        List<HDocumentLayer> layers = new ArrayList<>();
+        List<NDocDocumentLayer> layers = new ArrayList<>();
 
         public ContentPanel() {
             this.cardLayout = new CardLayout();
@@ -187,7 +187,7 @@ public class DocumentView {
                     RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
             Dimension size = getSize();
-            for (HDocumentLayer filter : layers) {
+            for (NDocDocumentLayer filter : layers) {
                 filter.draw(DocumentView.this, size, hg);
             }
             if (currentThrowable != null) {
