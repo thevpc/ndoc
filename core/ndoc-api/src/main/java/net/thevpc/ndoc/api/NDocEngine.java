@@ -13,10 +13,13 @@ import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
+import net.thevpc.ndoc.api.model.fct.NDocFunction;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.renderer.*;
@@ -30,6 +33,11 @@ import net.thevpc.nuts.util.NOptional;
 public interface NDocEngine {
 
     List<NDocNodeParser> nodeTypeFactories();
+
+    NDocFunctionContext createFunctionContext(NDocNode node);
+
+
+    NOptional<NDocFunction> findFunction(NDocNode node,String name, NDocFunctionArg... args);
 
     NOptional<NDocNodeParser> nodeTypeFactory(String id);
 
@@ -61,11 +69,11 @@ public interface NDocEngine {
 
     NElement toElement(NDocNode node);
 
-    NOptional<HProp> computeProperty(NDocNode node, String... propertyNames);
+    NOptional<NDocProp> computeProperty(NDocNode node, String... propertyNames);
 
-    List<HProp> computeInheritedProperties(NDocNode node);
+    List<NDocProp> computeInheritedProperties(NDocNode node);
 
-    List<HProp> computeProperties(NDocNode node);
+    List<NDocProp> computeProperties(NDocNode node);
 
     <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames);
 
