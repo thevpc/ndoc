@@ -56,7 +56,6 @@ public class HStyleParser {
                 NDocPropName.THEED,
                 NDocPropName.DRAW_CONTOUR,
                 NDocPropName.CLASS,
-                NDocPropName.ANCESTORS,
                 NDocPropName.AT
         ));
 
