@@ -2,7 +2,7 @@ package net.thevpc.ndoc.extension.shapes2d.arrow;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -54,10 +54,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(NDocNode item) {
-        HProp width = item.getProperty(NDocPropName.WIDTH).orNull();
-        HProp height = item.getProperty(NDocPropName.HEIGHT).orNull();
-        HProp base = item.getProperty("base").orNull();
-        HProp hat = item.getProperty("hat").orNull();
+        NDocProp width = item.getProperty(NDocPropName.WIDTH).orNull();
+        NDocProp height = item.getProperty(NDocPropName.HEIGHT).orNull();
+        NDocProp base = item.getProperty("base").orNull();
+        NDocProp hat = item.getProperty("hat").orNull();
 
         return ToElementHelper.of(
                 item,
