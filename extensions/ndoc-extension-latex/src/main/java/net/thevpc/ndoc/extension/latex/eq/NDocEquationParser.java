@@ -6,7 +6,7 @@ package net.thevpc.ndoc.extension.latex.eq;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -48,7 +48,7 @@ public class NDocEquationParser extends NDocNodeParserBase {
             case TRIPLE_ANTI_QUOTED_STRING:
             case LINE_STRING:
             {
-                info.node.setProperty(HProp.ofString(NDocPropName.VALUE, info.currentArg.asStringValue().get()));
+                info.node.setProperty(NDocProp.ofString(NDocPropName.VALUE, info.currentArg.asStringValue().get()));
                 return true;
             }
         }
