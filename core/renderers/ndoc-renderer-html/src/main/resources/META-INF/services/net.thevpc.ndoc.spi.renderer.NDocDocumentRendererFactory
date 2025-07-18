@@ -1,2 +1,2 @@
-net.thevpc.ndoc.engine.renderer.html.HtmlDocumentStreamRendererFactory
+net.thevpc.ndoc.engine.renderer.html.NDocHtmlDocumentStreamRendererFactory
 
