@@ -3,15 +3,15 @@ package net.thevpc.ndoc.api.style;
 import java.util.Objects;
 
 public class HStyleAndMagnitude implements Comparable<HStyleAndMagnitude> {
-    private HProp style;
+    private NDocProp style;
     private HStyleMagnitude magnitude;
 
-    public HStyleAndMagnitude(HProp style, HStyleMagnitude magnitude) {
+    public HStyleAndMagnitude(NDocProp style, HStyleMagnitude magnitude) {
         this.style = style;
         this.magnitude = magnitude;
     }
 
-    public HProp getStyle() {
+    public NDocProp getStyle() {
         return style;
     }
 
