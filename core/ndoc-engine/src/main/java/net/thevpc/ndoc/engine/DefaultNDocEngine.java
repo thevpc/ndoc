@@ -10,16 +10,21 @@ import java.util.function.Function;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
+import net.thevpc.ndoc.api.model.fct.NDocFunction;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
+import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.HItemList;
 import net.thevpc.ndoc.api.model.node.HItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.*;
+import net.thevpc.ndoc.engine.fct.DefaultNDocFunctionContext;
+import net.thevpc.ndoc.engine.fct.NDocEitherFunction;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
-import net.thevpc.ndoc.engine.document.HDocumentCompiler;
+import net.thevpc.ndoc.engine.document.NDocCompiler;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.engine.renderer.NDocDocumentRendererFactoryContextImpl;
-import net.thevpc.ndoc.engine.document.HPropCalculator;
-import net.thevpc.ndoc.engine.document.HDocDocumentFactoryImpl;
+import net.thevpc.ndoc.engine.document.NDocPropCalculator;
+import net.thevpc.ndoc.engine.document.NDocDocumentFactoryImpl;
 import net.thevpc.ndoc.engine.parser.DefaultNDocDocumentItemParserFactory;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
@@ -49,17 +54,42 @@ public class DefaultNDocEngine implements NDocEngine {
     private Map<String, NDocNodeParser> nodeTypeFactories;
     private Map<String, String> nodeTypeAliases;
     private NDocDocumentFactory factory;
-    private HPropCalculator hPropCalculator = new HPropCalculator();
+    private NDocPropCalculator NDocPropCalculator = new NDocPropCalculator();
     private NDocNodeRendererManager rendererManager;
+    private List<NDocFunction> functions = new ArrayList<>();
 
     public DefaultNDocEngine() {
+        functions.add(new NDocEitherFunction());
     }
 
+    @Override
+    public NDocFunctionContext createFunctionContext(NDocNode node) {
+        return new DefaultNDocFunctionContext(node, this);
+    }
+
+    @Override
+    public NOptional<NDocFunction> findFunction(NDocNode node,String name, NDocFunctionArg... args) {
+        NDocNode p=node;
+        while(p!=null){
+            for (NDocFunction f : p.nodeFunctions()) {
+                if(NNameFormat.equalsIgnoreFormat(f.name(), name)) {
+                    return NOptional.of(f);
+                }
+            }
+            p = p.parent();
+        }
+        for (NDocFunction f : functions) {
+            if (NNameFormat.equalsIgnoreFormat(f.name(), name)) {
+                return NOptional.of(f);
+            }
+        }
+        return NOptional.ofNamedEmpty("function " + name);
+    }
 
     @Override
     public NDocDocumentFactory documentFactory() {
         if (factory == null) {
-            factory = new HDocDocumentFactoryImpl(this);
+            factory = new NDocDocumentFactoryImpl(this);
         }
         return factory;
     }
@@ -221,7 +251,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
 
     public NDocDocumentLoadingResult compileDocument(NDocument document, NDocLogger messages) {
-        return new HDocumentCompiler(this, messages).compile(document);
+        return new NDocCompiler(this, messages).compile(document);
     }
 
     public boolean validateNode(NDocNode node) {
@@ -472,29 +502,29 @@ public class DefaultNDocEngine implements NDocEngine {
 
 
     @Override
-    public NOptional<HProp> computeProperty(NDocNode node, String... propertyNames) {
-        return hPropCalculator.computeProperty(node, propertyNames);
+    public NOptional<NDocProp> computeProperty(NDocNode node, String... propertyNames) {
+        return NDocPropCalculator.computeProperty(node, propertyNames);
     }
 
     @Override
-    public List<HProp> computeProperties(NDocNode node) {
-        return hPropCalculator.computeProperties(node);
+    public List<NDocProp> computeProperties(NDocNode node) {
+        return NDocPropCalculator.computeProperties(node);
     }
 
     @Override
-    public List<HProp> computeInheritedProperties(NDocNode node) {
-        return hPropCalculator.computeInheritedProperties(node);
+    public List<NDocProp> computeInheritedProperties(NDocNode node) {
+        return NDocPropCalculator.computeInheritedProperties(node);
     }
 
     @Override
     public <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames) {
-        return hPropCalculator.computePropertyValue(node, propertyNames);
+        return NDocPropCalculator.computePropertyValue(node, propertyNames);
     }
 
 
     @Override
     public NDocResource computeSource(NDocNode node) {
-        return new HDocumentCompiler(this, new DefaultNDocLogger(null)).computeSource(node);
+        return new NDocCompiler(this, new DefaultNDocLogger(null)).computeSource(node);
     }
 
     @Override
@@ -610,6 +640,6 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public NDocNode[] compileNodeBeforeRendering(NDocNode p, NDocLogger messages) {
-        return new HDocumentCompiler(this, messages).compilePage(p);
+        return new NDocCompiler(this, messages).compilePage(p);
     }
 }
