@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.examples;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.style.HProps;
+import net.thevpc.ndoc.api.style.NDocProps;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
@@ -59,14 +59,14 @@ public class NDocExampleByCode1 {
                                                 f.ofRectangle()
                                                         .setPosition(80, 70)
                                                         .setSize(20, 20)
-                                                        .setProperty(HProps.preserveShapeRatio())
+                                                        .setProperty(NDocProps.preserveShapeRatio())
                                                         .setForegroundColor("green")
                                                         .setBackgroundColor("#555500")
                                                         .setOrigin(NDocAlign.CENTER)
                                         )
                                         .add(
                                                 f.ofGrid(2, 2)
-                                                        .setProperty(HProps.rowsWeight(1, 3))
+                                                        .setProperty(NDocProps.rowsWeight(1, 3))
                                                         .add(f.ofGlue())
                                                         .add(f.ofGlue())
                                                         .add(
