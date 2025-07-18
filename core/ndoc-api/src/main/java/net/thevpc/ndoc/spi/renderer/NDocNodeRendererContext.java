@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.spi.model.NDocSizeRequirements;
 import net.thevpc.ndoc.spi.util.NDocSizeRef;
@@ -51,7 +51,7 @@ public interface NDocNodeRendererContext {
 
     NOptional<NElement> computePropertyValue(NDocNode t, String s, String... synonyms);
 
-    List<HProp> computeProperties(NDocNode t);
+    List<NDocProp> computeProperties(NDocNode t);
 
     NPath resolvePath(NPath path, NDocNode node);
 
