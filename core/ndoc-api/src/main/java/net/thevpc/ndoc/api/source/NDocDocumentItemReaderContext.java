@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 /**
  * @author vpc
  */
-public interface HDocumentItemReaderContext {
+public interface NDocDocumentItemReaderContext {
 
     BufferedReader reader();
 
