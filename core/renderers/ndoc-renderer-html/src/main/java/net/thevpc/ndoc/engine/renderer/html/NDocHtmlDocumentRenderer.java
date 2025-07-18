@@ -21,11 +21,11 @@ import net.thevpc.nuts.io.NPath;
 /**
  * @author vpc
  */
-public class HtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer implements NDocDocumentStreamRenderer {
+public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer implements NDocDocumentStreamRenderer {
 
     private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
 
-    public HtmlDocumentRenderer(NDocEngine engine) {
+    public NDocHtmlDocumentRenderer(NDocEngine engine) {
         super(engine);
     }
 
