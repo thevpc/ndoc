@@ -22,7 +22,7 @@ public class ToElementHelper {
     private NDocNode node;
     private Predicate<String> exclude;
     private Set<String> excludeSet = new HashSet<>();
-    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(NDocPropName.CLASS, NDocPropName.ANCESTORS));
+    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(NDocPropName.CLASS));
     private NDocEngine engine;
 
     public static ToElementHelper of(NDocNode node, NDocEngine engine) {
@@ -79,9 +79,6 @@ public class ToElementHelper {
     }
 
     private void applyAnnotations(NElementBuilder u) {
-        for (String ancestor : node.getAncestors()) {
-            u.addAnnotation(ancestor);
-        }
         NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(NDocPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
