@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.api.style.HStyleRule;
 
-public class HDocumentRootRules {
+public class NDocDocumentRootRules {
     public static final HStyleRule[] DEFAULT = {
 //            DefaultHStyleRule.ofClass("ul-bullet"
 //                    ,HStyles.origin(HAlign.CENTER)
