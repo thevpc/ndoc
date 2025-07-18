@@ -33,11 +33,9 @@ public class PagesHelper {
             case NDocNodeType.FLOW:
             case NDocNodeType.GRID:
             case NDocNodeType.STACK: {
-                if (!part.isTemplate()) {
-                    if (!part.isDisabled()) {
-                        for (NDocNode p : part.children()) {
-                            fillPages(p, all);
-                        }
+                if (!part.isDisabled()) {
+                    for (NDocNode p : part.children()) {
+                        fillPages(p, all);
                     }
                 }
                 break;
