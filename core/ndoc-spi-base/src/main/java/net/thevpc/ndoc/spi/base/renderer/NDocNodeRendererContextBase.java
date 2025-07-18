@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -133,9 +133,9 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
         if (t != null) {
             for (String s : all) {
-                NOptional<HProp> o = engine().computeProperty(t, s);
+                NOptional<NDocProp> o = engine().computeProperty(t, s);
                 if (o.isPresent()) {
-                    NOptional<NElement> oo = o.map(HProp::getValue).filter(x -> x != null);
+                    NOptional<NElement> oo = o.map(NDocProp::getValue).filter(x -> x != null);
                     if (oo.isPresent()) {
                         return oo;
                     }
@@ -154,7 +154,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     }
 
     @Override
-    public List<HProp> computeProperties(NDocNode t) {
+    public List<NDocProp> computeProperties(NDocNode t) {
         return engine().computeProperties(t);
     }
 
