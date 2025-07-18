@@ -41,7 +41,6 @@ public class NDocPropName {
     public static final String COLUMNS_WEIGHT="columns-weight";
     public static final String CLASS ="class";
     public static final String HIDE ="disabled";
-    public static final String TEMPLATE="template";
     public static final String ANCESTORS ="extends";
     public static final String NAME="name";
     public static final String MAX_X="xmax";
