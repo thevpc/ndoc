@@ -9,7 +9,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
-public class RuntimeProgressLayer implements HDocumentLayer {
+public class RuntimeProgressLayer implements NDocDocumentLayer {
     public void draw(DocumentView doc, Dimension size, NDocGraphics g) {
         if (doc.isLoading()) {
             double w2 = 200;
