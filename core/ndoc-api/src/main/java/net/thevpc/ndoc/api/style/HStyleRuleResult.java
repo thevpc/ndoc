@@ -7,7 +7,7 @@ public interface HStyleRuleResult /*extends Comparable<HStyleRuleResult>*/ {
 
     HStyleMagnitude magnitude();
 
-    Set<HProp> value();
+    Set<NDocProp> value();
 
 //    @Override
 //    default int compareTo(HStyleRuleResult o) {
