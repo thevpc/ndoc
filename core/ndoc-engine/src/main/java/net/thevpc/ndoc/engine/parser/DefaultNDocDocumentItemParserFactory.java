@@ -335,7 +335,6 @@ public class DefaultNDocDocumentItemParserFactory
         NDocNode node = context.node();
         if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
             NDocNode pg = f.ofStack();
-            pg.setAncestors(allAncestors == null ? null : allAncestors.toArray(new String[0]));
             pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
             for (NElement child : ee.body()) {
                 NOptional<HItem> u = context.engine().newNode(child, context);
