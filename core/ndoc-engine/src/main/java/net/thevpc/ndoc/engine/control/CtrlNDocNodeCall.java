@@ -7,17 +7,21 @@ import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.elem.NUpletElementBuilder;
 import net.thevpc.nuts.io.NPath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
     private String __name;
     private List<NElement> __args = new ArrayList<>();
     private NElement __callExpr;
     private List<NElement> __callBody = new ArrayList<>();
+    private Map<String,NElement> __bodyVars = new HashMap<>();
 
     private CtrlNDocNodeCall() {
         super(NDocNodeType.CALL);
@@ -50,7 +54,14 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
                         __args.add(u);
                     }
                 }
-                __callBody.addAll(fb.children());
+                for (NElement child : fb.children()) {
+                    if(child.isNamedPair() && child.asPair().get().key().isAnnotated("let")) {
+                        NPairElement pe = child.asPair().get();
+                        __bodyVars.put(pe.key().asStringValue().get(),pe.value());
+                    }else{
+                        __callBody.add(child);
+                    }
+                }
                 c = fb.build();
             } else {
                 throw new IllegalArgumentException("unexpected call : " + c);
@@ -67,7 +78,14 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
                 if (args != null) {
                     __args.addAll(args);
                 }
-                __callBody.addAll(fb.children());
+                for (NElement child : fb.children()) {
+                    if(child.isNamedPair() && child.asPair().get().key().isAnnotated("let")) {
+                        NPairElement pe = child.asPair().get();
+                        __bodyVars.put(pe.key().asStringValue().get(),pe.value());
+                    }else{
+                        __callBody.add(child);
+                    }
+                }
             } else {
                 throw new IllegalArgumentException("unexpected call : " + c);
             }
@@ -75,6 +93,10 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
         }
         __callExpr = c;
         this.setProperty(NDocPropName.VALUE, c);
+    }
+
+    public Map<String, NElement> getBodyVars() {
+        return __bodyVars;
     }
 
     public String getCallName() {
@@ -101,7 +123,7 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
     }
 
     @Override
-    public void copyTo(NDocNode other) {
+    public NDocNode copyTo(NDocNode other) {
         super.copyTo(other);
         if (other instanceof CtrlNDocNodeCall) {
             CtrlNDocNodeCall oc = (CtrlNDocNodeCall) other;
@@ -109,6 +131,8 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
             oc.__args = new ArrayList<>(__args);
             oc.__callExpr = __callExpr;
             oc.__callBody = new ArrayList<>(__callBody);
+            oc.__bodyVars = new HashMap<>(__bodyVars);
         }
+        return this;
     }
 }
