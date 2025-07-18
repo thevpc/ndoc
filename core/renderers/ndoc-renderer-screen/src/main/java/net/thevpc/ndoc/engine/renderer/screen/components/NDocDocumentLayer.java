@@ -5,6 +5,6 @@ import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 
 import java.awt.*;
 
-public interface HDocumentLayer {
+public interface NDocDocumentLayer {
     void draw(DocumentView doc, Dimension size, NDocGraphics g);
 }
