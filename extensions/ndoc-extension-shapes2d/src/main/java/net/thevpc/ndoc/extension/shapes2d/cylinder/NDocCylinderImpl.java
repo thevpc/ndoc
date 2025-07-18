@@ -2,7 +2,7 @@ package net.thevpc.ndoc.extension.shapes2d.cylinder;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -49,9 +49,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
 
     @Override
     public NElement toElem(NDocNode item) {
-        HProp ellipseHeight = item.getProperty(NDocPropName.ELLIPSE_H).orNull();
-        HProp topColor = item.getProperty(NDocPropName.TOP_COLOR).orNull();
-        HProp segmentCount = item.getProperty(NDocPropName.SEGMENT_COUNT).orNull();
+        NDocProp ellipseHeight = item.getProperty(NDocPropName.ELLIPSE_H).orNull();
+        NDocProp topColor = item.getProperty(NDocPropName.TOP_COLOR).orNull();
+        NDocProp segmentCount = item.getProperty(NDocPropName.SEGMENT_COUNT).orNull();
         return ToElementHelper.of(
                         item,
                         engine()
