@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -115,14 +115,14 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public List<HProp> computeProperties(NDocNode t) {
-        List<HProp> inherited = engine().computeInheritedProperties(t);
+    public List<NDocProp> computeProperties(NDocNode t) {
+        List<NDocProp> inherited = engine().computeInheritedProperties(t);
         NDocProperties hp = new NDocProperties();
         if (this.defaultStyles != null) {
             hp.set(this.defaultStyles.toArray());
         }
         hp.set(t.getProperties());
-        for (HProp h : inherited) {
+        for (NDocProp h : inherited) {
             if (!hp.containsKey(h.getName())) {
                 hp.set(h);
             }
@@ -148,20 +148,20 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
         NOptional y = null;
         if (t != null) {
-            y = engine().computeProperty(t, all).map(HProp::getValue).filter(x -> x != null);
+            y = engine().computeProperty(t, all).map(NDocProp::getValue).filter(x -> x != null);
             if (y.isPresent()) {
                 return y;
             }
         }
         if (this.defaultStyles != null) {
-            NOptional<NElement> u = this.defaultStyles.get(all).map(HProp::getValue).filter(x -> x != null);
+            NOptional<NElement> u = this.defaultStyles.get(all).map(NDocProp::getValue).filter(x -> x != null);
             if (u.isPresent()) {
                 return u;
             }
         }
         if (basePart != null) {
             for (String s : all) {
-                y = basePart.getProperty(s).map(HProp::getValue).filter(x -> x != null);
+                y = basePart.getProperty(s).map(NDocProp::getValue).filter(x -> x != null);
                 if (y.isPresent()) {
                     return y;
                 }
