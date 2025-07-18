@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.document.NDocMsg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NDocMessageListList implements NDocLogger {
+public class NDocMessageList implements NDocLogger {
     private List<NDocLogger> registeredMessages = new ArrayList<>();
 
     @Override
