@@ -2,8 +2,9 @@ package net.thevpc.ndoc.api.model.node;
 
 import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
+import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.HProp;
+import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.HStyleRule;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
@@ -31,10 +32,6 @@ public interface NDocNode extends HItem {
 
     NDocNode setSource(NDocResource source);
 
-    boolean isTemplate();
-
-    NDocNode setTemplate(boolean template);
-
     boolean isDisabled();
 
     NDocNode setDisabled(boolean enabled);
@@ -45,7 +42,7 @@ public interface NDocNode extends HItem {
 
     String type();
 
-    List<HProp> props();
+    List<NDocProp> props();
 
     NOptional<NElement> getVar(String property);
 
@@ -53,20 +50,20 @@ public interface NDocNode extends HItem {
 
     NOptional<NElement> getPropertyValue(String... propertyNames);
 
-    NOptional<HProp> getProperty(String... propertyNames);
+    NOptional<NDocProp> getProperty(String... propertyNames);
 
-    List<HProp> getProperties();
+    List<NDocProp> getProperties();
 
 
     NDocNode setName(String name);
 
-    NDocNode setProperty(HProp s);
+    NDocNode setProperty(NDocProp s);
 
     NDocNode setProperty(String name, NElement value);
 
     NDocNode setProperty(String name, NToElement value);
 
-    NDocNode setProperties(HProp... props);
+    NDocNode setProperties(NDocProp... props);
 
     NDocNode addStyleClass(String className);
 
@@ -148,6 +145,8 @@ public interface NDocNode extends HItem {
 
     HStyleRule[] rules();
 
+    NDocNode copyTo(NDocNode o);
+    NDocNode copyFrom(NDocNode o);
     NDocNode copy();
 
     String getName();
@@ -156,11 +155,19 @@ public interface NDocNode extends HItem {
 
     void setChildAt(int i, NDocNode c);
 
-    NDocNodeDef[] definitions();
+    NDocNodeDef[] nodeDefinitions();
 
-    NDocNode addDefinition(NDocNodeDef s) ;
+    NDocNode addNodeDefinition(NDocNodeDef s) ;
 
-    NDocNode removeDefinition(NDocNodeDef s) ;
+    NDocNode addNodeDefinitions(NDocNodeDef... definitions);
 
-    NDocNode addDefinitions(NDocNodeDef... definitions);
+    NDocNode removeNodeDefinition(NDocNodeDef s) ;
+
+    NDocFunction[] nodeFunctions();
+
+    NDocNode addNodeFunction(NDocFunction s) ;
+
+    NDocNode addNodeFunctions(NDocFunction... definitions);
+
+    NDocNode removeNodeFunction(String name) ;
 }
