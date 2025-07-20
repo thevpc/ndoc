@@ -7,7 +7,7 @@ package net.thevpc.ndoc.elem.base.image;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
@@ -41,7 +41,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                 case TRIPLE_ANTI_QUOTED_STRING:
                 case LINE_STRING:
                 {
-                    info.node.setProperty(NDocPropName.VALUE, info.context.asPathRef(currentArg));
+                    info.node.setProperty(NDocPropName.VALUE, NDocUtils.addCompilerDeclarationPath(currentArg, info.source()));
                     processed.add(i);
                     found = true;
                     break;
@@ -49,7 +49,7 @@ public class NDocImageParser extends NDocNodeParserBase {
                 case PAIR: {
                     if (currentArg.isSimplePair()) {
                         NPairElement p = currentArg.asPair().get();
-                        String sid = net.thevpc.ndoc.api.util.HUtils.uid(p.key().asStringValue().get());
+                        String sid = NDocUtils.uid(p.key().asStringValue().get());
                         switch (sid) {
                             case NDocPropName.VALUE:
                             case NDocPropName.FILE: {
@@ -114,7 +114,7 @@ public class NDocImageParser extends NDocNodeParserBase {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
                     NPairElement p = info.currentArg.asPair().get();
-                    String sid = HUtils.uid(p.key().asStringValue().get());
+                    String sid = NDocUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
                         case NDocPropName.TRANSPARENT_COLOR: {
                             info.node.setProperty(sid, p.value());
