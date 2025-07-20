@@ -23,7 +23,7 @@ public class NDocExampleTestBullets {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
         NDocDocumentFactory f = e.documentFactory();
-        NDocument d = f.ofDocument()
+        NDocument d = f.ofDocument(null)
                 .add(f.ofPage()
                         .add(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
