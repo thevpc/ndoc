@@ -1,24 +1,85 @@
 package net.thevpc.ndoc.api.util;
 
 import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.model.node.NDocItem;
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NNameFormat;
-import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.nuts.util.*;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.*;
 import java.util.List;
 
-public class HUtils {
+public class NDocUtils {
+
+
+    public static boolean hasCompilerDeclarationPath(NElement element) {
+        return element.annotations().stream().anyMatch(x -> x.name().equals("CompilerDeclarationPath"));
+    }
+
+    public static NOptional<String> findCompilerDeclarationPath(NElement element) {
+        Optional<String> e = element.annotations().stream().filter(x -> "CompilerDeclarationPath".equals(x.name())).flatMap(x -> x.params().get(0).asStringValue().stream().stream()).findFirst();
+        return NOptional.ofOptional(e, NMsg.ofC("Missing CompilerDeclarationPath in %s",element));
+    }
+
+    public static NElement addCompilerDeclarationPath(NElement elem, NDocResource resource) {
+        if (resource != null) {
+            NPath nPath = resource.path().orNull();
+            if (nPath != null) {
+                NOptional<String> o = findCompilerDeclarationPath(elem);
+                if (o.isPresent()) {
+                    return elem;
+                }
+                return addCompilerDeclarationPath(elem, nPath.toString());
+            }
+        }
+        return elem;
+    }
+
+    public static NElement addCompilerDeclarationPathDummy(NElement element) {
+        NOptional<String> o = findCompilerDeclarationPath(element);
+        if (o.isPresent()) {
+            return element;
+        }
+        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString("")).build();
+    }
+
+    public static NElement addCompilerDeclarationPath(NElement element, String path) {
+        NOptional<String> o = findCompilerDeclarationPath(element);
+        if (o.isPresent()) {
+            return element;
+        }
+        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString(path)).build();
+    }
+
+    public static List<NDocNode> nodePath(NDocNode node) {
+        List<NDocNode> all = new ArrayList<>();
+        NDocItem i = node;
+        while (i != null) {
+            if (i instanceof NDocItem) {
+                all.add(0, (NDocNode) i);
+            }
+            i = i.parent();
+        }
+        return all;
+    }
+
+    public static NDocNode firstNodeUp(NDocItem item) {
+        while (item != null) {
+            if (item instanceof NDocNode) {
+                return (NDocNode) item;
+            }
+            item = item.parent();
+        }
+        return null;
+    }
+
     public static final MinMax minMaxZ(NDocPoint3D[] points) {
         MinMax m = new MinMax();
         for (NDocPoint3D point : points) {
@@ -45,9 +106,6 @@ public class HUtils {
 
     }
 
-    public static NElement addCompilerDeclarationPath(NElement element, String path) {
-        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString(path)).build();
-    }
 
     public static NPath resolvePath(NElement path, Object source) {
         if (NBlankable.isBlank(path)) {
@@ -212,7 +270,7 @@ public class HUtils {
             return null;
         }
         switch (v.type()) {
-            case INTEGER:
+            case INT:
                 return v.asIntValue().get();
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -248,16 +306,79 @@ public class HUtils {
     }
 
     public static Color paintAsColor(Paint paint) {
-        if(paint instanceof Color) {
+        if (paint instanceof Color) {
             return (Color) paint;
         }
         return null;
     }
+
     public static Paint resolveForegroundColor(NDocTextOptions options) {
-        if(options.foregroundColorIndex!=null){
-            return Colors.resolveDefaultColorByIndex(options.foregroundColorIndex,null);
-        }else if(options.foregroundColor instanceof Color){
+        if (options.foregroundColorIndex != null) {
+            return Colors.resolveDefaultColorByIndex(options.foregroundColorIndex, null);
+        } else if (options.foregroundColor instanceof Color) {
             return options.foregroundColor;
+        }
+        return null;
+    }
+
+    public static boolean asBoolean(NElement e) {
+        switch (e.type()) {
+            case BOOLEAN:
+                return e.asBooleanValue().get();
+            default: {
+                if (e.isNumber()) {
+                    return e.asDoubleValue().get().doubleValue() != 0.0;
+                }
+                return !e.isNull();
+            }
+        }
+    }
+
+    public static List<Object> asListOfObjects(Object anyVal) {
+        if (anyVal instanceof Collection) {
+            return new ArrayList<>((Collection) anyVal);
+        }
+        if (anyVal instanceof Object[]) {
+            return new ArrayList<>(Arrays.asList((Object[]) anyVal));
+        }
+        if (anyVal == null) {
+            return new ArrayList<>();
+        }
+        if (anyVal.getClass().isArray()) {
+            List<Object> a = new ArrayList<>();
+            int max = Array.getLength(anyVal);
+            for (int i = 0; i < max; i++) {
+                a.add(Array.get(anyVal, i));
+            }
+            return a;
+        }
+        return Arrays.asList(anyVal);
+    }
+
+    public static Map<String, NElement> inheritedVarsMap(NDocItem c) {
+        Map<String, NElement> r = new HashMap<>();
+        NDocItem i = c;
+        while (i != null) {
+            if (i instanceof NDocNode) {
+                for (Map.Entry<String, NElement> e : ((NDocNode) i).getVars().entrySet()) {
+                    String k = e.getKey();
+                    if (!r.containsKey(k)) {
+                        r.put(k, e.getValue());
+                    }
+                }
+            }
+            i = i.parent();
+        }
+        return r;
+    }
+
+    public static NDocResource sourceOf(NDocItem node) {
+        while (node != null) {
+            NDocResource s = node.source();
+            if (s != null) {
+                return s;
+            }
+            node = node.parent();
         }
         return null;
     }
