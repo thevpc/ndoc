@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.parser.nodes;
 
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
@@ -10,5 +10,5 @@ public interface HITemNamedObjectParser {
 
     boolean accept(String id, NElement tsonElement, NDocNodeFactoryParseContext context);
 
-    NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context);
+    NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context);
 }
