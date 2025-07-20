@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 
 public class NDocBounds2 {
     private Double x;
@@ -77,15 +77,15 @@ public class NDocBounds2 {
             return new NDocBounds2(x, y, w, h);
         }
 
-        Double xx1 = net.thevpc.ndoc.api.util.HUtils.min(getMinX(), s.getMinX());
-        Double yy1 = net.thevpc.ndoc.api.util.HUtils.min(getMinY(), s.getMinY());
-        Double xx2 = net.thevpc.ndoc.api.util.HUtils.max(getMaxX(), s.getMaxX());
-        Double yy2 = net.thevpc.ndoc.api.util.HUtils.max(getMaxY(), s.getMaxY());
+        Double xx1 = NDocUtils.min(getMinX(), s.getMinX());
+        Double yy1 = NDocUtils.min(getMinY(), s.getMinY());
+        Double xx2 = NDocUtils.max(getMaxX(), s.getMaxX());
+        Double yy2 = NDocUtils.max(getMaxY(), s.getMaxY());
         return new NDocBounds2(
                 xx1,
                 yy1,
-                net.thevpc.ndoc.api.util.HUtils.doubleOf(xx2) - net.thevpc.ndoc.api.util.HUtils.doubleOf(xx1),
-                net.thevpc.ndoc.api.util.HUtils.doubleOf(yy2) - HUtils.doubleOf(yy1)
+                NDocUtils.doubleOf(xx2) - NDocUtils.doubleOf(xx1),
+                NDocUtils.doubleOf(yy2) - NDocUtils.doubleOf(yy1)
         );
     }
 
