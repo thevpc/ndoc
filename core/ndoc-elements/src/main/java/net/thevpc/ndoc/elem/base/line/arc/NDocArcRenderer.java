@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.eval.NDocValueByType;
@@ -36,7 +36,7 @@ public class NDocArcRenderer extends NDocNodeRendererBase {
             if(stroke!=null){
                 g.setStroke(stroke);
             }
-            g.drawArc((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()),
+            g.drawArc((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()),
                     (int) startAngle,
                     (int) endAngle
             );
