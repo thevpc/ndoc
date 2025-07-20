@@ -27,20 +27,27 @@
     //            stroke:basic(dash:[30],width:5)
                 stroke:sloppy
             )
-            either($body,
+            either(
+                $componentBody,
                 circle()
             )
         }
     }
 
-    course(title:"My Title Page 2"){
-        @let titleComponent:  @(title) text(either($title,"Title"),at:top-left),
-        equation("""
-            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
-            """,
-            at:(50,50),
-            origin:center)
-    },
+    for(i:[1->2]){
+        course(title:"My Title Page $i"){
+            @let titleComponent:  @(title) text(either($title,"Title"),at:top-left),
+            equation("""
+                x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+                """,
+                at:(50,50),
+                origin:center)
+            if($i>1){
+                text("thank you",at:bottom)
+
+            }
+        },
+    }
 //    page{
 //        @(title) text("My Title Page 2",at:top),
 //        equation("""
