@@ -2,11 +2,12 @@ package net.thevpc.ndoc;
 
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 
 public interface NDocDocumentFactory {
 
-    NDocument ofDocument();
+    NDocument ofDocument(NDocResource source);
 
     NDocNode ofPage();
 
@@ -17,6 +18,8 @@ public interface NDocDocumentFactory {
     NDocNode ofPlain(String text);
 
     NDocNode ofText(String text);
+
+    NDocNode ofText(NElement text);
 
     NDocNode ofPlain();
 
