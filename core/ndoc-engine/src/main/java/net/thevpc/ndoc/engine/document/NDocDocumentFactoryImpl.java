@@ -3,6 +3,7 @@ package net.thevpc.ndoc.engine.document;
 import net.thevpc.ndoc.NDocDocumentFactory;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.NDocProps;
@@ -20,8 +21,8 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public NDocument ofDocument() {
-        DefaultNDocument d = new DefaultNDocument();
+    public NDocument ofDocument(NDocResource source) {
+        DefaultNDocument d = new DefaultNDocument(source);
         d.root().addRules(NDocDocumentRootRules.DEFAULT);
         return d;
     }
@@ -29,7 +30,7 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public NDocNode of(String type) {
         NAssert.requireNonNull(type, "type");
-        return engine.nodeTypeFactory(type)
+        return engine.nodeTypeParser(type)
                 .get().newNode();
     }
 
@@ -176,6 +177,11 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     @Override
     public NDocNode ofText(String text) {
         return ofText().setProperty(NDocPropName.VALUE, NElement.ofString(text));
+    }
+
+    @Override
+    public NDocNode ofText(NElement text) {
+        return ofText().setProperty(NDocPropName.VALUE, text==null?NElement.ofString(""):text);
     }
 
     @Override
