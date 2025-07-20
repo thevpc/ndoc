@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -41,7 +40,7 @@ public class ZigzagStroke implements Stroke {
                 NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
                 if (sp.isPresent()) {
                     NDocObjEx.SimplePair ke = sp.get();
-                    switch (HUtils.uid(ke.getName())) {
+                    switch (NDocUtils.uid(ke.getName())) {
                         case "amp":
                         case "amplitude": {
                             amplitude = ke.getValue().asDouble().orElse(amplitude);
