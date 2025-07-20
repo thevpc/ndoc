@@ -7,6 +7,7 @@ import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NStringElement;
 import net.thevpc.nuts.io.NPath;
 
 public interface NDocNodeFactoryParseContext {
@@ -26,6 +27,8 @@ public interface NDocNodeFactoryParseContext {
     NElement element();
 
     NDocResource source();
+
+    NPath resolvePath(NStringElement path);
 
     NPath resolvePath(String path);
 
