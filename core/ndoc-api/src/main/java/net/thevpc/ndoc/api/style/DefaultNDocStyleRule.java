@@ -1,6 +1,7 @@
 package net.thevpc.ndoc.api.style;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
@@ -8,39 +9,51 @@ import java.util.*;
 /**
  * immutable value object
  */
-public class DefaultHStyleRule implements HStyleRule {
+public class DefaultNDocStyleRule implements NDocStyleRule {
     private final HStyleMagnitude magnetude;
     private final NDocProperties styles;
     private final NDocStyleRuleSelector selector;
+    private final NDocResource source;
+    private final NDocNode parent;
 
-    public static DefaultHStyleRule ofAny(NDocProp... styles) {
-        return new DefaultHStyleRule(DefaultNDocNodeSelector.ofAny(), styles);
+    public static DefaultNDocStyleRule ofAny(NDocNode parent, NDocResource source, NDocProp... styles) {
+        return new DefaultNDocStyleRule(parent, source, DefaultNDocNodeSelector.ofAny(), styles);
     }
 
-    public static DefaultHStyleRule ofType(String type, NDocProp... styles) {
-        return of(type == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofType(type), styles);
+    public static DefaultNDocStyleRule ofType(NDocNode parent, NDocResource source, String type, NDocProp... styles) {
+        return of(parent, source, type == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofType(type), styles);
     }
 
-    public static DefaultHStyleRule ofName(String name, NDocProp... styles) {
-        return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofName(name), styles);
+    public static DefaultNDocStyleRule ofName(NDocNode parent, NDocResource source, String name, NDocProp... styles) {
+        return of(parent, source, name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofName(name), styles);
     }
 
-    public static DefaultHStyleRule ofClass(String name, NDocProp... styles) {
-        return of(name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofClasses(name), styles);
+    public static DefaultNDocStyleRule ofClass(NDocNode parent, NDocResource source, String name, NDocProp... styles) {
+        return of(parent, source, name == null ? DefaultNDocNodeSelector.ofAny() : DefaultNDocNodeSelector.ofClasses(name), styles);
     }
 
-    public static DefaultHStyleRule of(NDocStyleRuleSelector filter, NDocProp... styles) {
-        return new DefaultHStyleRule(filter, styles);
+    public static DefaultNDocStyleRule of(NDocNode parent, NDocResource source, NDocStyleRuleSelector filter, NDocProp... styles) {
+        return new DefaultNDocStyleRule(parent, source, filter, styles);
     }
 
-    public DefaultHStyleRule(NDocStyleRuleSelector selector, NDocProp... styles) {
-        this.styles = new NDocProperties();
+    public DefaultNDocStyleRule(NDocNode parent, NDocResource source, NDocStyleRuleSelector selector, NDocProp... styles) {
+        this.parent = parent;
+        this.styles = new NDocProperties(parent);
+        this.source = source;
         this.magnetude = new HStyleMagnitude(
                 0,
                 selector
         );
         this.selector = selector;
         this.styles.set(styles);
+    }
+
+    public NDocNode parent() {
+        return parent;
+    }
+
+    public NDocResource source() {
+        return source;
     }
 
     public NElement toElement() {
@@ -112,7 +125,7 @@ public class DefaultHStyleRule implements HStyleRule {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DefaultHStyleRule that = (DefaultHStyleRule) o;
+        DefaultNDocStyleRule that = (DefaultNDocStyleRule) o;
         return Objects.equals(magnetude, that.magnetude) && Objects.equals(styles, that.styles) && Objects.equals(selector, that.selector);
     }
 
