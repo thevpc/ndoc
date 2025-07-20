@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.spi.nodes;
 
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.nuts.NCallableSupport;
 
 /**
@@ -8,6 +8,6 @@ import net.thevpc.nuts.NCallableSupport;
  */
 public interface NDocNodeParserFactory {
 
-    NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context);
+    NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context);
 
 }
