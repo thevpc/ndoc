@@ -4,8 +4,8 @@ import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.HStyleRule;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.style.NDocStyleRule;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
@@ -27,7 +27,7 @@ public class ToElementHelper {
 
     public static ToElementHelper of(NDocNode node, NDocEngine engine) {
         return new ToElementHelper(
-                net.thevpc.ndoc.api.util.HUtils.uid(node.type())
+                NDocUtils.uid(node.type())
                 , node, engine);
     }
 
@@ -52,7 +52,7 @@ public class ToElementHelper {
             }
         }
         if (node.children().size() > 0 || node.rules().length > 0) {
-            HStyleRule[] rules = node.rules();
+            NDocStyleRule[] rules = node.rules();
             if (rules.length > 0) {
                 ch.add(
                         NElement.ofPair("styles",
@@ -65,7 +65,7 @@ public class ToElementHelper {
             ch.addAll(children);
             for (NDocNode child : node.children()) {
                 ch.add(
-                        engine.nodeTypeFactory(child.type()).get().toElem(child)
+                        engine.nodeTypeParser(child.type()).get().toElem(child)
                 );
             }
             NObjectElementBuilder u = NElement.ofObjectBuilder(name).addParams(args2).addAll(ch);
@@ -105,7 +105,7 @@ public class ToElementHelper {
 
     public ToElementHelper addNonNullPairChild(String name, Object value) {
         if(value!=null){
-            addChild(NElement.ofPair(name, net.thevpc.ndoc.api.util.HUtils.toElement(name)));
+            addChild(NElement.ofPair(name, NDocUtils.toElement(name)));
         }
         return this;
     }
@@ -144,7 +144,7 @@ public class ToElementHelper {
 
     public ToElementHelper excludeProps(String prop) {
         if (!NBlankable.isBlank(prop)) {
-            excludeSet.add(HUtils.uid(prop));
+            excludeSet.add(NDocUtils.uid(prop));
         }
         return this;
     }
