@@ -1,19 +1,31 @@
 package net.thevpc.ndoc.api.model.node;
 
+import net.thevpc.ndoc.api.resources.NDocResource;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class HItemList implements HItem {
-    private List<HItem> items = new ArrayList<>();
+public class NDocItemList implements NDocItem {
+    private List<NDocItem> items = new ArrayList<>();
 
-    public HItemList() {
+    @Override
+    public NDocItem parent() {
+        return null;
+    }
+
+    @Override
+    public NDocResource source() {
+        return null;
+    }
+
+    public NDocItemList() {
         this.items = new ArrayList<>();
     }
 
-    public HItemList add(HItem a) {
+    public NDocItemList add(NDocItem a) {
         if (a != null) {
-            if (a instanceof HItemList) {
-                for (HItem b : ((HItemList) a).getItems()) {
+            if (a instanceof NDocItemList) {
+                for (NDocItem b : ((NDocItemList) a).getItems()) {
                     add(b);
                 }
             } else {
@@ -23,16 +35,16 @@ public class HItemList implements HItem {
         return this;
     }
 
-    public HItemList addAll(List<HItem> all) {
+    public NDocItemList addAll(List<NDocItem> all) {
         if (all != null) {
-            for (HItem i : all) {
+            for (NDocItem i : all) {
                 add(i);
             }
         }
         return this;
     }
 
-    public List<HItem> getItems() {
+    public List<NDocItem> getItems() {
         return items;
     }
 
