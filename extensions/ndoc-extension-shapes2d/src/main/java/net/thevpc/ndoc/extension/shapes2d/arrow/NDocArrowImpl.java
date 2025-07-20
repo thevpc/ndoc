@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
@@ -26,7 +26,7 @@ public class NDocArrowImpl extends NDocNodeParserBase {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
                     NPairElement p = info.currentArg.asPair().get();
-                    switch (HUtils.uid(p.key().asStringValue().get())) {
+                    switch (NDocUtils.uid(p.key().asStringValue().get())) {
                         case "width": {
                             info.node.setProperty(NDocPropName.WIDTH, p.value());
                             return true;
@@ -63,10 +63,10 @@ public class NDocArrowImpl extends NDocNodeParserBase {
                 item,
                 engine()
         ).addChildren(
-                width == null ? null : NElement.ofPair("width", net.thevpc.ndoc.api.util.HUtils.toElement(width.getValue())),
-                height == null ? null : NElement.ofPair("height", net.thevpc.ndoc.api.util.HUtils.toElement(height.getValue())),
-                base == null ? null : NElement.ofPair("base", net.thevpc.ndoc.api.util.HUtils.toElement(base.getValue())),
-                hat == null ? null : NElement.ofPair("hat", net.thevpc.ndoc.api.util.HUtils.toElement(hat.getValue()))
+                width == null ? null : NElement.ofPair("width", NDocUtils.toElement(width.getValue())),
+                height == null ? null : NElement.ofPair("height", NDocUtils.toElement(height.getValue())),
+                base == null ? null : NElement.ofPair("base", NDocUtils.toElement(base.getValue())),
+                hat == null ? null : NElement.ofPair("hat", NDocUtils.toElement(hat.getValue()))
         ).build();
     }
 
