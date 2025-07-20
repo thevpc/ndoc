@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.spi;
 
 import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.NCallableSupport;
@@ -16,7 +16,7 @@ public interface NDocNodeParser {
 
     String[] aliases();
 
-    NCallableSupport<HItem> parseNode(NDocNodeFactoryParseContext context);
+    NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context);
 
     NElement toElem(NDocNode item);
 
