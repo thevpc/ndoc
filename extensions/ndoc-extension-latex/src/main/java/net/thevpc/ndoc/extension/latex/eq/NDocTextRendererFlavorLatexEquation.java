@@ -3,7 +3,7 @@ package net.thevpc.ndoc.extension.latex.eq;
 import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -65,9 +65,9 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
         }else if(options.foregroundColor instanceof Color){
             foregroundColor=(Color) options.foregroundColor;
         }
-        Color fg=HUtils.paintAsColor(HUtils.resolveForegroundColor(options));
+        Color fg= NDocUtils.paintAsColor(NDocUtils.resolveForegroundColor(options));
         if(fg==null) {
-            fg = HUtils.paintAsColor(NDocValueByName.getForegroundColor(p, ctx, true));
+            fg = NDocUtils.paintAsColor(NDocValueByName.getForegroundColor(p, ctx, true));
         }
         if(fg==null) {
             fg = Color.BLACK;
