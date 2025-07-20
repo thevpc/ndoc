@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
@@ -43,7 +43,7 @@ public class SloppyStroke implements Stroke {
                 NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
                 if (sp.isPresent()) {
                     NDocObjEx.SimplePair ke = sp.get();
-                    switch (net.thevpc.ndoc.api.util.HUtils.uid(ke.getName())) {
+                    switch (NDocUtils.uid(ke.getName())) {
                         case "width":
                         case "dash-phase":
                         case "miter-limit":
@@ -53,7 +53,7 @@ public class SloppyStroke implements Stroke {
                             if (basic == null) {
                                 basic = NElement.ofObjectBuilder();
                             }
-                            basic.set(net.thevpc.ndoc.api.util.HUtils.uid(ke.getName()), (NElement) ke.getValue().raw());
+                            basic.set(NDocUtils.uid(ke.getName()), (NElement) ke.getValue().raw());
                             break;
                         }
                         case "sloppyness":
@@ -63,7 +63,7 @@ public class SloppyStroke implements Stroke {
                         }
                     }
                 }else if(arg.isAnyString()){
-                    switch (HUtils.uid(arg.asStringValue().get())) {
+                    switch (NDocUtils.uid(arg.asStringValue().get())) {
                         case "dashed":
                         case "dash":
                         {
