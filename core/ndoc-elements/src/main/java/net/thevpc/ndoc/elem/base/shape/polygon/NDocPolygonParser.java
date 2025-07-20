@@ -7,6 +7,7 @@ import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.HPropUtils;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -22,9 +23,9 @@ public class NDocPolygonParser extends NDocNodeParserBase {
     @Override
     protected boolean processArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
-            case INTEGER:
+            case INT:
             case LONG: {
-                info.node.setProperty(NDocPropName.COUNT, NDocObjEx.of(info.currentArg).asTsonInt().get());
+                info.node.setProperty(NDocPropName.COUNT, NDocUtils.addCompilerDeclarationPath( NDocObjEx.of(info.currentArg).asTsonInt().get(), info.context.source()));
                 return true;
             }
             case PAIR: {
