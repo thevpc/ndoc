@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.model.elem2d.*;
 import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.util.DefaultColorPalette;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.*;
@@ -335,7 +335,7 @@ public class NDocObjEx {
                     case PARAMETRIZED_ARRAY:
                     case NAMED_ARRAY:{
                         NListContainerElement te = (NListContainerElement) element;
-                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
+                        name = NDocUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
                         List<NElement> a = te.children();
                         if (a != null) {
                             children.addAll(a);
@@ -346,7 +346,7 @@ public class NDocObjEx {
                     case UPLET:
                     case NAMED_UPLET: {
                         NListContainerElement te = (NListContainerElement) element;
-                        name = net.thevpc.ndoc.api.util.HUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
+                        name = NDocUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
                         List<NElement> a = te.children();
                         if (a != null) {
                             args.addAll(a);
@@ -400,13 +400,13 @@ public class NDocObjEx {
         for (NElement arg : args()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
+                a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
         }
         for (NElement arg : body()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
+                a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
         }
         return a;
@@ -417,7 +417,7 @@ public class NDocObjEx {
         for (NElement arg : args()) {
             NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
             if (sp.isPresent()) {
-                a.put(net.thevpc.ndoc.api.util.HUtils.uid(sp.get().name), sp.get().value);
+                a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
         }
         return a;
@@ -449,7 +449,7 @@ public class NDocObjEx {
                 case BIG_INT:
                 case SHORT:
                 case LONG:
-                case INTEGER: {
+                case INT: {
                     return NDocObjEx.of(te.asIntValue().get()).asColor();
                 }
                 case UPLET:
@@ -643,7 +643,7 @@ public class NDocObjEx {
             if (te.type().isAnyNumber()) {
                 switch (te.type()) {
                     case BYTE:
-                    case INTEGER:
+                    case INT:
                     case SHORT:
                     case LONG:
                     case FLOAT:
@@ -687,7 +687,7 @@ public class NDocObjEx {
                 switch (te.type()) {
                     case BYTE:
                     case SHORT:
-                    case INTEGER:
+                    case INT:
                     case LONG: {
                         return NOptional.of(te.asIntValue().get());
                     }
@@ -1532,7 +1532,7 @@ public class NDocObjEx {
         }
 
         public String getNameId() {
-            return HUtils.uid(getName());
+            return NDocUtils.uid(getName());
         }
 
         public String getName() {
