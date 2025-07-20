@@ -14,6 +14,7 @@ public class NDocMsg {
     public static NDocMsg of(NMsg message, NDocResource source) {
         return new NDocMsg(message, null, source);
     }
+
     public static NDocMsg of(NMsg message) {
         return new NDocMsg(message, null, null);
     }
