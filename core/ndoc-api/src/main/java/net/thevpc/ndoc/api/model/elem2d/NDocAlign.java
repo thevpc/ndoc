@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model.elem2d;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NMsg;
@@ -61,6 +61,6 @@ public enum NDocAlign implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElement.ofName(HUtils.uid(name()));
+        return NElement.ofName(NDocUtils.uid(name()));
     }
 }
