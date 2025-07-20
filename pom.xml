@@ -14,7 +14,6 @@
         <module>core/ndoc-api</module>
         <module>core/ndoc-spi-base</module>
         <module>core/ndoc-elements</module>
-        <module>core/ndoc-controls</module>
         <module>core/ndoc-engine</module>
         <module>core/renderers/ndoc-renderer-pdf</module>
         <module>core/renderers/ndoc-renderer-html</module>
