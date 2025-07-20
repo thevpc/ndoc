@@ -4,14 +4,14 @@
  */
 package net.thevpc.ndoc.api.style;
 
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 /**
  * @author vpc
  */
-public interface HStyleRule extends HItem {
+public interface NDocStyleRule extends NDocItem {
     boolean acceptNode(NDocNode node);
 
     NDocStyleRuleSelector selector();
