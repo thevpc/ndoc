@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.*;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
@@ -16,15 +16,15 @@ public class NDocPropCalculator {
     }
 
     private static class HStyleRuleResult2 {
-        HStyleRule rule;
+        NDocStyleRule rule;
         NDocProp property;
         int distance;
 
-        public HStyleRuleResult2(HStyleRule rule, NDocProp property) {
+        public HStyleRuleResult2(NDocStyleRule rule, NDocProp property) {
             this.rule = rule;
             this.property = property;
         }
-        public HStyleRuleResult2(HStyleRule rule, NDocProp property, int distance) {
+        public HStyleRuleResult2(NDocStyleRule rule, NDocProp property, int distance) {
             this.rule = rule;
             this.property = property;
             this.distance = distance;
@@ -45,9 +45,9 @@ public class NDocPropCalculator {
     }
 
     private HStyleRuleResult2[] _HStyleRuleResult2s(NDocNode t, NDocNode p) {
-        HStyleRule[] rules = p.rules();
+        NDocStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
-        for (HStyleRule rule : rules) {
+        for (NDocStyleRule rule : rules) {
             if (rule.acceptNode(t)) {
                 for (NDocProp style : rule.styles().toList()) {
                     rr.add(new HStyleRuleResult2(rule, style));
@@ -58,9 +58,9 @@ public class NDocPropCalculator {
     }
 
     private HStyleRuleResult2[] _HStyleRuleResult2(NDocNode t, NDocNode p, String[] propertyNames) {
-        HStyleRule[] rules = p.rules();
+        NDocStyleRule[] rules = p.rules();
         List<HStyleRuleResult2> rr = new ArrayList<>();
-        for (HStyleRule rule : rules) {
+        for (NDocStyleRule rule : rules) {
             if (rule.acceptNode(t)) {
                 NOptional<NDocProp> ok = rule.styles().get(propertyNames);
                 if (ok.isPresent()) {
@@ -73,7 +73,7 @@ public class NDocPropCalculator {
     }
 
     public NOptional<HStyleAndMagnitude> computePropertyMagnetude(NDocNode node, String[] propertyNames) {
-        propertyNames = HUtils.uids(propertyNames);
+        propertyNames = NDocUtils.uids(propertyNames);
         NOptional<NDocProp> u = node.getProperty(propertyNames);
         if (u.isPresent()) {
             return NOptional.of(
@@ -83,7 +83,7 @@ public class NDocPropCalculator {
                     )
             );
         }
-        NDocNode p = node.parent();
+        NDocNode p = NDocUtils.firstNodeUp(node.parent());
         int distance = 1;
         NDocProp bestStyle = null;
         HStyleMagnitude bestMag = null;
@@ -109,7 +109,7 @@ public class NDocPropCalculator {
             }
             */
             distance++;
-            p = p.parent();
+            p = NDocUtils.firstNodeUp(p.parent());
         }
         if (bestMag != null) {
             return NOptional.of(
@@ -132,7 +132,7 @@ public class NDocPropCalculator {
                     )
             );
         }
-        NDocNode p = node.parent();
+        NDocNode p = NDocUtils.firstNodeUp(node.parent());
         int distance = 1;
         while (p != null) {
             HStyleRuleResult2[] validRules = _HStyleRuleResult2s(node, p);
@@ -144,7 +144,7 @@ public class NDocPropCalculator {
                 }
             }
             distance++;
-            p = p.parent();
+            p = NDocUtils.firstNodeUp(p.parent());
         }
         return new ArrayList<>(found.values());
     }
