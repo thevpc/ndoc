@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.node.HItemList;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItemList;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.spi.base.parser.HStyleParser;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -12,8 +12,8 @@ import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
 public class NDocItemListParser {
-    public static NOptional<HItemList> readHItemList(NElement ff, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
-        HItemList pg = new HItemList();
+    public static NOptional<NDocItemList> readHItemList(NElement ff, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
+        NDocItemList pg = new NDocItemList();
 
         switch (ff.type()) {
             case NAMED_UPLET:
@@ -40,7 +40,7 @@ public class NDocItemListParser {
                     }
                 }
                 for (NElement e : ee.body()) {
-                    NOptional<HItem> u = context.engine().newNode(e, context);
+                    NOptional<NDocItem> u = context.engine().newNode(e, context);
                     if (u.isPresent()) {
                         pg.add(u.get());
                     } else {
