@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
@@ -78,9 +78,9 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
                 AffineTransform t = g.getTransform();
                 g.shear(-1, 0);
 
-                g.fillRect((int) (x + translation.getX()), (int) (y + ellipse_height / 2 + translation.getY()), net.thevpc.ndoc.api.util.HUtils.intOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(height - ellipse_height));
-                g.fillOval((int) (x + translation.getX()), (int) (arcY - ellipse_height / 2 + translation.getY()), net.thevpc.ndoc.api.util.HUtils.intOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(ellipse_height));
-                g.fillOval((int) (x + translation.getX()), (int) (y + translation.getY()), net.thevpc.ndoc.api.util.HUtils.intOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(ellipse_height));
+                g.fillRect((int) (x + translation.getX()), (int) (y + ellipse_height / 2 + translation.getY()), NDocUtils.intOf(width), NDocUtils.intOf(height - ellipse_height));
+                g.fillOval((int) (x + translation.getX()), (int) (arcY - ellipse_height / 2 + translation.getY()), NDocUtils.intOf(width), NDocUtils.intOf(ellipse_height));
+                g.fillOval((int) (x + translation.getX()), (int) (y + translation.getY()), NDocUtils.intOf(width), NDocUtils.intOf(ellipse_height));
 
                 g.setTransform(t);
 
@@ -92,7 +92,7 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
                 NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
                     g.setColor(sideColor);
                     g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
-                    g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, net.thevpc.ndoc.api.util.HUtils.intOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(finalEllipse_height));
+                    g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, NDocUtils.intOf(width), NDocUtils.intOf(finalEllipse_height));
 
                     g.setColor(sideColor.darker());
                     Area rightButtomArc = new Area(new Arc2D.Double(x, (int) arcY - finalEllipse_height / 2, width, finalEllipse_height, -90, -180, Arc2D.PIE));
@@ -127,17 +127,17 @@ public class NDocCylinderRenderer extends NDocNodeRendererBase {
 
             if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                 NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                    g.drawOval((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.doubleOf(width), net.thevpc.ndoc.api.util.HUtils.intOf(finalEllipse_height));
+                    g.drawOval((int) x, (int) y, NDocUtils.doubleOf(width), NDocUtils.intOf(finalEllipse_height));
 
                     g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
                     g.drawLine((int) (x + width), (int) (y + finalEllipse_height / 2), (int) (x + width), (int) (arcY));
 
-                    g.drawArc((int) x, (int) arcY - finalEllipse_height / 2, net.thevpc.ndoc.api.util.HUtils.intOf(width), HUtils.intOf(finalEllipse_height), 0, -180);
+                    g.drawArc((int) x, (int) arcY - finalEllipse_height / 2, NDocUtils.intOf(width), NDocUtils.intOf(finalEllipse_height), 0, -180);
 
                     double segmentHeight = (height - finalEllipse_height) / (segmentCount + 1);
                     for (int i = 1; i <= segmentCount; i++) {
                         double segY = y + i * segmentHeight;
-                        g.drawArc(x, segY, net.thevpc.ndoc.api.util.HUtils.doubleOf(width), net.thevpc.ndoc.api.util.HUtils.doubleOf(finalEllipse_height), 0, -180);
+                        g.drawArc(x, segY, NDocUtils.doubleOf(width), NDocUtils.doubleOf(finalEllipse_height), 0, -180);
                     }
                 });
             }
