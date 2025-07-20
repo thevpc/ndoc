@@ -1,6 +1,0 @@
-net.thevpc.ndoc.elem.base.control.NDocIfParser
-net.thevpc.ndoc.elem.base.control.NDocElseParser
-net.thevpc.ndoc.elem.base.control.NDocElseIfParser
-net.thevpc.ndoc.elem.base.control.NDocCtrlAssignParser
-net.thevpc.ndoc.elem.base.control.NDocCtrlDefineParser
-net.thevpc.ndoc.elem.base.control.NDocCtrlCallParser
