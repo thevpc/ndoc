@@ -5,9 +5,8 @@
 package net.thevpc.ndoc.spi.eval;
 
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.util.HUtils;
 import net.thevpc.nuts.elem.NElementAnnotation;
-import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -42,21 +41,24 @@ public class NDocParseHelper {
 
     public static boolean fillAnnotations(NElement e, NDocNode p) {
         for (NElementAnnotation a : e.annotations()) {
-            // add classes as well
-            Set<String> allClasses = new HashSet<>();
-            List<NElement> params = a.params();
-            if(params !=null) {
-                for (NElement cls : params) {
-                    NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
-                    if (ss.isPresent()) {
-                        allClasses.addAll(Arrays.asList(ss.get()));
+            String nn=a.name();
+            if (!NNameFormat.equalsIgnoreFormat(nn,"CompilerDeclarationPath")) {
+                // add classes as well
+                Set<String> allClasses = new HashSet<>();
+                List<NElement> params = a.params();
+                if (params != null) {
+                    for (NElement cls : params) {
+                        NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                        if (ss.isPresent()) {
+                            allClasses.addAll(Arrays.asList(ss.get()));
+                        }
                     }
                 }
+                if (!allClasses.isEmpty()) {
+                    p.addStyleClasses(allClasses.toArray(new String[0]));
+                }
+                return true;
             }
-            if (!allClasses.isEmpty()) {
-                p.addStyleClasses(allClasses.toArray(new String[0]));
-            }
-            return true;
         }
         return false;
     }
