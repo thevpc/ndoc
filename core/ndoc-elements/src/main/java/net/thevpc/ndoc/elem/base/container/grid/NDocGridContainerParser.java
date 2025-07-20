@@ -7,7 +7,7 @@ package net.thevpc.ndoc.elem.base.container.grid;
 import net.thevpc.ndoc.api.model.elem2d.NDocInt2;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -73,8 +73,8 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
 
-                    String id = HUtils.uid(info.id);
-                    switch (HUtils.uid(n.get())) {
+                    String id = NDocUtils.uid(info.id);
+                    switch (NDocUtils.uid(n.get())) {
                         case "columns": {
                             if (id.equals("grid") || id.equals("hgrid") || id.equals("row")) {
                                 info.node.setProperty(NDocPropName.COLUMNS, NDocObjEx.of(v).asTsonInt().get());
@@ -95,7 +95,7 @@ public class NDocGridContainerParser extends NDocNodeParserBase {
             }
         }
         if(HParserUtils.isIntOrExprNonCommon(info.currentArg)){
-            String id = HUtils.uid(info.id);
+            String id = NDocUtils.uid(info.id);
             if (id.equals("row")|| id.equals("hgrid")) {
                 if(info.node.getProperty(NDocPropName.COLUMNS).isNotPresent()){
                     info.node.setProperty(NDocPropName.COLUMNS,info.currentArg);
