@@ -6,8 +6,9 @@ import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.*;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.*;
 
@@ -19,17 +20,42 @@ public class DefaultNDocNode implements NDocNode {
     private String uuid;
     private String nodeType;
     private NDocResource source;
-    protected NDocNode parent;
-    private NDocProperties properties = new NDocProperties();
+    protected NDocItem parent;
+    private NDocProperties properties;
     private Map<String, NElement> vars = new LinkedHashMap<>();
     private List<NDocNode> children = new ArrayList<>();
-    private List<HStyleRule> styleRules = new ArrayList<>();
+    private List<NDocStyleRule> styleRules = new ArrayList<>();
     private List<NDocNodeDef> definitions = new ArrayList<>();
     private List<NDocFunction> functions = new ArrayList<>();
 
+    public static DefaultNDocNode ofText(String message) {
+        DefaultNDocNode t = new DefaultNDocNode(NDocNodeType.TEXT);
+        t.setProperty(NDocPropName.VALUE, NElement.ofString(message));
+        return t;
+    }
+
+    public static DefaultNDocNode ofAssign(String name, NElement value, NDocResource source) {
+        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.ASSIGN, source);
+        n.setProperty(NDocPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(name),source));
+        n.setProperty(NDocPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value,source));
+        return n;
+    }
+
+    public static DefaultNDocNode ofExpr(NElement value, NDocResource source) {
+        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.EXPR, source);
+        n.setProperty(NDocPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value,source));
+        return n;
+    }
+
     public DefaultNDocNode(String nodeType) {
+        this(nodeType, null);
+    }
+
+    public DefaultNDocNode(String nodeType, NDocResource source) {
         this.nodeType = nodeType;
         this.uuid = UUID.randomUUID().toString();
+        this.source = source;
+        properties = new NDocProperties(this);
     }
 
     @Override
@@ -59,7 +85,7 @@ public class DefaultNDocNode implements NDocNode {
             return new String[0];
         }
         return Arrays.stream(v).filter(x -> !NBlankable.isBlank(x))
-                .map(HUtils::uid)
+                .map(NDocUtils::uid)
                 .distinct()
                 .toArray(String[]::new)
                 ;
@@ -127,19 +153,45 @@ public class DefaultNDocNode implements NDocNode {
         return NOptional.ofNamed(vars.get(property), property);
     }
 
+    @Override
+    public Map<String, NElement> getVars() {
+        return new LinkedHashMap<>(vars);
+    }
+
     public NOptional<NDocProp> getProperty(String... propertyNames) {
         return properties.get(propertyNames);
     }
 
     @Override
     public NDocNode setProperty(String name, NElement value) {
+        if(value!=null){
+            if(false) {
+                String s = NDocUtils.findCompilerDeclarationPath(value).orNull();
+                if (s == null) {
+                    throw new NIllegalArgumentException(NMsg.ofC("var property %s=%s is missing CompilerDeclarationPath", name, value));
+                }
+            }
+        }
         properties.set(name, value);
         return this;
     }
 
     @Override
     public NDocNode setProperty(String name, NToElement value) {
-        properties.set(name, value == null ? null : value.toElement());
+        if(value!=null){
+            NElement e = value.toElement();
+            if(e!=null){
+                if(false) {
+                    String s = NDocUtils.findCompilerDeclarationPath(e).orNull();
+                    if (s == null) {
+                        throw new NIllegalArgumentException(NMsg.ofC("var property %s=%s is missing CompilerDeclarationPath", name, value));
+                    }
+                }
+            }
+            properties.set(name, e);
+        }else {
+            properties.set(name, null);
+        }
         return this;
     }
 
@@ -148,14 +200,26 @@ public class DefaultNDocNode implements NDocNode {
         if (value == null) {
             vars.remove(name);
         } else {
+            if(false) {
+                String s = NDocUtils.findCompilerDeclarationPath(value).orNull();
+                if (s == null) {
+                    throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", name, value));
+                }
+            }
             vars.put(name, value);
         }
         return this;
     }
 
 
-    public NDocNode setProperty(NDocProp s) {
-        properties.set(s);
+    public NDocNode setProperty(NDocProp prop) {
+        if(false) {
+            String s = NDocUtils.findCompilerDeclarationPath(prop.getValue()).orNull();
+            if (s == null) {
+                throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", prop.getName(), prop.getValue()));
+            }
+        }
+        properties.set(prop);
         return this;
     }
 
@@ -165,7 +229,7 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode parent() {
+    public NDocItem parent() {
         return parent;
     }
 
@@ -193,7 +257,7 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public HItem setStyleClasses(String[] classNames) {
+    public NDocItem setStyleClasses(String[] classNames) {
         Set<String> s = new HashSet<>();
         if (classNames != null) {
             for (String c : classNames) {
@@ -256,16 +320,17 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode setParent(NDocNode parent) {
+    public NDocNode setParent(NDocItem parent) {
         this.parent = parent;
         return this;
     }
 
+
     @Override
-    public NDocNode mergeNode(HItem other) {
+    public NDocNode mergeNode(NDocItem other) {
         if (other != null) {
-            if (other instanceof HItemList) {
-                for (HItem item : ((HItemList) other).getItems()) {
+            if (other instanceof NDocItemList) {
+                for (NDocItem item : ((NDocItemList) other).getItems()) {
                     mergeNode(item);
                 }
             } else if (other instanceof NDocProp) {
@@ -288,19 +353,19 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public boolean append(HItem a) {
+    public boolean append(NDocItem a) {
         if (a != null) {
-            if (a instanceof HItemList) {
+            if (a instanceof NDocItemList) {
                 boolean b = false;
-                for (HItem item : ((HItemList) a).getItems()) {
+                for (NDocItem item : ((NDocItemList) a).getItems()) {
                     b |= append(item);
                 }
                 return b;
             } else if (a instanceof NDocProp) {
                 setProperty((NDocProp) a);
                 return true;
-            } else if (a instanceof HStyleRule) {
-                addRule((HStyleRule) a);
+            } else if (a instanceof NDocStyleRule) {
+                addRule((NDocStyleRule) a);
                 return true;
             } else if (a instanceof NDocNode) {
                 add((NDocNode) a);
@@ -504,7 +569,7 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode addRule(HStyleRule s) {
+    public NDocNode addRule(NDocStyleRule s) {
         if (s != null) {
             styleRules.add(s);
         }
@@ -512,16 +577,16 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode setRules(HStyleRule[] rules) {
+    public NDocNode setRules(NDocStyleRule[] rules) {
         styleRules.clear();
         addRules(rules);
         return this;
     }
 
     @Override
-    public NDocNode addRules(HStyleRule... rules) {
+    public NDocNode addRules(NDocStyleRule... rules) {
         if (rules != null) {
-            for (HStyleRule rule : rules) {
+            for (NDocStyleRule rule : rules) {
                 addRule(rule);
             }
         }
@@ -529,14 +594,14 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode removeRule(HStyleRule s) {
+    public NDocNode removeRule(NDocStyleRule s) {
         styleRules.remove(s);
         return this;
     }
 
     @Override
     public NDocNode clearRules() {
-        for (HStyleRule rule : rules()) {
+        for (NDocStyleRule rule : rules()) {
             removeRule(rule);
         }
         return this;
@@ -563,12 +628,12 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public HStyleRule[] rules() {
-        return styleRules.toArray(new HStyleRule[0]);
+    public NDocStyleRule[] rules() {
+        return styleRules.toArray(new NDocStyleRule[0]);
     }
 
     public NDocNode copy() {
-        DefaultNDocNode o = new DefaultNDocNode(nodeType);
+        DefaultNDocNode o = new DefaultNDocNode(nodeType, source());
         copyTo(o);
         return o;
     }
@@ -578,8 +643,34 @@ public class DefaultNDocNode implements NDocNode {
         other.setSource(source());
         other.setProperties(properties.toArray());
         other.addAll(children().stream().map(NDocNode::copy).toArray(NDocNode[]::new));
-        other.addRules(Arrays.stream(rules()).toArray(HStyleRule[]::new));
-        other.addNodeDefinitions(nodeDefinitions());
+        other.addRules(Arrays.stream(rules()).toArray(NDocStyleRule[]::new));
+        for (Map.Entry<String, NElement> e : vars.entrySet()) {
+            other.setVar(e.getKey(), e.getValue());
+        }
+        for (NDocStyleRule styleRule : styleRules) {
+            other.addRule(styleRule);
+        }
+        for (NDocNodeDef v : definitions) {
+            other.addNodeDefinitions(v);
+        }
+        for (NDocFunction v : functions) {
+            other.addNodeFunction(v);
+        }
+        return this;
+    }
+
+    public NDocNode reset() {
+        uuid = null;
+        source = null;
+        parent = null;
+        if (properties != null) {
+            properties.clear();
+        }
+        vars.clear();
+        children.clear();
+        styleRules.clear();
+        definitions.clear();
+        functions.clear();
         return this;
     }
 
