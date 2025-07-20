@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.parser.nodes;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.HItemList;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItemList;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.engine.HEngineUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -28,7 +28,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case UPLET:
             case NAMED_UPLET: {
@@ -40,14 +40,14 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                         return NOptional.ofError(() -> NMsg.ofC("missing path argument : %s", tsonElement));
                     }
                     NDocNode putInto = context.node();
-                    List<HItem> loaded = new ArrayList<>();
+                    List<NDocItem> loaded = new ArrayList<>();
                     NRef<Boolean> someLoaded = NRef.of(false);
                     for (NElement ee : u) {
                         NDocObjEx t = NDocObjEx.of(ee);
                         NOptional<String[]> p = t.asStringArrayOrString();
                         if (p.isPresent()) {
                             for (String sp : p.get()) {
-                                NOptional<HItem> a = importOne(sp, loaded, putInto, context);
+                                NOptional<NDocItem> a = importOne(sp, loaded, putInto, context);
                                 if (a != null) {
                                     return a;
                                 } else {
@@ -57,7 +57,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                         }
                     }
                     if (someLoaded.get()) {
-                        return NOptional.of(new HItemList().addAll(loaded));
+                        return NOptional.of(new NDocItemList().addAll(loaded));
                     }
                 }
                 break;
@@ -67,7 +67,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         return NOptional.ofNamedEmpty("include elements");
     }
 
-    public NOptional<HItem> importOne(String anyPath, List<HItem> loaded, NDocNode putInto, NDocNodeFactoryParseContext context) {
+    public NOptional<NDocItem> importOne(String anyPath, List<NDocItem> loaded, NDocNode putInto, NDocNodeFactoryParseContext context) {
         NPath spp = context.resolvePath(anyPath);
         if (spp.isDirectory()) {
             spp = spp.resolve(HEngineUtils.NDOC_EXT_STAR_STAR);
@@ -77,7 +77,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         list.sort(HEngineUtils::comparePaths);
         for (NPath nPath : list) {
             if (nPath.isRegularFile()) {
-                NOptional<HItem> se = context.engine().loadNode(putInto, nPath, context.document(), context.messages());
+                NOptional<NDocItem> se = context.engine().loadNode(putInto, nPath, context.document(), context.messages());
                 if (se.isPresent()) {
                     loaded.add(se.get());
                 } else {
@@ -86,7 +86,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
                 }
             }
         }
-        return NOptional.of(new HItemList().addAll(loaded));
+        return NOptional.of(new NDocItemList().addAll(loaded));
     }
 }
 
