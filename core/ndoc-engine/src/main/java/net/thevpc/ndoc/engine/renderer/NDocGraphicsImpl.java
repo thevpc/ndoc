@@ -11,7 +11,7 @@ import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DLine;
 import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DPolygon;
 import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DPolyline;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.renderer.elem2d.Element2DUIFactory;
 import net.thevpc.ndoc.engine.renderer.elem2d.ShapeFactory;
 import net.thevpc.ndoc.engine.renderer.elem3d.NDocLight3DImpl;
@@ -435,16 +435,16 @@ public class NDocGraphicsImpl implements NDocGraphics {
     @Override
     public void fillRect(NDocBounds2 a) {
         fillRect(
-                net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinY()),
-                net.thevpc.ndoc.api.util.HUtils.intOf(a.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getHeight())
+                NDocUtils.doubleOf(a.getMinX()), NDocUtils.intOf(a.getMinY()),
+                NDocUtils.intOf(a.getWidth()), NDocUtils.intOf(a.getHeight())
         );
     }
 
     @Override
     public void drawRect(NDocBounds2 a) {
         drawRect(
-                net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinY()),
-                net.thevpc.ndoc.api.util.HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                NDocUtils.doubleOf(a.getMinX()), NDocUtils.intOf(a.getMinY()),
+                NDocUtils.intOf(a.getWidth()), NDocUtils.intOf(a.getHeight())
         );
     }
 
