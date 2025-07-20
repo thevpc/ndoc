@@ -26,11 +26,13 @@ public class NDocDebugPanel extends JPanel {
         ));
         pane.addTab("Document", compiledDocument = new NDocDocumentPanel(
                 model.getEngine(),
-                () -> model.getCompiledDocument()
+                () -> model.getCompiledDocument(),
+                textAreaHMessageList
         ));
         pane.addTab("Raw", rawDocument = new NDocDocumentPanel(
                 model.getEngine(),
-                () -> model.getRawDocument()
+                () -> model.getRawDocument(),
+                textAreaHMessageList
         ));
         pane.addTab("Messages", textAreaHMessageList);
     }
