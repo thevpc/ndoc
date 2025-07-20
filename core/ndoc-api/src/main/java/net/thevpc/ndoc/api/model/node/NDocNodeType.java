@@ -47,7 +47,9 @@ public class NDocNodeType {
     public static final String PLOT2D = "plot2d";
 
     public static final String ASSIGN="assign";
+    public static final String EXPR="expr";
     public static final String CALL="call";
+    public static final String FOR="for";
     public static final String DEFINE="define";
 
     public static final String IF = "if";
