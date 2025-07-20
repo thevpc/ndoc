@@ -12,6 +12,7 @@ import net.thevpc.ndoc.api.document.NDocDocumentClass;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
 import net.thevpc.ndoc.spi.util.PagesHelper;
@@ -24,10 +25,11 @@ public class DefaultNDocument implements NDocument, Cloneable {
 
     private NDocDocumentClass documentClass;
     private Properties properties = new Properties();
-    private DefaultNDocNode root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP);
+    private DefaultNDocNode root;
     private NDocResourceMonitor resources = new NDocResourceMonitorImpl();
 
-    public DefaultNDocument() {
+    public DefaultNDocument(NDocResource source) {
+        root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP,source);
     }
 
     @Override
