@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
 import net.thevpc.ndoc.api.model.elem3d.composite.NDocElement3DSurface;
 import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DTriangle;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.MinMax;
 import net.thevpc.ndoc.spi.NDocElement3DRenderer;
 import org.locationtech.jts.geom.Coordinate;
@@ -35,7 +35,7 @@ public class Element3DSurfacePrimitiveBuilder implements NDocElement3DRenderer {
         // Perform Delaunay triangulation
         DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
         builder.setSites(Arrays.asList(points).stream().map(x -> new Coordinate(x.x, x.y, x.z)).collect(Collectors.toList()));
-        MinMax m = HUtils.minMaxZ(points);
+        MinMax m = NDocUtils.minMaxZ(points);
         QuadEdgeSubdivision subdivision = builder.getSubdivision();
         // Get the triangles as JTS Geometry objects
         GeometryCollection triangles = (GeometryCollection) subdivision.getTriangles(new GeometryFactory());
