@@ -5,15 +5,16 @@ import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
 import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.HStyleRule;
+import net.thevpc.ndoc.api.style.NDocStyleRule;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public interface NDocNode extends HItem {
+public interface NDocNode extends NDocItem {
     String getUuid();
 
     NDocNode setUuid(String uuid);
@@ -22,9 +23,9 @@ public interface NDocNode extends HItem {
     String[] getStyleClasses();
 
 
-    HItem setStyleClasses(String[] classNames);
+    NDocItem setStyleClasses(String[] classNames);
 
-    boolean append(HItem a);
+    boolean append(NDocItem a);
 
     NDocResource source();
 
@@ -34,8 +35,6 @@ public interface NDocNode extends HItem {
 
     NDocNode setDisabled(boolean enabled);
 
-    NDocNode parent();
-
     String name();
 
     String type();
@@ -43,6 +42,8 @@ public interface NDocNode extends HItem {
     List<NDocProp> props();
 
     NOptional<NElement> getVar(String property);
+
+    Map<String, NElement> getVars();
 
     NDocNode setVar(String name, NElement value);
 
@@ -75,9 +76,9 @@ public interface NDocNode extends HItem {
 
     NDocNode unsetProperty(String s);
 
-    NDocNode setParent(NDocNode parent);
+    NDocNode setParent(NDocItem parent);
 
-    NDocNode mergeNode(HItem other);
+    NDocNode mergeNode(NDocItem other);
 
     NDocNode setPosition(NDocAlign align);
 
@@ -133,39 +134,43 @@ public interface NDocNode extends HItem {
     NDocNode setChildren(NDocNode... a);
 
 
-    NDocNode addRule(HStyleRule s);
+    NDocNode addRule(NDocStyleRule s);
 
-    NDocNode removeRule(HStyleRule s);
+    NDocNode removeRule(NDocStyleRule s);
 
-    NDocNode addRules(HStyleRule... s);
+    NDocNode addRules(NDocStyleRule... s);
 
     NDocNode clearRules();
 
-    HStyleRule[] rules();
+    NDocStyleRule[] rules();
 
     NDocNode copyTo(NDocNode o);
+
     NDocNode copyFrom(NDocNode o);
+
     NDocNode copy();
 
     String getName();
 
-    NDocNode setRules(HStyleRule[] rules);
+    NDocNode setRules(NDocStyleRule[] rules);
 
     void setChildAt(int i, NDocNode c);
 
     NDocNodeDef[] nodeDefinitions();
 
-    NDocNode addNodeDefinition(NDocNodeDef s) ;
+    NDocNode addNodeDefinition(NDocNodeDef s);
 
     NDocNode addNodeDefinitions(NDocNodeDef... definitions);
 
-    NDocNode removeNodeDefinition(NDocNodeDef s) ;
+    NDocNode removeNodeDefinition(NDocNodeDef s);
 
     NDocFunction[] nodeFunctions();
 
-    NDocNode addNodeFunction(NDocFunction s) ;
+    NDocNode addNodeFunction(NDocFunction s);
 
     NDocNode addNodeFunctions(NDocFunction... definitions);
 
-    NDocNode removeNodeFunction(String name) ;
+    NDocNode removeNodeFunction(String name);
+
+    NDocNode reset();
 }
