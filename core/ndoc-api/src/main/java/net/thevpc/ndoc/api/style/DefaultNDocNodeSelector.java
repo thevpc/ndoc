@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.api.style;
 
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NNameFormat;
@@ -135,10 +136,12 @@ public class DefaultNDocNodeSelector implements NDocStyleRuleSelector {
         return c;
     }
 
-    private Set<String> computeClasses(NDocNode n) {
+    private Set<String> computeClasses(NDocItem n) {
         Set<String> all = new HashSet<>();
         while (n != null) {
-            all.addAll(n.styleClasses());
+            if (n instanceof NDocNode) {
+                all.addAll(((NDocNode)n).styleClasses());
+            }
             n = n.parent();
         }
         return all;
