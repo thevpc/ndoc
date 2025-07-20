@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -80,13 +80,13 @@ public class NDocDonutImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        innerRadius == null ? null : NElement.ofPair("inner-radius", net.thevpc.ndoc.api.util.HUtils.toElement(innerRadius.getValue())),
-                        startAngle == null ? null : NElement.ofPair("start-angle", net.thevpc.ndoc.api.util.HUtils.toElement(startAngle.getValue())),
-                        extentAngle == null ? null : NElement.ofPair("extent-angle", net.thevpc.ndoc.api.util.HUtils.toElement(extentAngle.getValue())),
-                        sliceCount == null ? null : NElement.ofPair("slice-count", net.thevpc.ndoc.api.util.HUtils.toElement(sliceCount.getValue())),
-                        dash == null ? null : NElement.ofPair("dash", net.thevpc.ndoc.api.util.HUtils.toElement(dash.getValue())),
-                        colors == null ? null : NElement.ofPair("colors", net.thevpc.ndoc.api.util.HUtils.toElement(colors.getValue())),
-                        slices == null ? null : NElement.ofPair("slices", HUtils.toElement(slices.getValue()))
+                        innerRadius == null ? null : NElement.ofPair("inner-radius", NDocUtils.toElement(innerRadius.getValue())),
+                        startAngle == null ? null : NElement.ofPair("start-angle", NDocUtils.toElement(startAngle.getValue())),
+                        extentAngle == null ? null : NElement.ofPair("extent-angle", NDocUtils.toElement(extentAngle.getValue())),
+                        sliceCount == null ? null : NElement.ofPair("slice-count", NDocUtils.toElement(sliceCount.getValue())),
+                        dash == null ? null : NElement.ofPair("dash", NDocUtils.toElement(dash.getValue())),
+                        colors == null ? null : NElement.ofPair("colors", NDocUtils.toElement(colors.getValue())),
+                        slices == null ? null : NElement.ofPair("slices", NDocUtils.toElement(slices.getValue()))
 
                 )
                 .build();
