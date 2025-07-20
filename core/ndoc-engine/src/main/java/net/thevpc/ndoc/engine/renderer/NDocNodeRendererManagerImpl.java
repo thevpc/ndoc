@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.NDocNodeParser;
 import net.thevpc.ndoc.spi.NDocNodeRenderer;
 import net.thevpc.ndoc.spi.base.renderer.NDocNodeRendererContextBase;
@@ -33,15 +33,15 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
             renderers = new HashMap<>();
             for (NDocNodeRenderer renderer : ServiceLoader.load(NDocNodeRenderer.class)) {
                 for (String type : renderer.types()) {
-                    NOptional<NDocNodeParser> f = engine.nodeTypeFactory(type);
+                    NOptional<NDocNodeParser> f = engine.nodeTypeParser(type);
                     if (f.isPresent()) {
                         NDocNodeParser ntf = f.get();
-                        this.renderers.put(net.thevpc.ndoc.api.util.HUtils.uid(ntf.id()), renderer);
+                        this.renderers.put(NDocUtils.uid(ntf.id()), renderer);
                         String[] aliases = ntf.aliases();
                         if (aliases != null) {
                             for (String alias : aliases) {
                                 if (!NBlankable.isBlank(alias)) {
-                                    this.renderers.put(HUtils.uid(alias), renderer);
+                                    this.renderers.put(NDocUtils.uid(alias), renderer);
                                 }
                             }
                         }
