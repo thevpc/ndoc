@@ -1,19 +1,28 @@
 package net.thevpc.ndoc.api.style;
 
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
 
 public class NDocProperties {
+    private NDocNode parent;
     private Map<String, NDocProp> map = new HashMap<>();
+
+    public NDocProperties(NDocNode parent) {
+        this.parent = parent;
+    }
+
+    public NDocProperties() {
+    }
 
     public boolean containsKey(String k) {
         return map.containsKey(k);
     }
 
     public void set(String s, NElement value) {
-        map.put(s, new NDocProp(s, value));
+        map.put(s, new NDocProp(s, value, parent));
     }
 
     public void set(NDocProp... c) {
@@ -46,7 +55,7 @@ public class NDocProperties {
 
     public void set(NDocProp s) {
         if (s != null) {
-            map.put(s.getName(), s);
+            map.put(s.getName(), new NDocProp(s.getName(), s.getValue(), parent));
         }
     }
 
@@ -105,5 +114,9 @@ public class NDocProperties {
         return NElement.ofObject(
                 map.values().stream().map(x -> x.toElement()).toArray(NElement[]::new)
         );
+    }
+
+    public void clear() {
+        map.clear();
     }
 }
