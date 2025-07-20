@@ -3,7 +3,7 @@ package net.thevpc.ndoc.elem.base.line.cubiccurve;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
@@ -26,7 +26,7 @@ public class NDocCubicCurveParser extends NDocNodeParserBase {
                 NDocObjEx ph = NDocObjEx.of(k);
                 NOptional<String> n = ph.asStringOrName();
                 if (n.isPresent()) {
-                    String uid = HUtils.uid(n.get());
+                    String uid = NDocUtils.uid(n.get());
                     switch (uid) {
                         case NDocPropName.FROM:
                         case NDocPropName.TO:
