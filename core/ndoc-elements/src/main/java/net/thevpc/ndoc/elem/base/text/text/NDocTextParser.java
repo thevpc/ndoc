@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
@@ -14,6 +14,8 @@ import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementType;
+import net.thevpc.nuts.elem.NElementTypeGroup;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -31,7 +33,7 @@ public class NDocTextParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -39,10 +41,9 @@ public class NDocTextParser extends NDocNodeParserBase {
             case TRIPLE_DOUBLE_QUOTED_STRING:
             case TRIPLE_SINGLE_QUOTED_STRING:
             case TRIPLE_ANTI_QUOTED_STRING:
-            case LINE_STRING:
-            {
+            case LINE_STRING: {
                 return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.asStringValue().get())
+                        context.documentFactory().ofText(tsonElement).setSource(context.source())
                 );
             }
         }
@@ -58,8 +59,7 @@ public class NDocTextParser extends NDocNodeParserBase {
             case TRIPLE_DOUBLE_QUOTED_STRING:
             case TRIPLE_SINGLE_QUOTED_STRING:
             case TRIPLE_ANTI_QUOTED_STRING:
-            case LINE_STRING:
-            {
+            case LINE_STRING: {
                 return id();
             }
         }
@@ -68,9 +68,9 @@ public class NDocTextParser extends NDocNodeParserBase {
 
     @Override
     protected boolean processArguments(ParseArgumentInfo info) {
-        NElement lang=null;
-        NElement value=null;
-        List<NElement> others=new ArrayList<>();
+        NElement lang = null;
+        NElement value = null;
+        List<NElement> others = new ArrayList<>();
         for (NElement currentArg : info.arguments) {
             switch (currentArg.type()) {
                 case DOUBLE_QUOTED_STRING:
@@ -79,8 +79,7 @@ public class NDocTextParser extends NDocNodeParserBase {
                 case TRIPLE_DOUBLE_QUOTED_STRING:
                 case TRIPLE_SINGLE_QUOTED_STRING:
                 case TRIPLE_ANTI_QUOTED_STRING:
-                case LINE_STRING:
-                {
+                case LINE_STRING: {
                     others.add(currentArg);
                     break;
                 }
@@ -96,31 +95,38 @@ public class NDocTextParser extends NDocNodeParserBase {
                         switch (spp.getNameId()) {
                             case NDocPropName.VALUE:
                             case "content": {
-                                value=v.asTson().get();
+                                value = v.asTson().get();
                                 break;
                             }
                             case NDocPropName.FILE: {
                                 NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
                                 info.context.document().resources().add(nPath);
                                 try {
-                                    value= NElement.ofString(nPath.readString().trim());
+                                    value = NElement.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
                                     info.context.messages().log(
-                                           NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
+                                            NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
                                 }
                                 break;
                             }
                             case NDocPropName.LANG: {
-                                lang= v.asTson().get();
+                                lang = v.asTson().get();
                                 break;
                             }
                         }
                     }
                     break;
                 }
+                default: {
+                    if (currentArg.type().typeGroup() == NElementTypeGroup.OPERATOR) {
+                        others.add(currentArg);
+                    } else if (currentArg.type() == NElementType.NAMED_UPLET) {
+                        others.add(currentArg);
+                    }
+                }
             }
         }
-        while(!others.isEmpty()) {
+        while (!others.isEmpty()) {
             if (lang == null && value == null) {
                 if (others.size() == 1) {
                     info.node.setProperty(NDocPropName.VALUE, others.get(0));
@@ -136,16 +142,16 @@ public class NDocTextParser extends NDocNodeParserBase {
                         others.clear();
                     }
                 }
-            }else if (value == null) {
+            } else if (value == null) {
                 info.node.setProperty(NDocPropName.VALUE, others.get(0));
                 others.remove(0);
-            }else if (lang == null) {
+            } else if (lang == null) {
                 String v = others.get(0).asStringValue().get();
                 if (v.matches("[a-zA-Z0-9+._-]+")) {
                     info.node.setProperty(NDocPropName.LANG, others.get(0));
                 }
                 others.remove(0);
-            }else{
+            } else {
                 others.clear();
             }
         }
@@ -161,8 +167,7 @@ public class NDocTextParser extends NDocNodeParserBase {
             case TRIPLE_DOUBLE_QUOTED_STRING:
             case TRIPLE_SINGLE_QUOTED_STRING:
             case TRIPLE_ANTI_QUOTED_STRING:
-            case LINE_STRING:
-            {
+            case LINE_STRING: {
                 //already processed
                 return true;
             }
@@ -186,6 +191,15 @@ public class NDocTextParser extends NDocNodeParserBase {
                     }
                 }
                 break;
+            }
+            default: {
+                if (info.currentArg.type().typeGroup() == NElementTypeGroup.OPERATOR) {
+                    //already processed
+                    return true;
+                } else if (info.currentArg.type() == NElementType.NAMED_UPLET) {
+                    //already processed
+                    return true;
+                }
             }
         }
         return super.processArgument(info);
