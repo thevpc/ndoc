@@ -1,7 +1,9 @@
 package net.thevpc.ndoc.api.model.fct;
 
+import net.thevpc.nuts.elem.NElement;
+
 public interface NDocFunction {
     String name();
 
-    Object invoke(NDocFunctionArg[] args, NDocFunctionContext context);
+    NElement invoke(NDocFunctionArg[] args, NDocFunctionContext context);
 }
