@@ -6,10 +6,11 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NStringElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -34,7 +35,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     ) {
         this.messages = messages;
         this.document = document;
-        this.element = element;
+        this.element = element==null?null:NDocUtils.addCompilerDeclarationPath(element,source);
         this.engine = engine;
         this.source = source;
         this.nodePath.addAll(nodePath);
@@ -56,7 +57,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                     NDocResource resource = engine().computeSource(nodePath.get(i));
                     if (resource!=null) {
                         if(resource.path().isPresent()) {
-                            NPath nPath = HUtils.resolvePath(element, resource);
+                            NPath nPath = NDocUtils.resolvePath(element, resource);
                             if(nPath!=null) {
                                 return NElement.ofString(nPath.toString());
                             }
@@ -129,6 +130,18 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
+    public NPath resolvePath(NStringElement path) {
+        if(path==null){
+            return null;
+        }
+        String s = path.asStringValue().get();
+        if (NBlankable.isBlank(s)) {
+            return null;
+        }
+        return null;
+    }
+
+    @Override
     public NPath resolvePath(String path) {
         if (NBlankable.isBlank(path)) {
             return null;
@@ -150,6 +163,6 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
                 }
             }
         }
-        return HUtils.resolvePath(NElement.ofString(path),src);
+        return NDocUtils.resolvePath(NElement.ofString(path),src);
     }
 }
