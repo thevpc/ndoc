@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.extension.plantuml;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.base.parser.HParserUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
@@ -22,7 +22,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
     }
 
     @Override
-    public NOptional<HItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         switch (tsonElement.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -33,7 +33,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
             case LINE_STRING:
             {
                 return NOptional.of(
-                        context.documentFactory().ofText(tsonElement.asStringValue().get())
+                        context.documentFactory().ofText(tsonElement.asStringValue().get()).setSource(context.source())
                 );
             }
         }
@@ -81,7 +81,7 @@ public class PlantUmlParser extends NDocNodeParserBase {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
                     NPairElement p = info.currentArg.asPair().get();
-                    String sid = HUtils.uid(p.key().asStringValue().get());
+                    String sid = NDocUtils.uid(p.key().asStringValue().get());
                     switch (sid) {
                         case NDocPropName.VALUE:
                         case "content": {
