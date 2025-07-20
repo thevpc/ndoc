@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocPropName;
 import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
@@ -43,7 +43,7 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         String txt = NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
         String mode = NDocObjEx.of(p.getPropertyValue(NDocPropName.MODE).orNull()).asStringOrName().orNull();
-        mode = HUtils.uid(mode);
+        mode = NDocUtils.uid(mode);
         if (NBlankable.isBlank(txt)) {
             return;
         }
@@ -105,14 +105,14 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
 
             if (!ctx.isDry()) {
                 if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                    g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()));
+                    g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
                 }
 
                 NDocNodeRendererUtils.applyForeground(p, g, ctx, false);
                 if (image != null) {
                     // would resize?
-                    int w = net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth());
-                    int h = net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight());
+                    int w = NDocUtils.intOf(b.getWidth());
+                    int h = NDocUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
                         BufferedImage resized = HImageUtils.resize(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);
