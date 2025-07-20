@@ -7,8 +7,9 @@ package net.thevpc.ndoc.api.style;
 import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.model.node.HItem;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.model.node.NDocItem;
+import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NNameFormat;
@@ -19,81 +20,93 @@ import java.util.Objects;
 /**
  * @author vpc
  */
-public class NDocProp implements HItem, NToElement {
+public class NDocProp implements NDocItem, NToElement {
 
     private String name;
     private NElement value;
+    private NDocItem parent;
 
     public static NDocProp ofDouble(String name, Double value) {
-        return new NDocProp(name, NElement.ofDouble(value));
+        return NDocProps.elem(name, NElement.ofDouble(value));
     }
 
     public static NDocProp ofInt(String name, Integer value) {
-        return new NDocProp(name, NElement.ofInt(value));
+        return NDocProps.elem(name, NElement.ofInt(value));
     }
 
     public static NDocProp ofBoolean(String name, Boolean value) {
-        return new NDocProp(name, NElement.ofBoolean(value));
+        return NDocProps.elem(name, NElement.ofBoolean(value));
     }
 
     public static NDocProp ofString(String name, String value) {
-        return new NDocProp(name, NElement.ofString(value));
+        return NDocProps.elem(name, NElement.ofString(value));
     }
 
     public static NDocProp ofObject(String name, NElement value) {
-        return new NDocProp(name, value);
+        return NDocProps.elem(name, value);
     }
 
     public static NDocProp ofStringArray(String name, String[] value) {
-        return new NDocProp(name, NElement.ofStringArray(value));
+        return NDocProps.elem(name, NElement.ofStringArray(value));
     }
 
     public static NDocProp ofDouble2(String name, double x, double y) {
-        return new NDocProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+        return NDocProps.elem(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
     public static NDocProp ofHPoint2D(String name, double x, double y) {
-        return new NDocProp(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+        return NDocProps.elem(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
     public static NDocProp ofDouble2(String name, NDocDouble2 d) {
-        return new NDocProp(name, d == null ? null : d.toElement());
+        return NDocProps.elem(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofHPoint2D(String name, NDocPoint2D d) {
-        return new NDocProp(name, d == null ? null : d.toElement());
+        return NDocProps.elem(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofHPoint3D(String name, NDocPoint3D d) {
-        return new NDocProp(name, d == null ? null : d.toElement());
+        return NDocProps.elem(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofDouble2Array(String name, NDocDouble2... d) {
-        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
+        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
     }
 
     public static NDocProp ofDoubleArray(String name, double[] d) {
-        return new NDocProp(name, NElement.ofDoubleArray(d));
+        return NDocProps.elem(name, NElement.ofDoubleArray(d));
     }
 
     public static NDocProp ofHPoint2DArray(String name, NDocPoint2D... d) {
-        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
+        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
     }
 
     public static NDocProp ofHPoint3DArray(String name, NDocPoint3D... d) {
-        return new NDocProp(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
+        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
     }
 
-    public NDocProp(String name, NElement value) {
+    public NDocProp(String name, NElement value, NDocItem parent) {
         this.name = name;
         this.value = value;
+        this.parent = parent;
     }
 
-    public NDocProp(String name, NToElement value) {
+    public NDocProp(String name, NToElement value, NDocItem parent) {
         this.name = name;
         this.value = value == null ? null : value.toElement();
+        this.parent = parent;
     }
 
+    @Override
+    public NDocResource source() {
+        return null;
+    }
+
+    @Override
+    public NDocItem parent() {
+        return parent;
+    }
 
     public String getName() {
         return name;
@@ -173,6 +186,6 @@ public class NDocProp implements HItem, NToElement {
     }
 
     public NElement toElement() {
-        return NElement.ofPair(net.thevpc.ndoc.api.util.HUtils.toElement(name), HUtils.toElement(value));
+        return NElement.ofPair(NDocUtils.toElement(name), NDocUtils.toElement(value));
     }
 }
