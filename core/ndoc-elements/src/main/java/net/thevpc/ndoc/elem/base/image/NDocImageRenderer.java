@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocProperties;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByType;
@@ -34,8 +34,8 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         NDocBounds2 b = selfBounds(p, ctx);
-        int w = net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth());
-        int h = net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight());
+        int w = NDocUtils.intOf(b.getWidth());
+        int h = NDocUtils.intOf(b.getHeight());
         if (w <= 0 || h <= 0) {
             return;
         }
@@ -62,7 +62,7 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
 
         if (!ctx.isDry()) {
             if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()));
+                g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
             }
 
             NDocNodeRendererUtils.applyForeground(p, g, ctx, false);
