@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.thevpc.ndoc.api.util.NElemUtils;
-import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 
 public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContextBaseBase {
 
@@ -118,16 +117,15 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     @Override
     public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
-            NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(t);
-            NElement u = ne.eval(NElemUtils.toElement(y));
+            NElement u = engine.evalExpression(t, NElemUtils.toElement(y));
             if (u != null) {
                 return NOptional.of(u);
             }
         }
-        return (NOptional) r;
+        return r;
     }
 
     private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
