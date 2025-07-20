@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 
@@ -24,7 +24,7 @@ public class WobbleStroke implements Stroke {
         double amplitude = 2;
         double flatness = 1;
         for (Map.Entry<String, NDocObjEx> ke : o.argsOrBodyMap().entrySet()) {
-            switch (HUtils.uid(ke.getKey())) {
+            switch (NDocUtils.uid(ke.getKey())) {
                 case "details": {
                     detail = ke.getValue().asDouble().orElse(detail);
                     break;
