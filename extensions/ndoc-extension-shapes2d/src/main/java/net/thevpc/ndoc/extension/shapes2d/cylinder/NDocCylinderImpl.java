@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.format.ToElementHelper;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.nuts.elem.NElement;
@@ -23,7 +23,7 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
             case PAIR: {
                 if(info.currentArg.isSimplePair()){
                     NPairElement pair = info.currentArg.asPair().get();
-                    switch (HUtils.uid(pair.key().asStringValue().get())) {
+                    switch (NDocUtils.uid(pair.key().asStringValue().get())) {
                         case "ellipse-height": {
                             info.node.setProperty(NDocPropName.ELLIPSE_H, pair.value());
                             return true;
@@ -56,9 +56,9 @@ public class NDocCylinderImpl extends NDocNodeParserBase {
                         item,
                         engine()
                 ).addChildren(
-                        ellipseHeight == null ? null : NElement.ofPair("ellipse-height", net.thevpc.ndoc.api.util.HUtils.toElement(ellipseHeight.getValue())),
-                        topColor == null ? null : NElement.ofPair("top-color", net.thevpc.ndoc.api.util.HUtils.toElement(topColor.getValue())),
-                        segmentCount == null ? null : NElement.ofPair("segment-count", net.thevpc.ndoc.api.util.HUtils.toElement(segmentCount.getValue()))
+                        ellipseHeight == null ? null : NElement.ofPair("ellipse-height", NDocUtils.toElement(ellipseHeight.getValue())),
+                        topColor == null ? null : NElement.ofPair("top-color", NDocUtils.toElement(topColor.getValue())),
+                        segmentCount == null ? null : NElement.ofPair("segment-count", NDocUtils.toElement(segmentCount.getValue()))
 
                 )
                 .build();
