@@ -3,7 +3,7 @@ package net.thevpc.ndoc.elem.base.text.source;
 import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
@@ -39,7 +39,7 @@ public class NDocSourceParser extends NDocNodeParserBase {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
                     NPairElement p = info.currentArg.asPair().get();
-                    switch (HUtils.uid(p.key().asStringValue().get())) {
+                    switch (NDocUtils.uid(p.key().asStringValue().get())) {
                         case "value":
                         case "code":
                         case "content": {
