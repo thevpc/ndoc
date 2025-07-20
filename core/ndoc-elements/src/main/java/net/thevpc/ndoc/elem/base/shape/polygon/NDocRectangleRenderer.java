@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.node.NDocNodeType;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
@@ -53,33 +53,33 @@ public class NDocRectangleRenderer extends NDocNodeRendererBase {
             if (!round && !d3) {
                 boolean someBG = false;
                 if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                    g.fillRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()));
+                    g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
                 }
                 if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                        g.drawRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()));
+                        g.drawRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
                     });
                 }
             } else if (round) {
-                double cx = net.thevpc.ndoc.api.util.HUtils.doubleOf(roundCorners.getX()) / 100 * ctx.getGlobalBounds().getWidth();
-                double cy = net.thevpc.ndoc.api.util.HUtils.doubleOf(roundCorners.getY()) / 100 * ctx.getGlobalBounds().getHeight();
+                double cx = NDocUtils.doubleOf(roundCorners.getX()) / 100 * ctx.getGlobalBounds().getWidth();
+                double cy = NDocUtils.doubleOf(roundCorners.getY()) / 100 * ctx.getGlobalBounds().getHeight();
                 boolean someBG = false;
                 if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                    g.fillRoundRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
+                    g.fillRoundRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                 }
                 if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                        g.drawRoundRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()), (int) cx, (int) cy);
+                        g.drawRoundRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()), (int) cx, (int) cy);
                     });
                 }
             } else if (threeD) {
                 boolean someBG = false;
                 if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
-                    g.fill3DRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), net.thevpc.ndoc.api.util.HUtils.intOf(b.getHeight()), raised != null && raised);
+                    g.fill3DRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()), raised != null && raised);
                 }
                 if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
                     NDocNodeRendererUtils.withStroke(p, g, ctx, () -> {
-                        g.draw3DRect((int) x, (int) y, net.thevpc.ndoc.api.util.HUtils.intOf(b.getWidth()), HUtils.intOf(b.getHeight()), raised != null && raised);
+                        g.draw3DRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()), raised != null && raised);
                     });
                 }
             }
