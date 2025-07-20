@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.util.NDocSizeRef;
@@ -56,7 +56,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     public NPath resolvePath(NElement path, NDocNode node) {
         Object src = engine().computeSource(node);
         NPath sp = (src instanceof NDocResource)?((NDocResource) src).path().orNull():null;
-        return HUtils.resolvePath(path, src);
+        return NDocUtils.resolvePath(path, src);
     }
 
     @Override
