@@ -16,7 +16,7 @@ import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
 import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
-import net.thevpc.ndoc.api.model.node.HItem;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.style.NDocProp;
@@ -34,16 +34,16 @@ public interface NDocEngine {
 
     List<NDocNodeParser> nodeTypeFactories();
 
-    NDocFunctionContext createFunctionContext(NDocNode node);
+    NDocFunctionContext createFunctionContext(NDocItem node);
 
 
-    NOptional<NDocFunction> findFunction(NDocNode node,String name, NDocFunctionArg... args);
+    NOptional<NDocFunction> findFunction(NDocItem node, String name, NDocFunctionArg... args);
 
-    NOptional<NDocNodeParser> nodeTypeFactory(String id);
+    NOptional<NDocNodeParser> nodeTypeParser(String id);
 
     NDocDocumentFactory documentFactory();
 
-    NOptional<HItem> newNode(NElement element, NDocNodeFactoryParseContext ctx);
+    NOptional<NDocItem> newNode(NElement element, NDocNodeFactoryParseContext ctx);
 
     NOptional<NDocDocumentStreamRenderer> newStreamRenderer(String type);
 
@@ -57,11 +57,16 @@ public interface NDocEngine {
 
     NDocDocumentLoadingResult compileDocument(NDocument document, NDocLogger messages);
 
+    List<NDocNode> compileNode(NDocNode node, NDocument document, NDocLogger messages);
+
+    List<NDocNode> compileNode(NDocNode node, CompilePageContext context);
+    List<NDocNode> compileItem(NDocItem node, CompilePageContext context);
+
     boolean validateNode(NDocNode node);
 
     NDocDocumentLoadingResult loadDocument(NPath of, NDocLogger messages);
 
-    NOptional<HItem> loadNode(NDocNode into, NPath of, NDocument document, NDocLogger messages);
+    NOptional<NDocItem> loadNode(NDocNode into, NPath of, NDocument document, NDocLogger messages);
 
     NDocDocumentLoadingResult loadDocument(InputStream is, NDocLogger messages);
 
@@ -77,7 +82,7 @@ public interface NDocEngine {
 
     <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames);
 
-    NDocResource computeSource(NDocNode node);
+    NDocResource computeSource(NDocItem node);
 
     NDocNodeRendererManager renderManager();
 
@@ -89,5 +94,8 @@ public interface NDocEngine {
 
     String getDefaultTemplateUrl();
 
-    NDocNode[] compileNodeBeforeRendering(NDocNode p, NDocLogger messages);
+    NDocFunctionArg createRawArg(NDocNode node, NElement expression) ;
+
+    NElement evalExpression(NDocNode node, NElement expression);
+    NElement resolveVarValue(NDocNode node, String varName) ;
 }
