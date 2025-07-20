@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.model.elem2d.SizeD;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.eval.NDocValueByName;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
@@ -162,8 +162,8 @@ public class NDocNodeRendererUtils {
         if (force || NDocValueByName.isDebug(t, ctx)) {
             g.setColor(NDocValueByName.getDebugColor(t, ctx));
             g.drawRect(
-                    net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getMinY()),
-                    net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getWidth()), net.thevpc.ndoc.api.util.HUtils.doubleOf(a.getHeight())
+                    NDocUtils.doubleOf(a.getMinX()), NDocUtils.doubleOf(a.getMinY()),
+                    NDocUtils.doubleOf(a.getWidth()), NDocUtils.doubleOf(a.getHeight())
             );
             NDocDouble2 origin = NDocValueByName.getOrigin(t, ctx,new NDocDouble2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
@@ -198,8 +198,8 @@ public class NDocNodeRendererUtils {
                 Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);
                 g.drawRect(
-                        net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinX()), net.thevpc.ndoc.api.util.HUtils.intOf(a.getMinY()),
-                        net.thevpc.ndoc.api.util.HUtils.intOf(a.getWidth()), HUtils.intOf(a.getHeight())
+                        NDocUtils.intOf(a.getMinX()), NDocUtils.intOf(a.getMinY()),
+                        NDocUtils.intOf(a.getWidth()), NDocUtils.intOf(a.getHeight())
                 );
                 g.setStroke(s);
             }
