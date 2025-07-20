@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.spi.base.parser;
 
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.elem.NElement;
 
@@ -13,7 +14,7 @@ public class HParserUtils {
         switch (currentArg.type()) {
             case BYTE:
             case SHORT:
-            case INTEGER:
+            case INT:
             case LONG:
             {
                 return true;
@@ -46,7 +47,7 @@ public class HParserUtils {
         if (NBlankable.isBlank(s)) {
             return false;
         }
-        s = net.thevpc.ndoc.api.util.HUtils.uid(s);
+        s = NDocUtils.uid(s);
         return HStyleParser.COMMON_STYLE_PROPS.contains(s);
     }
 }
