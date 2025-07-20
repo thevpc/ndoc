@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
 
 
-    protected NDocProperties defaultStyles = new NDocProperties();
+    protected NDocProperties defaultStyles = new NDocProperties(null);
 
     public NDocTextBaseRenderer(String... types) {
         super(types);
@@ -90,11 +90,11 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
                             )
                             .stream().map(x
                                             -> {
-                                NElement n = finalCtx.computePropertyValue(p, x).orNull();
+                                        NElement n = finalCtx.computePropertyValue(p, x).orNull();
                                         if (n == null) {
                                             return n;
                                         }
-                                        return new NDocProp(x, n);
+                                        return new NDocProp(x, n, p);
                                     }
                             ).filter(x -> x != null).collect(Collectors.toList())
                             + "\n",
