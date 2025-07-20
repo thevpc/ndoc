@@ -4,6 +4,7 @@
  */
 package net.thevpc.ndoc.spi.eval;
 
+import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 /**
@@ -11,5 +12,5 @@ import net.thevpc.nuts.elem.NElement;
  */
 public interface NDocObjectEvalContext {
 
-    NElement eval(NElement other);
+    NElement eval(NDocNode node, NElement other);
 }
