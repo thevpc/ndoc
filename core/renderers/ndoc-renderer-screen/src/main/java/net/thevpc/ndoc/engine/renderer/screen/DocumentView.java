@@ -3,6 +3,7 @@ package net.thevpc.ndoc.engine.renderer.screen;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
@@ -150,7 +151,7 @@ public class DocumentView {
     }
 
     public Object getPageSource() {
-        NDocNode p = currentShowingPage == null ? null : currentShowingPage.getPage();
+        NDocItem p = currentShowingPage == null ? null : currentShowingPage.getPage();
         Object s = null;
         while (p != null && s == null) {
             s = p.source();
@@ -353,7 +354,7 @@ public class DocumentView {
                 this.currentThrowable = ex;
             }
             if (document == null) {
-                document = engine.documentFactory().ofDocument();
+                document = engine.documentFactory().ofDocument(null);
             }
             document.resources().save();
             List<NDocNode> pages = PagesHelper.resolvePages(document);
@@ -408,6 +409,7 @@ public class DocumentView {
 
     public PageView createPageView(NDocNode node, int index) {
         return new PageView(
+                document,
                 node, index,
                 engine(),
                 rendererManager(),
@@ -416,16 +418,18 @@ public class DocumentView {
     }
 
     public void showPage(PageView pv) {
-        if (currentShowingPage != null) {
-            currentShowingPage.onHide();
-        }
-        this.currentShowingPage = pv;
-        if (pv != null) {
-            listener.onChangedPage(pv.getPage());
-            this.currentShowingPage.onShow();
-            SwingUtilities.invokeLater(() -> contentPane.doShow(pv.id()));
-        } else {
-            listener.onChangedPage(null);
+        synchronized (this) {
+            if (currentShowingPage != null) {
+                currentShowingPage.onHide();
+            }
+            this.currentShowingPage = pv;
+            if (pv != null) {
+                listener.onChangedPage(pv.getPage());
+                this.currentShowingPage.onShow();
+                SwingUtilities.invokeLater(() -> contentPane.doShow(pv.id()));
+            } else {
+                listener.onChangedPage(null);
+            }
         }
         SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
