@@ -22,7 +22,7 @@ public class NDocExampleByCode1 {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
         NDocDocumentFactory f = e.documentFactory();
-        NDocument d = f.ofDocument()
+        NDocument d = f.ofDocument(null)
                 .add(f.ofPage()
                         .add(
                                 f.ofStack()
