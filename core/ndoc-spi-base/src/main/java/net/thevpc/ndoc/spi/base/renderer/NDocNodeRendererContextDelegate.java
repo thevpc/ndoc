@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.style.NDocProp;
 import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
@@ -18,7 +18,6 @@ import java.awt.image.ImageObserver;
 import java.util.Arrays;
 import java.util.List;
 
-import net.thevpc.ndoc.spi.eval.NDocNodeEvalNDoc;
 
 public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBaseBase {
 
@@ -117,7 +116,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     @Override
     public List<NDocProp> computeProperties(NDocNode t) {
         List<NDocProp> inherited = engine().computeInheritedProperties(t);
-        NDocProperties hp = new NDocProperties();
+        NDocProperties hp = new NDocProperties(t);
         if (this.defaultStyles != null) {
             hp.set(this.defaultStyles.toArray());
         }
@@ -133,16 +132,15 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     @Override
     public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
         NAssert.requireNonBlank(s, "property name");
-        NOptional<NElement> r = computePropertyValueImpl(t, HUtils.uids(new String[]{s}, others));
+        NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             NElement y = r.get();
-            NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(t);
-            y = ne.eval(y);
+            y = engine().evalExpression(t, y);
             if (y != null) {
                 return NOptional.of(y);
             }
         }
-        return (NOptional) r;
+        return r;
     }
 
     private NOptional<NElement> computePropertyValueImpl(NDocNode t, String... all) {
