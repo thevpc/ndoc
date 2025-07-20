@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.util.HUtils;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.spi.renderer.NDocGraphics;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -18,7 +17,7 @@ public class StrokeFactory {
 
     public static Stroke createStroke(String name, NElement e, NDocGraphics g) {
         NDocObjEx o = NDocObjEx.of(e);
-        switch (net.thevpc.ndoc.api.util.HUtils.uid(name)) {
+        switch (NDocUtils.uid(name)) {
             case "basic":
             case "simple":
             case "regular":
@@ -70,7 +69,7 @@ public class StrokeFactory {
                 NOptional<NDocObjEx.SimplePair> sp = o.asSimplePair();
                 if (sp.isPresent()) {
                     NDocObjEx.SimplePair ke = sp.get();
-                    switch (net.thevpc.ndoc.api.util.HUtils.uid(ke.getName())) {
+                    switch (NDocUtils.uid(ke.getName())) {
                         case "advance": {
                             advance = ke.getValue().asDouble().orElse(advance);
                             break;
@@ -92,7 +91,7 @@ public class StrokeFactory {
         if (o.asDouble().isPresent()) {
             width = o.asDouble().get();
         } else if (o.asName().isPresent()) {
-            switch (net.thevpc.ndoc.api.util.HUtils.uid(o.asName().get())) {
+            switch (NDocUtils.uid(o.asName().get())) {
                 case "dash":
                 case "dashed": {
                     dash = DASH_NORMAL;
@@ -125,7 +124,7 @@ public class StrokeFactory {
                         case "cap": {
                             String s = ke.getValue().asStringOrName().orElse(null);
                             if (s != null) {
-                                switch (net.thevpc.ndoc.api.util.HUtils.uid(s)) {
+                                switch (NDocUtils.uid(s)) {
                                     case "square": {
                                         cap = BasicStroke.CAP_SQUARE;
                                         break;
@@ -145,7 +144,7 @@ public class StrokeFactory {
                         case "join": {
                             String s = ke.getValue().asStringOrName().orElse(null);
                             if (s != null) {
-                                switch (HUtils.uid(s)) {
+                                switch (NDocUtils.uid(s)) {
                                     case "miter": {
                                         join = BasicStroke.JOIN_MITER;
                                         break;
