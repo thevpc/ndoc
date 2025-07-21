@@ -17,7 +17,6 @@ import net.thevpc.nuts.util.NBlankable;
 import java.util.*;
 
 public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseContext {
-    private final NDocLogger messages;
     private final NDocument document;
     private final NElement element;
     private final NDocEngine engine;
@@ -31,9 +30,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
             ,
             List<NDocNode> nodePath
             , NDocResource source
-            , NDocLogger messages
     ) {
-        this.messages = messages;
         this.document = document;
         this.element = element==null?null:NDocUtils.addCompilerDeclarationPath(element,source);
         this.engine = engine;
@@ -71,7 +68,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
 
     @Override
     public NDocLogger messages() {
-        return messages;
+        return engine().messages();
     }
 
     public NDocument document() {
@@ -86,7 +83,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
         List<NDocNode> nodePath2 = new ArrayList<>();
         nodePath2.addAll(Arrays.asList(nodePath()));
         nodePath2.add(node);
-        return new DefaultNDocNodeFactoryParseContext(document(), element, engine(), nodePath2, source, messages);
+        return new DefaultNDocNodeFactoryParseContext(document(), element, engine(), nodePath2, source);
     }
 
     @Override
@@ -147,7 +144,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
             return null;
         }
         if (GitHelper.isGithubFolder(path)) {
-            return resolvePath(GitHelper.resolveGithubPath(path, messages));
+            return resolvePath(GitHelper.resolveGithubPath(path, messages()));
         }
         NDocResource src = source;
         if (src == null) {
