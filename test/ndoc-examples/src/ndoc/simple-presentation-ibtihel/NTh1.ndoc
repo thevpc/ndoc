@@ -1,5 +1,5 @@
 {styles{.H2:{
-                          font-size:12%g,
+                          font-size:12%P,
                           color:"#FFC55A",
                           font-bold
                       }
@@ -27,7 +27,7 @@ page{
                     Cela la rend très efficace pour les opérations de recherche,
                     d'insertion et de suppression.
                     "
-                    ,font-size:9%g,position:(5,45),color:white
+                    ,font-size:9%P,position:(5,45),color:white
             )
 //            text(
 //                    "
@@ -36,7 +36,7 @@ page{
 //                    structures de données pour minimiser les collisions
 //                    et garantir des performances optimales.
 //                    "
-//                    ,font-size:8%g,position:(5,70),color:white
+//                    ,font-size:8%P,position:(5,70),color:white
 //            )
 }
 
