@@ -24,7 +24,7 @@ normal{
                             }
                         }
                     """
-                    font-size:4%g,
+                    font-size:4%P,
                     font-family:Monospaced
                 )
             }
@@ -47,7 +47,7 @@ normal{
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:5%g}
+                    "*":{font-size:5%P}
                 }
                 source(
                     sql
@@ -56,7 +56,7 @@ normal{
                         From Tab
                         Where 1=1
                     """
-                    font-size:4%g,
+                    font-size:4%P,
                     font-family:Monospaced
                 )
             }
@@ -75,7 +75,7 @@ normal{
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:5%g}
+                    "*":{font-size:5%P}
                 }
                 source(
                     xml
@@ -84,7 +84,7 @@ normal{
                           <b value="text"></b>
                         </a>
                     """
-                    font-size:4%g,
+                    font-size:4%P,
                     font-family:Monospaced
                 )
             }
@@ -102,7 +102,7 @@ normal{
 
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:10%g}
+                    "*":{font-size:10%P}
                 }
                 source(
                     text
@@ -115,7 +115,7 @@ normal{
                         hd, ntf,hadra,
                         tson
                     """
-                    font-size:5%g,
+                    font-size:5%P,
                     font-family:Monospaced
                 )
             }
