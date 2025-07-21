@@ -12,32 +12,32 @@
                  "
                  Présentation Génerale
                  "
-                 ,font-size:10%g,position:(30,30),color:white
+                 ,font-size:10%P,position:(30,30),color:white
          )
          text(
                  "
                  Simulation graphique de Hashtable
                  "
-                 ,font-size:10%g,position:(28,40),color:white
+                 ,font-size:10%P,position:(28,40),color:white
          )
          text(
                  "
                  Simulation graphique de AVL Tree
 
                  "
-                 ,font-size:10%g,position:(26,50),color:white
+                 ,font-size:10%P,position:(26,50),color:white
          )text(
                  "
                  Nouvelles formes géometriques dans une application de présentation
 
                  "
-                 ,font-size:10%g,position:(24,60),color:white
+                 ,font-size:10%P,position:(24,60),color:white
          )text(
                  "
                  Conclusion
 
                  "
-                 ,font-size:10%g,position:(22,70),color:white
+                 ,font-size:10%P,position:(22,70),color:white
          )
 
          //line(from:(5,5),to:(20,20),color:red)
