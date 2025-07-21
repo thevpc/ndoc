@@ -1,7 +1,7 @@
 page{
     styles:{
         "*":{
-            font-size:14%g
+            font-size:14%P
         }
     }
     ul{
