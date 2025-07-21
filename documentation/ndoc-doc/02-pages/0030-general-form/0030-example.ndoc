@@ -4,7 +4,7 @@ normal{
     }
     body{
         grid((2,1)){
-            source(tson,file:"0030-example.tson", position: (2,2),font-size:5%g)
+            source(tson,file:"0030-example.tson", position: (2,2),font-size:5%P)
             grid((2,2),draw-contour,background:white){
                 styles:{
                     "*":{
@@ -20,7 +20,7 @@ normal{
                         "Item 1"
                         "Item 2"
                     }
-                    eq("f_1(x)=\int_x \sin(x^2)",font-size:5%g)
+                    eq("f_1(x)=\int_x \sin(x^2)",font-size:5%P)
                     uml(
                         """
                             left to right direction
