@@ -1,5 +1,5 @@
 {styles{.H2:{
-                          font-size:12%g,
+                          font-size:12%P,
                           color:"#FFC55A",
                           font-bold
                       }
@@ -26,7 +26,7 @@ page{
 //                                les sous-arbres gauche et droit d'un nœud < ou = 1,
 //                                optimisant ainsi les performances de recherche et d'insertion/suppression.
 //                                "
-//                                ,font-size:8%g,position:(8,23),font-bold
+//                                ,font-size:8%P,position:(8,23),font-bold
 //            )
 //            text(
 //                                "
@@ -36,15 +36,15 @@ page{
 //                                relativement coûteuses en comparaison avec d'autres arbres
 //                                binaires de recherche non équilibrés.
 //                                "
-//                                ,font-size:8%g,position:(8,62)
+//                                ,font-size:8%P,position:(8,62)
 //            )
 //            polygon(points:[(78,17),(90,48),(90,48),(78,17)])
 //            circle(bg:"#FC4100",size:(5,10),at:(80,15),stroke:10)
-//            text("10",at:(79,17),font-size:10%g)
+//            text("10",at:(79,17),font-size:10%P)
 //            circle(bg:"#FC4100",size:(5,10),at:(85,30))
-//            text("20",at:(84,31),font-size:10%g)
+//            text("20",at:(84,31),font-size:10%P)
 //            circle(bg:"#FC4100",size:(5,10),at:(90,45))
-//            text("30",at:(89,45),font-size:10%g)
+//            text("30",at:(89,45),font-size:10%P)
 //
 //            polygon(points:[(78,40),(79,40),(79,45),(78,45)],bg:"#2C4E80")
 //            polygon(points:[(77,45),(80,45),(78.5,49)],background-color:"#2C4E80")
@@ -52,11 +52,11 @@ page{
 //            polygon(points:[(80,65),(85,75),(85,75),(80,65)])
 //            polygon(points:[(77,65),(72,75),(72,75),(77,65)])
 //            circle(bg:"#FC4100",size:(5,10),at:(80,65))
-//            text("20",at:(79,64),font-size:10%g)
+//            text("20",at:(79,64),font-size:10%P)
 //            circle(bg:"#FC4100",size:(5,10),at:(85,78))
-//            text("30",at:(84,76),font-size:10%g)
+//            text("30",at:(84,76),font-size:10%P)
 //            circle(bg:"#FC4100",size:(5,10),at:(75,78))
-//            text("10",at:(74,76),font-size:10%g)
+//            text("10",at:(74,76),font-size:10%P)
 
 
             polygon(points:[(0,0),(50,0),(70,100),(0,100)],background-color:"#00215E")
@@ -79,7 +79,7 @@ page{
                     les sous-arbres gauche et droit d'un nœud < ou = 1,
                     optimisant ainsi les performances de recherche et d'insertion/suppression.
                     "
-                    ,font-size:9%g,position:(3,35),color:white
+                    ,font-size:9%P,position:(3,35),color:white
             )
 //            text(
 //                    "
@@ -89,16 +89,16 @@ page{
 //                    relativement coûteuses en comparaison avec d'autres arbres
 //                    binaires de recherche non équilibrés.
 //                    "
-//                    ,font-size:8%g,position:(3,70),color:white
+//                    ,font-size:8%P,position:(3,70),color:white
 //            )
 
             polygon(points:[(78,17),(90,48),(90,48),(78,17)])
             circle(bg:"#FC4100",size:(5,10),at:(80,15),stroke:10)
-            text("10",at:(79,17),font-size:10%g)
+            text("10",at:(79,17),font-size:10%P)
             circle(bg:"#FC4100",size:(5,10),at:(85,30))
-            text("20",at:(84,31),font-size:10%g)
+            text("20",at:(84,31),font-size:10%P)
             circle(bg:"#FC4100",size:(5,10),at:(90,45))
-            text("30",at:(89,45),font-size:10%g)
+            text("30",at:(89,45),font-size:10%P)
 
             polygon(points:[(78,40),(79,40),(79,45),(78,45)],bg:"#2C4E80")
             polygon(points:[(77,45),(80,45),(78.5,49)],background-color:"#2C4E80")
@@ -106,9 +106,9 @@ page{
             polygon(points:[(80,65),(85,75),(85,75),(80,65)])
             polygon(points:[(77,65),(72,75),(72,75),(77,65)])
             circle(bg:"#FC4100",size:(5,10),at:(80,65))
-            text("20",at:(79,64),font-size:10%g)
+            text("20",at:(79,64),font-size:10%P)
             circle(bg:"#FC4100",size:(5,10),at:(85,78))
-            text("30",at:(84,76),font-size:10%g)
+            text("30",at:(84,76),font-size:10%P)
             circle(bg:"#FC4100",size:(5,10),at:(75,78))
-            text("10",at:(74,76),font-size:10%g)
+            text("10",at:(74,76),font-size:10%P)
 }}
