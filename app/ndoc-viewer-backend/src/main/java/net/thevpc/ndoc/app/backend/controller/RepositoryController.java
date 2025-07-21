@@ -118,7 +118,7 @@ public class RepositoryController {
                     .normalize();
 
             NDocEngine e = new DefaultNDocEngine();
-            NDocument doc = e.loadDocument(file, null).get();
+            NDocument doc = e.loadDocument(file).get();
             NDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
 
             List<NDocNode> pages = doc.pages();
