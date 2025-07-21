@@ -77,7 +77,7 @@ public class ImportHITemNamedObjectParser extends AbstractHITemNamedObjectParser
         list.sort(HEngineUtils::comparePaths);
         for (NPath nPath : list) {
             if (nPath.isRegularFile()) {
-                NOptional<NDocItem> se = context.engine().loadNode(putInto, nPath, context.document(), context.messages());
+                NOptional<NDocItem> se = context.engine().loadNode(putInto, nPath, context.document());
                 if (se.isPresent()) {
                     loaded.add(se.get());
                 } else {
