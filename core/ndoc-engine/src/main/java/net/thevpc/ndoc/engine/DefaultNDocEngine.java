@@ -13,7 +13,6 @@ import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
 import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.NDocItemList;
 import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
@@ -21,10 +20,10 @@ import net.thevpc.ndoc.api.model.node.NDocNodeDef;
 import net.thevpc.ndoc.api.style.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
-import net.thevpc.ndoc.engine.fct.DefaultNDocFunctionContext;
-import net.thevpc.ndoc.engine.fct.NDocEitherFunction;
+import net.thevpc.ndoc.engine.eval.fct.NDocEitherFunction;
+import net.thevpc.ndoc.engine.eval.fct.NDocEitherPathFunction;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
-import net.thevpc.ndoc.engine.document.NDocCompiler;
+import net.thevpc.ndoc.engine.eval.NDocCompiler;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.ndoc.engine.renderer.NDocDocumentRendererFactoryContextImpl;
 import net.thevpc.ndoc.engine.document.NDocPropCalculator;
@@ -62,14 +61,24 @@ public class DefaultNDocEngine implements NDocEngine {
     private NDocPropCalculator NDocPropCalculator = new NDocPropCalculator();
     private NDocNodeRendererManager rendererManager;
     private List<NDocFunction> functions = new ArrayList<>();
+    private NDocLogger defaultMessages=new DefaultNDocLogger();
 
     public DefaultNDocEngine() {
         functions.add(new NDocEitherFunction());
+        functions.add(new NDocEitherPathFunction());
     }
 
     @Override
-    public NDocFunctionContext createFunctionContext(NDocItem node) {
-        return new DefaultNDocFunctionContext(node, this);
+    public NDocLogger messages() {
+        return defaultMessages;
+    }
+
+    @Override
+    public NDocLogger messages(NDocLogger messages) {
+        if(messages!=null){
+            defaultMessages=messages;
+        }
+        return defaultMessages;
     }
 
     @Override
@@ -115,8 +124,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 , this
                 ,
                 Arrays.asList(ctx.nodePath())
-                , ctx.source(),
-                ctx.messages()
+                , ctx.source()
         );
         NOptional<NDocItem> optional = NCallableSupport.resolve(
                         nodeParserFactories().stream()
@@ -302,18 +310,18 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
 
-    public NDocDocumentLoadingResult compileDocument(NDocument document, NDocLogger messages) {
-        return new NDocCompiler(this, messages).compile(document);
+    public NDocDocumentLoadingResult compileDocument(NDocument document) {
+        return new NDocCompiler(this).compile(document);
     }
 
     @Override
-    public List<NDocNode> compileNode(NDocNode node, NDocument document, NDocLogger messages) {
-        return compileNode(node, new MyCompilePageContext(messages, document));
+    public List<NDocNode> compileNode(NDocNode node, NDocument document) {
+        return compileNode(node, new MyCompilePageContext(this, document));
     }
 
     @Override
     public List<NDocNode> compileNode(NDocNode node, CompilePageContext context) {
-        return new NDocCompiler(this, context.messages()).compilePage(node, context);
+        return new NDocCompiler(this).compilePage(node, context);
     }
 
     @Override
@@ -340,18 +348,18 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NDocDocumentLoadingResult loadDocument(NPath path, NDocLogger messages) {
+    public NDocDocumentLoadingResult loadDocument(NPath path) {
         NAssert.requireNonNull(path, "path");
         if (GitHelper.isGithubFolder(path.toString())) {
-            path = GitHelper.resolveGithubPath(path.toString(), messages);
+            path = GitHelper.resolveGithubPath(path.toString(), messages());
         }
         NDocResource source = HResourceFactory.of(path);
-        NDocDocumentLoadingResultImpl r = new NDocDocumentLoadingResultImpl(source, messages);
+        NDocDocumentLoadingResultImpl r = new NDocDocumentLoadingResultImpl(source, messages());
         NDocLoggerDelegateImpl messages1 = r.messages();
         if (path.exists()) {
             if (path.isRegularFile()) {
                 NDocResource nPathResource = HResourceFactory.of(path);
-                NOptional<NElement> f = loadElement(path, messages);
+                NOptional<NElement> f = loadElement(path);
                 if (!f.isPresent()) {
                     messages1.log(NDocMsg.of(f.getMessage().get().asSevere(), nPathResource));
                 }
@@ -396,7 +404,7 @@ public class DefaultNDocEngine implements NDocEngine {
                     NOptional<NDocItem> d = null;
                     NDocResource nPathResource = HResourceFactory.of(nPath);
                     try {
-                        d = loadNode(document.root(), nPath, document, messages1);
+                        d = loadNode(document.root(), nPath, document);
                     } catch (Exception ex) {
                         NLog.of(getClass()).error(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), ex);
                         messages1.log(NDocMsg.of(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), nPathResource));
@@ -440,11 +448,11 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NOptional<NDocItem> loadNode(NDocNode into, NPath path, NDocument document, NDocLogger messages) {
+    public NOptional<NDocItem> loadNode(NDocNode into, NPath path, NDocument document) {
         if (path.exists()) {
             if (path.isRegularFile()) {
                 NDocResource source = HResourceFactory.of(path);
-                NOptional<NDocItem> d = loadNode0(into, path, document, messages);
+                NOptional<NDocItem> d = loadNode0(into, path, document);
                 if (d.isPresent()) {
                     updateSource(d.get(), source);
                 }
@@ -454,7 +462,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 all.sort(HEngineUtils::comparePaths);
                 NDocItem node = null;
                 for (NPath nPath : all) {
-                    NOptional<NDocItem> d = loadNode0((node instanceof NDocNode) ? (NDocNode) node : null, nPath, document, messages);
+                    NOptional<NDocItem> d = loadNode0((node instanceof NDocNode) ? (NDocNode) node : null, nPath, document);
                     if (!d.isPresent()) {
                         NLog.of(getClass()).error(NMsg.ofC("invalid file %s", nPath));
                         return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
@@ -482,10 +490,10 @@ public class DefaultNDocEngine implements NDocEngine {
         return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
-    private NOptional<NElement> loadElement(InputStream is, NDocLogger messages) {
+    private NOptional<NElement> loadElement(InputStream is) {
         try {
             NElement u = NElementParser.ofTson().parse(is);
-            u = processControlElements(u, NBooleanRef.of(false), messages);
+            u = processControlElements(u, NBooleanRef.of(false));
             return NOptional.of(u);
         } catch (Exception ex) {
             NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
@@ -493,10 +501,10 @@ public class DefaultNDocEngine implements NDocEngine {
         }
     }
 
-    private NOptional<NElement> loadElement(NPath is, NDocLogger messages) {
+    private NOptional<NElement> loadElement(NPath is) {
         try {
             NElement u = NElementParser.ofTson().parse(is);
-            u = processControlElements(u, NBooleanRef.of(false), messages);
+            u = processControlElements(u, NBooleanRef.of(false));
             return NOptional.of(u);
         } catch (Exception ex) {
             NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
@@ -504,9 +512,9 @@ public class DefaultNDocEngine implements NDocEngine {
         }
     }
 
-    public NDocDocumentLoadingResult loadDocument(InputStream is, NDocLogger messages) {
-        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(HResourceFactory.of(is), messages);
-        NOptional<NElement> f = loadElement(is, messages);
+    public NDocDocumentLoadingResult loadDocument(InputStream is) {
+        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(HResourceFactory.of(is), messages());
+        NOptional<NElement> f = loadElement(is);
         if (!f.isPresent()) {
             result.messages().log(NDocMsg.of(f.getMessage().get().asSevere()));
         }
@@ -535,8 +543,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 docd,
                 c, this,
                 new ArrayList<>(),
-                result.source(),
-                result.messages()
+                result.source()
         );
 
         NOptional<NDocItem> r = newNode(c, newContext);
@@ -609,7 +616,7 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
 
-    private List<NElement> processControlElements(List<NElement> children, NBooleanRef someChanges, NDocLogger messages) {
+    private List<NElement> processControlElements(List<NElement> children, NBooleanRef someChanges) {
         List<NElement> res = new ArrayList<>();
         IfInfo ifInfo = null;
         boolean cc = false;
@@ -639,7 +646,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 ifInfo.base = new CondBody();
                 ifInfo.base.cond = o.params().get();
                 ifInfo.base.trueBody = o.children();
-                messages.log(NDocMsg.of(NMsg.ofC("if expression is missing brackets : %s", c).asError()));
+                messages().log(NDocMsg.of(NMsg.ofC("if expression is missing brackets : %s", c).asError()));
                 cc = true;
             } else if (c.isNamedParametrizedObject("elseif") && ifInfo != null) {
                 NObjectElement o = c.asObject().get();
@@ -671,9 +678,9 @@ public class DefaultNDocEngine implements NDocEngine {
         return children;
     }
 
-    private NElementAnnotation processControlElementsAnnotation(NElementAnnotation child, NBooleanRef someChanges, NDocLogger messages) {
+    private NElementAnnotation processControlElementsAnnotation(NElementAnnotation child, NBooleanRef someChanges) {
         NBooleanRef u = NBooleanRef.of(false);
-        List<NElement> np = processControlElements(child.params(), u, messages);
+        List<NElement> np = processControlElements(child.params(), u);
         if (u.get()) {
             someChanges.set(true);
             return NElement.ofAnnotation(child.name(), np.toArray(new NElement[0]));
@@ -681,12 +688,12 @@ public class DefaultNDocEngine implements NDocEngine {
         return child;
     }
 
-    private NElement processControlElements(NElement child, NBooleanRef someChanges, NDocLogger messages) {
+    private NElement processControlElements(NElement child, NBooleanRef someChanges) {
         List<NElementAnnotation> annotations = new ArrayList<>();
         boolean changesInAnnotation = false;
         for (NElementAnnotation annotation : child.annotations()) {
             NBooleanRef r = NBooleanRef.of(false);
-            annotations.add(processControlElementsAnnotation(annotation, r, messages));
+            annotations.add(processControlElementsAnnotation(annotation, r));
             if (r.get()) {
                 changesInAnnotation = true;
             }
@@ -713,7 +720,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 boolean cc = false;
                 if (first != null) {
                     NBooleanRef r = NBooleanRef.of(false);
-                    NElement u = processControlElements(first, r, messages);
+                    NElement u = processControlElements(first, r);
                     if (r.get()) {
                         opb.first(u);
                         cc = true;
@@ -722,7 +729,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 NElement second = opb.first().orNull();
                 if (second != null) {
                     NBooleanRef r = NBooleanRef.of(false);
-                    NElement u = processControlElements(second, r, messages);
+                    NElement u = processControlElements(second, r);
                     if (r.get()) {
                         opb.second(u);
                         cc = true;
@@ -750,7 +757,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 boolean anyChange = false;
                 if (i != null) {
                     NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u, messages);
+                    List<NElement> i2 = processControlElements(i, u);
                     if (u.get()) {
                         builder.setParams(i2);
                         anyChange = true;
@@ -760,7 +767,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 i = p.children();
                 if (i != null) {
                     NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u, messages);
+                    List<NElement> i2 = processControlElements(i, u);
                     if (u.get()) {
                         builder.setChildren(i2);
                         anyChange = true;
@@ -786,7 +793,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 boolean anyChange = false;
                 if (i != null) {
                     NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u, messages);
+                    List<NElement> i2 = processControlElements(i, u);
                     if (u.get()) {
                         builder.setParams(i2);
                         anyChange = true;
@@ -796,7 +803,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 i = p.children();
                 if (i != null) {
                     NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u, messages);
+                    List<NElement> i2 = processControlElements(i, u);
                     if (u.get()) {
                         builder.setChildren(i2);
                         anyChange = true;
@@ -820,7 +827,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 boolean anyChange = false;
                 if (i != null) {
                     NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u, messages);
+                    List<NElement> i2 = processControlElements(i, u);
                     if (u.get()) {
                         builder.setParams(i2);
                         anyChange = true;
@@ -841,10 +848,10 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
 
-    private NOptional<NDocItem> loadNode0(NDocNode into, NPath path, NDocument document, NDocLogger messages) {
+    private NOptional<NDocItem> loadNode0(NDocNode into, NPath path, NDocument document) {
         NDocResource source = HResourceFactory.of(path);
         document.resources().add(source);
-        NElement c = loadElement(path, messages).get();
+        NElement c = loadElement(path).get();
         ArrayList<NDocNode> parents = new ArrayList<>();
         if (into != null) {
             parents.add(into);
@@ -854,8 +861,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 null,
                 this,
                 parents,
-                source,
-                messages
+                source
         ));
     }
 
@@ -895,7 +901,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public NDocResource computeSource(NDocItem node) {
-        return new NDocCompiler(this, new DefaultNDocLogger(null)).computeSource(node);
+        return new NDocCompiler(this).computeSource(node);
     }
 
     @Override
