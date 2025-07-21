@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import net.thevpc.ndoc.api.NDocEngine;
 import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.ndoc.spi.eval.NDocObjEx;
 import net.thevpc.ndoc.spi.eval.NDocObjectEvalContext;
 import net.thevpc.nuts.elem.*;
@@ -124,8 +124,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                                 .stream().map(x -> engine.createRawArg(node, x)).toArray(NDocFunctionArg[]::new);
                         NOptional<NDocFunction> f = engine.findFunction(node, ff.name().get(), args);
                         if (f.isPresent()) {
-                            return eval(node, f.get().invoke(args, new NDocFunctionContext() {
-                            }));
+                            return eval(node, f.get().invoke(args, new DefaultNDocFunctionContext(engine)));
                         }
                         List<NElement> r = ff.params()
                                 .stream().map(x -> eval(node, x)).collect(Collectors.toList());
