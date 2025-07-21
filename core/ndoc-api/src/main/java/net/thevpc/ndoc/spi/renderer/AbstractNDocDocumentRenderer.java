@@ -65,7 +65,7 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
 
     @Override
     public void renderPath(NPath path) {
-        renderSupplier(r -> engine.loadDocument(path, r.messages()).get());
+        renderSupplier(r -> engine.loadDocument(path).get());
     }
 
     @Override
