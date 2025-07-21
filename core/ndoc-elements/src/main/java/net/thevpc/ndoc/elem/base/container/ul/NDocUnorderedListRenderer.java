@@ -35,7 +35,7 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
                 }
                 default: {
                     all.add(f.ofSphere()
-                            //.setProperty(HPropName.SIZE, NElements.ofDouble(2,"%g"))
+                            //.setProperty(HPropName.SIZE, NElements.ofDouble(2,"%P"))
                             .addStyleClasses("ul-bullet"));
                     break;
                 }
