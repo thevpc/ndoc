@@ -15,7 +15,6 @@ import net.thevpc.ndoc.api.document.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.model.fct.NDocFunction;
 import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
 import net.thevpc.ndoc.api.model.node.NDocItem;
 import net.thevpc.ndoc.api.model.node.NDocNode;
 import net.thevpc.ndoc.api.resources.NDocResource;
@@ -32,10 +31,9 @@ import net.thevpc.nuts.util.NOptional;
  */
 public interface NDocEngine {
 
+    NDocLogger messages();
+    NDocLogger messages(NDocLogger messages);
     List<NDocNodeParser> nodeTypeFactories();
-
-    NDocFunctionContext createFunctionContext(NDocItem node);
-
 
     NOptional<NDocFunction> findFunction(NDocItem node, String name, NDocFunctionArg... args);
 
@@ -55,20 +53,20 @@ public interface NDocEngine {
 
     NOptional<NDocDocumentRenderer> newRenderer(String type);
 
-    NDocDocumentLoadingResult compileDocument(NDocument document, NDocLogger messages);
+    NDocDocumentLoadingResult compileDocument(NDocument document);
 
-    List<NDocNode> compileNode(NDocNode node, NDocument document, NDocLogger messages);
+    List<NDocNode> compileNode(NDocNode node, NDocument document);
 
     List<NDocNode> compileNode(NDocNode node, CompilePageContext context);
     List<NDocNode> compileItem(NDocItem node, CompilePageContext context);
 
     boolean validateNode(NDocNode node);
 
-    NDocDocumentLoadingResult loadDocument(NPath of, NDocLogger messages);
+    NDocDocumentLoadingResult loadDocument(NPath of);
 
-    NOptional<NDocItem> loadNode(NDocNode into, NPath of, NDocument document, NDocLogger messages);
+    NOptional<NDocItem> loadNode(NDocNode into, NPath of, NDocument document);
 
-    NDocDocumentLoadingResult loadDocument(InputStream is, NDocLogger messages);
+    NDocDocumentLoadingResult loadDocument(InputStream is);
 
     NElement toElement(NDocument doc);
 
