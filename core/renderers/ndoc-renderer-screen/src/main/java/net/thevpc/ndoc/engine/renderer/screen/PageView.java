@@ -65,7 +65,7 @@ public class PageView extends JComponent {
 
     void onShow() {
         if (page == null) {
-            List<NDocNode> all = engine().compileNode(this.page0, document, messages);
+            List<NDocNode> all = engine().compileNode(this.page0, document);
             this.page = NOptional.ofSingleton(all).get();
         }
     }
