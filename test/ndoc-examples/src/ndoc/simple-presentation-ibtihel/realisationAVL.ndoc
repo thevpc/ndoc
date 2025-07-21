@@ -1,6 +1,6 @@
 {
 styles{.H2:{
-                          font-size:12%g,
+                          font-size:12%P,
                           color:"#FFC55A",
                           font-bold
                       }
@@ -29,7 +29,7 @@ page{
                                                    créer une interface graphique interactive permettant de
                                                    manipuler un arbre AVL.
                                             ",
-                                                                    font-size:8%g,position:(60,25),color:white
+                                                                    font-size:8%P,position:(60,25),color:white
                       )
                       text(                 "
                                                 Le fichier FXML définit la structure de l'interface, incluant
@@ -38,13 +38,13 @@ page{
                                                 pour l'affichage visuel de l'arbre.
 
                                             ",
-                                                                    font-size:8%g,position:(55,45),color:white
+                                                                    font-size:8%P,position:(55,45),color:white
                       )
                       text(                 "
                                                 Les nœuds de l'arbre sont représentés par des cercles et les arêtes par des lignes,
                                                 avec des animations de transition pour une visualisation fluide.
                                             ",
-                                                                    font-size:8%g,position:(50,70),color:white
+                                                                    font-size:8%P,position:(50,70),color:white
                       )
 
 }
@@ -63,7 +63,7 @@ page{
 //                                  des nœuds dans un arbre AVL avec une visualisation animée en temps réel.
 //
 //                                ",
-//                                font-size:8%g,position:(5,45),color:white
+//                                font-size:8%P,position:(5,45),color:white
 //                      )
                       text(
                                 "
@@ -73,7 +73,7 @@ page{
                                    Les animations sont gérées par un AnimationController pour rendre
                                    l'interface plus interactive.
                                 ",
-                                font-size:8%g,position:(5,45),color:white
+                                font-size:8%P,position:(5,45),color:white
                       )
 
 
