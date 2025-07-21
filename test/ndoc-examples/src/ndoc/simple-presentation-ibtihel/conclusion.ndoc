@@ -11,7 +11,7 @@
          text(
                  "
                  "
-                 ,font-size:10%g,position:(30,30),color:white
+                 ,font-size:10%P,position:(30,30),color:white
          )
          text("
                  Pour l'avenir, il serait intéressant d'envisager d'intégrer des formes en 3D
@@ -21,7 +21,7 @@
            augmentant ainsi l'efficacité et la qualité des présentations réalisées avec cette application.
 
                  "
-                 ,position:(30,35),font-size:9%g,color:white)
+                 ,position:(30,35),font-size:9%P,color:white)
          text(
                  "
 
@@ -29,7 +29,7 @@
             pour les professionnels recherchant à la fois flexibilité et sophistication dans leurs présentations.
 
                  "
-                 ,font-size:9%g,position:(25,60),color:white
+                 ,font-size:9%P,position:(25,60),color:white
          )
 
  }
