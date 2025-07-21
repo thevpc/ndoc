@@ -39,7 +39,7 @@ normal{
                 )
             }
 
-            source(at:left, font-size:5.5%g
+            source(at:left, font-size:5.5%P
             tson,
             ```
                  nwdiag(
@@ -102,7 +102,7 @@ normal{
                 )
             }
 
-            source(at:left, font-size:5.5%g
+            source(at:left, font-size:5.5%P
             tson,
             ```
                  nwdiag(
