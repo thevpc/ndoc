@@ -46,9 +46,9 @@ normal{
 
             // Row
             stack(background:white,draw-contour){
-                rectangle(at:center, size:15%g, background:$palette[4], color:$palette[2])
+                rectangle(at:center, size:15%P, background:$palette[4], color:$palette[2])
             }
-            source(tson, """ rectangle(size:15%g) """)
+            source(tson, """ rectangle(size:15%P) """)
 
         }
     }
