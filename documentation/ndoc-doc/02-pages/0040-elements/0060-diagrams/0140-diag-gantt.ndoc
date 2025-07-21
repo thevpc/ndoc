@@ -29,7 +29,7 @@ normal{
                 )
             }
 
-            source(at:left, font-size:7%g
+            source(at:left, font-size:7%P
             tson,
             ```
                  gantt(
@@ -64,7 +64,7 @@ normal{
                 )
             }
 
-            source(at:left, font-size:7%g
+            source(at:left, font-size:7%P
             tson,
             ```
                  gantt(
