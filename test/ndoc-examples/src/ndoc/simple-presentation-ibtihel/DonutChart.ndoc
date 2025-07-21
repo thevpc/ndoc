@@ -6,7 +6,7 @@ page{
             "
             Donut chart with equal slices:
             ",
-            font-size:10%g , position:(5,5),color:"blue"
+            font-size:10%P , position:(5,5),color:"blue"
     )
     donut (at:(10,15),size:(20,20),inner-radius:80,slice-count:10,dash:5)
     source(
@@ -15,7 +15,7 @@ page{
                             donut (inner-radius:80,slice-count:10,dash:5)
                                    PS:these colors are set by default.
                     """,
-                    font-size:6%g , position:(3,35)
+                    font-size:6%P , position:(3,35)
     )
 
     donut (at:(45,15),size:(20,20),slice-count:2)
@@ -24,7 +24,7 @@ page{
                         """
                                 donut (slice-count:2)
                         """,
-                        font-size:6%g , position:(42,35)
+                        font-size:6%P , position:(42,35)
     )
 
     donut (at:(90,15) ,size:(20,20),inner-radius:70,start-angle:90,extent-angle:180,dash:2,slice-count:2,colors:["#FF8F00","gray"])
@@ -35,14 +35,14 @@ page{
                                               PS:you can customize the chart with your own colors.
 
                             """,
-                            font-size:6%g , position:(63,35)
+                            font-size:6%P , position:(63,35)
     )
 
     text(
                 "
                 Donut chart with different sizes slices:
                 ",
-                font-size:10%g , position:(5,55),color:"blue"
+                font-size:10%P , position:(5,55),color:"blue"
     )
 
 
@@ -52,7 +52,7 @@ page{
                                 """
                                 donut ( inner-radius:40, slices:[60,20,10,5,5], dash:1 ,colors:["#1A5319","#508D4E",...])
                                 """,
-                                font-size:6%g , position:(3,85)
+                                font-size:6%P , position:(3,85)
     )
     donut (at:(60,80) ,size:(20,20),inner-radius:75,slices:[35,20,5,10])
     source(
@@ -60,7 +60,7 @@ page{
                                     """
                                     donut ( inner-radius:75, slices:[35,20,5,10])
                                     """,
-                                    font-size:6%g , position:(50,85)
+                                    font-size:6%P , position:(50,85)
     )
 
 }
