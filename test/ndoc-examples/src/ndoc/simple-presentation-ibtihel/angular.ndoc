@@ -16,7 +16,7 @@ page{
                               pour créer une interface utilisateur interactive
                               permettant de manipuler et visualiser une table de hachage."
 
-                              ,font-size:9%g,position:(60,20),font-bold, color:"#00215E"
+                              ,font-size:9%P,position:(60,20),font-bold, color:"#00215E"
                       )
 //                      text(
 //
@@ -25,7 +25,7 @@ page{
 //                                                      la table et ses entrées.
 //
 //                                                      "
-//                                                      ,font-size:8%g,position:(60,35),font-bold, color:"#00215E"
+//                                                      ,font-size:8%P,position:(60,35),font-bold, color:"#00215E"
 //                      )
                       text(
 
@@ -38,7 +38,7 @@ page{
                                                       avec une palette de couleurs pour différencier les listes.
 
                                                       "
-                                                      ,font-size:9%g,position:(60,50), color:"#00215E"
+                                                      ,font-size:9%P,position:(60,50), color:"#00215E"
                       )
 
 
