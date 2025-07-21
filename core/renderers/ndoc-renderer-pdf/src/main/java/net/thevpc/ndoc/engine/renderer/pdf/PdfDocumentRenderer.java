@@ -52,7 +52,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
     @Override
     public void renderSupplier(NDocDocumentRendererSupplier documentSupplier) {
         NDocument document = documentSupplier.get(rendererContext);
-        NDocument compiledDocument = engine.compileDocument(document.copy(), messages).get();
+        NDocument compiledDocument = engine.compileDocument(document.copy()).get();
         Object outputTarget = output;
         if (outputTarget == null) {
             outputTarget = NPath.of("document.pdf");
