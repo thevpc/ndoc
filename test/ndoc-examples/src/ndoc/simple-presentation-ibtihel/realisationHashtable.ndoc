@@ -1,6 +1,6 @@
 {
 styles{.H2:{
-                         font-size:12%g,
+                         font-size:12%P,
                          color:"#FFC55A",
                          font-bold
                      }
@@ -21,7 +21,7 @@ page{
                                                 avec des animations.
 
                                                 "
-                                                ,font-size:8%g,position:(3,35),color:white
+                                                ,font-size:8%P,position:(3,35),color:white
                 )
                 text(
                                                 "
@@ -32,7 +32,7 @@ page{
 
 
                                                 "
-                                                ,font-size:8%g,position:(5,50),color:white,font-bold)
+                                                ,font-size:8%P,position:(5,50),color:white,font-bold)
 //                text(
 //                                                "
 //                                                Lors de l'exécution, l'application affiche une interface graphique où l'utilisateur
@@ -43,7 +43,7 @@ page{
 //                                                sont mises à jour en conséquence.
 //
 //                                                "
-//                                                ,font-size:8%g,position:(3,65),color:white,font-bold
+//                                                ,font-size:8%P,position:(3,65),color:white,font-bold
 //                )
 
     }
