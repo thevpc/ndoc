@@ -13,7 +13,7 @@ page{
         en développement logiciel, en utilisant des technologies
         différentes telles qu'Angular, Flutter, JavaFX et Swing...
         "
-        ,position:(4,35),font-size:8%g)
+        ,position:(4,35),font-size:8%P)
 
 
                  gantt(size:(45,60), position:(53,30)
