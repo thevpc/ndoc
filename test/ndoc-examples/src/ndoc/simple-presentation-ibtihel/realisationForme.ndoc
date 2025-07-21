@@ -1,5 +1,5 @@
 {styles{.H2:{
-                          font-size:12%g,
+                          font-size:12%P,
                           color:"#FFC55A",
                           font-bold
                       }
@@ -20,7 +20,7 @@ page{
 //
 //
 //                           ",
-//                                              font-size:8%g,position:(5,30),color:"white",font-bold
+//                                              font-size:8%P,position:(5,30),color:"white",font-bold
 //                      )
 
                       text("
@@ -28,25 +28,25 @@ page{
 
 
                            ",
-                                              font-size:9%g,position:(5,35),color:"white"
+                                              font-size:9%P,position:(5,35),color:"white"
                       )text("
 
                              LaTeX est complexe et difficile à maîtriser.
 
                            ",
-                                              font-size:9%g,position:(5,45),color:"white"
+                                              font-size:9%P,position:(5,45),color:"white"
                       )text("
 
                              PowerPoint manque d'automatisation pour des présentations dynamiques.
 
                            ",
-                                              font-size:9%g,position:(5,55),color:"white"
+                                              font-size:9%P,position:(5,55),color:"white"
                       )
                       text("
                              Cette nouvelle application vise à offrir une alternative puissante et flexible,
                              facilitant la création et l'affichage de présentations de manière intuitive et automatisée.
                            ",
-                                              font-size:9%g,position:(5,70),color:"white"
+                                              font-size:9%P,position:(5,70),color:"white"
                       )
 
 
@@ -63,7 +63,7 @@ page{
                                          Il existait déjà des formes simples comme des rectangles,
                                          triangles et cercles dans l'application.
                                        ",
-                                                          font-size:8%g,position:(4,15),color:"white"
+                                                          font-size:8%P,position:(4,15),color:"white"
                 )
               text(
                     "
@@ -71,7 +71,7 @@ page{
                      et des donuts, pour enrichir les possibilités de présentation et permettre
                      une visualisation plus diversifiée.
                    ",
-                                      font-size:8%g,position:(45,15),color:"white"
+                                      font-size:8%P,position:(45,15),color:"white"
               )
 
               cylinder(position:(80,30) ,size:(12,35),stroke:5,ellipse-height:20,segment-count:5,background-color:"#00215E")
