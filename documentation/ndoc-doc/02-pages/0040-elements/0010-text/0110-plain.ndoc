@@ -47,7 +47,7 @@ normal{
                         Hello  World
                         This    Is    Me
                     ", font-family:monospaced,
-                       font-size:5%g
+                       font-size:5%P
                     )
             }
             source(tson, """
@@ -57,7 +57,7 @@ normal{
                                          World
                                      "
                                   font-family: monospaced
-                                  font-size: 5%g
+                                  font-size: 5%P
                                  )
                          """)
         }
