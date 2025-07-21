@@ -2,7 +2,7 @@
 styles{
 
     .H1:{
-                  font-size:20%g,
+                  font-size:20%P,
                   color:"#FC4100",
                   font-bold
                   shadow:(shift:(0,0.2))
@@ -22,12 +22,12 @@ page{
                 PRESENTATION
                     DE STAGE D'ETE
               "
-          ,position:(7,30),font-bold,font-size:20%g,shadow:(color:gray,shift:(0,0.5)),color:"#00215E"
+          ,position:(7,30),font-bold,font-size:20%P,shadow:(color:gray,shift:(0,0.5)),color:"#00215E"
         )
         text("
                 Entreprise d'accueil :
               "
-            ,position:(55,45),font-bold,font-size:10%g,color:"FC4100"
+            ,position:(55,45),font-bold,font-size:10%P,color:"FC4100"
         )
                 image("C:\\Users\\ibtih\\OneDrive\\Bureau\\core_techs_solutions.png", position:(75,40),size:(20,20))
 
@@ -35,13 +35,13 @@ page{
                 Encadrée par :
                     Taha Ben Salah
               "
-            ,position:(50,70),font-bold,font-size:10%g,color:"FC4100"
+            ,position:(50,70),font-bold,font-size:10%P,color:"FC4100"
         )
         text("
                 Réalisée par :
                     Ibtihel Omri
               "
-            ,position:(70,70),font-size:10%g,color:"FC4100"
+            ,position:(70,70),font-size:10%P,color:"FC4100"
         )
 
 
