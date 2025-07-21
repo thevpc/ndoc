@@ -66,7 +66,9 @@ public class NDocSizeRef {
                     u = u.toLowerCase().trim();
                 }
                 switch (u) {
-                    case "%g": {
+                    case "%p":
+                    case "%P":
+                    {
                         double aDouble = n.doubleValue();
                         return NOptional.of(aDouble / 100 * rw);
                     }
