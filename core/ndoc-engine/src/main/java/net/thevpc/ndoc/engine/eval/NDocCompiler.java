@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.document;
+package net.thevpc.ndoc.engine.eval;
 
 import net.thevpc.ndoc.api.CompilePageContext;
 import net.thevpc.ndoc.api.NDocEngine;
@@ -15,6 +15,7 @@ import net.thevpc.ndoc.engine.MyCompilePageContext;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeFor;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeIf;
+import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeDefParamImpl;
@@ -30,22 +31,20 @@ import java.util.*;
 public class NDocCompiler {
 
     private NDocEngine engine;
-    private NDocLogger messages;
 
-    public NDocCompiler(NDocEngine engine, NDocLogger messages) {
+    public NDocCompiler(NDocEngine engine) {
         this.engine = engine;
-        this.messages = messages;
     }
 
     public NDocDocumentLoadingResult compile(NDocument document) {
         document = document.copy();
         NDocResource source = engine.computeSource(document.root());
-        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(source, messages);
+        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(source, engine.messages());
         NDocNode root = document.root();
         processUuid(root);
 //        root = processCalls(root, result);
 //        root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
-        List<NDocNode> all = compileNodeTree(root, false, false, new MyCompilePageContext(messages, document));
+        List<NDocNode> all = compileNodeTree(root, false, false, new MyCompilePageContext(engine, document));
         if (all.size() == 0) {
             root = new DefaultNDocNode(NDocNodeType.VOID, source);
         } else if (all.size() == 1) {
@@ -218,8 +217,7 @@ public class NDocCompiler {
                     varExpr,
                     engine,
                     NDocUtils.nodePath(node),
-                    node.source(),
-                    compilePageContext.messages()
+                    node.source()
 
             )).get();
             return engine.compileItem(h, compilePageContext);
@@ -274,7 +272,7 @@ public class NDocCompiler {
                     effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), e.getValue());
                 } else {
                     NMsg errMsg = NMsg.ofC("undefined param %s for %s in %s. ignored", n, uid, callDeclaration);
-                    messages.log(NDocMsg.of(errMsg, c.source()));
+                    engine.messages().log(NDocMsg.of(errMsg, c.source()));
                 }
             }
             for (int i = 0; i < allExpectedParams.length; i++) {
@@ -284,7 +282,7 @@ public class NDocCompiler {
                         effectiveParams[i] = allExpectedParams[i];
                     } else {
                         NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", allExpectedParams[i].name(), uid, callDeclaration);
-                        messages.log(NDocMsg.of(errMsg, c.source()));
+                        engine.messages().log(NDocMsg.of(errMsg, c.source()));
                         //throw new NIllegalArgumentException(errMsg);
                     }
                 }
@@ -297,7 +295,7 @@ public class NDocCompiler {
             }
         } else {
             NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
-            messages.log(NDocMsg.of(errMsg, c.source()));
+            engine.messages().log(NDocMsg.of(errMsg, c.source()));
             throw new NIllegalArgumentException(errMsg);
         }
 
@@ -411,8 +409,7 @@ public class NDocCompiler {
                                 e,
                                 engine,
                                 NDocUtils.nodePath(node),
-                                node.source(),
-                                compilePageContext.messages()
+                                node.source()
 
                         )).get();
                         nDocNode.setVar(varNameStr, o);
@@ -429,7 +426,7 @@ public class NDocCompiler {
     private List<NDocNode> _process_call_fct(NDocFunction t, CtrlNDocNodeCall c, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
         NDocItem currNode = c.parent();
         NDocResource source = engine.computeSource(currNode);
-        NDocFunctionContext ctx = engine.createFunctionContext(currNode);
+        NDocFunctionContext ctx = new DefaultNDocFunctionContext(engine);
         List<NElement> callArgs = c.getCallArgs();
         NElement result = t.invoke(callArgs.stream().map(x -> engine.createRawArg(c, x)).toArray(NDocFunctionArg[]::new), ctx);
         if (result == null) {
@@ -444,8 +441,7 @@ public class NDocCompiler {
                 result,
                 engine,
                 NDocUtils.nodePath(c),
-                source,
-                compilePageContext.messages()
+                source
         );
         NOptional<NDocItem> n = engine.newNode(result, ctx2);
         if (n.isPresent()) {
@@ -461,12 +457,12 @@ public class NDocCompiler {
             } else {
                 engine.newNode(result, ctx2).get();
                 NMsg msg = NMsg.ofC("unexpected node type %s", nn.getClass());
-                messages.log(NDocMsg.of(msg.asError()));
+                engine.messages().log(NDocMsg.of(msg.asError()));
                 return Arrays.asList(DefaultNDocNode.ofText(msg.toString()));
             }
         } else {
             NMsg msg = NMsg.ofC("not found node for %s", result);
-            messages.log(NDocMsg.of(msg.asError()));
+            engine.messages().log(NDocMsg.of(msg.asError()));
             return Arrays.asList(DefaultNDocNode.ofText(msg.toString()));
         }
     }
