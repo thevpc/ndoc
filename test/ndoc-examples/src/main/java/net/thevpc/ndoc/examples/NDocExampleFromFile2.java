@@ -19,7 +19,7 @@ public class NDocExampleFromFile2 {
         Nuts.openWorkspace().share();
         NDocEngine e = new DefaultNDocEngine();
         NPath file = NPath.of("src/ndoc/test1.ndoc").toAbsolute().normalize();
-        NDocument doc = e.loadDocument(file, null).get();
+        NDocument doc = e.loadDocument(file).get();
 
         System.out.println(e.toElement(doc));
     }
