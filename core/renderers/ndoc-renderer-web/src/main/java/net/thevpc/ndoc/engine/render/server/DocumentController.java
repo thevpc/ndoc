@@ -41,7 +41,7 @@ public class DocumentController {
             int sizeWidth = 1200;
             int sizeHeight = 1000;
             NDocEngine e = new DefaultNDocEngine();
-            NDocument doc = e.loadDocument(file, null).get();
+            NDocument doc = e.loadDocument(file).get();
             DefaultNDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
 
             List<NDocNode> pages = doc.pages();
