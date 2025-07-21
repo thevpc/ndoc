@@ -34,7 +34,7 @@ public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer
         if (messages2 == null) {
             messages2 = new DefaultNDocLogger(engine.computeSource(document.root()));
         }
-        document = engine.compileDocument(document, messages2).get();
+        document = engine.compileDocument(document).get();
         PrintStream out = new PrintStream(os);
         out.println("<html>");
         out.println("<body>");
