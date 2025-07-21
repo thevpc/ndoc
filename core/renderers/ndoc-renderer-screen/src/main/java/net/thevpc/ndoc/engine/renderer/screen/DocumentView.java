@@ -347,7 +347,7 @@ public class DocumentView {
                     }
                 });
                 listener.onChangedRawDocument(rawDocument);
-                NDocument compiledDocument = engine.compileDocument(rawDocument.copy(), messages).get();
+                NDocument compiledDocument = engine.compileDocument(rawDocument.copy()).get();
                 listener.onChangedCompiledDocument(compiledDocument);
                 document = compiledDocument;
             } catch (Exception ex) {
