@@ -21,7 +21,7 @@ public class NDocExampleFromFile1 {
         NDocEngine e = new DefaultNDocEngine();
         NPath file = NPath.of("/home/mohamed/Desktop/stage/ndoc/documentation/tson-doc/main.ndoc").toAbsolute().normalize();
         System.out.println(file);
-        NDocument doc = e.loadDocument(file, null).get();
+        NDocument doc = e.loadDocument(file).get();
         System.out.println(e.toElement(doc));
         NDocDocumentStreamRenderer renderer = e.newPdfRenderer().get();
         renderer.setOutput(NPath.ofUserHome().resolve("example.pdf"));
