@@ -45,12 +45,13 @@ public class ServiceHelper {
     UserConfigManager usersConfigManager;
     NDocViewerConfigManager configManager;
     NDocDocumentRendererListenerList currListeners = new NDocDocumentRendererListenerList();
-
+    HDebugFrame debugFrame;
     private NDocMessageList currentMessages = new NDocMessageList();
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         engine = new DefaultNDocEngine();
+        engine.messages(currentMessages);
         currListeners.add(new NDocDocumentRendererListener() {
 
             @Override
@@ -61,14 +62,7 @@ public class ServiceHelper {
         });
         configManager = new NDocViewerConfigManager();
         usersConfigManager = new UserConfigManager();
-    }
-
-    public NDocEngine engine() {
-        return engine;
-    }
-
-    public void showDebug() {
-        HDebugFrame debugFrame = new HDebugFrame(engine);
+        debugFrame = new HDebugFrame(engine);
         currentMessages.add(debugFrame.messages());
         currListeners.add(debugFrame.rendererListener());
         debugFrame.setOnClose(new Runnable() {
@@ -78,6 +72,13 @@ public class ServiceHelper {
                 currListeners.remove(debugFrame.rendererListener());
             }
         });
+    }
+
+    public NDocEngine engine() {
+        return engine;
+    }
+
+    public void showDebug() {
         debugFrame.run();
     }
 
