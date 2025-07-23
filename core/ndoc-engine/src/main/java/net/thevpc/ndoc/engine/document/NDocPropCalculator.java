@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.*;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.style.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.util.NOptional;
 
