@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.style.NDocStyleRule;
+import  net.thevpc.ndoc.api.document.style.NDocStyleRule;
 
 public class NDocDocumentRootRules {
     public static final NDocStyleRule[] DEFAULT = {
