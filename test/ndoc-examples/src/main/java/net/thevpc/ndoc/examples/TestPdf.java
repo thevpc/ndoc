@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.examples;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRenderer;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
