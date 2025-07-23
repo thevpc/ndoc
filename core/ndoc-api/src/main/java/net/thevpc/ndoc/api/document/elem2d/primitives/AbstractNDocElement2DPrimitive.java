@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.api.model.elem2d.primitives;
+package net.thevpc.ndoc.api.document.elem2d.primitives;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocElement2DPrimitive;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitive;
 
 import java.awt.*;
 
