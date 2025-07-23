@@ -5,14 +5,14 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToElementHelper;
-import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElementTypeGroup;
