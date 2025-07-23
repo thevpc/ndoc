@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.eval.fct;
 
-import net.thevpc.ndoc.api.model.fct.NDocFunction;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
+import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.eval.NDocFunctionArg;
+import net.thevpc.ndoc.api.eval.NDocFunctionContext;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
