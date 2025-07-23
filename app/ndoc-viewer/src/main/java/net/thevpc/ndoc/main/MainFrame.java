@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.main;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.main.components.EntryComponent;
-import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.base.renderer.HImageUtils;
 import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
