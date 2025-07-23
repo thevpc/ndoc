@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.spi.base.renderer.NDocNodeRendererContextBase;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.base.renderer.NDocNodeRendererContextBase;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
