@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.test;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
