@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.parser.util;
 
-import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.io.NPath;
