@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.engine.render.server;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.DefaultNDocLogger;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
