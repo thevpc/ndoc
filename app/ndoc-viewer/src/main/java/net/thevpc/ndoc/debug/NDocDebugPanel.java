@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.debug;
 
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 
 import javax.swing.*;
 import java.awt.*;
