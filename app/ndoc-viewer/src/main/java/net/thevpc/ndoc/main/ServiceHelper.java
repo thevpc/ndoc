@@ -1,6 +1,7 @@
 package net.thevpc.ndoc.main;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.config.NDocProject;
 import net.thevpc.ndoc.config.NDocViewerConfigManager;
@@ -9,10 +10,10 @@ import net.thevpc.ndoc.config.UserConfigManager;
 import net.thevpc.ndoc.debug.HDebugFrame;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.ndoc.main.components.NewProjectPanel;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentRendererListener;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentScreenRenderer;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRenderer;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentStreamRendererConfig;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererListener;
+import net.thevpc.ndoc.api.renderer.NDocDocumentScreenRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NStringUtils;
@@ -50,9 +51,12 @@ public class ServiceHelper {
 
     public ServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        engine = new DefaultNDocEngine();
-        engine.messages(currentMessages);
-        currListeners.add(new NDocDocumentRendererListener() {
+        this.engine = new DefaultNDocEngine();
+        this.debugFrame = new HDebugFrame(engine);
+        this.currentMessages.add(debugFrame.messages());
+        this.currentMessages.add(new DefaultNDocLogger());
+        this.engine.messages(currentMessages);
+        this.currListeners.add(new NDocDocumentRendererListener() {
 
             @Override
             public void onSaveDocument(NDocument document, NDocDocumentStreamRendererConfig config) {
@@ -60,16 +64,14 @@ public class ServiceHelper {
             }
 
         });
-        configManager = new NDocViewerConfigManager();
-        usersConfigManager = new UserConfigManager();
-        debugFrame = new HDebugFrame(engine);
-        currentMessages.add(debugFrame.messages());
-        currListeners.add(debugFrame.rendererListener());
-        debugFrame.setOnClose(new Runnable() {
+        this.configManager = new NDocViewerConfigManager();
+        this.usersConfigManager = new UserConfigManager();
+        this.currListeners.add(debugFrame.rendererListener());
+        this.debugFrame.setOnClose(new Runnable() {
             @Override
             public void run() {
-                currentMessages.remove(debugFrame.messages());
-                currListeners.remove(debugFrame.rendererListener());
+                //currentMessages.remove(debugFrame.messages());
+                //currListeners.remove(debugFrame.rendererListener());
             }
         });
     }
