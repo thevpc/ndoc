@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.extension.simple3d.sphere;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
-import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
-import net.thevpc.ndoc.api.model.elem3d.composite.NDocElement3DUVSphere;
-import net.thevpc.ndoc.api.model.elem3d.composite.NDocMesh3D;
-import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DTriangle;
-import net.thevpc.ndoc.spi.NDocElement3DRenderer;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3D;
+import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.document.elem3d.RenderState3D;
+import net.thevpc.ndoc.api.document.elem3d.composite.NDocElement3DUVSphere;
+import net.thevpc.ndoc.api.document.elem3d.composite.NDocMesh3D;
+import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DTriangle;
+import net.thevpc.ndoc.api.renderer.NDocElement3DRenderer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
