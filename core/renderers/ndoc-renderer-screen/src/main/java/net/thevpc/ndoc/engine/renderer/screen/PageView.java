@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.NDocNodeRenderer;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
 import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.util.NOptional;
 
