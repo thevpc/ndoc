@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.engine.parser;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeDef;
-import net.thevpc.ndoc.api.model.node.NDocNodeDefParam;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeDef;
+import net.thevpc.ndoc.api.document.node.NDocNodeDefParam;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 
 public class NDocNodeDefImpl implements NDocNodeDef {
     private final String templateName;
