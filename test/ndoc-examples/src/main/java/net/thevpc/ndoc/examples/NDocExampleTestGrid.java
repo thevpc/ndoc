@@ -4,13 +4,13 @@
  */
 package net.thevpc.ndoc.examples;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.NDocProps;
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import  net.thevpc.ndoc.api.document.style.NDocProps;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.elem.NElement;
 
