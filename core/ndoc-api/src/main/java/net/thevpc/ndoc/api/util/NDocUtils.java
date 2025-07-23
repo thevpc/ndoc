@@ -1,11 +1,12 @@
 package net.thevpc.ndoc.api.util;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementBuilder;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
@@ -381,5 +382,13 @@ public class NDocUtils {
             node = node.parent();
         }
         return null;
+    }
+
+    public static NElement removeAA(NElement yy) {
+        yy.builder()
+    }
+    public static String shortString(NElement yy) {
+        NElementBuilder sb = yy.builder();
+        return ;
     }
 }
