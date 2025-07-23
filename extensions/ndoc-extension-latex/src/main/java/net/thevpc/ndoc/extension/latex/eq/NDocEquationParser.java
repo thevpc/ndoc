@@ -4,12 +4,12 @@
  */
 package net.thevpc.ndoc.extension.latex.eq;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocProp;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.base.format.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
 
 /**

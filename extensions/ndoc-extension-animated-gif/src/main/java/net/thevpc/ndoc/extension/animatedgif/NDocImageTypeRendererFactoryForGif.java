@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
-import net.thevpc.ndoc.spi.NDocImageTypeRendererFactory;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
+import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
+import net.thevpc.ndoc.api.renderer.NDocImageTypeRendererFactory;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -19,7 +19,7 @@ public class NDocImageTypeRendererFactoryForGif implements NDocImageTypeRenderer
     public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, NDocImageOptions options, NDocGraphics graphics) {
         if (!options.isDisableAnimation()) {
             if (path.getName().toLowerCase().endsWith(".gif")) {
-                return NCallableSupport.of(10,
+                return NCallableSupport.valid(
                         () -> {
                             byte[] b = path.readBytes();
                             return new GifNDocImageDrawer(b, pendingCache);
