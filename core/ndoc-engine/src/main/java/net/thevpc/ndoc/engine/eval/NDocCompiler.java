@@ -1,17 +1,16 @@
 package net.thevpc.ndoc.engine.eval;
 
-import net.thevpc.ndoc.api.CompilePageContext;
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.node.*;
+import net.thevpc.ndoc.api.document.style.NDocProp;
+import net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.model.fct.NDocFunction;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
-import net.thevpc.ndoc.api.model.node.*;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.eval.NDocFunctionArg;
+import net.thevpc.ndoc.api.eval.NDocFunctionContext;
+import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.engine.MyCompilePageContext;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeFor;
 import net.thevpc.ndoc.engine.control.CtrlNDocNodeIf;
@@ -19,7 +18,7 @@ import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeDefParamImpl;
-import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
@@ -44,7 +43,7 @@ public class NDocCompiler {
         processUuid(root);
 //        root = processCalls(root, result);
 //        root = processControlFlow(root, result, new MyNDocNodeFlowControlProcessorContext(document, messages));
-        List<NDocNode> all = compileNodeTree(root, false, false, new MyCompilePageContext(engine, document));
+        List<NDocNode> all = compileNodeTree(root, false, false, new NDocCompilePageContextImpl(engine, document));
         if (all.size() == 0) {
             root = new DefaultNDocNode(NDocNodeType.VOID, source);
         } else if (all.size() == 1) {
@@ -188,7 +187,7 @@ public class NDocCompiler {
         return NOptional.ofNamedEmpty("definition for " + name);
     }
 
-    protected List<NDocNode> compileNodeTree(NDocNode node, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    protected List<NDocNode> compileNodeTree(NDocNode node, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         if (!isInPage && NDocNodeType.PAGE.equals(node.type())) {
             isInPage = true;
         }
@@ -243,7 +242,7 @@ public class NDocCompiler {
         }
     }
 
-    private List<NDocNode> _process_call_node(NDocNodeDef d, CtrlNDocNodeCall c, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    private List<NDocNode> _process_call_node(NDocNodeDef d, CtrlNDocNodeCall c, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         String uid = c.getCallName();
         NElement callDeclaration = c.getCallExpr();
         NDocNodeDefParam[] expectedParams = d.params();
@@ -323,7 +322,7 @@ public class NDocCompiler {
         return result;
     }
 
-    private List<NDocNode> compileNodeTree_call(NDocNode node, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    private List<NDocNode> compileNodeTree_call(NDocNode node, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         if (NDocNodeType.CALL.equals(node.type())) {
             CtrlNDocNodeCall c = (CtrlNDocNodeCall) node;
             if (!isInPage || (isInPage && processPages)) {
@@ -346,7 +345,7 @@ public class NDocCompiler {
         throw new NIllegalArgumentException(NMsg.ofC("unexpected node type %s", node.type()));
     }
 
-    private List<NDocNode> compileNodeTree_if(NDocNode node, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    private List<NDocNode> compileNodeTree_if(NDocNode node, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         if (NDocNodeType.IF.equals(node.type())) {
             CtrlNDocNodeIf c = (CtrlNDocNodeIf) node;
             if (!isInPage || (isInPage && processPages)) {
@@ -382,7 +381,7 @@ public class NDocCompiler {
         throw new NIllegalArgumentException(NMsg.ofC("unexpected node type %s", node.type()));
     }
 
-    private List<NDocNode> compileNodeTree_for(NDocNode node, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    private List<NDocNode> compileNodeTree_for(NDocNode node, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         if (NDocNodeType.FOR.equals(node.type())) {
             CtrlNDocNodeFor c = (CtrlNDocNodeFor) node;
             if (!isInPage || (isInPage && processPages)) {
@@ -423,7 +422,7 @@ public class NDocCompiler {
         throw new NIllegalArgumentException(NMsg.ofC("unexpected node type %s", node.type()));
     }
 
-    private List<NDocNode> _process_call_fct(NDocFunction t, CtrlNDocNodeCall c, boolean processPages, boolean isInPage, CompilePageContext compilePageContext) {
+    private List<NDocNode> _process_call_fct(NDocFunction t, CtrlNDocNodeCall c, boolean processPages, boolean isInPage, NDocCompilePageContext compilePageContext) {
         NDocItem currNode = c.parent();
         NDocResource source = engine.computeSource(currNode);
         NDocFunctionContext ctx = new DefaultNDocFunctionContext(engine);
@@ -479,7 +478,7 @@ public class NDocCompiler {
         return null;
     }
 
-    public List<NDocNode> compilePage(NDocNode node, CompilePageContext context) {
+    public List<NDocNode> compilePage(NDocNode node, NDocCompilePageContext context) {
         return compileNodeTree(node, true, true, context);
     }
 
