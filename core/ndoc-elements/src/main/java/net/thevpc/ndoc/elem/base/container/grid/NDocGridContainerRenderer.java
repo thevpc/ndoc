@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.elem.base.container.grid;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
 public class NDocGridContainerRenderer extends NDocNodeRendererBase {
 
