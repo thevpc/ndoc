@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.elem.base.shape.polygon;
 
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 
 public class NDocOctagonParser extends NDocNodeParserBase {
 
