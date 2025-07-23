@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.engine.renderer;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.NDocNodeParser;
-import net.thevpc.ndoc.spi.NDocNodeRenderer;
-import net.thevpc.ndoc.spi.base.renderer.NDocNodeRendererContextBase;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererManager;
+import net.thevpc.ndoc.api.parser.NDocNodeParser;
+import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
+import net.thevpc.ndoc.api.base.renderer.NDocNodeRendererContextBase;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererConfig;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
