@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.elem.base.container.ul;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.elem2d.NDocAlign;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocProp;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.base.renderer.ConvertedNDocNodeRenderer;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
