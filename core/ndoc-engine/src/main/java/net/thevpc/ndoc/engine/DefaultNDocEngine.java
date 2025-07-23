@@ -7,21 +7,26 @@ import java.util.*;
 import java.util.List;
 import java.util.function.Function;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.CompilePageContext;
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.style.NDocProp;
+import net.thevpc.ndoc.api.document.style.NDocStyleRule;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLoggerDelegateImpl;
+import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.model.fct.NDocFunction;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.node.NDocItemList;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeDef;
-import net.thevpc.ndoc.api.style.*;
+import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.eval.NDocFunctionArg;
+import net.thevpc.ndoc.api.document.node.NDocItemList;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeDef;
+import net.thevpc.ndoc.api.parser.*;
+import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
-import net.thevpc.ndoc.engine.eval.fct.NDocEitherFunction;
-import net.thevpc.ndoc.engine.eval.fct.NDocEitherPathFunction;
+import net.thevpc.ndoc.engine.eval.NDocCompilePageContextImpl;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.eval.NDocCompiler;
 import net.thevpc.ndoc.engine.parser.util.GitHelper;
@@ -29,23 +34,17 @@ import net.thevpc.ndoc.engine.renderer.NDocDocumentRendererFactoryContextImpl;
 import net.thevpc.ndoc.engine.document.NDocPropCalculator;
 import net.thevpc.ndoc.engine.document.NDocDocumentFactoryImpl;
 import net.thevpc.ndoc.engine.parser.DefaultNDocDocumentItemParserFactory;
-import net.thevpc.ndoc.api.resources.NDocResource;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
-import net.thevpc.ndoc.api.util.HResourceFactory;
 import net.thevpc.ndoc.engine.renderer.NDocGraphicsImpl;
 import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
-import net.thevpc.ndoc.spi.NDocNodeParser;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.engine.eval.NDocNodeEvalNDoc;
-import net.thevpc.ndoc.spi.renderer.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.util.*;
 
-import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
 
 /**
  * @author vpc
@@ -62,10 +61,18 @@ public class DefaultNDocEngine implements NDocEngine {
     private NDocNodeRendererManager rendererManager;
     private List<NDocFunction> functions = new ArrayList<>();
     private NDocLogger defaultMessages=new DefaultNDocLogger();
+    private DefaultNDocDocumentItemParserFactory  documentItemParserFactory;
 
     public DefaultNDocEngine() {
-        functions.add(new NDocEitherFunction());
-        functions.add(new NDocEitherPathFunction());
+        documentItemParserFactory = new DefaultNDocDocumentItemParserFactory();
+        ServiceLoader<NDocFunction> all=ServiceLoader.load(NDocFunction.class);
+        for (NDocFunction h : all) {
+            functions.add(h);
+        }
+    }
+
+    public DefaultNDocDocumentItemParserFactory getDocumentItemParserFactory() {
+        return documentItemParserFactory;
     }
 
     @Override
@@ -231,24 +238,24 @@ public class DefaultNDocEngine implements NDocEngine {
                 return nodeTypeParser(oid);
             }
             switch (id) {
-                case "for":
-                    return NOptional.of(
-                            new NDocNodeParserBase(true, "for") {
-
-                            }
-                    );
+//                case "for":
+//                    return NOptional.of(
+//                            new NDocNodeParserBase(true, "for") {
+//
+//                            }
+//                    );
                 case "call":
                     return NOptional.of(
                             new NDocNodeParserBase(true, "call") {
 
                             }
                     );
-                case "if":
-                    return NOptional.of(
-                            new NDocNodeParserBase(true, "if") {
-
-                            }
-                    );
+//                case "if":
+//                    return NOptional.of(
+//                            new NDocNodeParserBase(true, "if") {
+//
+//                            }
+//                    );
                 case "assign":
                     return NOptional.of(
                             new NDocNodeParserBase(true, "assign") {
@@ -300,7 +307,7 @@ public class DefaultNDocEngine implements NDocEngine {
         if (nodeParserFactories == null) {
             ServiceLoader<NDocNodeParserFactory> renderers = ServiceLoader.load(NDocNodeParserFactory.class);
             List<NDocNodeParserFactory> loaded = new ArrayList<>();
-            loaded.add(new DefaultNDocDocumentItemParserFactory());
+            loaded.add(documentItemParserFactory);
             for (NDocNodeParserFactory renderer : renderers) {
                 loaded.add(renderer);
             }
@@ -316,16 +323,16 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public List<NDocNode> compileNode(NDocNode node, NDocument document) {
-        return compileNode(node, new MyCompilePageContext(this, document));
+        return compileNode(node, new NDocCompilePageContextImpl(this, document));
     }
 
     @Override
-    public List<NDocNode> compileNode(NDocNode node, CompilePageContext context) {
+    public List<NDocNode> compileNode(NDocNode node, NDocCompilePageContext context) {
         return new NDocCompiler(this).compilePage(node, context);
     }
 
     @Override
-    public List<NDocNode> compileItem(NDocItem node, CompilePageContext context) {
+    public List<NDocNode> compileItem(NDocItem node, NDocCompilePageContext context) {
         List<NDocNode> all = new ArrayList<>();
         if (node instanceof NDocNode) {
             all.addAll(compileNode((NDocNode) node, context));
@@ -353,12 +360,12 @@ public class DefaultNDocEngine implements NDocEngine {
         if (GitHelper.isGithubFolder(path.toString())) {
             path = GitHelper.resolveGithubPath(path.toString(), messages());
         }
-        NDocResource source = HResourceFactory.of(path);
+        NDocResource source = NDocResourceFactory.of(path);
         NDocDocumentLoadingResultImpl r = new NDocDocumentLoadingResultImpl(source, messages());
         NDocLoggerDelegateImpl messages1 = r.messages();
         if (path.exists()) {
             if (path.isRegularFile()) {
-                NDocResource nPathResource = HResourceFactory.of(path);
+                NDocResource nPathResource = NDocResourceFactory.of(path);
                 NOptional<NElement> f = loadElement(path);
                 if (!f.isPresent()) {
                     messages1.log(NDocMsg.of(f.getMessage().get().asSevere(), nPathResource));
@@ -371,13 +378,13 @@ public class DefaultNDocEngine implements NDocEngine {
                     messages1.log(NDocMsg.of(dd.getMessage().get().asSevere(), nPathResource));
                 }
                 if (r.get().root().source() == null) {
-                    r.get().root().setSource(HResourceFactory.of(path));
+                    r.get().root().setSource(NDocResourceFactory.of(path));
                 }
                 return r;
             } else if (path.isDirectory()) {
                 NDocument document = documentFactory().ofDocument(source);
-                document.resources().add(path.resolve(HEngineUtils.NDOC_EXT_STAR));
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isNDocFile(x)).toList();
+                document.resources().add(path.resolve(NDocEngineUtils.NDOC_EXT_STAR));
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x)).toList();
                 if (all.isEmpty()) {
                     messages1.log(
                             NDocMsg.of(NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere())
@@ -402,7 +409,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 for (NPath nPath : all) {
                     // document.resources().add(nPath);
                     NOptional<NDocItem> d = null;
-                    NDocResource nPathResource = HResourceFactory.of(nPath);
+                    NDocResource nPathResource = NDocResourceFactory.of(nPath);
                     try {
                         d = loadNode(document.root(), nPath, document);
                     } catch (Exception ex) {
@@ -419,7 +426,7 @@ public class DefaultNDocEngine implements NDocEngine {
                     }
                 }
                 if (document.root().source() == null) {
-                    document.root().setSource(HResourceFactory.of(path));
+                    document.root().setSource(NDocResourceFactory.of(path));
                 }
                 r.setDocument(document);
                 return r;
@@ -451,15 +458,15 @@ public class DefaultNDocEngine implements NDocEngine {
     public NOptional<NDocItem> loadNode(NDocNode into, NPath path, NDocument document) {
         if (path.exists()) {
             if (path.isRegularFile()) {
-                NDocResource source = HResourceFactory.of(path);
+                NDocResource source = NDocResourceFactory.of(path);
                 NOptional<NDocItem> d = loadNode0(into, path, document);
                 if (d.isPresent()) {
                     updateSource(d.get(), source);
                 }
                 return d;
             } else if (path.isDirectory()) {
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && HEngineUtils.isNDocFile(x.getName())).toList();
-                all.sort(HEngineUtils::comparePaths);
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x.getName())).toList();
+                all.sort(NDocEngineUtils::comparePaths);
                 NDocItem node = null;
                 for (NPath nPath : all) {
                     NOptional<NDocItem> d = loadNode0((node instanceof NDocNode) ? (NDocNode) node : null, nPath, document);
@@ -467,7 +474,7 @@ public class DefaultNDocEngine implements NDocEngine {
                         NLog.of(getClass()).error(NMsg.ofC("invalid file %s", nPath));
                         return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
-                    updateSource(d.get(), HResourceFactory.of(path));
+                    updateSource(d.get(), NDocResourceFactory.of(path));
                     if (node == null) {
                         node = d.get();
                     } else {
@@ -513,7 +520,7 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     public NDocDocumentLoadingResult loadDocument(InputStream is) {
-        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(HResourceFactory.of(is), messages());
+        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(NDocResourceFactory.of(is), messages());
         NOptional<NElement> f = loadElement(is);
         if (!f.isPresent()) {
             result.messages().log(NDocMsg.of(f.getMessage().get().asSevere()));
@@ -704,7 +711,7 @@ public class DefaultNDocEngine implements NDocEngine {
             case CUSTOM:
             case TEMPORAL:
             case STREAM:
-            case CHAR_SEQUENCE:
+            case STRING:
             case BOOLEAN:
             case OTHER: {
                 if (changesInAnnotation) {
@@ -849,7 +856,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
 
     private NOptional<NDocItem> loadNode0(NDocNode into, NPath path, NDocument document) {
-        NDocResource source = HResourceFactory.of(path);
+        NDocResource source = NDocResourceFactory.of(path);
         document.resources().add(source);
         NElement c = loadElement(path).get();
         ArrayList<NDocNode> parents = new ArrayList<>();
@@ -1004,7 +1011,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 copyTemplate(nPath, to.resolve(nPath.getName()), vars);
             }
         } else if (from.isRegularFile()) {
-            if (HEngineUtils.isNDocFile(from)) {
+            if (NDocEngineUtils.isNDocFile(from)) {
                 String code = from.readString();
                 to.writeString(NMsg.ofV(code, vars).toString());
             } else {
