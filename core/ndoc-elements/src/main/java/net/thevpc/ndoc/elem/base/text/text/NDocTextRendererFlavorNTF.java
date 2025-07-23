@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.base.parser.HTextUtils;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.spi.NDocTextRendererFlavor;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.base.parser.HTextUtils;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTexts;
 
