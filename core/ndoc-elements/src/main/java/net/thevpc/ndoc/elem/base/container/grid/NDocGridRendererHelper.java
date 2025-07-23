@@ -1,17 +1,17 @@
 package net.thevpc.ndoc.elem.base.container.grid;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.model.elem2d.SizeD;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.spi.model.NDocSizeRequirements;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.eval.NDocValueByType;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.document.elem2d.SizeD;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.eval.NDocValueByType;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 
 import java.awt.*;
 import java.util.ArrayList;
