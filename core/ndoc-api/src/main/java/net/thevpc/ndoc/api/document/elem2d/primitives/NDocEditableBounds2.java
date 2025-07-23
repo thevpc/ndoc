@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.api.model.elem2d.primitives;
+package net.thevpc.ndoc.api.document.elem2d.primitives;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 
 public class NDocEditableBounds2 {
     public Double x;
