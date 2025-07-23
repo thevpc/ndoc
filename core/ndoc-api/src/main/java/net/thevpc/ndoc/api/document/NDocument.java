@@ -3,8 +3,8 @@ package net.thevpc.ndoc.api.document;
 import java.util.List;
 import java.util.Properties;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 
 public interface NDocument {
