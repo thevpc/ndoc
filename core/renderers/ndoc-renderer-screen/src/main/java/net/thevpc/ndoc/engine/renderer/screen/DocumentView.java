@@ -1,20 +1,20 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
+import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.engine.renderer.elem2d.text.util.TextUtils;
 import net.thevpc.ndoc.engine.renderer.screen.components.*;
 
 
 import net.thevpc.ndoc.engine.renderer.screen.utils.JPopupMenuHelper;
-import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
-import net.thevpc.ndoc.spi.renderer.*;
-import net.thevpc.ndoc.spi.util.PagesHelper;
+import net.thevpc.ndoc.api.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.util.PagesHelper;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
