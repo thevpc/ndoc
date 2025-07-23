@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.app.backend.service;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererConfig;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.Git;
