@@ -4,7 +4,7 @@
  */
 package net.thevpc.ndoc.examples;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
