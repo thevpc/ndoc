@@ -1,8 +1,8 @@
-package net.thevpc.ndoc.api.model.elem2d.primitives;
+package net.thevpc.ndoc.api.document.elem2d.primitives;
 
 import net.thevpc.ndoc.api.model.HArrow;
-import net.thevpc.ndoc.api.model.elem2d.NDocElement2DPrimitiveType;
-import net.thevpc.ndoc.api.model.elem2d.NDocPoint2D;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitiveType;
+import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 
 public class NDocElement2DLine extends AbstractNDocElement2DPrimitive {
     private NDocPoint2D from;
