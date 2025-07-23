@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.main;
 
-import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocMsg;
 
 import java.util.ArrayList;
