@@ -1,13 +1,11 @@
 package net.thevpc.ndoc.debug;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.nuts.elem.NArrayElement;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class NDocDocumentPanel extends TsonPanel {
