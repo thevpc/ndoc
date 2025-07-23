@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
