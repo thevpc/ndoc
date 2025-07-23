@@ -1,7 +1,10 @@
 package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.resources.NDocResource;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.engine.NDocLoggerDelegateImpl;
+import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
