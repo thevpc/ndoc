@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.renderer.text.*;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.util.NStringUtils;
 
