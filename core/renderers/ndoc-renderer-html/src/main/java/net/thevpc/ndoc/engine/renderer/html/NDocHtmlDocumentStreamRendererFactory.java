@@ -4,7 +4,9 @@
  */
 package net.thevpc.ndoc.engine.renderer.html;
 
-import net.thevpc.ndoc.spi.renderer.*;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactory;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactoryContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
@@ -16,7 +18,7 @@ public class NDocHtmlDocumentStreamRendererFactory implements NDocDocumentRender
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "html":
-                return NCallableSupport.of(10, () -> new NDocHtmlDocumentRenderer(context.engine()));
+                return NCallableSupport.valid( () -> new NDocHtmlDocumentRenderer(context.engine()));
             default:
                 return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
         }
