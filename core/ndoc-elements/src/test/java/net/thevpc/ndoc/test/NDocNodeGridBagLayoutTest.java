@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.test;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.elem2d.SizeD;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.SizeD;
 import net.thevpc.ndoc.elem.base.container.grid.NDocNodeGridBagLayout;
 
 import java.awt.*;
