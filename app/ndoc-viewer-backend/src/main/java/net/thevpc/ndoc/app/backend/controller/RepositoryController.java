@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.app.backend.controller;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.document.DefaultNDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.app.backend.service.GitService;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.io.NPath;
