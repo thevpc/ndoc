@@ -3,14 +3,9 @@ package net.thevpc.ndoc.api.eval;
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.document.elem2d.primitives.*;
 import net.thevpc.ndoc.api.document.elem2d.*;
-import net.thevpc.ndoc.api.document.elem3d.*;
 import net.thevpc.ndoc.api.document.node.*;
-import net.thevpc.ndoc.api.document.style.*;
-import net.thevpc.ndoc.api.model.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.DefaultColorPalette;
 import net.thevpc.nuts.elem.*;
@@ -339,7 +334,7 @@ public class NDocObjEx {
                     case ARRAY:
                     case NAMED_PARAMETRIZED_ARRAY:
                     case PARAMETRIZED_ARRAY:
-                    case NAMED_ARRAY:{
+                    case NAMED_ARRAY: {
                         NListContainerElement te = (NListContainerElement) element;
                         name = NDocUtils.uid(te.toNamed().flatMap(NNamedElement::name).orNull());
                         List<NElement> a = te.children();
@@ -628,9 +623,15 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
+            te = simplifyContainer(te);
             if (te.type().isAnyNumber()) {
                 return NOptional.of(te.asNumberValue().get());
+            } else if (te.isAnyString()) {
+                return (NOptional) NLiteral.of(((NElement) element).asStringValue().get()).asDouble();
             }
+        }
+        if (element instanceof String) {
+            return (NOptional) NLiteral.of(element).asDouble();
         }
         return NOptional.ofNamedEmpty("number from " + element);
     }
@@ -755,7 +756,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isAnyString()){
+            if (te.isAnyString()) {
                 return NOptional.of(te.asStringValue().get());
             }
         }
@@ -781,7 +782,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
+            if (te.isListContainer()) {
                 return NDocObjEx.of(te.toListContainer().get().children().toArray(new NElement[0])).asIntArray();
             }
         }
@@ -900,7 +901,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
+            if (te.isListContainer()) {
                 return NDocObjEx.of(te.asListContainer().get().children().toArray(new NElement[0])).asDoubleArray();
             }
         }
@@ -922,7 +923,7 @@ public class NDocObjEx {
                     d.getX4(),});
         }
         if (element instanceof Collection) {
-            Object[] arr = ((Collection)element).toArray();
+            Object[] arr = ((Collection) element).toArray();
             double[] aa = new double[arr.length];
             for (int i = 0; i < aa.length; i++) {
                 NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
@@ -955,7 +956,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
+            if (te.isListContainer()) {
                 return NOptional.of(te.asListContainer().get().children().toArray(new NElement[0]));
             }
         }
@@ -1010,8 +1011,8 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
-                return NOptional.of(te.asListContainer().get().children().stream().map(x->x.asStringValue().get()).toArray(String[]::new));
+            if (te.isListContainer()) {
+                return NOptional.of(te.asListContainer().get().children().stream().map(x -> x.asStringValue().get()).toArray(String[]::new));
             }
         }
         return NOptional.ofNamedEmpty("String[] from " + element);
@@ -1036,8 +1037,8 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
-                return NOptional.of(NStream.ofStream(te.asListContainer().get().children().stream()).map(x->x.asBooleanValue().get()).toBooleanArray());
+            if (te.isListContainer()) {
+                return NOptional.of(NStream.ofStream(te.asListContainer().get().children().stream()).map(x -> x.asBooleanValue().get()).toBooleanArray());
             }
         }
         return NOptional.ofNamedEmpty("boolean[] from " + element);
@@ -1425,7 +1426,7 @@ public class NDocObjEx {
         }
         if (element instanceof NElement) {
             NElement te = (NElement) element;
-            if(te.isListContainer()){
+            if (te.isListContainer()) {
                 return NDocObjEx.of(te.toArray().get().children().toArray(new NElement[0])).asDouble2Array();
             }
         }
@@ -1459,7 +1460,7 @@ public class NDocObjEx {
     }
 
     public boolean isFunction() {
-        return element instanceof NUpletElement && ((NUpletElement) element).type()==NElementType.NAMED_UPLET;
+        return element instanceof NUpletElement && ((NUpletElement) element).type() == NElementType.NAMED_UPLET;
     }
 
     public boolean hasName() {
@@ -1478,9 +1479,33 @@ public class NDocObjEx {
             return true;
         }
         if (element instanceof NElement) {
-            return ((NElement) element).isNumber();
+            NElement e = (NElement) element;
+            e = simplifyContainer(e);
+            return e.isNumber();
         }
         return false;
+    }
+
+    public static NElement simplifyContainer(NElement e) {
+        if (e.isUplet()) {
+            NUpletElement u = e.asUplet().get();
+            if (u.params().size() == 1) {
+                return simplifyContainer(u.params().get(0));
+            }
+        }
+        if (e.isArray()) {
+            NArrayElement u = e.asArray().get();
+            if (u.children().size() == 1) {
+                return simplifyContainer(u.children().get(0));
+            }
+        }
+        if (e.isObject()) {
+            NObjectElement u = e.asObject().get();
+            if (u.children().size() == 1) {
+                return simplifyContainer(u.children().get(0));
+            }
+        }
+        return e;
     }
 
     public NOptional<NElement> asTson() {
@@ -1523,6 +1548,16 @@ public class NDocObjEx {
             return te.isString();
         }
         return false;
+    }
+
+    public NElement asElement() {
+        if (element instanceof NElement) {
+            return (NElement) element;
+        }
+        if (element instanceof String) {
+            return NElement.ofString((String) element);
+        }
+        throw new RuntimeException("not element " + element);
     }
 
     public static class SimplePair {
