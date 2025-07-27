@@ -33,10 +33,6 @@ public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer
     }
 
     protected void renderStream(NDocument document, OutputStream os) {
-        NDocLogger messages2 = this.messages;
-        if (messages2 == null) {
-            messages2 = new DefaultNDocLogger(engine.computeSource(document.root()));
-        }
         document = engine.compileDocument(document).get();
         PrintStream out = new PrintStream(os);
         out.println("<html>");
@@ -108,11 +104,6 @@ public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer
     private class NDocDocumentRendererContextImpl implements NDocDocumentRendererContext {
 
         public NDocDocumentRendererContextImpl() {
-        }
-
-        @Override
-        public NDocLogger messages() {
-            return messages;
         }
     }
 
