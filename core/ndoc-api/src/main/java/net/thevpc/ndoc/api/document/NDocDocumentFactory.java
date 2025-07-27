@@ -46,7 +46,7 @@ public interface NDocDocumentFactory {
 
     NDocNode ofFlow();
 
-    NDocNode ofStack();
+    NDocNode ofGroup();
 
     NDocNode ofUnorderedList();
 
