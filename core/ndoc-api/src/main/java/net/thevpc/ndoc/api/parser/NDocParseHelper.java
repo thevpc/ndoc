@@ -7,6 +7,7 @@ package net.thevpc.ndoc.api.parser;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElementAnnotation;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
@@ -44,7 +45,7 @@ public class NDocParseHelper {
     public static boolean fillAnnotations(NElement e, NDocNode p) {
         for (NElementAnnotation a : e.annotations()) {
             String nn=a.name();
-            if (!NNameFormat.equalsIgnoreFormat(nn,"CompilerDeclarationPath")) {
+            if (!NNameFormat.equalsIgnoreFormat(nn, NDocUtils.COMPILER_DECLARATION_PATH)) {
                 // add classes as well
                 Set<String> allClasses = new HashSet<>();
                 List<NElement> params = a.params();
