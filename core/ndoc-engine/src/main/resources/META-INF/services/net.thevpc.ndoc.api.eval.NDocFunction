@@ -1,3 +1,4 @@
-net.thevpc.ndoc.engine.eval.fct.NDocArrayRotateFunction
+net.thevpc.ndoc.engine.eval.fct.NDocArrayRightRotateFunction
+net.thevpc.ndoc.engine.eval.fct.NDocArrayLeftRotateFunction
 net.thevpc.ndoc.engine.eval.fct.NDocEitherFunction
 net.thevpc.ndoc.engine.eval.fct.NDocEitherPathFunction
