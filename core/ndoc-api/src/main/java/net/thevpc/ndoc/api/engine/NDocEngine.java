@@ -18,9 +18,9 @@ import net.thevpc.ndoc.api.eval.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.eval.NDocVar;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
-import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
@@ -31,9 +31,11 @@ import net.thevpc.nuts.util.NOptional;
  */
 public interface NDocEngine {
 
-    NDocLogger messages();
+    NDocLogger log();
 
-    NDocLogger messages(NDocLogger messages);
+    NDocLogger addLog(NDocLogger messages);
+
+    NDocLogger removeLog(NDocLogger messages);
 
     List<NDocNodeParser> nodeTypeFactories();
 
@@ -57,9 +59,9 @@ public interface NDocEngine {
 
     NDocDocumentLoadingResult compileDocument(NDocument document);
 
-    List<NDocNode> compileNode(NDocNode node, NDocument document);
+    List<NDocNode> compilePageNode(NDocNode node, NDocument document);
 
-    List<NDocNode> compileNode(NDocNode node, NDocCompilePageContext context);
+    List<NDocNode> compilePageNode(NDocNode node, NDocCompilePageContext context);
 
     List<NDocNode> compileItem(NDocItem node, NDocCompilePageContext context);
 
@@ -83,8 +85,6 @@ public interface NDocEngine {
 
     <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames);
 
-    NDocResource computeSource(NDocItem node);
-
     NDocNodeRendererManager renderManager();
 
     NDocGraphics createGraphics(Graphics2D g2d);
@@ -97,7 +97,11 @@ public interface NDocEngine {
 
     NDocFunctionArg createRawArg(NDocNode node, NElement expression);
 
-    NElement evalExpression(NDocNode node, NElement expression);
+    NElement evalExpression(NElement expression, NDocNode node);
 
-    NElement resolveVarValue(NDocNode node, String varName);
+    NElement resolveVarValue(String varName, NDocNode node);
+
+    NOptional<NDocVar> findVar(String varName, NDocNode node);
+
+    NPath resolvePath(NElement path, NDocNode node);
 }
