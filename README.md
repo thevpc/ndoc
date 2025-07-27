@@ -5,8 +5,8 @@
 
 Download documentation here : [ndoc-doc.pdf](documentation/website/ndoc-doc.pdf)
 
-![](documentation/website/ex02.pdf)
-![](documentation/website/ex03.pdf)
+![](documentation/website/ex02.png)
+![](documentation/website/ex03.png)
 
 
 ## What it does
