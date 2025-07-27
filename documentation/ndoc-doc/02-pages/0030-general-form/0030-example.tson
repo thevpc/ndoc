@@ -6,7 +6,7 @@ page{
             color:red, stroke:4
         )
         ul(at:center){ "Item 1" , "Item 2" }
-        eq("x^2_1=\sin(x)") // supports LATEX
+        eq("f_1(x)=\int_x \sin(x^2)") // supports LATEX
         uml( // supports PLANTUML
             """
                 left to right direction
