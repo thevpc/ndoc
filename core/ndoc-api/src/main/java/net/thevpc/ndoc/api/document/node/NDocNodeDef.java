@@ -8,5 +8,6 @@ public interface NDocNodeDef extends NDocItem {
     NDocNodeDefParam[] params();
 
     NDocNode[] body();
+
     NDocResource source();
 }
