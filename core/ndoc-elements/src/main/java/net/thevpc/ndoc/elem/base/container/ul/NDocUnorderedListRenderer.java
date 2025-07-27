@@ -30,19 +30,21 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             switch (child.type()) {
                 case NDocNodeType.UNORDERED_LIST:
                 case NDocNodeType.ORDERED_LIST: {
-                    all.add(f.ofVoid().addStyleClasses("ul-bullet"));
+                    all.add(f.ofVoid().addStyleClasses("ul-bullet").setSource(p.source()));
                     break;
                 }
                 default: {
                     all.add(f.ofSphere()
                             //.setProperty(HPropName.SIZE, NElements.ofDouble(2,"%P"))
-                            .addStyleClasses("ul-bullet"));
+                            .addStyleClasses("ul-bullet")
+                            .setSource(p.source())
+                    );
                     break;
                 }
             }
-            all.add(child.addStyleClasses("ul-item"));
+            all.add(child.addStyleClasses("ul-item").setSource(p.source()));
         }
-        NDocNode newNode = f.ofGrid().addAll(all.toArray(new NDocNode[0]))
+        NDocNode newNode = f.ofGrid().addChildren(all.toArray(new NDocNode[0]))
                 .setProperty(NDocPropName.COLUMNS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ROWS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ORIGIN, NDocAlign.TOP_LEFT)
