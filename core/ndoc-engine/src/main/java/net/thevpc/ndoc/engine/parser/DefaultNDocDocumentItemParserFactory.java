@@ -9,15 +9,12 @@ import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocNodeParserFactory;
 import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
-import net.thevpc.ndoc.engine.parser.nodes.*;
-import net.thevpc.ndoc.engine.parser.special.ForSpecialParser;
-import net.thevpc.ndoc.engine.parser.special.IfSpecialParser;
-import net.thevpc.ndoc.engine.parser.special.ImportSpecialParser;
-import net.thevpc.ndoc.engine.parser.special.StylesSpecialParser;
+import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeCall;
 import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
+import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeName;
+import net.thevpc.ndoc.engine.document.NDocItemBag;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
@@ -41,7 +38,7 @@ public class DefaultNDocDocumentItemParserFactory
     public NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
         NDocEngine engine = context.engine();
-        if (c.annotations().stream().anyMatch(x -> "define".equals(x.name()))) {
+        if (c.annotations().stream().anyMatch(x -> NDocNodeType.CTRL_DEFINE.equals(x.name()))) {
             //this is a node definition
             if (c.isAnyObject() || c.isNamed()) {
                 return NCallableSupport.valid(() -> {
@@ -63,7 +60,7 @@ public class DefaultNDocDocumentItemParserFactory
                                                 null
                                         );
                                     } else {
-                                        context.messages().log(NDocMsg.of(NMsg.ofC("invalid definition param, expected var name %s in %s", x, object).asError()));
+                                        context.messages().log(NMsg.ofC("invalid definition param, expected var name %s in %s", x, object).asError());
                                         return null;
                                     }
                                 }).filter(x -> x != null).collect(Collectors.toList());
@@ -71,11 +68,21 @@ public class DefaultNDocDocumentItemParserFactory
                         params = new ArrayList<>();
                     }
                     NDocResource source = context.source();
+                    List<NDocNode> defBody=new ArrayList<>();
+                    for (NElement child : object.children()) {
+                        NDocItem item = engine.newNode(child, context).get();
+                        NDocItemBag b=new NDocItemBag(Arrays.asList(item));
+                        if(b.isNodes()){
+                            defBody.addAll(b.nodes());
+                        }else{
+                            context.messages().log(NMsg.ofC("expected nodes, but got other items when creating node from %s",NDocUtils.snippet(child)).asError());
+                        }
+                    }
                     return new NDocNodeDefImpl(
                             context.node(),
                             templateName,
                             params.toArray(new NDocNodeDefParam[0]),
-                            object.children().stream().map(x -> engine.newNode(x, context).get()).toArray(NDocNode[]::new),
+                            defBody.toArray(new NDocNode[0]),
                             source
                     );
                 });
@@ -96,11 +103,7 @@ public class DefaultNDocDocumentItemParserFactory
                             NOptional<String> nn = kh.asStringOrName();
                             if (nn.isPresent()) {
                                 String nnn = NStringUtils.trim(nn.get());
-                                if (nnn.startsWith("$")) {
-                                    nnn = nnn.substring(1);
-                                }
-                                String finalNnn = nnn;
-                                return NCallableSupport.valid( () -> DefaultNDocNode.ofAssign(finalNnn, v, context.source()));
+                                return NCallableSupport.valid(() -> DefaultNDocNode.ofAssign(nnn, v, context.source()));
                             } else {
                                 return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
                             }
@@ -109,8 +112,9 @@ public class DefaultNDocDocumentItemParserFactory
                         }
                     }
                 }
-                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
-                    NCallableSupport<NDocItem> uu = ff.parseNode(context);
+                NOptional<NDocNodeParser> ff = engine.nodeTypeParser(c.type().opSymbol());
+                if (ff.isPresent()) {
+                    NCallableSupport<NDocItem> uu = ff.get().parseNode(context);
                     if (uu.isValid()) {
                         return uu;
                     }
@@ -119,7 +123,9 @@ public class DefaultNDocDocumentItemParserFactory
             }
             case CONTAINER: {
                 switch (c.type()) {
-                    case OBJECT: {
+                    case OBJECT:
+                    case ARRAY:
+                    {
                         return parseNoNameBloc(context);
                     }
                     case UPLET: {
@@ -138,21 +144,26 @@ public class DefaultNDocDocumentItemParserFactory
                             return p.parseNode(context);
                         }
                         if (c.isNamedUplet() || c.isAnyObject()) {
-                            return NCallableSupport.valid( () -> createCtrlNDocNodeCall(c, context));
+                            return NCallableSupport.valid(() -> createCtrlNDocNodeCall(c, context));
                         }
-                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c),context);
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
                     }
                     case PAIR: {
-                        for (NDocNodeParser ff : engine.nodeTypeFactories()) {
-                            NCallableSupport<NDocItem> uu = ff.parseNode(context);
-                            if (uu.isValid()) {
-                                return uu;
+                        if (c.isNamedPair()) {
+                            NPairElement p = c.asPair().get();
+                            String name = p.key().asStringValue().get();
+                            NOptional<NDocNodeParser> ff = engine.nodeTypeParser(name);
+                            if (ff.isPresent()) {
+                                NCallableSupport<NDocItem> uu = ff.get().parseNode(context);
+                                if (uu.isValid()) {
+                                    return uu;
+                                }
                             }
                         }
-                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c), context);
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node from pair : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
                     }
                     default: {
-                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c),context);
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node from %s : %s", c.type().id(), NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
                     }
                 }
             }
@@ -169,30 +180,15 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case NAME: {
-                String name = c.asStringValue().get();
-                if (name.startsWith("$")) {
-                    return NCallableSupport.valid(
-                            () -> DefaultNDocNode.ofExpr(c, context.source())
-                    );
-                }
-                String uid = NDocUtils.uid(name);
-                NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
-                if (p != null) {
-                    return p.parseNode(context);
-                }
-                p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
-                if (p != null) {
-                    return p.parseNode(context);
-                }
-                break;
+                return NCallableSupport.valid(()->new CtrlNDocNodeName(context.source(),c));
             }
         }
-        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c), context);
+        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
     }
 
     private NCallableSupport<NDocItem> _invalidSupport(NMsg msg, NDocNodeFactoryParseContext context) {
         msg = msg.asError();
-        context.messages().log(NDocMsg.of(msg.asError()));
+        context.messages().log(msg.asError());
         return NCallableSupport.invalid(msg);
     }
 
@@ -238,7 +234,7 @@ public class DefaultNDocDocumentItemParserFactory
                 }
                 c = fb.build();
             } else {
-                context.messages().log(NDocMsg.of(NMsg.ofC("unexpected call : %s (ignored)", c).asError(),context.source()));
+                context.messages().log(NMsg.ofC("unexpected call : %s (ignored)", c).asError(), context.source());
             }
         } else {
             if (c.isNamedUplet()) {
@@ -261,7 +257,7 @@ public class DefaultNDocDocumentItemParserFactory
                     }
                 }
             } else {
-                context.messages().log(NDocMsg.of(NMsg.ofC("unexpected call : %s (ignored)", c).asError(),context.source()));
+                context.messages().log(NMsg.ofC("unexpected call : %s (ignored)", c).asError(), context.source());
             }
         }
         cc.setCallName(__name);
@@ -357,7 +353,7 @@ public class DefaultNDocDocumentItemParserFactory
         NDocObjEx ee = NDocObjEx.of(c);
         for (NElementAnnotation a : c.annotations()) {
             String nn = a.name();
-            if (!NNameFormat.equalsIgnoreFormat(nn, "CompilerDeclarationPath")) {
+            if (!NNameFormat.equalsIgnoreFormat(nn, NDocUtils.COMPILER_DECLARATION_PATH)) {
                 if (!NBlankable.isBlank(nn)) {
                     if (allAncestors == null) {
                         allAncestors = new HashSet<>();
@@ -381,16 +377,16 @@ public class DefaultNDocDocumentItemParserFactory
         }
         NDocNode node = context.node();
         if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
-            NDocNode pg = f.ofStack().setSource(context.source());
+            NDocNode pg = f.ofGroup().setSource(context.source());
             pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
             for (NElement child : ee.body()) {
                 NOptional<NDocItem> u = context.engine().newNode(child, context);
                 if (u.isPresent()) {
                     pg.append(u.get());
                 } else {
-                    return _invalidSupport(NMsg.ofC("invalid %s for %s", child,
+                    return _invalidSupport(NMsg.ofC("invalid %s for %s", NDocUtils.snippet(child),
                             node == null ? "document" : node.type()
-                    ),context);
+                    ), context);
                 }
             }
             return NCallableSupport.valid(pg);
@@ -401,10 +397,10 @@ public class DefaultNDocDocumentItemParserFactory
                 if (u.isPresent()) {
                     pg.add(u.get());
                 } else {
-                    return _invalidSupport(NMsg.ofC("invalid %s for %s : %s", child,
+                    return _invalidSupport(NMsg.ofC("invalid %s for %s : %s", NDocUtils.snippet(child),
                             node == null ? "document" : node.type(),
                             u.getMessage().get()
-                    ),context);
+                    ), context);
                 }
             }
             return NCallableSupport.valid(pg);
