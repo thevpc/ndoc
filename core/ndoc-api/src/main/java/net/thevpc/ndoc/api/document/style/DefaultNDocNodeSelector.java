@@ -221,7 +221,7 @@ public class DefaultNDocNodeSelector implements NDocStyleRuleSelector {
             }
         }
         if (!classes.isEmpty()) {
-            for (String name : names) {
+            for (String name : classes) {
                 c.add(NElement.ofName("." + name));
             }
         }
