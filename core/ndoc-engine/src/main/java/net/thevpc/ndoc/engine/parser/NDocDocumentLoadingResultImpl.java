@@ -11,14 +11,12 @@ import net.thevpc.nuts.util.NOptional;
 public class NDocDocumentLoadingResultImpl implements NDocDocumentLoadingResult {
     private NDocResource source;
     private NDocument document;
-    private NDocLoggerDelegateImpl messageList;
+    private boolean successful;
 
-    public NDocDocumentLoadingResultImpl(NDocResource source, NDocLogger messageList) {
+    public NDocDocumentLoadingResultImpl(NDocument document,NDocResource source, boolean successful) {
+        this.document = document;
         this.source = source;
-        if (messageList == null) {
-            messageList = new DefaultNDocLogger(source);
-        }
-        this.messageList = new NDocLoggerDelegateImpl(source, messageList);
+        this.successful = successful;
     }
 
     @Override
@@ -31,29 +29,23 @@ public class NDocDocumentLoadingResultImpl implements NDocDocumentLoadingResult 
         return source;
     }
 
-    public NDocLoggerDelegateImpl messages() {
-        return messageList;
-    }
 
     @Override
     public NOptional<NDocument> document() {
-        if (/*isSuccessful() && */document != null) {
-            return NOptional.of(document);
-        } else {
-            if (isSuccessful()) {
+        if (document == null) {
+            if(successful) {
                 return NOptional.ofEmpty(NMsg.ofC("compilation is successful but document could not be compiled"));
+
             }
             return NOptional.ofEmpty(NMsg.ofC("Compilation failed and partial document could not resolved"));
         }
+        return NOptional.of(document);
     }
 
     @Override
     public boolean isSuccessful() {
-        return messageList.isSelfSuccessful();
-    }
-
-    public void setDocument(NDocument document) {
-        this.document = document;
+        return successful;
+        //return messageList.isSelfSuccessful();
     }
 
 }
