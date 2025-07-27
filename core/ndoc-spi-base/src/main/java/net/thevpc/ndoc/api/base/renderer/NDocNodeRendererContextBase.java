@@ -29,19 +29,17 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     private NDocEngine engine;
     private NDocBounds2 globalBound;
     private NDocBounds2 bound;
-    private NDocLogger log;
     private Map<String, Object> capabilities = new HashMap<>();
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound, NDocLogger log) {
+    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound) {
         this.engine=engine;
         this.bound = new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.g3 = g;
-        this.log = log;
     }
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocLogger log) {
-        this(engine,g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()), log);
+    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound) {
+        this(engine,g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()));
     }
 
     @Override
@@ -93,7 +91,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     @Override
     public NDocLogger log() {
-        return log;
+        return engine().log();
     }
 
     @Override
@@ -120,7 +118,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
-            NElement u = engine.evalExpression(t, NElemUtils.toElement(y));
+            NElement u = engine.evalExpression(NElemUtils.toElement(y), t);
             if (u != null) {
                 return NOptional.of(u);
             }
