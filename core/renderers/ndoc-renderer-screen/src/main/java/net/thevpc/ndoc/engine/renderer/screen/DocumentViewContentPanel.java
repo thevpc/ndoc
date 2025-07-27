@@ -37,7 +37,7 @@ public class DocumentViewContentPanel extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         Dimension size = getSize();
         for (NDocDocumentLayer filter : layers) {
-            filter.draw(documentView, size, hg);
+            filter.draw(documentView, documentView.currentShowingPage, size, hg);
         }
         if (documentView.currentThrowable != null) {
             g2d.setColor(Color.RED);
