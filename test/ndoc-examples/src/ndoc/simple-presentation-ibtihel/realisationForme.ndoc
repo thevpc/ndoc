@@ -99,7 +99,7 @@ page{
                                          at:(6,12)
                                  )
 
-                stack(size:(70,70), at:center){
+                group(size:(70,70), at:center){
                         uml(
                             """
                                 NDocNodeRendererBase <|-- NDocCylinderRenderer
