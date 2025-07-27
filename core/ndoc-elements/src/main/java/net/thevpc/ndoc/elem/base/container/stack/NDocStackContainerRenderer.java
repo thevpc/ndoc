@@ -17,7 +17,7 @@ public class NDocStackContainerRenderer extends NDocNodeRendererBase {
     NDocProperties defaultStyles = new NDocProperties();
 
     public NDocStackContainerRenderer() {
-        super(NDocNodeType.STACK);
+        super(NDocNodeType.GROUP);
     }
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
