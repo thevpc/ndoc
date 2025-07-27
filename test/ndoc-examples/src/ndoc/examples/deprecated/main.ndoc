@@ -1,9 +1,9 @@
 @(ndoc,"1.0")
 {
-    import("include/**"),
-    @course page()[
-        $title:"My Title",
-        $column1:{
+    include("include/**"),
+    course[
+        @let title:"My Title",
+        @let column1:{
             #   "title 1",
             ##  "title 2",
             ### "title 3",
