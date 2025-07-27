@@ -10,7 +10,6 @@ public class NDocNodeRendererConfig {
     private int width;
     private int height;
     private Map<String, Object> capabilities;
-    private NDocLogger messages;
 
     public NDocNodeRendererConfig() {
     }
@@ -43,15 +42,6 @@ public class NDocNodeRendererConfig {
 
     public NDocNodeRendererConfig setCapabilities(Map<String, Object> capabilities) {
         this.capabilities = capabilities;
-        return this;
-    }
-
-    public NDocLogger getMessages() {
-        return messages;
-    }
-
-    public NDocNodeRendererConfig setMessages(NDocLogger messages) {
-        this.messages = messages;
         return this;
     }
 
