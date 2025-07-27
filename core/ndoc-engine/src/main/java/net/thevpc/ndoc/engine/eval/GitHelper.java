@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.parser.util;
+package net.thevpc.ndoc.engine.eval;
 
 import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocMsg;
@@ -90,7 +90,7 @@ public class GitHelper {
                 } else {
                     NMsg message = NMsg.ofC("ignored pull repo %s to %s", NPath.of(githubPath), localRepo).asWarning();
                     if (messages != null) {
-                        messages.log(NDocMsg.of(message));
+                        messages.log(message);
                     }
                     if (session.isTrace()) {
                         session.out().println(message);
@@ -114,7 +114,7 @@ public class GitHelper {
                 NMsg message = NMsg.ofC("took %s and failed to %s repo %s to %s : %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo, errorMessage)
                         .asSevere();
                 if (messages != null) {
-                    messages.log(NDocMsg.of(message));
+                    messages.log(message);
                 }
                 if (session.isTrace()) {
                     session.out().println(message);
@@ -122,7 +122,7 @@ public class GitHelper {
             } else {
                 NMsg message = NMsg.ofC("took %s to %s repo %s to %s", c, pulling ? "pull" : "clone", NPath.of(githubPath), localRepo).asWarning();
                 if (messages != null) {
-                    messages.log(NDocMsg.of(message));
+                    messages.log(message);
                 }
                 if (session.isTrace()) {
                     session.out().println(message);
