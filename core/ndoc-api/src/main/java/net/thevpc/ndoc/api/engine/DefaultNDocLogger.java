@@ -18,6 +18,15 @@ public class DefaultNDocLogger implements NDocLogger {
     public DefaultNDocLogger(NDocResource defaultSource) {
         this.defaultSource = defaultSource;
     }
+    @Override
+    public void log(NMsg message) {
+        log(NDocMsg.of(message));
+    }
+
+    @Override
+    public void log(NMsg message, NDocResource source) {
+        log(NDocMsg.of(message, source));
+    }
 
     @Override
     public void log(NDocMsg msg) {
