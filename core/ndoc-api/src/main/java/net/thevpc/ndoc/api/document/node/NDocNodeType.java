@@ -3,7 +3,7 @@ package net.thevpc.ndoc.api.document.node;
 public class NDocNodeType {
     public static final String PAGE_GROUP="page-group";
     public static final String PAGE="page";
-    public static final String STACK="stack";
+    public static final String GROUP ="group";
     public static final String FLOW="flow";
     public static final String GRID="grid";
     public static final String PLAIN ="plain";
@@ -46,11 +46,13 @@ public class NDocNodeType {
     public static final String ARROW = "arrow";
     public static final String PLOT2D = "plot2d";
 
-    public static final String ASSIGN="assign";
-    public static final String EXPR="expr";
-    public static final String CALL="call";
-    public static final String FOR="for";
-    public static final String DEFINE="define";
+    public static final String CTRL_ASSIGN ="assign";
+    public static final String CTRL_EXPR ="expr";
+    public static final String CTRL_CALL ="call";
+    public static final String CTRL_FOR ="for";
+    public static final String CTRL_DEFINE ="define";
+    public static final String CTRL_INCLUDE ="include";
+    public static final String CTRL_NAME ="ctrlname";
 
-    public static final String IF = "if";
+    public static final String CTRL_IF = "if";
 }
