@@ -13,7 +13,7 @@ normal{
 
             // Row 1
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 uml(at:center,size:(100,50)
                     """
                         Object <|-- ArrayList
@@ -45,7 +45,7 @@ normal{
 
             // Row 2
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 uml(at:center,size:(100,50)
                     """
                         actor Bob #red
