@@ -8,28 +8,28 @@ import java.util.List;
 import java.util.function.Function;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
 import net.thevpc.ndoc.api.engine.NDocLogger;
-import net.thevpc.ndoc.api.engine.NDocLoggerDelegateImpl;
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
 import net.thevpc.ndoc.api.eval.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
-import net.thevpc.ndoc.api.document.node.NDocItemList;
-import net.thevpc.ndoc.api.document.node.NDocItem;
-import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.document.node.NDocNodeDef;
+import net.thevpc.ndoc.api.eval.NDocVar;
 import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
 import net.thevpc.ndoc.engine.eval.NDocCompilePageContextImpl;
+import net.thevpc.ndoc.engine.log.NDocMessageList;
+import net.thevpc.ndoc.engine.log.SilentNDocLogger;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.eval.NDocCompiler;
-import net.thevpc.ndoc.engine.parser.util.GitHelper;
+import net.thevpc.ndoc.engine.parser.NDocStreamParser;
+import net.thevpc.ndoc.engine.eval.GitHelper;
 import net.thevpc.ndoc.engine.renderer.NDocDocumentRendererFactoryContextImpl;
 import net.thevpc.ndoc.engine.document.NDocPropCalculator;
 import net.thevpc.ndoc.engine.document.NDocDocumentFactoryImpl;
@@ -40,9 +40,9 @@ import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
 import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.engine.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NCallableSupport;
+import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.util.*;
 
 
@@ -57,18 +57,19 @@ public class DefaultNDocEngine implements NDocEngine {
     private Map<String, NDocNodeParser> nodeTypeFactories;
     private Map<String, String> nodeTypeAliases;
     private NDocDocumentFactory factory;
-    private NDocPropCalculator NDocPropCalculator = new NDocPropCalculator();
+    private NDocPropCalculator propCalculator = new NDocPropCalculator();
     private NDocNodeRendererManager rendererManager;
     private List<NDocFunction> functions = new ArrayList<>();
-    private NDocLogger defaultMessages=new DefaultNDocLogger();
-    private DefaultNDocDocumentItemParserFactory  documentItemParserFactory;
+    private NDocMessageList log = new NDocMessageList();
+    private DefaultNDocDocumentItemParserFactory documentItemParserFactory;
 
     public DefaultNDocEngine() {
         documentItemParserFactory = new DefaultNDocDocumentItemParserFactory();
-        ServiceLoader<NDocFunction> all=ServiceLoader.load(NDocFunction.class);
+        ServiceLoader<NDocFunction> all = ServiceLoader.load(NDocFunction.class);
         for (NDocFunction h : all) {
             functions.add(h);
         }
+        addLog(new DefaultNDocLogger());
     }
 
     public DefaultNDocDocumentItemParserFactory getDocumentItemParserFactory() {
@@ -76,16 +77,20 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NDocLogger messages() {
-        return defaultMessages;
+    public NDocLogger log() {
+        return log;
     }
 
     @Override
-    public NDocLogger messages(NDocLogger messages) {
-        if(messages!=null){
-            defaultMessages=messages;
-        }
-        return defaultMessages;
+    public NDocLogger addLog(NDocLogger messages) {
+        log.add(messages);
+        return log;
+    }
+
+    @Override
+    public NDocLogger removeLog(NDocLogger messages) {
+        log.remove(messages);
+        return log;
     }
 
     @Override
@@ -122,7 +127,7 @@ public class DefaultNDocEngine implements NDocEngine {
     public NOptional<NDocItem> newNode(NElement element, NDocNodeFactoryParseContext ctx) {
         NAssert.requireNonNull(ctx, "context");
         NAssert.requireNonNull(element, "element");
-        if(ctx.source()==null){
+        if (ctx.source() == null) {
             throw new IllegalArgumentException("unexpected source null");
         }
         NDocNodeFactoryParseContext newContext = new DefaultNDocNodeFactoryParseContext(
@@ -136,13 +141,13 @@ public class DefaultNDocEngine implements NDocEngine {
         NOptional<NDocItem> optional = NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        () -> NMsg.ofC("support for node '%s' ", element))
+                        () -> NMsg.ofC("support for node '%s' ", NDocUtils.snippet(element)))
                 .toOptional();
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             NDocItem nDocItem = optional.get();
-            if(nDocItem instanceof NDocNode) {
+            if (nDocItem instanceof NDocNode) {
                 NDocResource s = nDocItem.source();
-                if(s==null){
+                if (s == null) {
                     throw new IllegalArgumentException("unexpected source null");
                 }
             }
@@ -238,33 +243,27 @@ public class DefaultNDocEngine implements NDocEngine {
                 return nodeTypeParser(oid);
             }
             switch (id) {
-//                case "for":
-//                    return NOptional.of(
-//                            new NDocNodeParserBase(true, "for") {
-//
-//                            }
-//                    );
-                case "call":
+                case NDocNodeType.CTRL_CALL:
                     return NOptional.of(
-                            new NDocNodeParserBase(true, "call") {
+                            new NDocNodeParserBase(true, NDocNodeType.CTRL_CALL) {
 
                             }
                     );
-//                case "if":
-//                    return NOptional.of(
-//                            new NDocNodeParserBase(true, "if") {
-//
-//                            }
-//                    );
-                case "assign":
+                case NDocNodeType.CTRL_ASSIGN:
                     return NOptional.of(
-                            new NDocNodeParserBase(true, "assign") {
+                            new NDocNodeParserBase(true, NDocNodeType.CTRL_ASSIGN) {
 
                             }
                     );
-                case "expr":
+                case NDocNodeType.CTRL_EXPR:
                     return NOptional.of(
-                            new NDocNodeParserBase(false, "expr") {
+                            new NDocNodeParserBase(false, NDocNodeType.CTRL_EXPR) {
+
+                            }
+                    );
+                case NDocNodeType.CTRL_NAME:
+                    return NOptional.of(
+                            new NDocNodeParserBase(false, NDocNodeType.CTRL_NAME) {
 
                             }
                     );
@@ -322,20 +321,20 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public List<NDocNode> compileNode(NDocNode node, NDocument document) {
-        return compileNode(node, new NDocCompilePageContextImpl(this, document));
+    public List<NDocNode> compilePageNode(NDocNode node, NDocument document) {
+        return compilePageNode(node, new NDocCompilePageContextImpl(this, document));
     }
 
     @Override
-    public List<NDocNode> compileNode(NDocNode node, NDocCompilePageContext context) {
-        return new NDocCompiler(this).compilePage(node, context);
+    public List<NDocNode> compilePageNode(NDocNode node, NDocCompilePageContext context) {
+        return new NDocCompiler(this).compilePageNode(node, context);
     }
 
     @Override
     public List<NDocNode> compileItem(NDocItem node, NDocCompilePageContext context) {
         List<NDocNode> all = new ArrayList<>();
         if (node instanceof NDocNode) {
-            all.addAll(compileNode((NDocNode) node, context));
+            all.addAll(compilePageNode((NDocNode) node, context));
         } else if (node instanceof NDocItemList) {
             for (NDocItem i : ((NDocItemList) node).getItems()) {
                 all.addAll(compileItem(i, context));
@@ -357,86 +356,89 @@ public class DefaultNDocEngine implements NDocEngine {
     @Override
     public NDocDocumentLoadingResult loadDocument(NPath path) {
         NAssert.requireNonNull(path, "path");
-        if (GitHelper.isGithubFolder(path.toString())) {
-            path = GitHelper.resolveGithubPath(path.toString(), messages());
-        }
-        NDocResource source = NDocResourceFactory.of(path);
-        NDocDocumentLoadingResultImpl r = new NDocDocumentLoadingResultImpl(source, messages());
-        NDocLoggerDelegateImpl messages1 = r.messages();
-        if (path.exists()) {
-            if (path.isRegularFile()) {
-                NDocResource nPathResource = NDocResourceFactory.of(path);
-                NOptional<NElement> f = loadElement(path);
-                if (!f.isPresent()) {
-                    messages1.log(NDocMsg.of(f.getMessage().get().asSevere(), nPathResource));
-                }
-                NElement d = f.get();
-                NOptional<NDocument> dd = convertDocument(d, r);
-                if (dd.isPresent()) {
-                    r.setDocument(dd.get());
-                } else if (r.isSuccessful()) {
-                    messages1.log(NDocMsg.of(dd.getMessage().get().asSevere(), nPathResource));
-                }
-                if (r.get().root().source() == null) {
-                    r.get().root().setSource(NDocResourceFactory.of(path));
-                }
-                return r;
-            } else if (path.isDirectory()) {
-                NDocument document = documentFactory().ofDocument(source);
-                document.resources().add(path.resolve(NDocEngineUtils.NDOC_EXT_STAR));
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x)).toList();
-                if (all.isEmpty()) {
-                    messages1.log(
-                            NDocMsg.of(NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere())
-                    );
-                    return r;
-                }
-                NPath main = null;
-                for (String mainFiled : new String[]{
-                        "main.ndoc",
-                }) {
-                    NPath m = all.stream().filter(x -> mainFiled.equals(x.getName())).findFirst().orElse(null);
-                    if (m != null) {
-                        main = m;
-                        all.remove(m);
-                        break;
-                    }
-                }
-                all.sort((a, b) -> a.getName().compareTo(b.getName()));
-                if (main != null) {
-                    all.add(0, main);
-                }
-                for (NPath nPath : all) {
-                    // document.resources().add(nPath);
-                    NOptional<NDocItem> d = null;
-                    NDocResource nPathResource = NDocResourceFactory.of(nPath);
-                    try {
-                        d = loadNode(document.root(), nPath, document);
-                    } catch (Exception ex) {
-                        NLog.of(getClass()).error(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), ex);
-                        messages1.log(NDocMsg.of(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), nPathResource));
-                    }
-                    if (d != null) {
-                        if (!d.isPresent()) {
-                            messages1.log(NDocMsg.of(NMsg.ofC("invalid file %s", nPath).asSevere(), nPathResource));
-                            return r;
-                        }
-                        updateSource(d.get(), nPathResource);
-                        document.root().append(d.get());
-                    }
-                }
-                if (document.root().source() == null) {
-                    document.root().setSource(NDocResourceFactory.of(path));
-                }
-                r.setDocument(document);
-                return r;
-            } else {
-                messages1.log(NDocMsg.of(NMsg.ofC("invalid file %s", path).asSevere()));
-                return r;
+        synchronized (this) {
+            if (GitHelper.isGithubFolder(path.toString())) {
+                path = GitHelper.resolveGithubPath(path.toString(), log());
             }
+            NDocResource source = NDocResourceFactory.of(path);
+            if (path.exists()) {
+                if (path.isRegularFile()) {
+                    NDocResource nPathResource = NDocResourceFactory.of(path);
+                    NOptional<NElement> f = new NDocStreamParser(this).parsePath(path, nPathResource);
+                    if (!f.isPresent()) {
+                        log().log(f.getMessage().get().asSevere(), nPathResource);
+                    }
+                    NElement d = f.get();
+                    SilentNDocLogger slog = new SilentNDocLogger();
+                    try {
+                        this.addLog(slog);
+                        NOptional<NDocument> dd = convertDocument(d, source);
+                        if (dd.isPresent()) {
+//                            if (r.get().root().source() == null) {
+//                                r.get().root().setSource(NDocResourceFactory.of(path));
+//                            }
+                            return new NDocDocumentLoadingResultImpl(dd.get(), nPathResource, slog.isSuccessful());
+                        } else {
+                            log().log(dd.getMessage().get().asSevere(), nPathResource);
+                        }
+                    } finally {
+                        this.removeLog(slog);
+                    }
+
+                } else if (path.isDirectory()) {
+                    NDocument document = documentFactory().ofDocument(source);
+                    document.resources().add(path.resolve(NDocEngineUtils.NDOC_EXT_STAR));
+                    List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x)).toList();
+                    if (all.isEmpty()) {
+                        log().log(
+                                NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere()
+                        );
+                        return new NDocDocumentLoadingResultImpl(document, source, false);
+                    }
+                    NPath main = null;
+                    for (String mainFiled : new String[]{
+                            "main.ndoc",
+                    }) {
+                        NPath m = all.stream().filter(x -> mainFiled.equals(x.getName())).findFirst().orElse(null);
+                        if (m != null) {
+                            main = m;
+                            all.remove(m);
+                            break;
+                        }
+                    }
+                    all.sort((a, b) -> a.getName().compareTo(b.getName()));
+                    if (main != null) {
+                        all.add(0, main);
+                    }
+                    for (NPath nPath : all) {
+                        // document.resources().add(nPath);
+                        NOptional<NDocItem> d = null;
+                        NDocResource nPathResource = NDocResourceFactory.of(nPath);
+                        try {
+                            d = loadNode(document.root(), nPath, document);
+                        } catch (Exception ex) {
+                            log().log(NMsg.ofC("unable to load %s : %s", nPath, ex).asSevere(), nPathResource);
+                        }
+                        if (d != null) {
+                            if (!d.isPresent()) {
+                                log().log(NMsg.ofC("invalid file %s", nPath).asSevere(), nPathResource);
+                            }
+                            updateSource(d.get(), nPathResource);
+                            document.root().append(d.get());
+                        }
+                    }
+                    if (document.root().source() == null) {
+                        document.root().setSource(NDocResourceFactory.of(path));
+                    }
+                    return new NDocDocumentLoadingResultImpl(document, source, true);
+                } else {
+                    log().log(NMsg.ofC("invalid file %s", path).asSevere());
+                    return new NDocDocumentLoadingResultImpl(null, source, false);
+                }
+            }
+            log().log(NMsg.ofC("file does not exist %s", path).asSevere());
+            return new NDocDocumentLoadingResultImpl(null, source, false);
         }
-        messages1.log(NDocMsg.of(NMsg.ofC("file does not exist %s", path).asSevere()));
-        return r;
     }
 
     private void updateSource(NDocItem item, NDocResource source) {
@@ -471,7 +473,7 @@ public class DefaultNDocEngine implements NDocEngine {
                 for (NPath nPath : all) {
                     NOptional<NDocItem> d = loadNode0((node instanceof NDocNode) ? (NDocNode) node : null, nPath, document);
                     if (!d.isPresent()) {
-                        NLog.of(getClass()).error(NMsg.ofC("invalid file %s", nPath));
+                        log().log(NMsg.ofC("invalid file %s", nPath));
                         return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
                     updateSource(d.get(), NDocResourceFactory.of(path));
@@ -489,376 +491,68 @@ public class DefaultNDocEngine implements NDocEngine {
                 }
                 return NOptional.of(node);
             } else {
-                NLog.of(getClass()).error(NMsg.ofC("invalid file %s", path));
-                return NOptional.ofError(() -> NMsg.ofC("invalid file %s", path));
+                log().log(NMsg.ofC("invalid file %s", path));
             }
         }
-        NLog.of(getClass()).error(NMsg.ofC("file does not exist %s", path));
+        log().log(NMsg.ofC("file does not exist %s", path));
         return NOptional.ofError(() -> NMsg.ofC("file does not exist %s", path));
     }
 
-    private NOptional<NElement> loadElement(InputStream is) {
-        try {
-            NElement u = NElementParser.ofTson().parse(is);
-            u = processControlElements(u, NBooleanRef.of(false));
-            return NOptional.of(u);
-        } catch (Exception ex) {
-            NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
-            return NOptional.ofNamedError("error loading tson document", ex);
-        }
-    }
-
-    private NOptional<NElement> loadElement(NPath is) {
-        try {
-            NElement u = NElementParser.ofTson().parse(is);
-            u = processControlElements(u, NBooleanRef.of(false));
-            return NOptional.of(u);
-        } catch (Exception ex) {
-            NLog.of(getClass()).error(NMsg.ofC("error loading tson document %s", is), ex);
-            return NOptional.ofNamedError("error loading tson document", ex);
-        }
-    }
 
     public NDocDocumentLoadingResult loadDocument(InputStream is) {
-        NDocDocumentLoadingResultImpl result = new NDocDocumentLoadingResultImpl(NDocResourceFactory.of(is), messages());
-        NOptional<NElement> f = loadElement(is);
-        if (!f.isPresent()) {
-            result.messages().log(NDocMsg.of(f.getMessage().get().asSevere()));
+        NDocResource source = NDocResourceFactory.of(is);
+
+        SilentNDocLogger slog = new SilentNDocLogger();
+        try {
+            this.addLog(slog);
+
+            NOptional<NElement> f = new NDocStreamParser(this).parseInputStream(is,source);
+            if (!f.isPresent()) {
+                log().log(f.getMessage().get().asSevere());
+            }
+            NElement d = f.get();
+            NOptional<NDocument> dd = convertDocument(d, source);
+            if (dd.isPresent()) {
+                return new NDocDocumentLoadingResultImpl(dd.get(), source, slog.isSuccessful());
+            } else {
+                log().log(dd.getMessage().get().asSevere());
+                return new NDocDocumentLoadingResultImpl(null, source, false);
+            }
+        } finally {
+            this.removeLog(slog);
         }
-        NElement d = f.get();
-        NOptional<NDocument> dd = convertDocument(d, result);
-        if (dd.isPresent()) {
-            result.setDocument(dd.get());
-        } else if (result.isSuccessful()) {
-            result.messages().log(NDocMsg.of(dd.getMessage().get().asSevere()));
-        }
-        return result;
     }
 
 
-    private NOptional<NDocument> convertDocument(NElement doc, NDocDocumentLoadingResultImpl result) {
+    private NOptional<NDocument> convertDocument(NElement doc, NDocResource source) {
         if (doc == null) {
-            result.messages().log(NDocMsg.of(NMsg.ofPlain("missing document").asSevere()));
+            log().log(NMsg.ofPlain("missing document").asError());
             return NOptional.ofNamedEmpty("document");
         }
-        NDocResource source = result.source();
-        NElement c = doc;
         NDocument docd = documentFactory().ofDocument(source);
         docd.resources().add(source);
         docd.root().setSource(source);
         NDocNodeFactoryParseContext newContext = new DefaultNDocNodeFactoryParseContext(
                 docd,
-                c, this,
+                doc, this,
                 new ArrayList<>(),
-                result.source()
+                source
         );
 
-        NOptional<NDocItem> r = newNode(c, newContext);
+        NOptional<NDocItem> r = newNode(doc, newContext);
         if (r.isPresent()) {
             docd.root().append(r.get());
             return NOptional.of(docd);
         }
-        result.messages().log(NDocMsg.of(NMsg.ofC("invalid %s", r.getMessage().get()).asSevere()));
+        log().log(NMsg.ofC("invalid %s", r.getMessage().get()).asSevere());
         return NOptional.of(docd);
-    }
-
-    class CondBody {
-        List<NElement> cond = null;
-        List<NElement> trueBody = null;
-    }
-
-    class IfInfo {
-        CondBody base = null;
-        List<CondBody> elseIfs = new ArrayList<>();
-        NElement elseBody;
-
-        NElement toElement() {
-            NObjectElementBuilder i = NElement.ofObjectBuilder("if");
-            if (base.cond.size() == 0) {
-                i.addParam("$condition", true);
-            } else if (base.cond.size() == 1) {
-                i.addParam("$condition", base.cond.get(0));
-            } else {
-                i.addParam("$condition", NElement.ofNamedUplet("and", base.cond.toArray(new NElement[0])));
-            }
-            i.addAll(base.trueBody);
-            NObjectElementBuilder goodElse = null;
-            NObjectElementBuilder deepElse = null;
-            for (CondBody b : elseIfs) {
-                NObjectElementBuilder i2 = NElement.ofObjectBuilder("if");
-                if (b.cond.size() == 0) {
-                    i2.set("$condition", true);
-                } else if (b.cond.size() == 1) {
-                    i2.set("$condition", b.cond.get(0));
-                } else {
-                    i2.set("$condition", NElement.ofNamedUplet("and", b.cond.toArray(new NElement[0])));
-                }
-                i2.addAll(base.trueBody);
-                if (goodElse == null) {
-                    goodElse = i2;
-                    deepElse = i2;
-                } else {
-                    deepElse.set("$else", i2.build());
-                }
-            }
-            if (elseBody != null) {
-                if (deepElse != null) {
-                    deepElse.set("$else", elseBody);
-                } else {
-                    goodElse = NElement.ofObjectBuilder();
-                    if (elseBody.isObject()) {
-                        goodElse.addAll(elseBody.asObject().get().children());
-                    } else if (elseBody.isArray()) {
-                        goodElse.addAll(elseBody.asArray().get().children());
-                    } else {
-                        goodElse.add(elseBody);
-                    }
-                }
-            }
-            if (goodElse != null) {
-                deepElse.set("$else", elseBody);
-            }
-            return i.build();
-        }
-    }
-
-
-    private List<NElement> processControlElements(List<NElement> children, NBooleanRef someChanges) {
-        List<NElement> res = new ArrayList<>();
-        IfInfo ifInfo = null;
-        boolean cc = false;
-        if (children == null) {
-            return null;
-        }
-        List<NElement> children2 = new ArrayList<>(children);
-        while (!children2.isEmpty()) {
-            NElement c = children2.remove(0);
-            if (c.isNamedParametrizedObject("if")) {
-                if (ifInfo != null) {
-                    res.add(ifInfo.toElement());
-                    ifInfo = null;
-                }
-                ifInfo = new IfInfo();
-                NObjectElement o = c.asObject().get();
-                ifInfo.base = new CondBody();
-                ifInfo.base.cond = o.params().get();
-                ifInfo.base.trueBody = o.children();
-                cc = true;
-            } else if (c.isNamedUplet("if")) {
-                if (ifInfo != null) {
-                    res.add(ifInfo.toElement());
-                }
-                ifInfo = new IfInfo();
-                NObjectElement o = c.asObject().get();
-                ifInfo.base = new CondBody();
-                ifInfo.base.cond = o.params().get();
-                ifInfo.base.trueBody = o.children();
-                messages().log(NDocMsg.of(NMsg.ofC("if expression is missing brackets : %s", c).asError()));
-                cc = true;
-            } else if (c.isNamedParametrizedObject("elseif") && ifInfo != null) {
-                NObjectElement o = c.asObject().get();
-                CondBody b = new CondBody();
-                b.cond = o.params().get();
-                b.trueBody = o.children();
-                ifInfo.elseIfs.add(b);
-                cc = true;
-            } else if (c.isNamedObject("else") && ifInfo != null) {
-                NObjectElement o = c.asObject().get();
-                ifInfo.elseBody = o.builder().name(null).build();
-                cc = true;
-            } else {
-                if (ifInfo != null) {
-                    res.add(ifInfo.toElement());
-                    ifInfo = null;
-                }
-                res.add(c);
-            }
-        }
-        if (ifInfo != null) {
-            res.add(ifInfo.toElement());
-            ifInfo = null;
-        }
-        if (cc) {
-            someChanges.set(true);
-            return res;
-        }
-        return children;
-    }
-
-    private NElementAnnotation processControlElementsAnnotation(NElementAnnotation child, NBooleanRef someChanges) {
-        NBooleanRef u = NBooleanRef.of(false);
-        List<NElement> np = processControlElements(child.params(), u);
-        if (u.get()) {
-            someChanges.set(true);
-            return NElement.ofAnnotation(child.name(), np.toArray(new NElement[0]));
-        }
-        return child;
-    }
-
-    private NElement processControlElements(NElement child, NBooleanRef someChanges) {
-        List<NElementAnnotation> annotations = new ArrayList<>();
-        boolean changesInAnnotation = false;
-        for (NElementAnnotation annotation : child.annotations()) {
-            NBooleanRef r = NBooleanRef.of(false);
-            annotations.add(processControlElementsAnnotation(annotation, r));
-            if (r.get()) {
-                changesInAnnotation = true;
-            }
-        }
-        switch (child.type().typeGroup()) {
-            case NULL:
-            case NUMBER:
-            case CUSTOM:
-            case TEMPORAL:
-            case STREAM:
-            case STRING:
-            case BOOLEAN:
-            case OTHER: {
-                if (changesInAnnotation) {
-                    child = child.builder().clearAnnotations().addAnnotations(annotations).build();
-                    someChanges.set(true);
-                }
-                return child;
-            }
-            case OPERATOR: {
-                NOperatorElement op = child.asOperator().get();
-                NOperatorElementBuilder opb = op.builder();
-                NElement first = opb.first().orNull();
-                boolean cc = false;
-                if (first != null) {
-                    NBooleanRef r = NBooleanRef.of(false);
-                    NElement u = processControlElements(first, r);
-                    if (r.get()) {
-                        opb.first(u);
-                        cc = true;
-                    }
-                }
-                NElement second = opb.first().orNull();
-                if (second != null) {
-                    NBooleanRef r = NBooleanRef.of(false);
-                    NElement u = processControlElements(second, r);
-                    if (r.get()) {
-                        opb.second(u);
-                        cc = true;
-                    }
-                }
-                if (changesInAnnotation) {
-                    opb.clearAnnotations().addAnnotations(annotations);
-                    cc = true;
-                }
-                if (cc) {
-                    someChanges.set(true);
-                    return opb.build();
-                }
-                return op;
-            }
-        }
-        switch (child.type()) {
-            case OBJECT:
-            case NAMED_OBJECT:
-            case PARAMETRIZED_OBJECT:
-            case NAMED_PARAMETRIZED_OBJECT: {
-                NObjectElement p = child.asObject().get();
-                List<NElement> i = p.params().orNull();
-                NObjectElementBuilder builder = p.builder();
-                boolean anyChange = false;
-                if (i != null) {
-                    NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u);
-                    if (u.get()) {
-                        builder.setParams(i2);
-                        anyChange = true;
-                    }
-                }
-
-                i = p.children();
-                if (i != null) {
-                    NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u);
-                    if (u.get()) {
-                        builder.setChildren(i2);
-                        anyChange = true;
-                    }
-                }
-                if (changesInAnnotation) {
-                    builder.clearAnnotations().addAnnotations(annotations);
-                    anyChange = true;
-                }
-                if (anyChange) {
-                    someChanges.set(true);
-                    p = builder.build();
-                }
-                return p;
-            }
-            case ARRAY:
-            case NAMED_ARRAY:
-            case PARAMETRIZED_ARRAY:
-            case NAMED_PARAMETRIZED_ARRAY: {
-                NArrayElement p = child.asArray().get();
-                List<NElement> i = p.params().orNull();
-                NArrayElementBuilder builder = p.builder();
-                boolean anyChange = false;
-                if (i != null) {
-                    NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u);
-                    if (u.get()) {
-                        builder.setParams(i2);
-                        anyChange = true;
-                    }
-                }
-
-                i = p.children();
-                if (i != null) {
-                    NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u);
-                    if (u.get()) {
-                        builder.setChildren(i2);
-                        anyChange = true;
-                    }
-                }
-                if (changesInAnnotation) {
-                    builder.clearAnnotations().addAnnotations(annotations);
-                    anyChange = true;
-                }
-                if (anyChange) {
-                    someChanges.set(true);
-                    p = builder.build();
-                }
-                return p;
-            }
-            case UPLET:
-            case NAMED_UPLET: {
-                NUpletElement p = child.asUplet().get();
-                List<NElement> i = p.params();
-                NUpletElementBuilder builder = p.builder();
-                boolean anyChange = false;
-                if (i != null) {
-                    NBooleanRef u = NRef.ofBoolean(false);
-                    List<NElement> i2 = processControlElements(i, u);
-                    if (u.get()) {
-                        builder.setParams(i2);
-                        anyChange = true;
-                    }
-                }
-                if (changesInAnnotation) {
-                    builder.clearAnnotations().addAnnotations(annotations);
-                    anyChange = true;
-                }
-                if (anyChange) {
-                    someChanges.set(true);
-                    p = builder.build();
-                }
-                return p;
-            }
-        }
-        return child;
     }
 
 
     private NOptional<NDocItem> loadNode0(NDocNode into, NPath path, NDocument document) {
         NDocResource source = NDocResourceFactory.of(path);
         document.resources().add(source);
-        NElement c = loadElement(path).get();
+        NElement c = new NDocStreamParser(this).parsePath(path, source).get();
         ArrayList<NDocNode> parents = new ArrayList<>();
         if (into != null) {
             parents.add(into);
@@ -887,29 +581,24 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public NOptional<NDocProp> computeProperty(NDocNode node, String... propertyNames) {
-        return NDocPropCalculator.computeProperty(node, propertyNames);
+        return propCalculator.computeProperty(node, propertyNames);
     }
 
     @Override
     public List<NDocProp> computeProperties(NDocNode node) {
-        return NDocPropCalculator.computeProperties(node);
+        return propCalculator.computeProperties(node);
     }
 
     @Override
     public List<NDocProp> computeInheritedProperties(NDocNode node) {
-        return NDocPropCalculator.computeInheritedProperties(node);
+        return propCalculator.computeInheritedProperties(node);
     }
 
     @Override
     public <T> NOptional<T> computePropertyValue(NDocNode node, String... propertyNames) {
-        return NDocPropCalculator.computePropertyValue(node, propertyNames);
+        return propCalculator.computePropertyValue(node, propertyNames);
     }
 
-
-    @Override
-    public NDocResource computeSource(NDocItem node) {
-        return new NDocCompiler(this).computeSource(node);
-    }
 
     @Override
     public NDocNodeRendererManager renderManager() {
@@ -951,7 +640,7 @@ public class DefaultNDocEngine implements NDocEngine {
                             }
                         }
                     } catch (Exception ex) {
-                        NLog.of(getClass()).error(NMsg.ofC("Failed to resolve template boot url from %s", finalProjectUrl, ex).asSevere(), ex);
+                        log().log(NMsg.ofC("Failed to resolve template boot url from %s", finalProjectUrl, ex).asSevere());
                         throw new IllegalArgumentException("Failed to resolve template boot url from " + finalProjectUrl);
                     }
                 }
@@ -1027,23 +716,51 @@ public class DefaultNDocEngine implements NDocEngine {
         return new ExprNDocFunctionArg(node, expression);
     }
 
+
     @Override
-    public NElement evalExpression(NDocNode node, NElement expression) {
+    public NElement evalExpression(NElement expression, NDocNode node) {
         String baseSrc = NDocUtils.findCompilerDeclarationPath(expression).orNull();
         NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this);
-        NElement u = ne.eval(node, NElemUtils.toElement(expression));
-        if(u==null){
-            u=NElement.ofNull();
+        NElement u = ne.eval(NElemUtils.toElement(expression), node);
+        if (u == null) {
+            u = NElement.ofNull();
         }
-        if(baseSrc!=null){
-            u=NDocUtils.addCompilerDeclarationPath(u, baseSrc);
+        if (baseSrc != null) {
+            u = NDocUtils.addCompilerDeclarationPath(u, baseSrc);
         }
         return u;
     }
 
     @Override
-    public NElement resolveVarValue(NDocNode node, String varName) {
-        return evalExpression(node, NDocUtils.addCompilerDeclarationPath(NElement.ofName("$" + varName),NDocUtils.sourceOf(node)));
+    public NElement resolveVarValue(String varName, NDocNode node) {
+        NOptional<NDocVar> v = findVar(varName, node);
+        if (!v.isPresent()) {
+            log().log(NMsg.ofC("var not found %s", varName).asWarning(), NDocUtils.sourceOf(node));
+            return null;
+        }
+        NElement ee = v.get().get();
+        return evalExpression(ee, node);
+    }
+
+    public NOptional<NDocVar> findVar(String varName, NDocNode node) {
+        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this);
+        return ne.findVar(varName, node);
+    }
+
+    @Override
+    public NPath resolvePath(NElement path, NDocNode node) {
+        if (NBlankable.isBlank(path)) {
+            return null;
+        }
+        if (path.isAnyString()) {
+            String pathStr = path.asStringValue().get();
+            if (GitHelper.isGithubFolder(pathStr)) {
+                return GitHelper.resolveGithubPath(pathStr, log());
+            }
+            NDocResource source = NDocUtils.sourceOf(node);
+            return NDocUtils.resolvePath(path, source);
+        }
+        throw new NIllegalArgumentException(NMsg.ofC("unsupported path type", path));
     }
 
     private class ExprNDocFunctionArg implements NDocFunctionArg {
@@ -1056,9 +773,9 @@ public class DefaultNDocEngine implements NDocEngine {
         }
 
         @Override
-        public NElement get() {
-            NElement u = evalExpression(node, expression);
-            NElement u2 = evalExpression(node, u);
+        public NElement eval() {
+            NElement u = evalExpression(expression, node);
+            NElement u2 = evalExpression(u, node);
             return u2;
         }
 
