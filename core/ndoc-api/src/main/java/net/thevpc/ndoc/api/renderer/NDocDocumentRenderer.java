@@ -14,7 +14,4 @@ public interface NDocDocumentRenderer {
 
     void addRendererListener(NDocDocumentRendererListener listener);
 
-    NDocLogger log();
-
-    NDocDocumentRenderer setLogger(NDocLogger logger);
 }
