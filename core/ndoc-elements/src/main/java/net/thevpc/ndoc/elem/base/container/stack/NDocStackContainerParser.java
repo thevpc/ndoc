@@ -12,7 +12,7 @@ import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
  */
 public class NDocStackContainerParser extends NDocNodeParserBase {
     public NDocStackContainerParser() {
-        super(true, NDocNodeType.STACK);
+        super(true, NDocNodeType.GROUP);
     }
 
 }
