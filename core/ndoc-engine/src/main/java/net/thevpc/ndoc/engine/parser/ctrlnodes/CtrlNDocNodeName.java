@@ -1,12 +1,9 @@
-package net.thevpc.ndoc.engine.control;
+package net.thevpc.ndoc.engine.parser.ctrlnodes;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.nuts.elem.NElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CtrlNDocNodeName extends CtrlNDocNodeBase {
     private NElement __varName;
@@ -39,5 +36,10 @@ public class CtrlNDocNodeName extends CtrlNDocNodeBase {
             oc.__varName = __varName;
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Name("+__varName+')';
     }
 }
