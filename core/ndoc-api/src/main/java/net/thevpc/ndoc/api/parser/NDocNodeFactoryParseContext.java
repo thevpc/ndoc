@@ -27,11 +27,11 @@ public interface NDocNodeFactoryParseContext {
 
     NDocResource source();
 
-    NPath resolvePath(NStringElement path);
-
-    NPath resolvePath(String path);
-
-    NPath resolvePath(NPath path);
+//    NPath resolvePath(NStringElement path);
+//
+//    NPath resolvePath(String path);
+//
+//    NPath resolvePath(NPath path);
 
     NDocDocumentFactory documentFactory();
 
