@@ -28,7 +28,7 @@ public class NDocOrderedListRenderer extends ConvertedNDocNodeRenderer {
             all.add(f.of(NDocNodeType.SPHERE).addStyleClasses("ol-bullet"));
             all.add(child.addStyleClasses("ol-item"));
         }
-        return f.ofGrid().addAll(all.toArray(new NDocNode[0]))
+        return f.ofGrid().addChildren(all.toArray(new NDocNode[0]))
                 .setProperty(NDocPropName.COLUMNS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ROWS, NElement.ofInt(2))
                 .setProperty(NDocPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
