@@ -25,11 +25,11 @@ public class NDocExampleTestBullets {
         NDocDocumentFactory f = e.documentFactory();
         NDocument d = f.ofDocument(null)
                 .add(f.ofPage()
-                        .add(
+                        .addChild(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
                                 f.ofUnorderedList()
                                         .setProperty(NDocProps.gridColor(Color.GRAY))
-                                        .add(f.ofPlain("Example 1").setProperty(NDocProps.backgroundColor(Color.CYAN)))
+                                        .addChild(f.ofPlain("Example 1").setProperty(NDocProps.backgroundColor(Color.CYAN)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.YELLOW)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.RED)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.BLUE)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
