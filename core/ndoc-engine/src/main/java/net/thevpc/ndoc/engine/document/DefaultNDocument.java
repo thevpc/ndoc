@@ -27,9 +27,16 @@ public class DefaultNDocument implements NDocument, Cloneable {
     private Properties properties = new Properties();
     private DefaultNDocNode root;
     private NDocResourceMonitor resources = new NDocResourceMonitored();
+    private NDocResource source;
 
     public DefaultNDocument(NDocResource source) {
-        root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP,source);
+        this.source = source;
+        root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP, source);
+    }
+
+    @Override
+    public NDocResource source() {
+        return source;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class DefaultNDocument implements NDocument, Cloneable {
 
     @Override
     public NDocument add(NDocNode part) {
-        root().add(part);
+        root().addChild(part);
         return this;
     }
 
