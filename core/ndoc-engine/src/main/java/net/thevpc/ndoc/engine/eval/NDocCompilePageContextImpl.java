@@ -24,6 +24,6 @@ public class NDocCompilePageContextImpl implements NDocCompilePageContext {
 
     @Override
     public NDocLogger messages() {
-        return engine.messages();
+        return engine.log();
     }
 }
