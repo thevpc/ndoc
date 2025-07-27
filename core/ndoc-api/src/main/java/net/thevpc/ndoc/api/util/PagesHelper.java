@@ -32,7 +32,7 @@ public class PagesHelper {
             case NDocNodeType.PAGE_GROUP:
             case NDocNodeType.FLOW:
             case NDocNodeType.GRID:
-            case NDocNodeType.STACK: {
+            case NDocNodeType.GROUP: {
                 if (!part.isDisabled()) {
                     for (NDocNode p : part.children()) {
                         fillPages(p, all);
