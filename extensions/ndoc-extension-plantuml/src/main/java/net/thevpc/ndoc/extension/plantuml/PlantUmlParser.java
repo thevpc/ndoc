@@ -89,14 +89,13 @@ public class PlantUmlParser extends NDocNodeParserBase {
                             return true;
                         }
                         case NDocPropName.FILE: {
-                            String path = p.value().asStringValue().get().trim();
-                            NPath nPath = info.context.resolvePath(path);
+                            NPath nPath = engine().resolvePath(p.value().asString().get(),info.node);
                             info.context.document().resources().add(nPath);
                             try {
                                 info.node.setProperty(NDocPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
-                                        NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                        NMsg.ofC("unable to load source file %s as %s", NDocUtils.snippet(p.value()), nPath).asSevere()
                                 );
                             }
                             return true;

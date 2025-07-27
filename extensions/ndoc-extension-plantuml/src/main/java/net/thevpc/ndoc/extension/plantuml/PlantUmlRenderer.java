@@ -97,8 +97,8 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
                 reader.outputImage(bos);
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
-                NDocResource src = ctx.engine().computeSource(p);
-                ctx.log().log(NDocMsg.of(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src));
+                NDocResource src = NDocUtils.sourceOf(p);
+                ctx.log().log(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src);
             }
         }
         if (image != null) {
