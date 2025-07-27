@@ -126,12 +126,12 @@ public class DefaultNDocStyleRule implements NDocStyleRule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DefaultNDocStyleRule that = (DefaultNDocStyleRule) o;
-        return Objects.equals(magnetude, that.magnetude) && Objects.equals(styles, that.styles) && Objects.equals(selector, that.selector);
+        return Objects.equals(magnetude, that.magnetude) && Objects.equals(styles, that.styles) && Objects.equals(selector, that.selector) && Objects.equals(source, that.source);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(magnetude, styles, selector);
+        return Objects.hash(magnetude, styles, selector,source);
     }
 
     @Override
