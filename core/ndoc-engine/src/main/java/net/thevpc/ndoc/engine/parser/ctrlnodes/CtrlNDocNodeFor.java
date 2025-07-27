@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.control;
+package net.thevpc.ndoc.engine.parser.ctrlnodes;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
