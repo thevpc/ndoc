@@ -1,7 +1,7 @@
 @(ndoc,"1.0")
 {
     styles:{
-        //import("*.tcss"),
+        //include("*.tcss"),
         "" :{
             color:blue,
             font-size:10,
@@ -20,9 +20,9 @@
         text("My Title2"),
         rectangle(
             size:(50,50),
-            background:$palette[3],
+            background:themeColors[3],
             rotate:45,
-            color:$palette[1],
+            color:themeColors[1],
 //            stroke:basic(dash:[30],width:5)
             stroke:sloppy
         )
