@@ -1,6 +1,6 @@
 @(ndoc,"1.0")
 {
-    @cover page(){
+    cover{
         text("My Title Cover"),
         equation("""
             x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
@@ -8,7 +8,7 @@
             at:center
         ),
     },
-    @normal page(){
+    normal{
         text("My Title Normal"),
         equation("""
             x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
@@ -16,7 +16,7 @@
             at:center
         ),
     },
-    @conclusion page(){
+    conclusion{
         text("My Title conclusion"),
         equation("""
             x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
