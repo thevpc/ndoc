@@ -50,7 +50,6 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
         }
     };
     protected final NDocEngine engine;
-    protected NDocLogger messages;
 
     public AbstractNDocDocumentRenderer(NDocEngine engine) {
         this.engine = engine;
@@ -72,17 +71,5 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
     public void render(NDocument document) {
         renderSupplier(e -> document);
     }
-
-    @Override
-    public NDocLogger log() {
-        return messages;
-    }
-
-    @Override
-    public NDocDocumentRenderer setLogger(NDocLogger logger) {
-        this.messages = logger;
-        return this;
-    }
-
 
 }
