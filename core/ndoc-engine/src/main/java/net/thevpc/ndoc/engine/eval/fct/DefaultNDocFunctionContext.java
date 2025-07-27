@@ -15,6 +15,6 @@ public class DefaultNDocFunctionContext implements NDocFunctionContext {
     }
 
     public NDocLogger messages() {
-        return engine.messages();
+        return engine.log();
     }
 }
