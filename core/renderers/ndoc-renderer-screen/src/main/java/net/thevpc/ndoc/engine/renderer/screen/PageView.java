@@ -1,13 +1,15 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
+import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 import javax.swing.*;
@@ -16,22 +18,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class PageView extends JComponent {
-    public static Dimension REF_SIZE = new Dimension(1000, 1000);
+    public static Dimension REF_SIZE = new Dimension(1024, 768);
     private NDocNode page0;
     private NDocNode page;
     private int index;
     private String uuid;
     private NDocNodeRendererManager rendererManager;
     private NDocEngine engine;
-    private NDocLogger messages;
     private NDocument document;
 
     public PageView(
             NDocument document,
             NDocNode page, int index,
-                    NDocEngine engine,
-                    NDocNodeRendererManager rendererManager,
-                    NDocLogger messages
+            NDocEngine engine,
+            NDocNodeRendererManager rendererManager
     ) {
         this.document = document;
         this.page0 = page;
@@ -39,7 +39,6 @@ public class PageView extends JComponent {
         this.uuid = UUID.randomUUID().toString();
         this.rendererManager = rendererManager;
         this.engine = engine;
-        this.messages = messages;
 
     }
 
@@ -63,11 +62,18 @@ public class PageView extends JComponent {
 
     }
 
-    void onShow() {
+    synchronized void onShow() {
         if (page == null) {
-            List<NDocNode> all = engine().compileNode(this.page0, document);
+            NChronometer c = NChronometer.startNow();
+            List<NDocNode> all = engine().compilePageNode(this.page0, document);
             this.page = NOptional.ofSingleton(all).get();
+            c.stop();
+            engine.log().log(NMsg.ofC("page %s compiled in %s", (index + 1), c), NDocUtils.sourceOf(this.page0));
         }
+    }
+
+    public boolean isLoading() {
+        return page == null;
     }
 
     @Override
@@ -86,7 +92,7 @@ public class PageView extends JComponent {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         NDocNodeRendererContext ctx = new ScreenNDocPartRendererContext(this,
                 engine.createGraphics(g2d)
-                , size, messages);
+                , size);
         if (page != null) {
             render(page, ctx);
         }
