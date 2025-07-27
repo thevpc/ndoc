@@ -110,7 +110,7 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public NDocNode ofAssign() {
-        return of(NDocNodeType.ASSIGN);
+        return of(NDocNodeType.CTRL_ASSIGN);
     }
 
     @Override
@@ -127,8 +127,8 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public NDocNode ofStack() {
-        return of(NDocNodeType.STACK);
+    public NDocNode ofGroup() {
+        return of(NDocNodeType.GROUP);
     }
 
     @Override
