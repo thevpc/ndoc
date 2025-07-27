@@ -42,7 +42,6 @@ public class DocumentController {
             int sizeHeight = 1000;
             NDocEngine e = new DefaultNDocEngine();
             NDocument doc = e.loadDocument(file).get();
-            DefaultNDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
 
             List<NDocNode> pages = doc.pages();
 
@@ -51,7 +50,6 @@ public class DocumentController {
                         pages.get(pageNumber),
                         new NDocNodeRendererConfig(sizeWidth, sizeHeight)
                                 .withAnimate(false)
-                                .setMessages(messages)
                 );
                 return ResponseEntity
                         .ok()
