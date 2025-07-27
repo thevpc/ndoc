@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.engine.parser.util.GitHelper;
+import net.thevpc.ndoc.engine.eval.GitHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NStringElement;
 import net.thevpc.nuts.io.NPath;
@@ -39,7 +39,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     private boolean isVarName(String name) {
-        return name.matches("[$][a-zA-Z][a-zA-Z0-9_-]*]]");
+        return name.matches("[a-zA-Z][a-zA-Z0-9_-]*]]");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
             }
             if(!pathString.trim().isEmpty()) {
                 for (int i = nodePath.size() - 1; i >= 0; i--) {
-                    NDocResource resource = engine().computeSource(nodePath.get(i));
+                    NDocResource resource = NDocUtils.sourceOf(nodePath.get(i));
                     if (resource!=null) {
                         if(resource.path().isPresent()) {
                             NPath nPath = NDocUtils.resolvePath(element, resource);
@@ -68,7 +68,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
 
     @Override
     public NDocLogger messages() {
-        return engine().messages();
+        return engine().log();
     }
 
     public NDocument document() {
@@ -118,48 +118,48 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
         return element;
     }
 
-    @Override
-    public NPath resolvePath(NPath path) {
-        if (path.isAbsolute()) {
-            return path;
-        }
-        return resolvePath(path.toString());
-    }
+//    @Override
+//    public NPath resolvePath(NPath path) {
+//        if (path.isAbsolute()) {
+//            return path;
+//        }
+//        return resolvePath(path.toString());
+//    }
 
-    @Override
-    public NPath resolvePath(NStringElement path) {
-        if(path==null){
-            return null;
-        }
-        String s = path.asStringValue().get();
-        if (NBlankable.isBlank(s)) {
-            return null;
-        }
-        return null;
-    }
-
-    @Override
-    public NPath resolvePath(String path) {
-        if (NBlankable.isBlank(path)) {
-            return null;
-        }
-        if (GitHelper.isGithubFolder(path)) {
-            return resolvePath(GitHelper.resolveGithubPath(path, messages()));
-        }
-        NDocResource src = source;
-        if (src == null) {
-            if (nodePath != null) {
-                for (int i = nodePath.size() - 1; i >= 0; i--) {
-                    if (nodePath.get(i) != null) {
-                        NDocResource ss = engine().computeSource(nodePath.get(i));
-                        if (ss != null) {
-                            src = ss;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return NDocUtils.resolvePath(NElement.ofString(path),src);
-    }
+//    @Override
+//    public NPath resolvePath(NStringElement path) {
+//        if(path==null){
+//            return null;
+//        }
+//        String s = path.asStringValue().get();
+//        if (NBlankable.isBlank(s)) {
+//            return null;
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public NPath resolvePath(String path) {
+//        if (NBlankable.isBlank(path)) {
+//            return null;
+//        }
+//        if (GitHelper.isGithubFolder(path)) {
+//            return resolvePath(GitHelper.resolveGithubPath(path, messages()));
+//        }
+//        NDocResource src = source;
+//        if (src == null) {
+//            if (nodePath != null) {
+//                for (int i = nodePath.size() - 1; i >= 0; i--) {
+//                    if (nodePath.get(i) != null) {
+//                        NDocResource ss = NDocUtils.sourceOf(nodePath.get(i));
+//                        if (ss != null) {
+//                            src = ss;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return NDocUtils.resolvePath(NElement.ofString(path),src);
+//    }
 }
