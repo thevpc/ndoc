@@ -5,8 +5,8 @@
 
 Download documentation here : [ndoc-doc.pdf](documentation/website/ndoc-doc.pdf)
 
-[Example 1](documentation/website/ex02.pdf)
-[Example 2](documentation/website/ex03.pdf)
+![](documentation/website/ex02.pdf)
+![](documentation/website/ex03.pdf)
 
 
 ## What it does
