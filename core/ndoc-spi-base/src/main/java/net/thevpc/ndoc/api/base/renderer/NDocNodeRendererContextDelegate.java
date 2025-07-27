@@ -135,7 +135,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
         NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             NElement y = r.get();
-            y = engine().evalExpression(t, y);
+            y = engine().evalExpression(y, t);
             if (y != null) {
                 return NOptional.of(y);
             }
