@@ -11,19 +11,19 @@ normal{
                 }
             }
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 plain("Hello World")
             }
             source(tson, """ plain("Hello World") """)
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 plain("Hello World",font-italic)
             }
             source(tson, """ plain("Hello World",font-italic) """)
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 plain(
                     "
                         Hello
@@ -41,7 +41,7 @@ normal{
                          """)
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 plain(
                     "
                         Hello  World
