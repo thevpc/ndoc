@@ -73,19 +73,19 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
                     try {
                         g.drawImage(vp, x, y, options);
                     } catch (Exception ex) {
-                        NDocResource src = ctx.engine().computeSource(p);
-                        ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
+                        NDocResource src = NDocUtils.sourceOf(p);
+                        ctx.log().log(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
                                 src == null ? null : src.shortName(),
-                                vp, ex).asSevere(), src));
+                                vp, ex).asSevere(), src);
 
                     }
                 } else {
                     int descent = g.getFontMetrics().getAscent();
                     g.drawString("Image not found "+imgPath, x, y+descent,new NDocTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
-                    NDocResource src = ctx.engine().computeSource(p);
-                    ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                    NDocResource src = NDocUtils.sourceOf(p);
+                    ctx.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
-                            img).asSevere(), src));
+                            img).asSevere(), src);
                 }
             }
         }
