@@ -10,7 +10,6 @@ public interface NDocResource {
 
     boolean changed();
 
-    Object state();
 
     String shortName();
 }
