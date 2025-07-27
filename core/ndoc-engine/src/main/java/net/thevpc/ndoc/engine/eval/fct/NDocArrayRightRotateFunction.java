@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.engine.eval.fct;
 
-import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.eval.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.eval.NDocFunctionContext;
@@ -11,10 +10,10 @@ import net.thevpc.nuts.util.NMsg;
 import java.util.Collections;
 import java.util.List;
 
-public class NDocArrayRotateFunction implements NDocFunction {
+public class NDocArrayRightRotateFunction implements NDocFunction {
     @Override
     public String name() {
-        return "arrayRotate";
+        return "arrayRightRotate";
     }
 
     @Override
@@ -36,21 +35,16 @@ public class NDocArrayRotateFunction implements NDocFunction {
                 b.setChildren(children);
                 return b.build();
             }
-            context.messages().log(NMsg.ofC("unable to rotate %s with distance %s", u, i));
+            context.messages().log(NMsg.ofC("unable to right rotate %s with distance %s", u, i));
             return u;
         } else {
             if (args.length > 1) {
                 NElement u = args[0].eval();
-                context.messages().log(NMsg.ofC("arrayRotate: expected 2 arguments, got %s", args.length));
+                context.messages().log(NMsg.ofC("arrayRightRotate: expected 2 arguments, got %s", args.length));
                 return u;
             }
         }
 
         return NElement.ofNull();
-    }
-
-    private <T> List<T> rrotate(List<T> a,int iv){
-        Collections.rotate(a, iv);
-        return a;
     }
 }
