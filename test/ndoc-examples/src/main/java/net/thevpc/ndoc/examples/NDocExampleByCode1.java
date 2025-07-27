@@ -24,30 +24,30 @@ public class NDocExampleByCode1 {
         NDocDocumentFactory f = e.documentFactory();
         NDocument d = f.ofDocument(null)
                 .add(f.ofPage()
-                        .add(
-                                f.ofStack()
+                        .addChild(
+                                f.ofGroup()
                                         .setFontSize(50)
                                         .setFontBold(true)
-                                        .add(
+                                        .addChild(
                                                 f.ofRectangle()
                                                         .setPosition(0, 0)
                                                         .setSize(100, 15)
                                                         .setBackgroundColor("#3f4e70")
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofRectangle()
                                                         .setPosition(0, 15)
                                                         .setSize(100, 1)
                                                         .setBackgroundColor("#21283a")
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofPlain("Ceci est un Titre pas comme les autres")
                                                         .setPosition(50, 3)
                                                         .setForegroundColor("white")
                                                         .setFontSize(40)
                                                         .setOrigin(NDocAlign.TOP)
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofCircle()
                                                         .setPosition(70, 50)
                                                         .setSize(20)
@@ -55,7 +55,7 @@ public class NDocExampleByCode1 {
                                                         .setBackgroundColor("#ffaa00")
                                                         .setOrigin(NDocAlign.CENTER)
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofRectangle()
                                                         .setPosition(80, 70)
                                                         .setSize(20, 20)
@@ -64,22 +64,22 @@ public class NDocExampleByCode1 {
                                                         .setBackgroundColor("#555500")
                                                         .setOrigin(NDocAlign.CENTER)
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofGrid(2, 2)
                                                         .setProperty(NDocProps.rowsWeight(1, 3))
-                                                        .add(f.ofGlue())
-                                                        .add(f.ofGlue())
-                                                        .add(
+                                                        .addChild(f.ofGlue())
+                                                        .addChild(f.ofGlue())
+                                                        .addChild(
 
                                                                 f.ofUnorderedList()
-                                                                        .add(f.ofPlain("Ceci est un premier point"))
-                                                                        .add(f.ofPlain("Ceci est un second point"))
-                                                                        .add(f.ofPlain("Ceci est un troisieme point"))
+                                                                        .addChild(f.ofPlain("Ceci est un premier point"))
+                                                                        .addChild(f.ofPlain("Ceci est un second point"))
+                                                                        .addChild(f.ofPlain("Ceci est un troisieme point"))
                                                                         .setGridColor("gray")
 
                                                         )
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofEquation("x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}")
                                                         .setPosition(10, 80)
                                                         .setOrigin(NDocAlign.LEFT)
