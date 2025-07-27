@@ -8,48 +8,48 @@ normal{
                 "*": {margin:2}
             }
             // Row
-            stack(background:white,draw-contour){
-                stack{
-                    rectangle(at:top, size:(50,50), background:$palette[4], color:$palette[2], margin:10)
-                    triangle(at:left, size:(50,50), background:$palette[5], color:$palette[5], margin:10)
+            group(background:white,draw-contour){
+                group{
+                    rectangle(at:top, size:(50,50), background:themeColors[4], color:themeColors[2], margin:10)
+                    triangle(at:left, size:(50,50), background:themeColors[5], color:themeColors[5], margin:10)
                 }
             }
             source(tson, """
-                stack{
+                group{
                     rectangle(at:top, size:(50,50),
-                        background:$palette[4])
+                        background:themeColors[4])
                     triangle(at:left, size:(50,50),
-                        background:$palette[5])
+                        background:themeColors[5])
                 }
             """)
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 grid((2,2)){
-                    rectangle(at:top, size:(50,50), background:$palette[4], color:$palette[2], margin:10)
-                    triangle(at:left, size:(50,50), background:$palette[5], color:$palette[5], margin:10)
+                    rectangle(at:top, size:(50,50), background:themeColors[4], color:themeColors[2], margin:10)
+                    triangle(at:left, size:(50,50), background:themeColors[5], color:themeColors[5], margin:10)
                     "Hello"
                 }
             }
             source(tson, """
                 grid((2,2)){
                     rectangle(at:top, size:(50,50),
-                        background:$palette[4])
+                        background:themeColors[4])
                     triangle(at:left, size:(50,50),
-                        background:$palette[5])
+                        background:themeColors[5])
                     "Hello"
                 }
             """)
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 grid((3,2),columns-weight:[1,4],rows-weight:[1,4]){
-                    rectangle(background:$palette[4], color:$palette[2], margin:10)
-                    triangle(background:$palette[5], color:$palette[5], margin:10)
-                    rectangle(background:$palette[4], color:$palette[2], margin:10)
-                    triangle(background:$palette[5], color:$palette[5], margin:10)
-                    rectangle(background:$palette[4], color:$palette[2], margin:10)
-                    triangle(background:$palette[5], color:$palette[5], margin:10)
+                    rectangle(background:themeColors[4], color:themeColors[2], margin:10)
+                    triangle(background:themeColors[5], color:themeColors[5], margin:10)
+                    rectangle(background:themeColors[4], color:themeColors[2], margin:10)
+                    triangle(background:themeColors[5], color:themeColors[5], margin:10)
+                    rectangle(background:themeColors[4], color:themeColors[2], margin:10)
+                    triangle(background:themeColors[5], color:themeColors[5], margin:10)
                 }
             }
             source(tson, """
