@@ -78,8 +78,6 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
             pdfDocument.open();
             addContent(pdfDocument);
 
-            NDocLogger messages = this.messages != null ? this.messages : new DefaultNDocLogger(engine.computeSource(document.root()));
-
             int imagesPerRow = config.getGridX();
             int imagesPerColumn = config.getGridY();
             int imagesPerPage = imagesPerRow * imagesPerColumn;
@@ -126,7 +124,6 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
                         new NDocNodeRendererConfig((int) cellWidth, (int) cellHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
-                                .setMessages(messages)
                 ));
                 img.scaleToFit(cellWidth, cellHeight);
 
@@ -402,9 +399,5 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
         public NDocDocumentRendererContextImpl() {
         }
 
-        @Override
-        public NDocLogger messages() {
-            return messages;
-        }
     }
 }
