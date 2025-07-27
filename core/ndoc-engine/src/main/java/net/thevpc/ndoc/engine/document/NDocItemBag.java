@@ -1,15 +1,15 @@
-package net.thevpc.ndoc.api.util;
+package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.document.node.NDocItem;
-import net.thevpc.ndoc.api.document.node.NDocItemList;
-import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.document.node.NDocNodeDef;
+import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
+import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NDocItemBag {
@@ -17,9 +17,10 @@ public class NDocItemBag {
     private List<NDocProp> props = new ArrayList<>();
     private List<NDocNodeDef> defs = new ArrayList<>();
     private List<NDocStyleRule> styleRules = new ArrayList<>();
+    private List<NDocItem> list = new ArrayList<>();
 
     public NDocItemBag(List<NDocItem> nodes) {
-        if(nodes!=null) {
+        if (nodes != null) {
             for (NDocItem node : nodes) {
                 add(node);
             }
@@ -51,35 +52,84 @@ public class NDocItemBag {
             }
             if (a instanceof NDocNode) {
                 nodes.add((NDocNode) a);
+                list.add(a);
                 return;
             }
             if (a instanceof NDocProp) {
                 props.add((NDocProp) a);
+                list.add(a);
                 return;
             }
             if (a instanceof NDocNodeDef) {
                 defs.add((NDocNodeDef) a);
+                list.add(a);
                 return;
             }
             if (a instanceof NDocStyleRule) {
                 styleRules.add((NDocStyleRule) a);
+                list.add(a);
                 return;
             }
             throw new NIllegalArgumentException(NMsg.ofC("unexpected item type " + a.getClass()));
         }
     }
 
-    public NDocNode compress(boolean inPage) {
-
+    public List<NDocNode> compressToNodes(boolean inPage, NDocResource source) {
+        if(isNodes()){
+            return new ArrayList<>(nodes());
+        }
+        return new ArrayList<>(Arrays.asList(compress(inPage,source)));
     }
+
+    public NDocNode compress(boolean inPage, NDocResource source) {
+        if (isEmpty()) {
+            return new DefaultNDocNode(NDocNodeType.VOID, source);
+        } else if (list.size() == 1 && list.get(0) instanceof NDocNode) {
+            return (NDocNode) list.get(0);
+        } else {
+            if (inPage) {
+                DefaultNDocNode root = new DefaultNDocNode(NDocNodeType.GROUP, source);
+                for (NDocItem nDocItem : list) {
+                    root.mergeNode(nDocItem);
+                }
+                return root;
+            } else {
+                DefaultNDocNode root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP, source);
+                for (NDocItem nDocItem : list) {
+                    root.mergeNode(nDocItem);
+                }
+                return root;
+            }
+        }
+    }
+
+    public List<NDocItem> all() {
+        return list;
+    }
+    public boolean isEmpty() {
+        if (!nodes.isEmpty()) {
+            return false;
+        }
+        if (!props.isEmpty()) {
+            return false;
+        }
+        if (!defs.isEmpty()) {
+            return false;
+        }
+        if (!styleRules.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean isNodes() {
-        if(!props.isEmpty()){
+        if (!props.isEmpty()) {
             return false;
         }
-        if(!defs.isEmpty()){
+        if (!defs.isEmpty()) {
             return false;
         }
-        if(!styleRules.isEmpty()){
+        if (!styleRules.isEmpty()) {
             return false;
         }
         return true;
