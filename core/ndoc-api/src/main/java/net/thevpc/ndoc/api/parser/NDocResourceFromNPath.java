@@ -61,7 +61,7 @@ public class NDocResourceFromNPath extends NDocResourceWithState {
         value.put("lastModifiedInstant", lastModifiedInstant == null ? -1 : lastModifiedInstant.getEpochSecond());
         if (path.toString().contains("*")) {
             value.put("children",
-                    path.walkGlob().map(x -> NDocResourceFactory.of(x).state()).toSet()
+                    path.walkGlob().map(x -> new NDocResourceFromNPath(x).state()).toSet()
             );
         }
         return new NPathHResourceState(value);
