@@ -10,14 +10,7 @@ import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.api.base.format.ToElementHelper;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.document.elem2d.primitives.*;
-import net.thevpc.ndoc.api.document.elem2d.*;
-import net.thevpc.ndoc.api.document.elem3d.*;
 import net.thevpc.ndoc.api.document.node.*;
-import net.thevpc.ndoc.api.document.style.*;
-import net.thevpc.ndoc.api.model.*;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.*;
@@ -232,18 +225,18 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         if (HParserUtils.isCommonStyleProperty(info.id)) {
             NDocObjEx es = NDocObjEx.of(info.currentArg);
             if (es.isFunction()) {
-                info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                info.context.messages().log(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.context.source(),
                         info.currentArg,
                         es.name(), NElement.ofUplet(es.args().toArray(new NElement[0]))
-                ).asSevere(), info.context.source()));
+                ).asSevere(), info.context.source());
                 // empty result
                 return false;
             }
-            info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
+            info.context.messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source());
             return false;
         } else {
-            info.context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source()));
+            info.context.messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source());
             return false;
         }
     }
@@ -311,7 +304,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.f = f;
                 if (!processArguments(info)) {
                     processArguments(info);
-                    context2.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid arguments %s in : %s", id, info.arguments, tsonElement).asSevere(), context2.source()));
+                    context2.messages().log(NMsg.ofC("[%s] invalid arguments %s in : %s", id, info.arguments, tsonElement).asSevere(), context2.source());
                     return NOptional.of(new NDocItemList());
                 }
                 processImplicitStyles(info);
@@ -321,7 +314,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                         p.append(u.get());
                     } else {
                         NOptional<NDocItem> finalU = u;
-                        context2.messages().log(NDocMsg.of(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source()));
+                        context2.messages().log(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source());
                         return NOptional.of(new NDocItemList());
                     }
                 }
@@ -346,5 +339,14 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     @Override
     public boolean validateNode(NDocNode node) {
         return false;
+    }
+
+    protected NCallableSupport<NDocItem> _invalidSupport(NMsg msg, NDocNodeFactoryParseContext context) {
+        msg = msg.asError();
+        context.messages().log(msg.asError());
+        return NCallableSupport.invalid(msg);
+    }
+    protected void _logError(NMsg nMsg, NDocNodeFactoryParseContext context) {
+        context.messages().log(nMsg.asError(), context.source());
     }
 }
