@@ -2,6 +2,8 @@ package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBooleanRef;
@@ -13,10 +15,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NDocParser {
+public class NDocStreamParser {
     private NDocEngine engine;
 
-    public NDocParser(NDocEngine engine) {
+    public NDocStreamParser(NDocEngine engine) {
         this.engine = engine;
     }
 
@@ -111,7 +113,7 @@ public class NDocParser {
                 ifInfo.base = new CondBody();
                 ifInfo.base.cond = o.params().get();
                 ifInfo.base.trueBody = o.children();
-                engine.log().log(NDocMsg.of(NMsg.ofC("if expression is missing brackets : %s", c).asError()));
+                engine.log().log(NMsg.ofC("if expression is missing brackets : %s", c).asError());
                 cc = true;
             } else if (c.isNamedParametrizedObject("elseif") && ifInfo != null) {
                 NObjectElement o = c.asObject().get();
@@ -318,42 +320,33 @@ public class NDocParser {
             rawElements = processControlElements(rawElements, NBooleanRef.of(false));
             return NOptional.of(rawElements);
         } catch (Exception ex) {
-            engine.log().log(NDocMsg.of(NMsg.ofC("error parsing tson document %s", rawElements).asError()));
+            engine.log().log(NMsg.ofC("error parsing tson document %s", rawElements).asError());
             return NOptional.ofNamedError("error parsing tson document", ex);
         }
 
     }
-    public NOptional<NElement> parseInputStream(InputStream is) {
+
+    public NOptional<NElement> parseInputStream(InputStream is, NDocResource source) {
         NElement u;
         try {
             u = NElementParser.ofTson().parse(is);
+            u = NDocUtils.addCompilerDeclarationPathAnnotations(u, source.path().map(NPath::toString).orNull());
         } catch (Exception ex) {
-            engine.log().log(NDocMsg.of(NMsg.ofC("error loading tson document %s", is).asError()));
+            engine.log().log(NMsg.ofC("error loading tson document %s", is).asError());
             return NOptional.ofNamedError("error loading tson document", ex);
         }
-        try {
-            u = processControlElements(u, NBooleanRef.of(false));
-            return NOptional.of(u);
-        } catch (Exception ex) {
-            engine.log().log(NDocMsg.of(NMsg.ofC("error parsing tson document %s", is).asError()));
-            return NOptional.ofNamedError("error parsing tson document", ex);
-        }
+        return parseElements(u);
     }
 
-    public NOptional<NElement> parsePath(NPath is) {
+    public NOptional<NElement> parsePath(NPath is, NDocResource source) {
         NElement u;
         try {
             u = NElementParser.ofTson().parse(is);
+            u = NDocUtils.addCompilerDeclarationPathAnnotations(u, source.path().map(NPath::toString).orNull());
         } catch (Exception ex) {
-            engine.log().log(NDocMsg.of(NMsg.ofC("error loading tson document %s", is).asError()));
+            engine.log().log(NMsg.ofC("error loading tson document %s", is).asError());
             return NOptional.ofNamedError("error loading tson document", ex);
         }
-        try {
-            u = processControlElements(u, NBooleanRef.of(false));
-            return NOptional.of(u);
-        } catch (Exception ex) {
-            engine.log().log(NDocMsg.of(NMsg.ofC("error parsing tson document %s", is).asError()));
-            return NOptional.ofNamedError("error parsing tson document", ex);
-        }
+        return parseElements(u);
     }
 }
