@@ -3,17 +3,19 @@ package net.thevpc.ndoc.api.parser;
 import java.util.Objects;
 
 public abstract class NDocResourceWithState implements NDocResource {
-    private Object state;
+    protected Object state;
 
     @Override
     public void save() {
         state = state();
     }
 
+    protected abstract Object state();
+
     @Override
     public boolean changed() {
         Object ns = state();
-        return !Objects.equals(ns, state);
+        return  !Objects.equals(ns, state);
     }
 
     @Override
