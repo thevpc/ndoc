@@ -67,14 +67,13 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
         int sizeHeight = config.getHeight();
         Dimension dimension=new Dimension(sizeWidth, sizeHeight);
         Map<String, Object> capabilities=config.getCapabilities();
-        NDocLogger messages=config.getMessages();
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = newImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         NDocGraphics hg = engine.createGraphics(g);
         NDocNodeRenderer renderer = getRenderer(node.type()).get();
-        renderer.render(node, new NDocNodeRendererContextBase(engine, hg, dimension, messages) {
+        renderer.render(node, new NDocNodeRendererContextBase(engine, hg, dimension) {
             {
                 if (capabilities != null) {
                     for (Map.Entry<String, Object> cc : capabilities.entrySet()) {
