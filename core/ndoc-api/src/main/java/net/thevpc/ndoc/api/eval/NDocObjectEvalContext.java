@@ -6,11 +6,15 @@ package net.thevpc.ndoc.api.eval;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.util.NOptional;
 
 /**
  * @author vpc
  */
 public interface NDocObjectEvalContext {
 
-    NElement eval(NDocNode node, NElement other);
+    NOptional<NDocVar> findVar(String varName, NDocNode node);
+
+    NElement eval(NElement elementExpr, NDocNode node);
+
 }
