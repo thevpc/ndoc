@@ -99,13 +99,12 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 break;
                             }
                             case NDocPropName.FILE: {
-                                NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
+                                NPath nPath = engine().resolvePath(v.asElement().asString().get(),info.node);
                                 info.context.document().resources().add(nPath);
                                 try {
                                     value = NElement.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
-                                    info.context.messages().log(
-                                            NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
+                                    info.context.messages().log(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere());
                                 }
                                 break;
                             }
