@@ -27,6 +27,8 @@ public class DefaultNDocNode implements NDocNode {
     private List<NDocStyleRule> styleRules = new ArrayList<>();
     private List<NDocNodeDef> definitions = new ArrayList<>();
     private List<NDocFunction> functions = new ArrayList<>();
+    private List<NDocNode> hierarchy = new ArrayList<>();
+    private NDocNodeDef templateDefinition;
 
     public static DefaultNDocNode ofText(String message) {
         DefaultNDocNode t = new DefaultNDocNode(NDocNodeType.TEXT);
@@ -35,14 +37,14 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     public static DefaultNDocNode ofAssign(String name, NElement value, NDocResource source) {
-        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.ASSIGN, source);
+        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.CTRL_ASSIGN, source);
         n.setProperty(NDocPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(name),source));
         n.setProperty(NDocPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value,source));
         return n;
     }
 
     public static DefaultNDocNode ofExpr(NElement value, NDocResource source) {
-        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.EXPR, source);
+        DefaultNDocNode n = new DefaultNDocNode(NDocNodeType.CTRL_EXPR, source);
         n.setProperty(NDocPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value,source));
         return n;
     }
@@ -59,7 +61,7 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public String getUuid() {
+    public String uuid() {
         return uuid;
     }
 
@@ -150,7 +152,14 @@ public class DefaultNDocNode implements NDocNode {
 
     @Override
     public NOptional<NElement> getVar(String property) {
-        return NOptional.ofNamed(vars.get(property), property);
+        NElement u = vars.get(property);
+        if(u!=null){
+            NDocResource source = NDocUtils.sourceOf(this);
+            if(source!=null){
+                u = NDocUtils.addCompilerDeclarationPath(u, source);
+            }
+        }
+        return NOptional.ofNamed(u, property);
     }
 
     @Override
@@ -325,6 +334,25 @@ public class DefaultNDocNode implements NDocNode {
         return this;
     }
 
+    @Override
+    public NDocNode mergeNodes(NDocItem... other) {
+        if(other!=null){
+            for (NDocItem o : other) {
+                mergeNode(o);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public NDocNode addAll(NDocItem... other) {
+        if(other!=null){
+            for (NDocItem o : other) {
+                add(o);
+            }
+        }
+        return this;
+    }
 
     @Override
     public NDocNode mergeNode(NDocItem other) {
@@ -336,7 +364,7 @@ public class DefaultNDocNode implements NDocNode {
             } else if (other instanceof NDocProp) {
                 setProperty((NDocProp) other);
             } else if (other instanceof NDocNodeDef) {
-                addNodeDefinition((NDocNodeDef) other);
+                addDefinition((NDocNodeDef) other);
             } else if (other instanceof NDocNode) {
                 NDocNode hn = (NDocNode) other;
                 if (this.source == null) {
@@ -345,8 +373,27 @@ public class DefaultNDocNode implements NDocNode {
                 this.properties.set(hn.props());
                 addRules(hn.rules());
                 for (NDocNode child : hn.children()) {
-                    add(child);
+                    addChild(child);
                 }
+            }
+        }
+        return this;
+    }
+    @Override
+    public NDocNode add(NDocItem other) {
+        if (other != null) {
+            if (other instanceof NDocItemList) {
+                for (NDocItem item : ((NDocItemList) other).getItems()) {
+                    add(item);
+                }
+            } else if (other instanceof NDocProp) {
+                setProperty((NDocProp) other);
+            } else if (other instanceof NDocNodeDef) {
+                addDefinition((NDocNodeDef) other);
+            } else if (other instanceof NDocNode) {
+                addChild((NDocNode) other);
+            } else if (other instanceof NDocStyleRule) {
+                addRule((NDocStyleRule) other);
             }
         }
         return this;
@@ -368,10 +415,10 @@ public class DefaultNDocNode implements NDocNode {
                 addRule((NDocStyleRule) a);
                 return true;
             } else if (a instanceof NDocNode) {
-                add((NDocNode) a);
+                addChild((NDocNode) a);
                 return true;
             } else if (a instanceof NDocNodeDef) {
-                addNodeDefinition((NDocNodeDef) a);
+                addDefinition((NDocNodeDef) a);
                 return true;
             }
         }
@@ -540,25 +587,26 @@ public class DefaultNDocNode implements NDocNode {
     @Override
     public NDocNode setChildren(NDocNode... children) {
         this.children.clear();
-        addAll(children);
+        addChildren(children);
         return this;
     }
 
     @Override
-    public NDocNode addAll(NDocNode... a) {
+    public NDocNode addChildren(NDocNode... a) {
         if (a != null) {
             for (NDocNode n : a) {
-                add(n);
+                addChild(n);
             }
         }
         return this;
     }
 
     @Override
-    public NDocNode add(NDocNode a) {
+    public NDocNode addChild(NDocNode a) {
         if (a != null) {
             children.add(a);
             a.setParent(this);
+            NDocUtils.checkNode(a,true);
         }
         return this;
     }
@@ -571,7 +619,9 @@ public class DefaultNDocNode implements NDocNode {
     @Override
     public NDocNode addRule(NDocStyleRule s) {
         if (s != null) {
-            styleRules.add(s);
+            if(!styleRules.contains(s)){
+                styleRules.add(s);
+            }
         }
         return this;
     }
@@ -607,12 +657,24 @@ public class DefaultNDocNode implements NDocNode {
         return this;
     }
 
-    public NDocNodeDef[] nodeDefinitions() {
+    @Override
+    public NDocNode clearChildren() {
+        children.clear();
+        return this;
+    }
+
+    @Override
+    public NDocNode clearDefinitions() {
+        definitions.clear();
+        return this;
+    }
+
+    public NDocNodeDef[] definitions() {
         return definitions.toArray(new NDocNodeDef[0]);
     }
 
     @Override
-    public NDocNode addNodeDefinition(NDocNodeDef s) {
+    public NDocNode addDefinition(NDocNodeDef s) {
         if (s != null) {
             definitions.add(s);
         }
@@ -642,20 +704,21 @@ public class DefaultNDocNode implements NDocNode {
         other.setUuid(UUID.randomUUID().toString());
         other.setSource(source());
         other.setProperties(properties.toArray());
-        other.addAll(children().stream().map(NDocNode::copy).toArray(NDocNode[]::new));
+        other.addChildren(children().stream().map(NDocNode::copy).toArray(NDocNode[]::new));
         other.addRules(Arrays.stream(rules()).toArray(NDocStyleRule[]::new));
         for (Map.Entry<String, NElement> e : vars.entrySet()) {
             other.setVar(e.getKey(), e.getValue());
         }
-        for (NDocStyleRule styleRule : styleRules) {
-            other.addRule(styleRule);
-        }
         for (NDocNodeDef v : definitions) {
-            other.addNodeDefinitions(v);
+            other.addDefinitions(v);
         }
         for (NDocFunction v : functions) {
             other.addNodeFunction(v);
         }
+        for (NDocNode h : hierarchy) {
+            other.addHierarchy(h);
+        }
+        other.setTemplateDefinition(templateDefinition);
         return this;
     }
 
@@ -671,6 +734,8 @@ public class DefaultNDocNode implements NDocNode {
         styleRules.clear();
         definitions.clear();
         functions.clear();
+        hierarchy.clear();
+        templateDefinition=null;
         return this;
     }
 
@@ -680,9 +745,9 @@ public class DefaultNDocNode implements NDocNode {
     }
 
     @Override
-    public NDocNode addNodeDefinitions(NDocNodeDef... definitions) {
+    public NDocNode addDefinitions(NDocNodeDef... definitions) {
         for (NDocNodeDef definition : definitions) {
-            addNodeDefinition(definition);
+            addDefinition(definition);
         }
         return this;
     }
@@ -699,7 +764,7 @@ public class DefaultNDocNode implements NDocNode {
 //    }
 //
     private NElement toTson0() {
-        if (NDocNodeType.ASSIGN.equals(type())) {
+        if (NDocNodeType.CTRL_ASSIGN.equals(type())) {
             return NElement.ofPair("$" + getName(), getPropertyValue(NDocPropName.VALUE).orNull());
         }
         String[] styleClasses = getStyleClasses();
@@ -801,5 +866,32 @@ public class DefaultNDocNode implements NDocNode {
     public NDocNode removeNodeFunction(String s) {
         functions.removeIf(f -> NNameFormat.equalsIgnoreFormat(f.name(), s));
         return this;
+    }
+
+    public NDocNode addHierarchy(NDocNode n) {
+        if(n!=null){
+            hierarchy.add(n);
+        }
+        return this;
+    }
+
+    public NDocNode removeHierarchy(NDocNode n) {
+        if(n!=null){
+            hierarchy.remove(n);
+        }
+        return this;
+    }
+
+    public List<NDocNode> hierarchy() {
+        return hierarchy;
+    }
+
+    public NDocNode setTemplateDefinition(NDocNodeDef n) {
+        this.templateDefinition=n;
+        return this;
+    }
+
+    public NDocNodeDef templateDefinition() {
+        return templateDefinition;
     }
 }
