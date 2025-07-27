@@ -145,7 +145,9 @@ public class NDocValueByName {
     public static double getFontSize(NDocNode t, NDocNodeRendererContext ctx) {
         NElement e = NDocValueByType.getTson(t, ctx, NDocPropName.FONT_SIZE).orNull();
         NDocSizeRef sr = ctx.sizeRef();
-        return Math.min(sr.x(e).orElse(16.0),sr.y(e).orElse(16.0));
+        NOptional<Double> srpx = sr.x(e);
+        NOptional<Double> srpy = sr.y(e);
+        return Math.min(srpx.orElse(16.0), srpy.orElse(16.0));
     }
 
     public static String getFontFamily(NDocNode t, NDocNodeRendererContext ctx) {
