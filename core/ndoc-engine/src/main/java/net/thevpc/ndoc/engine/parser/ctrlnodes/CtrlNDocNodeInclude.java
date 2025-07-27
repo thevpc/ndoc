@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.control;
+package net.thevpc.ndoc.engine.parser.ctrlnodes;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
@@ -7,6 +7,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CtrlNDocNodeInclude extends CtrlNDocNodeBase {
     private List<NElement> __args = new ArrayList<>();
@@ -42,5 +43,12 @@ public class CtrlNDocNodeInclude extends CtrlNDocNodeBase {
     public CtrlNDocNodeInclude setArgs(List<NElement> __args) {
         this.__args = __args;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Include(" +
+                __args.stream().map(x->x.toString()).collect(Collectors.joining(", ")) +
+                ')';
     }
 }
