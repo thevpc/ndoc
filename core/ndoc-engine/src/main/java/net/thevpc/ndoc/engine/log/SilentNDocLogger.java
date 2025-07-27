@@ -1,12 +1,10 @@
-package net.thevpc.ndoc.api.engine;
+package net.thevpc.ndoc.engine.log;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NStringUtils;
 
-import java.time.Instant;
 import java.util.logging.Level;
 
 public class SilentNDocLogger implements NDocLogger {
@@ -14,6 +12,15 @@ public class SilentNDocLogger implements NDocLogger {
 
     public SilentNDocLogger() {
 
+    }
+    @Override
+    public void log(NMsg message) {
+        log(NDocMsg.of(message));
+    }
+
+    @Override
+    public void log(NMsg message, NDocResource source) {
+        log(NDocMsg.of(message, source));
     }
 
     @Override
@@ -26,6 +33,10 @@ public class SilentNDocLogger implements NDocLogger {
         if (level.intValue() >= Level.SEVERE.intValue()) {
             errorCount++;
         }
+    }
+
+    public boolean isSuccessful() {
+        return errorCount == 0;
     }
 
     public int getErrorCount() {
