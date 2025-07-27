@@ -1,19 +1,16 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
-import net.thevpc.ndoc.api.parser.NDocResourceWithState;
-import net.thevpc.ndoc.api.parser.NDocResourceFactory;
+import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringBuilder;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class NDocResourceMonitored extends NDocResourceWithState implements NDocResourceMonitor {
+public class NDocResourceMonitored implements NDocResource, NDocResourceMonitor {
     private Set<NDocResource> resources = new HashSet<>();
+
     @Override
     public NOptional<NPath> path() {
         return NOptional.ofNamedEmpty("path");
@@ -22,37 +19,26 @@ public class NDocResourceMonitored extends NDocResourceWithState implements NDoc
     public NDocResourceMonitored() {
     }
 
+
     @Override
-    public Object state() {
-        return new HResourceMonitorImplState(resources.stream().map(x -> x.state()).collect(Collectors.toSet()));
+    public void save() {
+        for (NDocResource resource : resources) {
+            resource.save();
+        }
     }
 
-    private static class HResourceMonitorImplState {
-        private Set<Object> values;
-
-        public HResourceMonitorImplState(Set<Object> values) {
-            this.values = values;
+    @Override
+    public boolean changed() {
+        for (NDocResource r : resources) {
+            if (r.changed()) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            HResourceMonitorImplState that = (HResourceMonitorImplState) o;
-            return Objects.equals(values, that.values);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(values);
-        }
-
-        @Override
-        public String toString() {
-            return "HResourceMonitorImplState{" +
-                    values.toString()
-                    + '}';
-        }
+    public String shortName() {
+        return resources.stream().map(x -> x.shortName()).collect(Collectors.joining(","));
     }
 
     public void clear() {
@@ -74,7 +60,9 @@ public class NDocResourceMonitored extends NDocResourceWithState implements NDoc
     @Override
     public void add(NPath r) {
         if (r != null) {
-            add(NDocResourceFactory.of(r));
+            NDocResource r1 = NDocResourceFactory.of(r);
+            r1.save();
+            add(r1);
         }
     }
 
