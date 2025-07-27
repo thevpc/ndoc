@@ -54,7 +54,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
 
     @Override
     public NPath resolvePath(NElement path, NDocNode node) {
-        Object src = engine().computeSource(node);
+        Object src = NDocUtils.sourceOf(node);
         NPath sp = (src instanceof NDocResource)?((NDocResource) src).path().orNull():null;
         return NDocUtils.resolvePath(path, src);
     }
