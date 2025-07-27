@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface NDocNode extends NDocItem {
-    String getUuid();
+    String uuid();
 
     NDocNode setUuid(String uuid);
 
@@ -80,6 +80,12 @@ public interface NDocNode extends NDocItem {
 
     NDocNode mergeNode(NDocItem other);
 
+    NDocNode add(NDocItem other);
+
+    NDocNode addAll(NDocItem... other);
+
+    NDocNode mergeNodes(NDocItem... other);
+
     NDocNode setPosition(NDocAlign align);
 
     NDocNode setPosition(Number x, Number y);
@@ -126,10 +132,9 @@ public interface NDocNode extends NDocItem {
 
     List<NDocNode> children();
 
+    NDocNode addChild(NDocNode a);
 
-    NDocNode add(NDocNode a);
-
-    NDocNode addAll(NDocNode... a);
+    NDocNode addChildren(NDocNode... a);
 
     NDocNode setChildren(NDocNode... a);
 
@@ -139,6 +144,10 @@ public interface NDocNode extends NDocItem {
     NDocNode removeRule(NDocStyleRule s);
 
     NDocNode addRules(NDocStyleRule... s);
+
+    NDocNode clearChildren();
+
+    NDocNode clearDefinitions();
 
     NDocNode clearRules();
 
@@ -156,11 +165,11 @@ public interface NDocNode extends NDocItem {
 
     void setChildAt(int i, NDocNode c);
 
-    NDocNodeDef[] nodeDefinitions();
+    NDocNodeDef[] definitions();
 
-    NDocNode addNodeDefinition(NDocNodeDef s);
+    NDocNode addDefinition(NDocNodeDef s);
 
-    NDocNode addNodeDefinitions(NDocNodeDef... definitions);
+    NDocNode addDefinitions(NDocNodeDef... definitions);
 
     NDocNode removeNodeDefinition(NDocNodeDef s);
 
@@ -173,4 +182,14 @@ public interface NDocNode extends NDocItem {
     NDocNode removeNodeFunction(String name);
 
     NDocNode reset();
+
+    NDocNode addHierarchy(NDocNode n);
+
+    NDocNode removeHierarchy(NDocNode n);
+
+    List<NDocNode> hierarchy();
+
+    NDocNode setTemplateDefinition(NDocNodeDef n) ;
+
+    NDocNodeDef templateDefinition() ;
 }
