@@ -56,10 +56,14 @@ public class NDocTextRendererFlavorDefault implements NDocTextRendererFlavor {
 
     private SpecialToken readAny(NReservedSimpleCharQueue cq) {
         if (cq.hasNext()) {
+            String p2 = cq.peek(2);
+            if(
+                    p2.equals("\\(")
+                    || cq.peek(2).equals("[[")
+            ){
+                return readEq(cq);
+            }
             switch (cq.peek()) {
-                case '$': {
-                    return readEq(cq);
-                }
                 case '*': {
                     if (cq.peek(3).equals("***")) {
                         return readBoldItalic(cq);
@@ -193,52 +197,15 @@ public class NDocTextRendererFlavorDefault implements NDocTextRendererFlavor {
         StringBuilder sb = new StringBuilder();
         boolean stop = false;
         while (!stop && cq.hasNext()) {
-            switch (cq.peek()) {
-                case '$':
-                case '#': {
+            String p3 = cq.peek(2);
+            if(p3.equals("\\[[") || p3.equals("\\\\(") || p3.equals("\\##") || p3.equals("\\**") || p3.equals("\\__")) {
+                sb.append(p3.substring(1));
+                cq.read(3);
+            }else {
+                String p2 = cq.peek(2);
+                if (p2.equals("[[") || p2.equals("\\(") || p2.equals("##") || p2.equals("**") || p2.equals("__")) {
                     stop = true;
-                    break;
-                }
-                case '\\': {
-                    cq.skip(1);
-                    if (cq.hasNext()) {
-                        char n = cq.read();
-                        switch (n) {
-                            case '\'':
-                            case '$': {
-                                sb.append(n);
-                            }
-                            default: {
-                                sb.append('\\');
-                                sb.append(n);
-                            }
-                        }
-                    } else {
-                        sb.append('\\');
-                    }
-                    break;
-                }
-                case '*': {
-                    if (sb.length() == 0) {
-                        sb.append(cq.read());
-                    } else if (cq.peek(2).equals("**")) {
-                        stop = true;
-                    } else {
-                        sb.append(cq.read());
-                    }
-                    break;
-                }
-                case '_': {
-                    if (sb.length() == 0) {
-                        sb.append(cq.read());
-                    } else if (cq.peek(2).equals("__")) {
-                        stop = true;
-                    } else {
-                        sb.append(cq.read());
-                    }
-                    break;
-                }
-                default: {
+                } else {
                     sb.append(cq.read());
                 }
             }
@@ -250,45 +217,39 @@ public class NDocTextRendererFlavorDefault implements NDocTextRendererFlavor {
     }
 
     private SpecialToken readEq(NReservedSimpleCharQueue cq) {
-        if (cq.peek() != '$') {
-            throw new IllegalArgumentException("Unexpected");
-        }
-        cq.skip(1);
-        StringBuilder sb = new StringBuilder();
-        while (cq.hasNext()) {
-            switch (cq.peek()) {
-                case '$': {
-                    cq.skip(1);
-                    if (sb.length() > 0) {
-                        return new SpecialTokenEq(sb.toString());
-                    } else {
-                        return new SpecialTokenTxt("$$");
-                    }
-                }
-                case '\\': {
-                    cq.skip(1);
-                    if (cq.hasNext()) {
-                        char n = cq.read();
-                        switch (n) {
-                            case '$': {
-                                sb.append(n);
-                            }
-                            default: {
-                                sb.append('\\');
-                                sb.append(n);
-                            }
-                        }
-                    } else {
-                        sb.append('\\');
-                    }
-                    break;
-                }
-                default: {
-                    sb.append(cq.read());
-                }
+        String start = cq.peek(2);
+        String end;
+        switch (start){
+            case "\\(":{
+                cq.skip(2);
+                end="\\)";
+                break;
+            }
+            case "[[":{
+                cq.skip(2);
+                end="]]";
+                break;
+            }
+            default:{
+                throw new IllegalArgumentException("expected \\( or [[ for equations");
             }
         }
-        return new SpecialTokenEq(sb.toString());
+        NExtendedLatexMathBuilder sb=new NExtendedLatexMathBuilder();
+        while (cq.hasNext()) {
+            String u = cq.peek(3);
+            if(u.equals("\\"+end)){
+                sb.append(cq.read(3));
+            }else if(cq.peek(2).equals(end)){
+                cq.read(2);
+                sb.flush();
+                return new SpecialTokenEq(sb.toString().trim());
+            }else{
+                char c = cq.read();
+                sb.append(c);
+            }
+        }
+        sb.flush();
+        return new SpecialTokenEq(sb.toString().trim());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
