@@ -15,7 +15,7 @@ public class NDocEitherFunction implements NDocFunction {
     @Override
     public NElement invoke(NDocFunctionArg[] args, NDocFunctionContext context) {
         for (NDocFunctionArg arg : args) {
-            NElement u = arg.get();
+            NElement u = arg.eval();
             if (!NBlankable.isBlank(u)) {
                 return u;
             }
