@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.control;
+package net.thevpc.ndoc.engine.parser.ctrlnodes;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
@@ -94,15 +94,9 @@ public class CtrlNDocNodeCall extends CtrlNDocNodeBase {
 
     @Override
     public String toString() {
-        try {
-            List<NElement> a = new ArrayList<>();
-            a.addAll(__args);
-            a.addAll(__bodyVars.keySet().stream().map(x -> NElement.ofName(x)).collect(Collectors.toList()));
-            List<String> li = a.stream().map(x -> NDocUtils.snippet(x)).collect(Collectors.toList());
-            return "call_" + callName + li;
-        }catch (Exception ex) {
-            ex.printStackTrace();
-            return super.toString();
-        }
+        List<NElement> a = new ArrayList<>();
+        a.addAll(__args);
+        a.addAll(__bodyVars.keySet().stream().map(x -> NElement.ofName(x)).collect(Collectors.toList()));
+        return "call::" + callName + "("+a.stream().map(x -> NDocUtils.snippet(x)).collect(Collectors.joining(","))+")";
     }
 }
