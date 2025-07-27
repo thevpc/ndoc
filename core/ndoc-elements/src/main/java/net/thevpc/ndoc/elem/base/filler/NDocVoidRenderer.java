@@ -10,8 +10,8 @@ public class NDocVoidRenderer extends NDocNodeRendererBase {
     public NDocVoidRenderer() {
         super(
                 NDocNodeType.VOID,
-                NDocNodeType.ASSIGN,
-                NDocNodeType.DEFINE
+                NDocNodeType.CTRL_ASSIGN,
+                NDocNodeType.CTRL_DEFINE
         );
     }
 
