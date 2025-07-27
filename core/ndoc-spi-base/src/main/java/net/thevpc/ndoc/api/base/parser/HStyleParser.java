@@ -132,7 +132,7 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array", NDocUtils.shortName(context.source()), e));
                                         }
                                     }
@@ -142,7 +142,7 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                                             return NOptional.ofEmpty(
                                                     NMsg.ofC("[%s] invalid style rule selector %s. expected a string or a string array.", NDocUtils.shortName(context.source()), e)
                                             );
@@ -154,17 +154,17 @@ public class HStyleParser {
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
                                         } else {
-                                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                            context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected a valid node type or array", NDocUtils.shortName(context.source()), e));
                                         }
                                     }
                                     default: {
-                                        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                        context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                                         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e));
                                     }
                                 }
                             } else {
-                                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                                context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                                 return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s. expected one of 'name', 'class' or 'type'", NDocUtils.shortName(context.source()), e));
                             }
                         }
@@ -198,7 +198,7 @@ public class HStyleParser {
                             break;
                         }
                         default: {
-                            context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e).asSevere(), context.source()));
+                            context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e).asSevere(), context.source());
                             return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", context.source(), e));
                         }
                     }
@@ -211,7 +211,7 @@ public class HStyleParser {
                 ));
             }
             default: {
-                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule selector %s", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+                context.messages().log(NMsg.ofC("[%s] invalid style rule selector %s", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
                 return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule selector %s", NDocUtils.shortName(context.source()), e));
             }
         }
@@ -250,7 +250,7 @@ public class HStyleParser {
                 break;
             }
         }
-        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] invalid style rule %s", NDocUtils.shortName(context.source()), e).asSevere(), context.source()));
+        context.messages().log(NMsg.ofC("[%s] invalid style rule %s", NDocUtils.shortName(context.source()), e).asSevere(), context.source());
         return NOptional.ofEmpty(NMsg.ofC("[%s] invalid style rule %s", NDocUtils.shortName(context.source()), e));
     }
 
