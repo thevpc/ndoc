@@ -22,6 +22,15 @@ public class NDocLoggerDelegateImpl implements NDocLogger {
     public boolean isSelfSuccessful() {
         return errorCount == 0;
     }
+    @Override
+    public void log(NMsg message) {
+        log(NDocMsg.of(message));
+    }
+
+    @Override
+    public void log(NMsg message, NDocResource source) {
+        log(NDocMsg.of(message, source));
+    }
 
     @Override
     public void log(NDocMsg message) {
