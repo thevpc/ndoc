@@ -21,6 +21,6 @@ public class ScreenDocumentRenderer extends AbstractNDocDocumentRenderer impleme
 
     @Override
     public void renderSupplier(NDocDocumentRendererSupplier document) {
-        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages);
+        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate);
     }
 }
