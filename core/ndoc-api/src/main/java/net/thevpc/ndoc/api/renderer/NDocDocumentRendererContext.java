@@ -10,5 +10,4 @@ import net.thevpc.ndoc.api.engine.NDocLogger;
  * @author vpc
  */
 public interface NDocDocumentRendererContext {
-    NDocLogger messages();
 }
