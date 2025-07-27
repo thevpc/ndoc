@@ -119,15 +119,12 @@ public class RepositoryController {
 
             NDocEngine e = new DefaultNDocEngine();
             NDocument doc = e.loadDocument(file).get();
-            NDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
-
             List<NDocNode> pages = doc.pages();
-
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 GitService gitService = new GitService(engine);
                 int sizeWidth = 1200;
                 int sizeHeight = 1000;
-                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight, messages);
+                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight);
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)
