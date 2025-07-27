@@ -11,7 +11,7 @@ Copied from  Sebastian Pipping' C lang highlighter (webmaster@hartwork.org) aka 
             <item>rectangle</item>
             <item>ellipse</item>
             <item>arc</item>
-            <item>stack</item>
+            <item>group</item>
         </list>
 
         <list name="keywords">
