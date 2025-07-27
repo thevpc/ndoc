@@ -1,5 +1,4 @@
-package net.thevpc.ndoc.engine.document;
+package net.thevpc.ndoc.api.parser;
 
 public interface NDocResourceMonitorState {
-    String dumpDiff(NDocResourceMonitored.NDocResourceMonitorImplState other);
 }
