@@ -5,6 +5,10 @@
 
 Download documentation here : [ndoc-doc.pdf](documentation/website/ndoc-doc.pdf)
 
+(documentation/website/ex02.pdf)
+(documentation/website/ex03.pdf)
+
+
 ## What it does
 ndoc is a versatile presentation tool intended to replace :
 - powerpoint (and its clones)
