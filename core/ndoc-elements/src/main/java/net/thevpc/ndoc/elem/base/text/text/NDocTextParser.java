@@ -4,13 +4,13 @@
  */
 package net.thevpc.ndoc.elem.base.text.text;
 
-import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
