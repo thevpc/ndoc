@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.extension.plantuml;
 
-import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.base.parser.HParserUtils;
-import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
