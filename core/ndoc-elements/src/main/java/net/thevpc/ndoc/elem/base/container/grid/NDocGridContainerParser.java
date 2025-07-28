@@ -4,6 +4,7 @@
  */
 package net.thevpc.ndoc.elem.base.container.grid;
 
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.elem2d.NDocInt2;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
