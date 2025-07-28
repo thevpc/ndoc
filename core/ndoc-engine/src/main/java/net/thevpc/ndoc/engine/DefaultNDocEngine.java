@@ -19,6 +19,7 @@ import net.thevpc.ndoc.api.document.*;
 import net.thevpc.ndoc.api.eval.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.eval.NDocVar;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
@@ -55,6 +56,7 @@ public class DefaultNDocEngine implements NDocEngine {
     private List<NDocNodeParserFactory> nodeParserFactories;
 
     private Map<String, NDocNodeParser> nodeTypeFactories;
+    private List<MyNDocNodeCustomBuilderContext> customBuilderContexts;
     private Map<String, String> nodeTypeAliases;
     private NDocDocumentFactory factory;
     private NDocPropCalculator propCalculator = new NDocPropCalculator();
@@ -217,6 +219,21 @@ public class DefaultNDocEngine implements NDocEngine {
         return new ArrayList<>(nodeTypeFactories0().values());
     }
 
+    public List<MyNDocNodeCustomBuilderContext> customBuilderContexts() {
+        if (customBuilderContexts == null) {
+            ServiceLoader<NDocNodeCustomBuilder> customBuilders = ServiceLoader.load(NDocNodeCustomBuilder.class);
+            List<MyNDocNodeCustomBuilderContext> builderContexts = new ArrayList<>();
+            for (NDocNodeCustomBuilder customBuilder : customBuilders) {
+                MyNDocNodeCustomBuilderContext b = new MyNDocNodeCustomBuilderContext(customBuilder,this);
+                customBuilder.build(b);
+                b.compile();
+                builderContexts.add(b);
+            }
+            this.customBuilderContexts = builderContexts;
+        }
+        return customBuilderContexts;
+    }
+
     private Map<String, NDocNodeParser> nodeTypeFactories0() {
         if (nodeTypeFactories == null) {
             nodeTypeFactories = new HashMap<>();
@@ -224,6 +241,9 @@ public class DefaultNDocEngine implements NDocEngine {
             ServiceLoader<NDocNodeParser> renderers = ServiceLoader.load(NDocNodeParser.class);
             for (NDocNodeParser renderer : renderers) {
                 addNodeTypeFactory(renderer);
+            }
+            for (MyNDocNodeCustomBuilderContext cb : customBuilderContexts()) {
+                addNodeTypeFactory(cb.createParser());
             }
         }
         return nodeTypeFactories;
@@ -506,7 +526,7 @@ public class DefaultNDocEngine implements NDocEngine {
         try {
             this.addLog(slog);
 
-            NOptional<NElement> f = new NDocStreamParser(this).parseInputStream(is,source);
+            NOptional<NElement> f = new NDocStreamParser(this).parseInputStream(is, source);
             if (!f.isPresent()) {
                 log().log(f.getMessage().get().asSevere());
             }
