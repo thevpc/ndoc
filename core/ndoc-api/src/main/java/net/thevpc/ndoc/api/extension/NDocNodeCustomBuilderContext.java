@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
 
 public interface NDocNodeCustomBuilderContext {
-    NDocNodeCustomBuilderContext withId(String id);
+    NDocNodeCustomBuilderContext id(String id);
 
     NDocNodeCustomBuilderContext withAliases(String... aliases);
 
@@ -15,11 +15,18 @@ public interface NDocNodeCustomBuilderContext {
 
     NDocNodeCustomBuilderContext withToElem(String... props);
 
-    NDocNodeCustomBuilderContext withDefaultArg();
+    NDocNodeCustomBuilderContext parseDefaultParamNames();
 
-    NDocNodeCustomBuilderContext withRender(RenderAction e);
+    NDocNodeCustomBuilderContext render(RenderAction e);
 
-    NDocNodeCustomBuilderContext withArgNames(String... names);
+    NDocNodeCustomBuilderContext parseParamNames(String... names);
+
+    NDocNodeCustomBuilderContext parseAsDouble(String... names);
+
+    NDocNodeCustomBuilderContext parseAsDoubleArray(String... names);
+    NDocNodeCustomBuilderContext parseAsStringArray(String... names);
+    NDocNodeCustomBuilderContext parseAsInt(String... names);
+    NDocNodeCustomBuilderContext parseParamNamesAsIntArray(String... names);
 
     NDocNodeCustomBuilderContext withProcessArg(ProcessArgAction e);
 
