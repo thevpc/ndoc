@@ -1,11 +1,10 @@
-package net.thevpc.ndoc.api.base.format;
+package net.thevpc.ndoc.api.util;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
@@ -104,8 +103,32 @@ public class ToElementHelper {
     }
 
     public ToElementHelper addNonNullPairChild(String name, Object value) {
-        if(value!=null){
+        if (value != null) {
             addChild(NElement.ofPair(name, NDocUtils.toElement(name)));
+        }
+        return this;
+    }
+
+    public ToElementHelper addChild(String name, NElement elem) {
+        if (elem != null) {
+            addChild(NElement.ofPair(name, elem));
+        }
+        return this;
+    }
+
+    public ToElementHelper addChildrenByName(String... names) {
+        for (String s : names) {
+            NDocProp p = node.getProperty(s).orNull();
+            if(p!=null){
+                addChild(NElement.ofPair(name, p.getValue()));
+            }
+        }
+        return this;
+    }
+
+    public ToElementHelper addChild(String name, NDocProp elem) {
+        if (elem != null) {
+            addChild(NElement.ofPair(name, elem.getValue()));
         }
         return this;
     }
@@ -135,7 +158,7 @@ public class ToElementHelper {
             if (!multiLine) {
                 addArg(NElement.ofString(value));
             } else {
-                addArg(NElement.ofString(value,NElementType.TRIPLE_DOUBLE_QUOTED_STRING));
+                addArg(NElement.ofString(value, NElementType.TRIPLE_DOUBLE_QUOTED_STRING));
             }
         }
         excludeProps(name);
@@ -150,9 +173,9 @@ public class ToElementHelper {
     }
 
     public ToElementHelper addChildProps(String[] propNames) {
-        if(propNames!=null) {
+        if (propNames != null) {
             for (String propName : propNames) {
-                if(propName!=null) {
+                if (propName != null) {
                     NElement v = node.getPropertyValue(propName).orNull();
                     if (v != null) {
                         addChild(NElement.ofPair(propName, v));
