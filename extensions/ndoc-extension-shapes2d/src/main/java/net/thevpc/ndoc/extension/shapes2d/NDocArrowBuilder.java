@@ -23,12 +23,12 @@ import java.awt.geom.GeneralPath;
 public class NDocArrowBuilder implements NDocNodeCustomBuilder {
 
     @Override
-    public void build(NDocNodeCustomBuilderContext buildContext) {
-        buildContext
-                .withId(NDocNodeType.ARROW)
-                .withArgNames(NDocPropName.WIDTH,NDocPropName.HEIGHT,"base","hat")
-                .withDefaultArg()
-                .withRender(this::render)
+    public void build(NDocNodeCustomBuilderContext builderContext) {
+        builderContext
+                .id(NDocNodeType.ARROW)
+                .parseParamNames(NDocPropName.WIDTH,NDocPropName.HEIGHT,"base","hat")
+                .parseDefaultParamNames()
+                .render(this::render)
                 ;
     }
 
