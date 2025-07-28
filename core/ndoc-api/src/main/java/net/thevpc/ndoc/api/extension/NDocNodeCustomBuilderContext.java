@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.ext;
+package net.thevpc.ndoc.api.extension;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.engine.NDocEngine;
@@ -9,9 +9,17 @@ import net.thevpc.nuts.elem.NElement;
 public interface NDocNodeCustomBuilderContext {
     NDocNodeCustomBuilderContext withId(String id);
 
+    NDocNodeCustomBuilderContext withAliases(String... aliases);
+
     NDocNodeCustomBuilderContext withToElem(ToElemAction e);
 
+    NDocNodeCustomBuilderContext withToElem(String... props);
+
+    NDocNodeCustomBuilderContext withDefaultArg();
+
     NDocNodeCustomBuilderContext withRender(RenderAction e);
+
+    NDocNodeCustomBuilderContext withArgNames(String... names);
 
     NDocNodeCustomBuilderContext withProcessArg(ProcessArgAction e);
 
@@ -19,18 +27,15 @@ public interface NDocNodeCustomBuilderContext {
 
     NDocEngine engine();
 
-    boolean defaultProcessArgument(ParseArgumentInfo info);
-    boolean defaultProcessArguments(ParseArgumentInfo info);
-
     interface ToElemAction {
-        NElement toElem(NDocNode item, NDocNodeCustomBuilderContext context);
+        NElement toElem(NDocNode item, NDocNodeCustomBuilderContext buildContext);
     }
 
     interface RenderAction {
-        void renderMain(NDocNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext context);
+        void renderMain(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext);
     }
 
     interface ProcessArgAction {
-        boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext context);
+        boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext);
     }
 }
