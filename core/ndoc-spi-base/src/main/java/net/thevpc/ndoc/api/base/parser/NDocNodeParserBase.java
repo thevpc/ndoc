@@ -2,13 +2,12 @@ package net.thevpc.ndoc.api.base.parser;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocParseHelper;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
-import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
@@ -20,9 +19,7 @@ import net.thevpc.nuts.util.NOptional;
 
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class NDocNodeParserBase implements NDocNodeParser {
 
@@ -76,21 +73,11 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return false;
     }
 
-    protected static class ParseArgumentInfo {
-        public String id;
-        public String uid;
-        public NElement tsonElement;
-        public NDocNode node;
-        public NElement currentArg;
-        public NElement[] arguments;
-        public int currentArgIndex;
-        public NDocDocumentFactory f;
-        public NDocNodeFactoryParseContext context;
-        public Map<String, Object> props = new HashMap<>();
-        public NDocResource source(){return context.source();}
+    protected boolean processArgument(ParseArgumentInfo info) {
+        return defaultProcessArgument(info);
     }
 
-    protected boolean processArgument(ParseArgumentInfo info) {
+    public boolean defaultProcessArgument(ParseArgumentInfo info) {
         switch (info.currentArg.type()) {
             case PAIR: {
                 if (info.currentArg.isSimplePair()) {
@@ -241,7 +228,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         }
     }
 
-    protected boolean processArguments(ParseArgumentInfo info) {
+    public boolean defaultProcessArguments(ParseArgumentInfo info) {
         for (int i = 0; i < info.arguments.length; i++) {
             NElement currentArg = info.arguments[i];
             info.currentArg = currentArg;
@@ -252,11 +239,13 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         }
         return true;
     }
+    protected boolean processArguments(ParseArgumentInfo info) {
+        return defaultProcessArguments(info);
+    }
 
     public NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = context.documentFactory();
-
         switch (tsonElement.type()) {
             case NAMED_UPLET:
 
@@ -303,7 +292,6 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
                 info.f = f;
                 if (!processArguments(info)) {
-                    processArguments(info);
                     context2.messages().log(NMsg.ofC("[%s] invalid arguments %s in : %s", id, info.arguments, tsonElement).asSevere(), context2.source());
                     return NOptional.of(new NDocItemList());
                 }
@@ -313,8 +301,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     if (u.isPresent()) {
                         p.append(u.get());
                     } else {
-                        NOptional<NDocItem> finalU = u;
-                        context2.messages().log(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, finalU.getMessage().get()).asSevere(), context2.source());
+                        context2.messages().log(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, u.getMessage().get()).asSevere(), context2.source());
                         return NOptional.of(new NDocItemList());
                     }
                 }
