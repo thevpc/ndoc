@@ -78,6 +78,10 @@ public class NDocProp implements NDocItem, NToElement {
         return NDocProps.elem(name, NElement.ofDoubleArray(d));
     }
 
+    public static NDocProp ofIntArray(String name, int[] d) {
+        return NDocProps.elem(name, NElement.ofIntArray(d));
+    }
+
     public static NDocProp ofHPoint2DArray(String name, NDocPoint2D... d) {
         return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
     }
