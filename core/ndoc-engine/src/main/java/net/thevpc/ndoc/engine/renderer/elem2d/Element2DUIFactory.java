@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.elem2d;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocElement2DPrimitive;
-import net.thevpc.ndoc.api.model.elem2d.NDocElement2D;
-import net.thevpc.ndoc.spi.nodes.NDocElement2DPrimitiveBuilder;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitive;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2D;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitiveBuilder;
 
 import java.util.HashMap;
 import java.util.Map;

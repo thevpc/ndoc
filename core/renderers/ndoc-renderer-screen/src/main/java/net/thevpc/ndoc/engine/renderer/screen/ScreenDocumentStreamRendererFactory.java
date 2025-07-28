@@ -4,7 +4,9 @@
  */
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.spi.renderer.*;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactory;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactoryContext;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
@@ -17,7 +19,7 @@ public class ScreenDocumentStreamRendererFactory implements NDocDocumentRenderer
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "screen":
-                return NCallableSupport.of(10, () -> new ScreenDocumentRenderer(context.engine()));
+                return NCallableSupport.valid( () -> new ScreenDocumentRenderer(context.engine()));
             default:
                 return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
         }

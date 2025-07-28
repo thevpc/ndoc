@@ -27,7 +27,7 @@
         <module>extensions/ndoc-extension-plot2d</module>
         <module>extensions/ndoc-extension-latex</module>
         <module>extensions/ndoc-extension-presenters</module>
-        <module>app/ndoc-viewer</module>
+        <module>app/ndoc</module>
         <module>app/ndoc-viewer-backend</module>
         <module>core/renderers/ndoc-renderer-web</module>
         <module>companions/nscoreboard</module>

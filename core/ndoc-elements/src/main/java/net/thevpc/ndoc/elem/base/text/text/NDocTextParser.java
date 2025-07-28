@@ -5,14 +5,14 @@
 package net.thevpc.ndoc.elem.base.text.text;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.base.format.ToElementHelper;
-import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElementTypeGroup;
@@ -99,13 +99,12 @@ public class NDocTextParser extends NDocNodeParserBase {
                                 break;
                             }
                             case NDocPropName.FILE: {
-                                NPath nPath = info.context.resolvePath(v.asStringOrName().get().trim());
+                                NPath nPath = engine().resolvePath(v.asElement().asString().get(),info.node);
                                 info.context.document().resources().add(nPath);
                                 try {
                                     value = NElement.ofString(nPath.readString().trim());
                                 } catch (Exception ex) {
-                                    info.context.messages().log(
-                                            NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere()));
+                                    info.context.messages().log(NMsg.ofC("unable to load source file %s as %s", v.asStringOrName().get().trim(), nPath).asSevere());
                                 }
                                 break;
                             }

@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.NDocProps;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import  net.thevpc.ndoc.api.document.style.NDocProp;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import  net.thevpc.ndoc.api.document.style.NDocProps;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.elem.NElement;
@@ -110,7 +110,7 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
 
     @Override
     public NDocNode ofAssign() {
-        return of(NDocNodeType.ASSIGN);
+        return of(NDocNodeType.CTRL_ASSIGN);
     }
 
     @Override
@@ -127,8 +127,8 @@ public class NDocDocumentFactoryImpl implements NDocDocumentFactory {
     }
 
     @Override
-    public NDocNode ofStack() {
-        return of(NDocNodeType.STACK);
+    public NDocNode ofGroup() {
+        return of(NDocNodeType.GROUP);
     }
 
     @Override

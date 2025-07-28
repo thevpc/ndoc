@@ -1,10 +1,10 @@
 package net.thevpc.ndoc.app.backend.controller;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.document.DefaultNDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.app.backend.service.GitService;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.io.NPath;
@@ -119,15 +119,12 @@ public class RepositoryController {
 
             NDocEngine e = new DefaultNDocEngine();
             NDocument doc = e.loadDocument(file).get();
-            NDocLogger messages = new DefaultNDocLogger(engine.computeSource(doc.root()));
-
             List<NDocNode> pages = doc.pages();
-
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 GitService gitService = new GitService(engine);
                 int sizeWidth = 1200;
                 int sizeHeight = 1000;
-                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight, messages);
+                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight);
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)

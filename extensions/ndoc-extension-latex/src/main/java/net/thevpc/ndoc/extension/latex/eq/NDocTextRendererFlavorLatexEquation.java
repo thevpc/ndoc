@@ -1,17 +1,17 @@
 package net.thevpc.ndoc.extension.latex.eq;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.model.node.NDocNode;
+import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.util.Colors;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.renderer.text.NDocRichTextToken;
-import net.thevpc.ndoc.spi.renderer.text.NDocRichTextTokenType;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.spi.NDocTextRendererFlavor;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.renderer.text.NDocRichTextToken;
+import net.thevpc.ndoc.api.renderer.text.NDocRichTextTokenType;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;

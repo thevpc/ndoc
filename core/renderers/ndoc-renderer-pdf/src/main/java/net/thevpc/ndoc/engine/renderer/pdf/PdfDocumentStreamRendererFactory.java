@@ -1,6 +1,9 @@
 package net.thevpc.ndoc.engine.renderer.pdf;
 
-import net.thevpc.ndoc.spi.renderer.*;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactory;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactoryContext;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
 
@@ -13,7 +16,7 @@ public class PdfDocumentStreamRendererFactory implements NDocDocumentRendererFac
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "pdf":
-                return NCallableSupport.of(10, () -> {
+                return NCallableSupport.valid( () -> {
                     NDocDocumentStreamRendererConfig config = new NDocDocumentStreamRendererConfig();
                     return new PdfDocumentRenderer(context.engine(), config);
                 });

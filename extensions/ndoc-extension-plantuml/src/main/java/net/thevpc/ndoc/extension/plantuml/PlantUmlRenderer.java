@@ -2,18 +2,18 @@ package net.thevpc.ndoc.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.NDocProperties;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
@@ -97,8 +97,8 @@ public class PlantUmlRenderer extends NDocNodeRendererBase {
                 reader.outputImage(bos);
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
-                NDocResource src = ctx.engine().computeSource(p);
-                ctx.log().log(NDocMsg.of(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src));
+                NDocResource src = NDocUtils.sourceOf(p);
+                ctx.log().log(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src);
             }
         }
         if (image != null) {

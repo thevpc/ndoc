@@ -12,7 +12,7 @@ normal{
             }
             // Row 1
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 gantt( size:(95,70), at:center
                     """
                         [Task1] requires 4 days
@@ -52,7 +52,7 @@ normal{
 
             // Row 2
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 gantt(size:(95,40), at:center
                     """
                         [Prototype design] requires 13 days

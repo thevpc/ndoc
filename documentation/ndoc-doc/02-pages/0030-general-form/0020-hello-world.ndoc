@@ -9,15 +9,15 @@ normal{
             }
 
             // Row
-            stack(background:white,draw-contour){
-                //rectangle(at:center, color:$palette[2])
+            group(background:white,draw-contour){
+                //rectangle(at:center, color:themeColors[2])
                 text("Hello World")
             }
             source(tson, """ "Hello World" """)
 
             // Row
-            stack(background:white,draw-contour){
-                //rectangle(at:center, color:$palette[2])
+            group(background:white,draw-contour){
+                //rectangle(at:center, color:themeColors[2])
                 """
                     - Hello ##World##
                     - Hello ###World###
@@ -33,8 +33,8 @@ normal{
              """)
 
             // Row
-            stack(background:white,draw-contour){
-                //rectangle(at:center, color:$palette[2])
+            group(background:white,draw-contour){
+                //rectangle(at:center, color:themeColors[2])
                 ul{
                     ¶ Hello ##World##
                     ¶ Hello ###World###

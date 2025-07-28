@@ -1,14 +1,14 @@
 package net.thevpc.ndoc.elem.base.container.stack;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ public class NDocStackContainerRenderer extends NDocNodeRendererBase {
     NDocProperties defaultStyles = new NDocProperties();
 
     public NDocStackContainerRenderer() {
-        super(NDocNodeType.STACK);
+        super(NDocNodeType.GROUP);
     }
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {

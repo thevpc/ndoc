@@ -31,6 +31,12 @@ public class JPopupMenuHelper {
         }
         return this;
     };
+    public JPopupMenuHelper addMenu(JMenu menu) {
+        if (Desktop.isDesktopSupported()) {
+            items.add(menu);
+        }
+        return this;
+    };
 
     public JPopupMenu build(){
         boolean wasSep=false;

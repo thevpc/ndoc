@@ -1,20 +1,19 @@
 @(ndoc,"1.0")
 {
-    import("sty/*.ndoc"),
-    import("lib/*.ndoc"),
-    @cover page{
+    include("sty/*.ndoc"),
+    include("lib/*.ndoc"),
+    cover{
         text("Cours Micro-Ondes"),
-        $title:"Thank you!",
-        $author:"Thank you!",
-        $date:"2024-01-03",
-        $image:"2024-01-03",
+        title:"Thank you!",
+        author:"Thank you!",
+        date:"2024-01-03",
+        image:"2024-01-03",
     },
 
-    import("src/ch01/*.ndoc"),
-    import("src/ch02/*.ndoc"),
+    include("src/ch01/*.ndoc"),
+    include("src/ch02/*.ndoc"),
 
-    @conclusion page{
+    conclusion(msg:"Thank you!"){
         text("Merci"),
-        $msg:"@conclusion Thank you!",
     },
 }

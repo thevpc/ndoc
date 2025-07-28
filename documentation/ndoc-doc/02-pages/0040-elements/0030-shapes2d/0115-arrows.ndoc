@@ -11,7 +11,7 @@ normal{
                 }
             }
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90),
                 end-arrow:simple()
                 color:red,stroke:3)
@@ -25,7 +25,7 @@ normal{
                 """
             )
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90), color:red
                 ,stroke:3
                 start-arrow:triangle()
@@ -43,7 +43,7 @@ normal{
             )
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90), color:red
                 ,stroke:3
                 start-arrow:oval()
@@ -62,7 +62,7 @@ normal{
 
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90), color:red
                 ,stroke:3
                 start-arrow:diamond()
@@ -80,7 +80,7 @@ normal{
             )
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90), color:red
                 ,stroke:3
                 start-arrow:rectangle()

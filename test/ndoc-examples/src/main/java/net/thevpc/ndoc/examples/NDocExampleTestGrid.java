@@ -4,13 +4,13 @@
  */
 package net.thevpc.ndoc.examples;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.style.NDocProps;
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import  net.thevpc.ndoc.api.document.style.NDocProps;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.elem.NElement;
 
@@ -28,27 +28,27 @@ public class NDocExampleTestGrid {
         NDocDocumentFactory f = e.documentFactory();
         NDocument d = f.ofDocument(null)
                 .add(f.ofPage()
-                        .add(
+                        .addChild(
                                 f.ofGrid(3, 2)
                                         .setProperty(NDocPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 2, 3, 4, 5, 6))
-                                        .add(f.ofRectangle()
+                                        .addChild(f.ofRectangle()
                                                 .setProperty(NDocProps.backgroundColor(Color.BLUE))
                                                 .setProperty(NDocProps.colspan(4))
                                         )
-                                        .add(
+                                        .addChild(
                                                 f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.RED))
                                                         .setProperty(NDocProps.rowspan(4))
                                         )
-                                        .add(f.ofGrid(4, 4)
+                                        .addChild(f.ofGrid(4, 4)
                                                 .setProperty(NDocProps.colspan(3))
                                                 .setProperty(NDocProps.rowspan(2))
-                                                .add(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.BLUE))
+                                                .addChild(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.BLUE))
                                                         .setProperty(NDocProps.colspan(5))
                                                         .setProperty(NDocProps.rowspan(2))
                                                 )
-                                                .add(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.RED)))
-                                                .add(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.GREEN)))
-                                                .add(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.YELLOW))))
+                                                .addChild(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.RED)))
+                                                .addChild(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.GREEN)))
+                                                .addChild(f.ofRectangle().setProperty(NDocProps.backgroundColor(Color.YELLOW))))
                         )
                 )
 //                .add(f.page()

@@ -11,8 +11,8 @@ normal{
                 }
             }
             // Row
-            stack(background:white,draw-contour){
-                    arrow(at: center,color:$palette[2],rotate:-45)
+            group(background:white,draw-contour){
+                    arrow(at: center,color:themeColors[2],rotate:-45)
             }
             source(tson,
                 """
@@ -21,7 +21,7 @@ normal{
             )
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
               cylinder(origin:center,position:(50,20) ,size:(30,25),stroke:5,ellipse-height:20,segment-count:5,background-color:"#00215E")
               cylinder(origin:center,position:(50,50) ,size:(30,25),stroke:5,ellipse-height:20,segment-count:3,background-color:"#F86F03")
               cylinder(origin:center,position:(50,80) ,size:(30,25),stroke:5,ellipse-height:20)
@@ -37,7 +37,7 @@ normal{
             )
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
               donut (origin:center,position:(50,15),size:40,stroke:5,background-color:"#00215E",inner-radius:50,start-angle:0,extent-angle:270)
               donut (origin:center,position:(50,45),size:40,stroke:5,background-color:"#FC4100",inner-radius:30)
               donut (origin:center,position:(50,75),size:40,stroke:5,inner-radius:80)
@@ -52,7 +52,7 @@ normal{
             )
 
             // Row
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
               pie (origin:center,position:(50,15),size:40,stroke:5,background-color:"#00215E",start-angle:0,extent-angle:270)
               pie (origin:center,position:(50,75),size:40,stroke:5)
             }

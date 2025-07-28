@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
-import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
-import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
+import net.thevpc.ndoc.api.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.nuts.io.NPath;
 
 import javax.imageio.ImageIO;

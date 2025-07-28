@@ -5,6 +5,10 @@
 
 Download documentation here : [ndoc-doc.pdf](documentation/website/ndoc-doc.pdf)
 
+![](documentation/website/ex02.png)
+
+![](documentation/website/ex03.png)
+
 # NDoc – Declarative Document & Presentation Generator
 
 &#x20;&#x20;

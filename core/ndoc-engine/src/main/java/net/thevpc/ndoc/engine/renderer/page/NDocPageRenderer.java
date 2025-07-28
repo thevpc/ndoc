@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.engine.renderer.page;
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.util.NDocSizeRef;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.util.NDocSizeRef;
 
 import net.thevpc.nuts.elem.NElement;
 

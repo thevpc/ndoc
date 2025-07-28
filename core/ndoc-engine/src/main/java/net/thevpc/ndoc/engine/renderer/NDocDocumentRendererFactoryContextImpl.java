@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentRendererFactoryContext;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererFactoryContext;
 import net.thevpc.nuts.util.NStringUtils;
 
 public class NDocDocumentRendererFactoryContextImpl implements NDocDocumentRendererFactoryContext {

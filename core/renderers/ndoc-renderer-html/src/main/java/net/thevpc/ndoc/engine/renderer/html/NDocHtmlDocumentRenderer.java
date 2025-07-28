@@ -8,13 +8,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.document.DefaultNDocLogger;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.renderer.*;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.AbstractNDocDocumentStreamRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererContext;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererSupplier;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRenderer;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
 
@@ -30,10 +33,6 @@ public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer
     }
 
     protected void renderStream(NDocument document, OutputStream os) {
-        NDocLogger messages2 = this.messages;
-        if (messages2 == null) {
-            messages2 = new DefaultNDocLogger(engine.computeSource(document.root()));
-        }
         document = engine.compileDocument(document).get();
         PrintStream out = new PrintStream(os);
         out.println("<html>");
@@ -105,11 +104,6 @@ public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer
     private class NDocDocumentRendererContextImpl implements NDocDocumentRendererContext {
 
         public NDocDocumentRendererContextImpl() {
-        }
-
-        @Override
-        public NDocLogger messages() {
-            return messages;
         }
     }
 

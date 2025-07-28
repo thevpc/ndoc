@@ -1,12 +1,12 @@
 package net.thevpc.ndoc.api.util;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NToElement;
+import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocItemList;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
 
@@ -15,17 +15,20 @@ import java.awt.geom.Point2D;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NDocUtils {
 
+    public static final String COMPONENT_BODY_VAR_NAME = "componentBody";
+    public static final String COMPILER_DECLARATION_PATH = "CompilerDeclarationPath";
 
     public static boolean hasCompilerDeclarationPath(NElement element) {
-        return element.annotations().stream().anyMatch(x -> x.name().equals("CompilerDeclarationPath"));
+        return element.annotations().stream().anyMatch(x -> x.name().equals(COMPILER_DECLARATION_PATH));
     }
 
     public static NOptional<String> findCompilerDeclarationPath(NElement element) {
-        Optional<String> e = element.annotations().stream().filter(x -> "CompilerDeclarationPath".equals(x.name())).flatMap(x -> x.params().get(0).asStringValue().stream().stream()).findFirst();
-        return NOptional.ofOptional(e, NMsg.ofC("Missing CompilerDeclarationPath in %s",element));
+        Optional<String> e = element.annotations().stream().filter(x -> COMPILER_DECLARATION_PATH.equals(x.name())).flatMap(x -> x.params().get(0).asStringValue().stream().stream()).findFirst();
+        return NOptional.ofOptional(e, NMsg.ofC("Missing CompilerDeclarationPath in %s", element));
     }
 
     public static NElement addCompilerDeclarationPath(NElement elem, NDocResource resource) {
@@ -47,7 +50,7 @@ public class NDocUtils {
         if (o.isPresent()) {
             return element;
         }
-        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString("")).build();
+        return element.builder().addAnnotation(COMPILER_DECLARATION_PATH, NElement.ofString("")).build();
     }
 
     public static NElement addCompilerDeclarationPath(NElement element, String path) {
@@ -55,7 +58,7 @@ public class NDocUtils {
         if (o.isPresent()) {
             return element;
         }
-        return element.builder().addAnnotation("CompilerDeclarationPath", NElement.ofString(path)).build();
+        return element.builder().addAnnotation(COMPILER_DECLARATION_PATH, NElement.ofString(path)).build();
     }
 
     public static List<NDocNode> nodePath(NDocNode node) {
@@ -102,7 +105,7 @@ public class NDocUtils {
     }
 
     public static String getCompilerDeclarationPath(NElement element) {
-        return element.annotations().stream().filter(a -> a.name().equals("CompilerDeclarationPath")).findFirst().map(x -> x.param(0).asStringValue().get()).orElse(null);
+        return element.annotations().stream().filter(a -> a.name().equals(COMPILER_DECLARATION_PATH)).findFirst().map(x -> x.param(0).asStringValue().get()).orElse(null);
 
     }
 
@@ -381,5 +384,106 @@ public class NDocUtils {
             node = node.parent();
         }
         return null;
+    }
+
+    public static NElement removeCompilerDeclarationPathAnnotations(NElement yy) {
+        return yy.transform(new NElementTransform() {
+            @Override
+            public NElement[] preTransform(NElement element) {
+                List<NElementAnnotation> oldAnn = element.annotations();
+                List<NElementAnnotation> a = oldAnn.stream().filter(x -> !COMPILER_DECLARATION_PATH.equals(x.name())).collect(Collectors.toList());
+                if (a.size() != oldAnn.size()) {
+                    NElementBuilder b = element.builder().clearAnnotations().addAnnotations(a);
+                    return new NElement[]{b.build()};
+                }
+                return new NElement[]{element};
+            }
+        })[0];
+    }
+
+    public static NElement addCompilerDeclarationPathAnnotations(NElement yy, String source) {
+        if (NBlankable.isBlank(source)) {
+            return yy;
+        }
+        return yy.transform(new NElementTransform() {
+            @Override
+            public NElement[] postTransform(NElement element) {
+                if(element.isString()) {
+                    List<NElementAnnotation> oldAnn = element.annotations();
+                    List<NElementAnnotation> a = oldAnn.stream().filter(x -> !COMPILER_DECLARATION_PATH.equals(x.name())).collect(Collectors.toList());
+                    if (a.size() == oldAnn.size()) {
+                        NElementBuilder b = element.builder().addAnnotation(COMPILER_DECLARATION_PATH, NElement.ofString(source)).addAnnotations(a);
+                        return new NElement[]{b.build()};
+                    }
+                }
+                return new NElement[]{element};
+            }
+        })[0];
+    }
+
+    public static String snippet(NElement yy) {
+        yy = removeCompilerDeclarationPathAnnotations(yy);
+        return yy.snippet();
+    }
+
+
+    public static void setNodeParent(NDocItem item, NDocNode parent) {
+        if (item instanceof NDocNode) {
+            ((NDocNode) item).setParent(parent);
+        } else if (item instanceof NDocItemList) {
+            for (NDocItem nDocItem : ((NDocItemList) item).getItems()) {
+                setNodeParent(nDocItem, parent);
+            }
+        }
+    }
+
+    public static String snippet(NDocNode node) {
+        if (node == null) {
+            return "null";
+        }
+        int size = 100;
+        String s = node.toString();
+        int u = s.indexOf("\n");
+        boolean truncated = false;
+        if (u >= 0) {
+            s = s.substring(0, u);
+            truncated = true;
+        }
+        if (s.length() > size) {
+            s = s.substring(0, size);
+            truncated = true;
+        }
+        if (truncated) {
+            return s + "...";
+        }
+        return s;
+    }
+
+    public static void checkNode(NDocNode node) {
+        checkNode(node, true);
+    }
+
+    public static void checkNode(NDocNode node, boolean recursive) {
+        checkNode(node, (NDocNode) (node.parent()), recursive);
+
+    }
+
+    public static void checkNode(NDocNode node, NDocNode expectedRoot) {
+        checkNode(node, expectedRoot, true);
+    }
+
+    public static void checkNode(NDocNode node, NDocNode expectedRoot, boolean recursive) {
+//        NAssert.requireEquals(node.parent(), expectedRoot, "root for " + snippet(node));
+//        NAssert.requireNonNull(node.type(), "type for " + snippet(node));
+//        NAssert.requireNonNull(node.source(), "source for " + snippet(node));
+//        NAssert.requireNonNull(node.uuid(), "uuid for " + snippet(node));
+//        NAssert.requireNonNull(node.uuid(), "uuid for " + snippet(node));
+//        for (NDocNode child : node.children()) {
+//            checkNode(child, node, recursive);
+//        }
+    }
+
+    public static boolean isAnyDefVarName(String name) {
+        return NNameFormat.equalsIgnoreFormat(COMPONENT_BODY_VAR_NAME, name);
     }
 }

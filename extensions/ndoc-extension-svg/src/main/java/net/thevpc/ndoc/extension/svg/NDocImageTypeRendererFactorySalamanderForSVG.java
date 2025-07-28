@@ -3,10 +3,10 @@ package net.thevpc.ndoc.extension.svg;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.SVGUniverse;
 import com.kitfox.svg.app.beans.SVGIcon;
-import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
-import net.thevpc.ndoc.spi.NDocImageTypeRendererFactory;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocGraphicsImageDrawer;
+import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
+import net.thevpc.ndoc.api.renderer.NDocImageTypeRendererFactory;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -20,7 +20,7 @@ public class NDocImageTypeRendererFactorySalamanderForSVG implements NDocImageTy
     @Override
     public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, NDocImageOptions options, NDocGraphics graphics) {
         if (path.getName().toLowerCase().endsWith(".svg")) {
-            return NCallableSupport.of(10,
+            return NCallableSupport.valid(
                     () -> {
                         return new SvgNDocImageByTypeRenderer(path);
                     }

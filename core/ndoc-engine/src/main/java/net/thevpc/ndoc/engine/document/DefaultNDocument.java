@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import net.thevpc.ndoc.api.document.NDocDocumentClass;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
-import net.thevpc.ndoc.api.resources.NDocResourceMonitor;
-import net.thevpc.ndoc.spi.util.PagesHelper;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
+import net.thevpc.ndoc.api.util.PagesHelper;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -26,10 +26,17 @@ public class DefaultNDocument implements NDocument, Cloneable {
     private NDocDocumentClass documentClass;
     private Properties properties = new Properties();
     private DefaultNDocNode root;
-    private NDocResourceMonitor resources = new NDocResourceMonitorImpl();
+    private NDocResourceMonitor resources = new NDocResourceMonitored();
+    private NDocResource source;
 
     public DefaultNDocument(NDocResource source) {
-        root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP,source);
+        this.source = source;
+        root = new DefaultNDocNode(NDocNodeType.PAGE_GROUP, source);
+    }
+
+    @Override
+    public NDocResource source() {
+        return source;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class DefaultNDocument implements NDocument, Cloneable {
 
     @Override
     public NDocument add(NDocNode part) {
-        root().add(part);
+        root().addChild(part);
         return this;
     }
 

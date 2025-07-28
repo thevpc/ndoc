@@ -13,7 +13,7 @@ normal{
 
             // Row 1
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 nwdiag(size:(100,50), at:center
                     """
                           // define group outside of network definitions
@@ -71,7 +71,7 @@ normal{
 
             // Row 2
             // ---------------------------------------------
-            stack(background:white,draw-contour){
+            group(background:white,draw-contour){
                 nwdiag(size:(100,50), at:center
                     """
                         network Sample_front {

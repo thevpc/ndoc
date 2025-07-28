@@ -4,11 +4,11 @@
  */
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.spi.renderer.AbstractNDocDocumentRenderer;
-import net.thevpc.ndoc.spi.renderer.NDocDocumentScreenRenderer;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.renderer.AbstractNDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentScreenRenderer;
 
-import net.thevpc.ndoc.spi.renderer.NDocDocumentRendererSupplier;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererSupplier;
 
 /**
  * @author vpc
@@ -21,6 +21,6 @@ public class ScreenDocumentRenderer extends AbstractNDocDocumentRenderer impleme
 
     @Override
     public void renderSupplier(NDocDocumentRendererSupplier document) {
-        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate, messages);
+        DocumentView dv = new DocumentView(document, engine, eventListenerDelegate);
     }
 }

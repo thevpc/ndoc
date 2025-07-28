@@ -8,38 +8,38 @@ normal{
                 "*": {margin:2}
             }
             // Row
-            stack(background:white,draw-contour){
-                rectangle(at:top, size:(30,30), background:$palette[4], color:$palette[2], margin:10)
-                rectangle(at:left, size:(30,30), background:$palette[4], color:$palette[2], margin:10)
-                rectangle(at:bottom, size:(30,30), background:$palette[4], color:$palette[2], margin:10)
-                rectangle(at:right, size:(30,30), background:$palette[4], color:$palette[2], margin:10)
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
             }
             source(tson, """ rectangle(margin:10) """)
 
             // Row
-            stack(background:white,draw-contour){
-                rectangle(at:top, size:(30,30), background:$palette[4], color:$palette[2], margin:20)
-                rectangle(at:left, size:(30,30), background:$palette[4], color:$palette[2], margin:20)
-                rectangle(at:bottom, size:(30,30), background:$palette[4], color:$palette[2], margin:20)
-                rectangle(at:right, size:(30,30), background:$palette[4], color:$palette[2], margin:20)
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
             }
             source(tson, """ rectangle(margin:20) """)
 
             // Row
-            stack(background:white,draw-contour){
-                rectangle(at:top, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30))
-                rectangle(at:left, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30))
-                rectangle(at:bottom, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30))
-                rectangle(at:right, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30))
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
             }
             source(tson, """ rectangle(margin:(5,30)) """)
 
             // Row
-            stack(background:white,draw-contour){
-                rectangle(at:top, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30,0,0))
-                rectangle(at:left, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30,0,0))
-                rectangle(at:bottom, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30,0,0))
-                rectangle(at:right, size:(30,30), background:$palette[4], color:$palette[2], margin:(5,30,0,0))
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
             }
             source(tson, """ rectangle(margin:(5,30,0,0)) """)
 

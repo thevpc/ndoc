@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.renderer.elem3d;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocLight3D;
-import net.thevpc.ndoc.api.model.elem3d.NDocVector3D;
+import net.thevpc.ndoc.api.document.elem3d.NDocLight3D;
+import net.thevpc.ndoc.api.document.elem3d.NDocVector3D;
 
 public class NDocLight3DImpl implements NDocLight3D, Cloneable {
     private NDocVector3D orientation = new NDocVector3D(0, 0, 1);

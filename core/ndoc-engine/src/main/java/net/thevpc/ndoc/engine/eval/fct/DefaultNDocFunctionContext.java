@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.engine.eval.fct;
 
-import net.thevpc.ndoc.api.NDocEngine;
-import net.thevpc.ndoc.api.document.NDocLogger;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
-import net.thevpc.ndoc.api.model.node.NDocItem;
+import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.eval.NDocFunctionContext;
 
 public class DefaultNDocFunctionContext implements NDocFunctionContext {
     private NDocEngine engine;
@@ -16,6 +15,6 @@ public class DefaultNDocFunctionContext implements NDocFunctionContext {
     }
 
     public NDocLogger messages() {
-        return engine.messages();
+        return engine.log();
     }
 }

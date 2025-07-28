@@ -1,61 +1,50 @@
-@(ndoc,"1.0")
-{
-    styles:{
-        //import("*.tcss"),
-        "" :{
-            color:blue,
-            font-size:10,
-        }
-        title:{
-            font-size:50,
-            bold:true
-            color:red,
-        }
+styles:{
+    //include("*.tcss"),
+    "" :{
+        color:blue,
+        font-size:10,
     }
-
-    @define course(titleComponent,title){
-        page{
-            either(
-                $titleComponent,
-                @(title) text(either($title,"Title"),at:top),
-            )
-            rectangle(
-                size:(50,50),
-                background:$palette[3],
-                rotate:45,
-                color:$palette[1],
-    //            stroke:basic(dash:[30],width:5)
-                stroke:sloppy
-            )
-            either(
-                $componentBody,
-                circle()
-            )
-        }
+    title:{
+        font-size:50,
+        bold:true
+        color:red,
     }
+}
 
-    for(i:[1->2]){
-        course(title:"My Title Page $i"){
-            @let titleComponent:  @(title) text(either($title,"Title"),at:top-left),
+@define course(titleComponent,title){
+    page{
+        either(
+            titleComponent,
+            @(title) text(either(title,"Title"),at:top),
+        )
+        rectangle(
+            size:(50,50),
+            background:themeColors[3],
+            rotate:45,
+            color:themeColors[1],
+//            stroke:basic(dash:[30],width:5)
+            stroke:sloppy
+        )
+        either(
+            componentBody,
+            circle()
+        )
+    }
+}
+
+for(i:[1->2]){
+    course(title:"My Title Page $i"){
+        @let titleComponent:  @(title) text(either(title,"My Title Component"),at:top-left),
+        group(
             equation("""
                 x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
                 """,
                 at:(50,50),
                 origin:center)
-            if($i>1){
+            if(i>1){
                 text("thank you",at:bottom)
-
             }
-        },
-    }
-//    page{
-//        @(title) text("My Title Page 2",at:top),
-//        equation("""
-//            x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
-//            """,
-//            at:(50,50),
-//            origin:center){
-//
-//        },
-//    },
+        )
+    },
 }
+

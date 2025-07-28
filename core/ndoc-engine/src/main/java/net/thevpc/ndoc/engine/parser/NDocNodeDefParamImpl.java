@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.parser;
 
-import net.thevpc.ndoc.api.model.node.NDocNodeDefParam;
+import net.thevpc.ndoc.api.document.node.NDocNodeDefParam;
 import net.thevpc.nuts.elem.NElement;
 
 public class NDocNodeDefParamImpl implements NDocNodeDefParam {

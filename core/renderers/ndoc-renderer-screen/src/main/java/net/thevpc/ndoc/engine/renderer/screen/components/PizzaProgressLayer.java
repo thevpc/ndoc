@@ -1,7 +1,8 @@
 package net.thevpc.ndoc.engine.renderer.screen.components;
 
 import net.thevpc.ndoc.engine.renderer.screen.DocumentView;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.engine.renderer.screen.PageView;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;
@@ -10,7 +11,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 public class PizzaProgressLayer implements NDocDocumentLayer {
-    public void draw(DocumentView doc, Dimension size, NDocGraphics g) {
+    public void draw(DocumentView doc, PageView pageView, Dimension size, NDocGraphics g) {
         if (doc.isLoading()) {
             return;
         }

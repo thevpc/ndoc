@@ -86,22 +86,22 @@ normal{
                     "*":{font-size:4%P}
                 }
                 """
-                    #Equation 1# =
-                    $X^2=\sin(x) $
+                    #Equation 1 (with superscript) =
+                    [[ X²=\sin(πx) ]]
                     ##Equation 2## =
-                    $X^2=\sin(x) $
+                    [[ X^2=\sin \left( \pi x \right) ]]
                     ###Equation 3### =
-                    $X^2=\sin(x) $
+                    [[ X^2=\sin(x) ]]
                 """
             }
             source(tson,
                 """
                     #Equation 1# =
-                    $X^2=\sin(x) $
+                    [[ X²=\sin(πx) ]]
                     ##Equation 2## =
-                    $X^2=\sin(x) $
+                    [[ X^2=\sin \left( \pi x \right) ]]
                     ###Equation 3### =
-                    $X^2=\sin(x) $
+                    [[ X^2=\sin(x) ]]
                 """)
 
         }

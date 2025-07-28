@@ -11,26 +11,26 @@ normal{
                 }
             }
             // Row
-            stack(background:white,draw-contour){
-                rectangle(at:center, size:(50,20), background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                rectangle(at:center, size:(50,20), background:themeColors[4], color:themeColors[2])
             }
             source(tson, """ rectangle() """)
 
             // Row
-            stack(background:white,draw-contour){
-                triangle(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                triangle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """ triangle() """)
 
             // Row
-            stack(background:white,draw-contour){
-                square(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                square(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """ square() """)
 
             // Row
-            stack(background:white,draw-contour){
-                rhombus(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                rhombus(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """
                 rhombus()
@@ -38,32 +38,32 @@ normal{
                 """)
 
             // Row
-            stack(background:white,draw-contour){
-                parallelogram(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                parallelogram(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """
                 parallelogram()
                 """)
 
             // Row
-            stack(background:white,draw-contour){
-                trapezoid(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                trapezoid(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """
                 trapezoid()
                 """)
 
             // Row
-            stack(background:white,draw-contour){
-                circle(at:center, size:50, background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                circle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
             source(tson, """
                 circle()
                 """)
 
             // Row
-            stack(background:white,draw-contour){
-                ellipse(at:center, size:(80,30), background:$palette[4], color:$palette[2])
+            group(background:white,draw-contour){
+                ellipse(at:center, size:(80,30), background:themeColors[4], color:themeColors[2])
             }
             source(tson, """
                 ellipse(size:(80,30))

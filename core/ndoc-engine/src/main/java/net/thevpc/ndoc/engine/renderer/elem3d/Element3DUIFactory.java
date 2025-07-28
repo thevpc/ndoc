@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.renderer.elem3d;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
-import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
-import net.thevpc.ndoc.spi.NDocElement3DRenderer;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3D;
+import net.thevpc.ndoc.api.document.elem3d.RenderState3D;
+import net.thevpc.ndoc.api.renderer.NDocElement3DRenderer;
 
 import java.util.*;
 

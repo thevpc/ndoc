@@ -1,24 +1,21 @@
 package net.thevpc.ndoc.engine.parser;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.NDocEngine;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.node.*;
+import net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.*;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
+import net.thevpc.ndoc.api.parser.NDocNodeParserFactory;
+import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.engine.control.CtrlNDocNodeCall;
-import net.thevpc.ndoc.engine.control.CtrlNDocNodeFor;
-import net.thevpc.ndoc.engine.control.CtrlNDocNodeIf;
-import net.thevpc.ndoc.engine.parser.nodes.*;
-import net.thevpc.ndoc.engine.parser.styles.StylesHITemNamedObjectParser;
-import net.thevpc.ndoc.spi.base.model.DefaultNDocNode;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
-import net.thevpc.ndoc.spi.NDocNodeParser;
+import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeCall;
+import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.parser.NDocNodeParser;
+import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeName;
+import net.thevpc.ndoc.engine.document.NDocItemBag;
 import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.ndoc.spi.nodes.NDocNodeParserFactory;
-import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
@@ -26,7 +23,6 @@ import net.thevpc.nuts.util.*;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -34,33 +30,18 @@ import java.util.stream.Collectors;
  */
 public class DefaultNDocDocumentItemParserFactory
         implements NDocNodeParserFactory {
-    static Map<String, HITemNamedObjectParser> allParsers = new HashMap<>();
 
-    static {
-        register(new ImportHITemNamedObjectParser());
-//        register(new DefineHITemNamedObjectParser());
-        register(new StylesHITemNamedObjectParser());
-    }
-
-    private static void register(HITemNamedObjectParser s) {
-        for (String id : s.ids()) {
-            String uid = NDocUtils.uid(id);
-            HITemNamedObjectParser o = allParsers.get(id);
-            if (o != null) {
-                throw new IllegalArgumentException("clash : " + uid + " is already registered as item parser");
-            }
-            allParsers.put(uid, s);
-        }
+    public DefaultNDocDocumentItemParserFactory() {
     }
 
     @Override
     public NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
         NDocEngine engine = context.engine();
-        if (c.annotations().stream().anyMatch(x -> "define".equals(x.name()))) {
+        if (c.annotations().stream().anyMatch(x -> NDocNodeType.CTRL_DEFINE.equals(x.name()))) {
             //this is a node definition
             if (c.isAnyObject() || c.isNamed()) {
-                return NCallableSupport.of(1, () -> {
+                return NCallableSupport.valid(() -> {
                     NObjectElement object = c.asObject().get();
                     String templateName = object.name().get();
                     List<NDocNodeDefParam> params;
@@ -79,30 +60,61 @@ public class DefaultNDocDocumentItemParserFactory
                                                 null
                                         );
                                     } else {
-                                        throw new IllegalArgumentException("expected var name : " + x);
+                                        context.messages().log(NMsg.ofC("invalid definition param, expected var name %s in %s", x, object).asError());
+                                        return null;
                                     }
-                                }).collect(Collectors.toList());
+                                }).filter(x -> x != null).collect(Collectors.toList());
                     } else {
                         params = new ArrayList<>();
                     }
                     NDocResource source = context.source();
+                    List<NDocNode> defBody=new ArrayList<>();
+                    for (NElement child : object.children()) {
+                        NDocItem item = engine.newNode(child, context).get();
+                        NDocItemBag b=new NDocItemBag(Arrays.asList(item));
+                        if(b.isNodes()){
+                            defBody.addAll(b.nodes());
+                        }else{
+                            context.messages().log(NMsg.ofC("expected nodes, but got other items when creating node from %s",NDocUtils.snippet(child)).asError());
+                        }
+                    }
                     return new NDocNodeDefImpl(
                             context.node(),
                             templateName,
                             params.toArray(new NDocNodeDefParam[0]),
-                            object.children().stream().map(x -> engine.newNode(x, context).get()).toArray(NDocNode[]::new),
+                            defBody.toArray(new NDocNode[0]),
                             source
                     );
                 });
             } else {
-                return NCallableSupport.invalid(NMsg.ofC("invalid defineNode syntax, expected @define <NAME>(...){....}"));
+                return _invalidSupport(NMsg.ofC("invalid defineNode syntax, expected @define <NAME>(...){....}"), context);
             }
         }
 
         switch (c.type().typeGroup()) {
             case OPERATOR: {
-                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
-                    NCallableSupport<NDocItem> uu = ff.parseNode(context);
+                switch (c.type()) {
+                    case OP_EQ: {
+                        NOperatorElement p = c.asOperator().get();
+                        NElement k = p.first().get();
+                        NElement v = p.second().get();
+                        NDocObjEx kh = NDocObjEx.of(k);
+                        if (k.isName()) {
+                            NOptional<String> nn = kh.asStringOrName();
+                            if (nn.isPresent()) {
+                                String nnn = NStringUtils.trim(nn.get());
+                                return NCallableSupport.valid(() -> DefaultNDocNode.ofAssign(nnn, v, context.source()));
+                            } else {
+                                return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
+                            }
+                        } else {
+                            return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
+                        }
+                    }
+                }
+                NOptional<NDocNodeParser> ff = engine.nodeTypeParser(c.type().opSymbol());
+                if (ff.isPresent()) {
+                    NCallableSupport<NDocItem> uu = ff.get().parseNode(context);
                     if (uu.isValid()) {
                         return uu;
                     }
@@ -112,101 +124,55 @@ public class DefaultNDocDocumentItemParserFactory
             case CONTAINER: {
                 switch (c.type()) {
                     case OBJECT:
-                    case NAMED_PARAMETRIZED_OBJECT:
-                    case PARAMETRIZED_OBJECT:
-                    case NAMED_OBJECT: {
-
-                    }
-
-                    case UPLET:
-                    case NAMED_UPLET:
-
                     case ARRAY:
+                    {
+                        return parseNoNameBloc(context);
+                    }
+                    case UPLET: {
+                        NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
+                        return p.parseNode(context);
+                    }
+                    case NAMED_PARAMETRIZED_OBJECT:
+                    case NAMED_OBJECT:
+                    case NAMED_UPLET:
                     case NAMED_PARAMETRIZED_ARRAY:
-                    case PARAMETRIZED_ARRAY:
                     case NAMED_ARRAY: {
-                        if (c.isNamedUplet() || c.isAnyObject()) {
-                            String name = c.asNamed().flatMap(x -> x.name()).orNull();
-                            if (name != null) {
-                                switch (name) {
-                                    case "if": {
-                                        return NCallableSupport.of(10, () -> createCtrlNDocNodeIf(c, context));
-                                    }
-                                    case "for": {
-                                        return NCallableSupport.of(10, () -> createCtrlNDocNodeFor(c, context));
-                                    }
-                                }
-                            }
-                        }
-                        if (c.type() == NElementType.UPLET) {
-                            NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
-                            if (p != null) {
-                                return p.parseNode(context);
-                            }
-                            break;
-                        }
                         NDocObjEx ee = NDocObjEx.of(c);
-                        if (NBlankable.isBlank(ee.name())) {
-                            return NCallableSupport.of(10, new Supplier<NDocItem>() {
-                                @Override
-                                public NDocItem get() {
-                                    return parseNoNameBloc(context);
-                                }
-                            });
-                        } else {
-                            String uid = NDocUtils.uid(ee.name());
-                            NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
-                            if (p != null) {
-                                return p.parseNode(context);
-                            }
-                            HITemNamedObjectParser pp = allParsers.get(uid);
-                            if (pp != null) {
-                                return NCallableSupport.of(10, () -> {
-                                    NOptional<NDocItem> styles = pp.parseItem(uid, c, context);
-//                            if (!styles.isPresent()) {
-//                                pp.parseItem(uid, c, context).get();
-//                            }
-                                    return styles.get();
-                                });
-                            }
+                        String uid = NDocUtils.uid(ee.name());
+                        NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
+                        if (p != null) {
+                            return p.parseNode(context);
                         }
                         if (c.isNamedUplet() || c.isAnyObject()) {
-                            return NCallableSupport.of(10, () -> createCtrlNDocNodeCall(c, context));
+                            return NCallableSupport.valid(() -> createCtrlNDocNodeCall(c, context));
                         }
-                        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c).asSevere(), context.source()));
-                        throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c));
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
+                    }
+                    case PAIR: {
+                        if (c.isNamedPair()) {
+                            NPairElement p = c.asPair().get();
+                            String name = p.key().asStringValue().get();
+                            NOptional<NDocNodeParser> ff = engine.nodeTypeParser(name);
+                            if (ff.isPresent()) {
+                                NCallableSupport<NDocItem> uu = ff.get().parseNode(context);
+                                if (uu.isValid()) {
+                                    return uu;
+                                }
+                            }
+                        }
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node from pair : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
+                    }
+                    default: {
+                        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node from %s : %s", c.type().id(), NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
                     }
                 }
             }
-        }
-        switch (c.type()) {
-            case DOUBLE_QUOTED_STRING:
-            case SINGLE_QUOTED_STRING:
-            case ANTI_QUOTED_STRING:
-            case TRIPLE_DOUBLE_QUOTED_STRING:
-            case TRIPLE_SINGLE_QUOTED_STRING:
-            case TRIPLE_ANTI_QUOTED_STRING:
-            case LINE_STRING:
-            case BIG_COMPLEX:
-            case BIG_INT:
-            case BYTE:
-            case CHAR:
-            case LOCAL_DATE:
-            case LOCAL_DATETIME:
-            case DOUBLE:
-            case DOUBLE_COMPLEX:
-            case FLOAT:
-            case FLOAT_COMPLEX:
-            case INT:
-            case BIG_DECIMAL:
-            case BOOLEAN:
-            case LONG:
-            case NULL:
+            case NUMBER:
+            case TEMPORAL:
+            case STRING:
             case REGEX:
-            case SHORT:
-            case LOCAL_TIME:
-            case MATRIX:
-            case ALIAS: {
+            case NULL:
+            case BOOLEAN: {
                 NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
                 if (p != null) {
                     return p.parseNode(context);
@@ -214,184 +180,24 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case NAME: {
-                String name = c.asStringValue().get();
-                if (name.startsWith("$")) {
-                    return NCallableSupport.of(10,
-                            () -> DefaultNDocNode.ofExpr(c, context.source())
-                    );
-                }
-                String uid = NDocUtils.uid(name);
-                NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
-                if (p != null) {
-                    return p.parseNode(context);
-                }
-                p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
-                if (p != null) {
-                    return p.parseNode(context);
-                }
-                break;
-            }
-            case PAIR: {
-                NPairElement p = c.asPair().get();
-                NElement k = p.key();
-                NElement v = p.value();
-                NDocObjEx kh = NDocObjEx.of(k);
-                NOptional<String> nn = kh.asStringOrName();
-                if (nn.isPresent()) {
-                    String nnn = NStringUtils.trim(nn.get());
-                    HITemNamedObjectParser pp = allParsers.get(nnn);
-                    if (pp != null) {
-                        return NCallableSupport.of(10, () -> {
-                            NOptional<NDocItem> styles = pp.parseItem(nnn, v, context);
-                            return styles.get();
-                        });
-                    }
-                }
-                for (NDocNodeParser ff : engine.nodeTypeFactories()) {
-                    NCallableSupport<NDocItem> uu = ff.parseNode(context);
-                    if (uu.isValid()) {
-                        return uu;
-                    }
-                }
-                break;
-            }
-            case OP_EQ: {
-                NOperatorElement p = c.asOperator().get();
-                NElement k = p.first().get();
-                NElement v = p.second().get();
-                NDocObjEx kh = NDocObjEx.of(k);
-                if (k.isName()) {
-                    NOptional<String> nn = kh.asStringOrName();
-                    if (nn.isPresent()) {
-                        String nnn = NStringUtils.trim(nn.get());
-                        if (nnn.startsWith("$")) {
-                            nnn = nnn.substring(1);
-                        }
-                        String finalNnn = nnn;
-                        return NCallableSupport.of(10, () -> DefaultNDocNode.ofAssign(finalNnn, v, context.source()));
-                    } else {
-                        context.messages().log(NDocMsg.of(NMsg.ofC("unable to interpret left signe of assignment as a valid var : %s", k).asError()));
-                    }
-                } else {
-                    context.messages().log(NDocMsg.of(NMsg.ofC("unable to interpret left signe of assignment as a valid var : %s", k).asError()));
-                }
-                break;
-            }
-            case OBJECT:
-            case NAMED_PARAMETRIZED_OBJECT:
-            case PARAMETRIZED_OBJECT:
-            case NAMED_OBJECT:
-
-            case UPLET:
-            case NAMED_UPLET:
-
-            case ARRAY:
-            case NAMED_PARAMETRIZED_ARRAY:
-            case PARAMETRIZED_ARRAY:
-            case NAMED_ARRAY: {
-                if (c.type() == NElementType.UPLET) {
-                    NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
-                    if (p != null) {
-                        return p.parseNode(context);
-                    }
-                    break;
-                }
-                NDocObjEx ee = NDocObjEx.of(c);
-                if (NBlankable.isBlank(ee.name())) {
-                    return NCallableSupport.of(10, new Supplier<NDocItem>() {
-                        @Override
-                        public NDocItem get() {
-                            return parseNoNameBloc(context);
-                        }
-                    });
-                } else {
-                    String uid = NDocUtils.uid(ee.name());
-                    NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
-                    if (p != null) {
-                        return p.parseNode(context);
-                    }
-                    HITemNamedObjectParser pp = allParsers.get(uid);
-                    if (pp != null) {
-                        return NCallableSupport.of(10, () -> {
-                            NOptional<NDocItem> styles = pp.parseItem(uid, c, context);
-//                            if (!styles.isPresent()) {
-//                                pp.parseItem(uid, c, context).get();
-//                            }
-                            return styles.get();
-                        });
-                    }
-                }
-                if (c.isNamedUplet() || c.isAnyObject()) {
-                    return NCallableSupport.of(10, () -> createCtrlNDocNodeCall(c, context));
-                }
-                context.messages().log(NDocMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c).asSevere(), context.source()));
-                throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c));
+                return NCallableSupport.valid(()->new CtrlNDocNodeName(context.source(),c));
             }
         }
-        context.messages().log(NDocMsg.of(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c).asSevere(), context.source()));
-        throw new NIllegalArgumentException(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), c));
+        return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
     }
 
-
-    private CtrlNDocNodeIf createCtrlNDocNodeIf(NElement c, NDocNodeFactoryParseContext context) {
-        NObjectElement obj = c.asObject().get();
-        NElement __cond = null;
-        List<NDocNode> __trueBloc = new ArrayList<>();
-        List<NDocNode> __falseBloc = new ArrayList<>();
-        for (NElement child : obj.children()) {
-            __trueBloc.add((NDocNode) context.engine().newNode(child, context).get());
-        }
-        for (NElement e : obj.params().get()) {
-            if (e.isNamedPair("$condition")) {
-                if (__cond != null) {
-                    throw new NIllegalArgumentException(NMsg.ofC("unexpected %s", c));
-                }
-                __cond = e.asPair().get().value();
-            } else if (e.isNamedPair("$else")) {
-                NElement ee = e.asPair().get().value();
-                if (ee.isAnyObject()) {
-                    for (NElement child : ee.asObject().get().children()) {
-                        __falseBloc.add((NDocNode) context.engine().newNode(child, context).get());
-                    }
-                }
-            } else {
-                if (__cond != null) {
-                    throw new NIllegalArgumentException(NMsg.ofC("unexpected %s", c));
-                }
-                __cond = e;
-            }
-        }
-        CtrlNDocNodeIf cc = new CtrlNDocNodeIf(context.source(), __cond, __trueBloc, __falseBloc);
-        cc.setParent(context.node());
-        return cc;
+    private NCallableSupport<NDocItem> _invalidSupport(NMsg msg, NDocNodeFactoryParseContext context) {
+        msg = msg.asError();
+        context.messages().log(msg.asError());
+        return NCallableSupport.invalid(msg);
     }
 
-    private CtrlNDocNodeFor createCtrlNDocNodeFor(NElement c, NDocNodeFactoryParseContext context) {
-        NObjectElement obj = c.asObject().get();
-        NElement __varName = null;
-        NElement __varDomain = null;
-        List<NElement> block = new ArrayList<>();
-        for (NElement child : obj.children()) {
-            block.add(child);
-        }
-        for (NElement e : obj.params().get()) {
-            if (e.isPair()) {
-                __varName = e.asPair().get().key();
-                __varDomain = e.asPair().get().value();
-            } else {
-                throw new NIllegalArgumentException(NMsg.ofC("unexpected %s", c));
-            }
-        }
-        CtrlNDocNodeFor cc = new CtrlNDocNodeFor(context.source(), __varName, __varDomain, block);
-        cc.setParent(context.node());
-        return cc;
-    }
 
     private CtrlNDocNodeCall createCtrlNDocNodeCall(NElement c, NDocNodeFactoryParseContext context) {
         CtrlNDocNodeCall cc = new CtrlNDocNodeCall(context.source());
         NDocResource source = context.source();
         String __name = c.asNamed().get().name().get();
-        cc.setProperty(NDocPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(NDocUtils.uid(__name)),context.source()));
+        cc.setProperty(NDocPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(NDocUtils.uid(__name)), context.source()));
         List<NElement> __callBody = new ArrayList<>();
         List<NElement> __args = new ArrayList<>();
         Map<String, NElement> __bodyVars = new HashMap<>();
@@ -428,7 +234,7 @@ public class DefaultNDocDocumentItemParserFactory
                 }
                 c = fb.build();
             } else {
-                throw new IllegalArgumentException("unexpected call : " + c);
+                context.messages().log(NMsg.ofC("unexpected call : %s (ignored)", c).asError(), context.source());
             }
         } else {
             if (c.isNamedUplet()) {
@@ -451,9 +257,8 @@ public class DefaultNDocDocumentItemParserFactory
                     }
                 }
             } else {
-                throw new IllegalArgumentException("unexpected call : " + c);
+                context.messages().log(NMsg.ofC("unexpected call : %s (ignored)", c).asError(), context.source());
             }
-
         }
         cc.setCallName(__name);
         cc.setCallBody(__callBody);
@@ -539,7 +344,7 @@ public class DefaultNDocDocumentItemParserFactory
         return false;
     }
 
-    private NDocItem parseNoNameBloc(NDocNodeFactoryParseContext context) {
+    private NCallableSupport<NDocItem> parseNoNameBloc(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = engine.documentFactory();
@@ -548,8 +353,8 @@ public class DefaultNDocDocumentItemParserFactory
         NDocObjEx ee = NDocObjEx.of(c);
         for (NElementAnnotation a : c.annotations()) {
             String nn = a.name();
-            if (!NNameFormat.equalsIgnoreFormat(nn,"CompilerDeclarationPath")) {
-                if(!NBlankable.isBlank(nn)) {
+            if (!NNameFormat.equalsIgnoreFormat(nn, NDocUtils.COMPILER_DECLARATION_PATH)) {
+                if (!NBlankable.isBlank(nn)) {
                     if (allAncestors == null) {
                         allAncestors = new HashSet<>();
                     }
@@ -572,19 +377,19 @@ public class DefaultNDocDocumentItemParserFactory
         }
         NDocNode node = context.node();
         if ((allStyles != null || allAncestors != null) && !isRootBloc(context)) {
-            NDocNode pg = f.ofStack().setSource(context.source());
+            NDocNode pg = f.ofGroup().setSource(context.source());
             pg.setStyleClasses(allStyles == null ? null : allStyles.toArray(new String[0]));
             for (NElement child : ee.body()) {
                 NOptional<NDocItem> u = context.engine().newNode(child, context);
                 if (u.isPresent()) {
                     pg.append(u.get());
                 } else {
-                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s", child,
+                    return _invalidSupport(NMsg.ofC("invalid %s for %s", NDocUtils.snippet(child),
                             node == null ? "document" : node.type()
-                    ).toString());
+                    ), context);
                 }
             }
-            return pg;
+            return NCallableSupport.valid(pg);
         } else {
             NDocItemList pg = new NDocItemList();
             for (NElement child : ee.body()) {
@@ -592,13 +397,13 @@ public class DefaultNDocDocumentItemParserFactory
                 if (u.isPresent()) {
                     pg.add(u.get());
                 } else {
-                    throw new IllegalArgumentException(NMsg.ofC("invalid %s for %s : %s", child,
+                    return _invalidSupport(NMsg.ofC("invalid %s for %s : %s", NDocUtils.snippet(child),
                             node == null ? "document" : node.type(),
                             u.getMessage().get()
-                    ).toString());
+                    ), context);
                 }
             }
-            return pg;
+            return NCallableSupport.valid(pg);
         }
     }
 

@@ -1,15 +1,15 @@
 package net.thevpc.ndoc.elem.base.container.ul;
 
-import net.thevpc.ndoc.NDocDocumentFactory;
-import net.thevpc.ndoc.api.model.elem2d.NDocAlign;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocProp;
-import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.style.NDocPropName;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.spi.eval.NDocValueByName;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.base.renderer.ConvertedNDocNodeRenderer;
+import net.thevpc.ndoc.api.document.NDocDocumentFactory;
+import net.thevpc.ndoc.api.document.elem2d.NDocAlign;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocProp;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.base.renderer.ConvertedNDocNodeRenderer;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
@@ -30,19 +30,21 @@ public class NDocUnorderedListRenderer extends ConvertedNDocNodeRenderer {
             switch (child.type()) {
                 case NDocNodeType.UNORDERED_LIST:
                 case NDocNodeType.ORDERED_LIST: {
-                    all.add(f.ofVoid().addStyleClasses("ul-bullet"));
+                    all.add(f.ofVoid().addStyleClasses("ul-bullet").setSource(p.source()));
                     break;
                 }
                 default: {
                     all.add(f.ofSphere()
                             //.setProperty(HPropName.SIZE, NElements.ofDouble(2,"%P"))
-                            .addStyleClasses("ul-bullet"));
+                            .addStyleClasses("ul-bullet")
+                            .setSource(p.source())
+                    );
                     break;
                 }
             }
-            all.add(child.addStyleClasses("ul-item"));
+            all.add(child.addStyleClasses("ul-item").setSource(p.source()));
         }
-        NDocNode newNode = f.ofGrid().addAll(all.toArray(new NDocNode[0]))
+        NDocNode newNode = f.ofGrid().addChildren(all.toArray(new NDocNode[0]))
                 .setProperty(NDocPropName.COLUMNS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ROWS, NElement.ofInt(2))
                 .setProperty(NDocPropName.ORIGIN, NDocAlign.TOP_LEFT)

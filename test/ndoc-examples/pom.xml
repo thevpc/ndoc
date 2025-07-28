@@ -51,7 +51,7 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-viewer</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
     <build>
         <plugins>

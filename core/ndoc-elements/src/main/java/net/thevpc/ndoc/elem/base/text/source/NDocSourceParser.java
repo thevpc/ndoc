@@ -1,11 +1,11 @@
 package net.thevpc.ndoc.elem.base.text.source;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
@@ -47,14 +47,15 @@ public class NDocSourceParser extends NDocNodeParserBase {
                             return true;
                         }
                         case "file": {
-                            String path = p.value().asStringValue().get().trim();
-                            NPath nPath = info.context.resolvePath(path);
+                            NElement value = p.value();
+                            //String path = value.asStringValue().get().trim();
+                            NPath nPath = engine().resolvePath(value.asString().get(),info.node);
                             info.context.document().resources().add(nPath);
                             try {
                                 info.node.setProperty(NDocPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
-                                        NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                        NMsg.ofC("unable to load source file %s as %s", NDocUtils.snippet(value), nPath).asSevere()
                                 );
                             }
                             return true;

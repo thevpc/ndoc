@@ -1,21 +1,21 @@
 package net.thevpc.ndoc.elem.base.image;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.elem2d.NDocImageOptions;
-import net.thevpc.ndoc.api.model.node.NDocNodeType;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.resources.NDocResource;
-import net.thevpc.ndoc.api.style.NDocProperties;
-import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocResource;
+import  net.thevpc.ndoc.api.document.style.NDocProperties;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.spi.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.spi.eval.NDocValueByType;
-import net.thevpc.ndoc.spi.renderer.NDocGraphics;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererBase;
-import net.thevpc.ndoc.spi.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.eval.NDocValueByType;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -73,19 +73,19 @@ public class NDocImageRenderer extends NDocNodeRendererBase {
                     try {
                         g.drawImage(vp, x, y, options);
                     } catch (Exception ex) {
-                        NDocResource src = ctx.engine().computeSource(p);
-                        ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
+                        NDocResource src = NDocUtils.sourceOf(p);
+                        ctx.log().log(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
                                 src == null ? null : src.shortName(),
-                                vp, ex).asSevere(), src));
+                                vp, ex).asSevere(), src);
 
                     }
                 } else {
                     int descent = g.getFontMetrics().getAscent();
                     g.drawString("Image not found "+imgPath, x, y+descent,new NDocTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
-                    NDocResource src = ctx.engine().computeSource(p);
-                    ctx.log().log(NDocMsg.of(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                    NDocResource src = NDocUtils.sourceOf(p);
+                    ctx.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
-                            img).asSevere(), src));
+                            img).asSevere(), src);
                 }
             }
         }

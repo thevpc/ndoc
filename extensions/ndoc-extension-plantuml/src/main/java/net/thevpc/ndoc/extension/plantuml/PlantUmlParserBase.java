@@ -1,14 +1,14 @@
 package net.thevpc.ndoc.extension.plantuml;
 
 import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.model.node.NDocItem;
-import net.thevpc.ndoc.api.model.node.NDocNode;
-import net.thevpc.ndoc.api.style.NDocPropName;
+import net.thevpc.ndoc.api.document.node.NDocItem;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.spi.base.format.ToElementHelper;
-import net.thevpc.ndoc.spi.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.spi.eval.NDocObjEx;
-import net.thevpc.ndoc.spi.nodes.NDocNodeFactoryParseContext;
+import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
@@ -89,14 +89,13 @@ public abstract class PlantUmlParserBase extends NDocNodeParserBase {
                             return true;
                         }
                         case NDocPropName.FILE: {
-                            String path = p.value().asStringValue().get().trim();
-                            NPath nPath = info.context.resolvePath(path);
+                            NPath nPath = engine().resolvePath(p.value().asString().get(),info.node);
                             info.context.document().resources().add(nPath);
                             try {
                                 info.node.setProperty(NDocPropName.VALUE, NElement.ofString(nPath.readString().trim()));
                             } catch (Exception ex) {
                                 info.context.messages().log(
-                                        NDocMsg.of(NMsg.ofC("unable to load source file %s as %s", path, nPath).asSevere())
+                                        NMsg.ofC("unable to load source file %s as %s", NDocUtils.snippet(p.value()), nPath).asSevere()
                                 );
                             }
                             return true;

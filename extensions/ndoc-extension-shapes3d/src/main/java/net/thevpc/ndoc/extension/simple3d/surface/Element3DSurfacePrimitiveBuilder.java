@@ -1,14 +1,14 @@
 package net.thevpc.ndoc.extension.simple3d.surface;
 
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3DPrimitive;
-import net.thevpc.ndoc.api.model.elem3d.NDocElement3D;
-import net.thevpc.ndoc.api.model.elem3d.NDocPoint3D;
-import net.thevpc.ndoc.api.model.elem3d.RenderState3D;
-import net.thevpc.ndoc.api.model.elem3d.composite.NDocElement3DSurface;
-import net.thevpc.ndoc.api.model.elem3d.primitives.NDocElement3DTriangle;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3DPrimitive;
+import net.thevpc.ndoc.api.document.elem3d.NDocElement3D;
+import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
+import net.thevpc.ndoc.api.document.elem3d.RenderState3D;
+import net.thevpc.ndoc.api.document.elem3d.composite.NDocElement3DSurface;
+import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DTriangle;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.MinMax;
-import net.thevpc.ndoc.spi.NDocElement3DRenderer;
+import net.thevpc.ndoc.api.renderer.NDocElement3DRenderer;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;

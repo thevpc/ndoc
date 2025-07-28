@@ -33,7 +33,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.madgag.gif.fmsware.GifDecoder;
-import net.thevpc.ndoc.spi.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.base.renderer.HImageUtils;
 import net.thevpc.nuts.NApp;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;

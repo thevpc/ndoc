@@ -1,9 +1,9 @@
 package net.thevpc.ndoc.engine.eval.fct;
 
-import net.thevpc.ndoc.api.model.fct.NDocFunction;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionArg;
-import net.thevpc.ndoc.api.model.fct.NDocFunctionContext;
-import net.thevpc.ndoc.engine.parser.util.GitHelper;
+import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.eval.NDocFunctionArg;
+import net.thevpc.ndoc.api.eval.NDocFunctionContext;
+import net.thevpc.ndoc.engine.eval.GitHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -21,7 +21,7 @@ public class NDocEitherPathFunction implements NDocFunction {
     public NElement invoke(NDocFunctionArg[] args, NDocFunctionContext context) {
         List<NElement> possibilities = new ArrayList<>();
         for (NDocFunctionArg arg : args) {
-            NElement u = arg.get();
+            NElement u = arg.eval();
             possibilities.add(u);
             if (!NBlankable.isBlank(u)) {
                 String sp = u.asStringValue().orNull();

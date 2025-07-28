@@ -27,10 +27,10 @@ package net.thevpc.ndoc.elem.base.container.grid;
  * questions.
  */
 
-import net.thevpc.ndoc.api.model.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.model.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.model.elem2d.SizeD;
-import net.thevpc.ndoc.api.model.elem2d.primitives.NDocEditableBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
+import net.thevpc.ndoc.api.document.elem2d.SizeD;
+import net.thevpc.ndoc.api.document.elem2d.primitives.NDocEditableBounds2;
 
 import java.awt.*;
 import java.util.Arrays;
