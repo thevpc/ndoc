@@ -71,6 +71,8 @@ public class NExtendedLatexMathBuilder {
         LATEX_MATH_MAP.put('≠', "\\neq");
         LATEX_MATH_MAP.put('≤', "\\leq");
         LATEX_MATH_MAP.put('≥', "\\geq");
+        LATEX_MATH_MAP.put('∈', "\\in");
+        LATEX_MATH_MAP.put('∇', "\\nabla");
         // Add more as needed
 
         // Superscripts
