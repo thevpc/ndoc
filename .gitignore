@@ -87,3 +87,4 @@ extensions/ndoc-extension-presenters/target
 /app/ndoc/target/maven-status/maven-compiler-plugin/testCompile/testCompile/inputFiles.lst
 /app/ndoc/target/test-classes/net/thevpc/ndoc/test/TestEngine.class
 /app/ndoc/target/ndoc-0.8.6.0.jar
+/tutorials/ndoc-extension-tutorial-myshape/target
