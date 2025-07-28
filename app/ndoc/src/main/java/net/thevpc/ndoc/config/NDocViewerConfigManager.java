@@ -20,7 +20,7 @@ public class NDocViewerConfigManager {
     }
 
     public NDocViewerConfigManager(NPath viewerConfigFile) {
-        String ndocViewerConfigName = "ndoc-viewer-config.tson";
+        String ndocViewerConfigName = "ndoc-config.tson";
         NPath appCacheFolder = NApp.of().getConfFolder();
         if (viewerConfigFile == null) {
             if (appCacheFolder == null) {
