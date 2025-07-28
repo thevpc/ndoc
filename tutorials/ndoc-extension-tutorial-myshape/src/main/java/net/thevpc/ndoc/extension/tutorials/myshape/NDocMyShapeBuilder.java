@@ -21,11 +21,11 @@ import java.awt.geom.GeneralPath;
  */
 public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
     @Override
-    public void build(NDocNodeCustomBuilderContext context) {
-        context
-                .withId("my-shape")
-                .withArgNames(NDocPropName.WIDTH, NDocPropName.HEIGHT,"base","hat")
-                .withRender(this::render)
+    public void build(NDocNodeCustomBuilderContext builderContext) {
+        builderContext
+                .id("my-shape")
+                .parseParamNames(NDocPropName.WIDTH, NDocPropName.HEIGHT,"base","hat")
+                .render(this::render)
         ;
     }
 
