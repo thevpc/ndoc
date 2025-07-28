@@ -1,10 +1,9 @@
-package net.thevpc.ndoc.extension.shapes2d.arrow;
+package net.thevpc.ndoc.extension.shapes2d;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
@@ -13,9 +12,6 @@ import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.util.ToElementHelper;
-import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
