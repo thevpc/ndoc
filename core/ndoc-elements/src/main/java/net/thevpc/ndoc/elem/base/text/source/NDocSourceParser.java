@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.elem.base.text.source;
 
-import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NDocUtils;
