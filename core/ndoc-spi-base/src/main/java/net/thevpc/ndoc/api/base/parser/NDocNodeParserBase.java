@@ -223,7 +223,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             info.context.messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source());
             return false;
         } else {
-            info.context.messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.context.source(), info.currentArg, info.tsonElement).asSevere(), info.context.source());
+            info.context.messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", NDocUtils.shortName(info.context.source()), NDocUtils.snippet(info.currentArg), NDocUtils.snippet(info.tsonElement)).asSevere(), info.context.source());
             return false;
         }
     }
