@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.ext;
+package net.thevpc.ndoc.api.extension;
 
 public interface NDocNodeCustomBuilder {
 
