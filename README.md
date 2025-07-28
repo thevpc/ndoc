@@ -46,7 +46,7 @@ This provides a simpler and more structured way to organize your documentation.
 Files are ordered naturally by name.
 
 ## Where to start
-Run ndoc-viewer (located under app) and open the GITHUB_ROOT/documentation/ndoc-doc folder.
+Run ndoc (located under app) and open the GITHUB_ROOT/documentation/ndoc-doc folder.
 This will render a presentation of the ndoc documentation, written in ndoc and displayed as slides.
 
 You can play with files under ndoc-doc to understand how this tool works
