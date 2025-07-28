@@ -2,8 +2,10 @@ package net.thevpc.ndoc.engine;
 
 import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
@@ -30,11 +32,12 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     private ToElemAction toElem;
     private NDocNodeRendererBase nDocNodeRendererBase;
     private NDocNodeParserBase nDocNodeParserBase;
-    private List<ProcessArgAction> processArgument;
-    private Set<String> knownArgNames;
-    private ProcessArgAction processArguments;
+    private List<ProcessArgAction> processSingleArgumentList;
+    private ProcessArgAction processAllArguments;
     private boolean compiled;
     private NDocEngine engine;
+    Map<String, Doer> acceptable;
+    Set<String> knownArgNames;
 
     public MyNDocNodeCustomBuilderContext(NDocNodeCustomBuilder builder, NDocEngine engine) {
         this.builder = builder;
@@ -54,7 +57,7 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     }
 
     @Override
-    public NDocNodeCustomBuilderContext withId(String id) {
+    public NDocNodeCustomBuilderContext id(String id) {
         requireNonCompiled();
         this.id = id;
         return this;
@@ -85,12 +88,13 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     }
 
     @Override
-    public NDocNodeCustomBuilderContext withRender(RenderAction e) {
+    public NDocNodeCustomBuilderContext render(RenderAction e) {
         requireNonCompiled();
+        this.renderMain = e;
         return this;
     }
 
-    public NDocNodeCustomBuilderContext withDefaultArg() {
+    public NDocNodeCustomBuilderContext parseDefaultParamNames() {
         return withProcessArg(new ProcessArgAction() {
             @Override
             public boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
@@ -100,50 +104,96 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
         });
     }
 
-    public NDocNodeCustomBuilderContext withArgNames(String... names) {
-        if (knownArgNames == null) {
-            knownArgNames=new HashSet<>();
-            knownArgNames.addAll(Arrays.asList(names));
-        }
-        return withProcessArg(new ProcessArgAction() {
-            Set<String> acceptable = new HashSet<>();
-
-            {
-                for (String name : names) {
-                    if (!NBlankable.isBlank(name)) {
-                        acceptable.add(NDocUtils.uid(name));
-                    }
-                }
-            }
-
+    public NDocNodeCustomBuilderContext parseParamNames(String... names) {
+        return parseParamNames(names, new Doer() {
             @Override
-            public boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
-                switch (info.currentArg.type()) {
-                    case PAIR: {
-                        if (info.currentArg.isSimplePair()) {
-                            NPairElement p = info.currentArg.asPair().get();
-                            String uid = NDocUtils.uid(p.key().asStringValue().get());
-                            if (acceptable.contains(uid)) {
-                                info.node.setProperty(uid, p.value());
-                                return true;
-                            }
-                        }
-                        break;
-                    }
-                }
-                return false;
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(uid, value);
             }
         });
+    }
+
+    public NDocNodeCustomBuilderContext parseAsDouble(String... names) {
+        return parseParamNames(names, new Doer() {
+            @Override
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(NDocProp.ofDouble(uid, NDocObjEx.of(value).asDouble().get()));
+            }
+        });
+    }
+
+    public NDocNodeCustomBuilderContext parseAsDoubleArray(String... names) {
+        return parseParamNames(names, new Doer() {
+            @Override
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(NDocProp.ofDoubleArray(uid, NDocObjEx.of(value).asDoubleArray().get()));
+            }
+        });
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext parseAsStringArray(String... names) {
+        return parseParamNames(names, new Doer() {
+            @Override
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(NDocProp.ofStringArray(uid, NDocObjEx.of(value).asStringArray().get()));
+            }
+        });
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext parseAsInt(String... names) {
+        return parseParamNames(names, new Doer() {
+            @Override
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(NDocProp.ofInt(uid, NDocObjEx.of(value).asInt().get()));
+            }
+        });
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext parseParamNamesAsIntArray(String... names) {
+        return parseParamNames(names, new Doer() {
+            @Override
+            public void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+                info.node.setProperty(NDocProp.ofIntArray(uid, NDocObjEx.of(value).asIntArray().get()));
+            }
+        });
+    }
+
+    private NDocNodeCustomBuilderContext parseParamNames(String[] names, Doer doer) {
+        if (acceptable == null) {
+            acceptable = new HashMap<>();
+        }
+        if (knownArgNames == null) {
+            knownArgNames = new HashSet<>();
+        }
+        for (String name : names) {
+            if (!NBlankable.isBlank(name)) {
+                String uid = NDocUtils.uid(name);
+                acceptable.put(uid, doer);
+                knownArgNames.add(uid);
+            }
+        }
+        return this;
+    }
+
+    private interface Doer {
+        void doit(String uid, NElement value, ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext);
     }
 
     @Override
     public NDocNodeCustomBuilderContext withProcessArg(ProcessArgAction e) {
         requireNonCompiled();
         if (e != null) {
-            if (processArgument == null) {
-                this.processArgument = new ArrayList<>();
-                this.processArgument.add(e);
+            if (processSingleArgumentList == null) {
+                this.processSingleArgumentList = new ArrayList<>();
             }
+            if (acceptable != null) {
+                this.processSingleArgumentList.add(new MyProcessArgAction(acceptable));
+                this.acceptable = null;
+            }
+            this.processSingleArgumentList.add(e);
         }
         return this;
     }
@@ -151,7 +201,7 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     @Override
     public NDocNodeCustomBuilderContext withProcessArgs(ProcessArgAction e) {
         requireNonCompiled();
-        this.processArguments = e;
+        this.processAllArguments = e;
         return this;
     }
 
@@ -161,6 +211,10 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     }
 
     public void compile() {
+        if (acceptable != null) {
+            this.processSingleArgumentList.add(new MyProcessArgAction(acceptable));
+            this.acceptable = null;
+        }
         if (!compiled) {
             NAssert.requireNonBlank(id, "id");
             this.compiled = true;
@@ -192,8 +246,8 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
 
                 @Override
                 protected boolean processArgument(ParseArgumentInfo info) {
-                    if (processArgument != null) {
-                        for (ProcessArgAction a : processArgument) {
+                    if (processSingleArgumentList != null) {
+                        for (ProcessArgAction a : processSingleArgumentList) {
                             if (a.processArgument(info, MyNDocNodeCustomBuilderContext.this)) {
                                 return true;
                             }
@@ -205,8 +259,8 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
 
                 @Override
                 protected boolean processArguments(ParseArgumentInfo info) {
-                    if (processArguments != null) {
-                        return processArguments.processArgument(info, MyNDocNodeCustomBuilderContext.this);
+                    if (processAllArguments != null) {
+                        return processAllArguments.processArgument(info, MyNDocNodeCustomBuilderContext.this);
                     }
                     return super.processArguments(info);
                 }
@@ -229,5 +283,32 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
             };
         }
         return nDocNodeRendererBase;
+    }
+
+    private static class MyProcessArgAction implements ProcessArgAction {
+        private Map<String, Doer> acceptable;
+
+        public MyProcessArgAction(Map<String, Doer> acceptable) {
+            this.acceptable = acceptable;
+        }
+
+        @Override
+        public boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext) {
+            switch (info.currentArg.type()) {
+                case PAIR: {
+                    if (info.currentArg.isSimplePair()) {
+                        NPairElement p = info.currentArg.asPair().get();
+                        String uid = NDocUtils.uid(p.key().asStringValue().get());
+                        Doer u = acceptable.get(uid);
+                        if (u != null) {
+                            u.doit(uid, p.value(), info, buildContext);
+                            return true;
+                        }
+                    }
+                    break;
+                }
+            }
+            return false;
+        }
     }
 }
