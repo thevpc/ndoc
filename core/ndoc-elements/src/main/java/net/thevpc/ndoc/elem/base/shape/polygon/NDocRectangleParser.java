@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.elem.base.shape.polygon;
 
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NDocUtils;
