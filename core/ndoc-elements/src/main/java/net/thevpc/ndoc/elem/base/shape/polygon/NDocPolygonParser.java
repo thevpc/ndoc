@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.elem.base.shape.polygon;
 
+import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -9,7 +10,7 @@ import  net.thevpc.ndoc.api.document.style.NDocProp;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.api.base.format.ToElementHelper;
+import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
