@@ -43,19 +43,21 @@ As a teacher and researcher, I struggled with existing tools:
 - **CSS-like theming**:
   ```tson
   styles: {
-      "" : { color: blue, font-size: 10 },
+      "*" : { color: blue, font-size: 10 },
       title: { font-size: 50, bold: true, color: red }
   }
   ```
-- **Template engine** with variables, loops, and conditions:
-  ```tson
-  @define course(titleComponent, title) {
-      page {
-          text(either($title, "Title"), at: top)
-          rectangle(size: (50, 50), color: red, rotate: 45)
-      }
-  }
-  ```
+  - **Template engine** with variables, loops, and conditions:
+    ```tson
+    @define course(titleComponent, title) {
+        page {
+            text(either(title, "Title"), at: top)
+            if(showRectangle){
+              rectangle(size: (50, 50), color: red, rotate: 45)
+            }
+        }
+    }
+    ```
 - **Multi-file support** with `include`, even from GitHub.
 - **Shapes**: rectangles, circles, polygons, arrows, pies, donuts, cylinders, etc.
 - **Responsive layouts**: grid, stack, relative positioning.
@@ -78,6 +80,7 @@ As a teacher and researcher, I struggled with existing tools:
 
 TSON is a **superset of JSON** that is more readable and flexible than YAML or XML. It powers NDoc's documents with:
 
+- **Functions**.
 - **Variables** and **expressions**.
 - **Loops and conditions**.
 - **Reusable components**.
@@ -87,7 +90,7 @@ Example:
 ```tson
 for(i: [1 -> 2]) {
     course(title: "My Title Page $i") {
-        equation("x = \\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}", at: (50, 50))
+        eq("x = \\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}", at: (50, 50))
     }
 }
 ```
@@ -154,11 +157,11 @@ page {
 Render it:
 
 ```bash
-ndoc-viewer --open slides.ndoc
+ndoc --open slides.ndoc
 ```
 
 ## Where to start
-Run ndoc-viewer (located under app) and open the GITHUB_ROOT/documentation/ndoc-doc folder.
+Run ndoc (located under app) and open the GITHUB_ROOT/documentation/ndoc-doc folder.
 This will render a presentation of the ndoc documentation, written in ndoc and displayed as slides.
 
 You can play with files under ndoc-doc to understand how this tool works
