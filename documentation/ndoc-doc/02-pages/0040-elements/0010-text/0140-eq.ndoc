@@ -16,11 +16,11 @@ normal{
                 styles:{
                     "*":{font-size:6%P}
                 }
-                "[[ X^2=\sin(x) ]]"
+                "[[eq: X^2=\sin(x) ]]"
             }
             source(tson,
                 """
-                "[[ X^2=\sin(x) ]]"
+                "[[eq: X^2=\sin(x) ]]"
                 """)
 
             // Row
