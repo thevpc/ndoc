@@ -4,7 +4,6 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocItemList;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.base.parser.HStyleParser;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
