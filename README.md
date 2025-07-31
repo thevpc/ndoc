@@ -140,7 +140,7 @@ mvn package
 
 ## **Usage Example**
 
-Create a file `slides.tson`:
+Create a file `slides.ndoc`:
 
 ```tson
 styles: {
@@ -149,7 +149,7 @@ styles: {
 
 page {
     text("Welcome to NDoc!", style: title, at: top)
-    ¶ This is a equqtion
+    ¶ This is an equation
     equation("x = \\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}", at: (50, 50))
 }
 ```
