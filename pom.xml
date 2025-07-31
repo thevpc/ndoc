@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- 22-Nov-2011 AYA : BDT 26587 update profile for the Jenkins build. --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- 22-Nov-2011 AYA : BDT 26587 update profile for the Jenkins build. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.xprojects.builders</groupId>
     <artifactId>ndoc-builder</artifactId>
@@ -12,12 +14,8 @@
     </properties>
     <modules>
         <module>core/ndoc-api</module>
-        <module>core/ndoc-spi-base</module>
         <module>core/ndoc-elements</module>
         <module>core/ndoc-engine</module>
-        <module>core/renderers/ndoc-renderer-pdf</module>
-        <module>core/renderers/ndoc-renderer-html</module>
-        <module>core/renderers/ndoc-renderer-screen</module>
         <module>test/ndoc-examples</module>
         <module>extensions/ndoc-extension-plantuml</module>
         <module>extensions/ndoc-extension-animated-gif</module>
@@ -28,10 +26,13 @@
         <module>extensions/ndoc-extension-latex</module>
         <module>extensions/ndoc-extension-presenters</module>
         <module>tutorials/ndoc-extension-tutorial-myshape</module>
+        <module>companions/nscoreboard</module>
+        <module>renderers/ndoc-renderer-pdf</module>
+        <module>renderers/ndoc-renderer-html</module>
+        <module>renderers/ndoc-renderer-screen</module>
+        <module>renderers/ndoc-renderer-web</module>
         <module>app/ndoc</module>
         <module>app/ndoc-viewer-backend</module>
-        <module>core/renderers/ndoc-renderer-web</module>
-        <module>companions/nscoreboard</module>
         <module>ndoc-full</module>
     </modules>
 </project>
