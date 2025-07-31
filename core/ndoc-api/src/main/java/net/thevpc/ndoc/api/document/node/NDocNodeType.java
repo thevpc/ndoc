@@ -6,6 +6,8 @@ public class NDocNodeType {
     public static final String GROUP ="group";
     public static final String FLOW="flow";
     public static final String GRID="grid";
+    public static final String ROW="row";
+    public static final String COLUMN="column";
     public static final String PLAIN ="plain";
     public static final String RECTANGLE="rectangle";
     public static final String SPHERE="sphere";
@@ -39,6 +41,7 @@ public class NDocNodeType {
     public static final String VOID="void";
     public static final String CYLINDER="cylinder";
     public static final String SOURCE="source";
+    public static final String NTF="ntf";
     public static final String UNNAMED="unnamed";
     public static final String DONUT="donut";
     public static final String PIE="pie";
