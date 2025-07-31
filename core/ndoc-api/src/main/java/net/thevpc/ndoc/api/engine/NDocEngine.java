@@ -32,6 +32,7 @@ import net.thevpc.nuts.util.NOptional;
 public interface NDocEngine {
 
     NDocLogger log();
+    NDocEngineTools tools();
 
     NDocLogger addLog(NDocLogger messages);
 
@@ -40,6 +41,8 @@ public interface NDocEngine {
     List<NDocNodeParser> nodeTypeFactories();
 
     NOptional<NDocFunction> findFunction(NDocItem node, String name, NDocFunctionArg... args);
+
+    NDocNode newDefaultNode(String id);
 
     NOptional<NDocNodeParser> nodeTypeParser(String id);
 
@@ -104,4 +107,8 @@ public interface NDocEngine {
     NOptional<NDocVar> findVar(String varName, NDocNode node);
 
     NPath resolvePath(NElement path, NDocNode node);
+
+    NOptional<NDocTextRendererFlavor> textRendererFlavor(String id);
+
+    List<NDocTextRendererFlavor> textRendererFlavors();
 }
