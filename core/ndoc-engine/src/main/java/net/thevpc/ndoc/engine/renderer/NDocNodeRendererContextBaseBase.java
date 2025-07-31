@@ -4,6 +4,7 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
@@ -26,6 +27,11 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     @Override
     public NDocBounds2 selfBounds(NDocNode e) {
         return engine().renderManager().getRenderer(e.type()).get().selfBounds(e,  this);
+    }
+
+    @Override
+    public NDocBounds2 defaultSelfBounds(NDocNode e) {
+        return NDocValueByName.selfBounds(e, null, null, this);
     }
 
     @Override
