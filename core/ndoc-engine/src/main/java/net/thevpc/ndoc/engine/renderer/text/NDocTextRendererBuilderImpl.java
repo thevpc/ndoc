@@ -1,10 +1,11 @@
-package net.thevpc.ndoc.elem.base.text.text;
+package net.thevpc.ndoc.engine.renderer.text;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.Shadow;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
@@ -24,9 +25,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
 
@@ -34,17 +33,12 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
     public String code;
     public List<NDocRichTextRow> rows = new ArrayList<>();
     public Rectangle2D.Double bounds;
-    private Map<String, NDocTextRendererFlavor> flavors;
     private Paint defaultColor;
+    private NDocEngine engine;
 
-    public NDocTextRendererBuilderImpl(Map<String, NDocTextRendererFlavor> flavors, Paint defaultColor) {
-        this.flavors = flavors;
+    public NDocTextRendererBuilderImpl(NDocEngine engine, Paint defaultColor) {
         this.defaultColor = defaultColor;
-    }
-
-    public NDocTextRendererBuilderImpl(Paint defaultColor) {
-        this.flavors = new HashMap<>();
-        this.defaultColor = defaultColor;
+        this.engine = engine;
     }
 
     public void appendNText(String lang, String rawText, NText text, NDocNode node, NDocNodeRendererContext ctx) {
@@ -95,9 +89,9 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         if (rawText == null || rawText.isEmpty()) {
             return;
         }
-        NDocTextRendererFlavor hTextRendererFlavor = flavors.get(lang);
-        if (hTextRendererFlavor == null) {
-            throw new IllegalArgumentException("unsupported flavor for language " + lang);
+        NDocTextRendererFlavor hTextRendererFlavor = engine.textRendererFlavor(lang).orElse(null);
+        if(hTextRendererFlavor==null){
+            hTextRendererFlavor=engine.textRendererFlavor("").get();
         }
         hTextRendererFlavor.buildText(rawText, options, node, ctx, this);
     }
