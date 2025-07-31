@@ -58,8 +58,7 @@ normal{
                 styles:{
                     "*":{font-size:4%P}
                 }
-                text(
-                ntf
+                ntf(
                 """
                     ##:p1 color 1## ##:p2 color 2##
                     ##:p3 color 3## ##:p10 color 4##
@@ -69,8 +68,7 @@ normal{
             }
             source(tson,
                 ```
-                    text(
-                    ntf
+                    ntf(
                     """
                         ##:p1:color 1## ##:p2:color 2##
                         ##:p3:color 3## ##:p10:color 4##
@@ -87,22 +85,24 @@ normal{
                 }
                 """
                     #Equation 1 (with superscript) =
-                    [[ X²=\sin(πx) ]]
+                    [[eq: X²=\sin(πx) ]]
                     ##Equation 2## =
-                    [[ X^2=\sin \left( \pi x \right) ]]
+                    [[eq: X^2=\sin \left( \pi x \right) ]]
                     ###Equation 3### =
-                    [[ X^2=\sin(x) ]]
+                    [[eq: X^2=\sin(x) ]]
                 """
             }
+//            text("hello" draw-contour:true)
             source(tson,
                 """
                     #Equation 1# =
-                    [[ X²=\sin(πx) ]]
+                    [[eq: X²=\sin(πx) ]]
                     ##Equation 2## =
-                    [[ X^2=\sin \left( \pi x \right) ]]
+                    [[eq: X^2=\sin \left( \pi x \right) ]]
                     ###Equation 3### =
-                    [[ X^2=\sin(x) ]]
-                """)
+                    [[eq: X^2=\sin(x) ]]
+                """
+                draw-contour:true)
 
         }
     }
