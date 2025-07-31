@@ -1,19 +1,21 @@
 package net.thevpc.ndoc.api.renderer;
 
-public class NDocTextTokenCustom implements NDocTextToken {
+
+public class NDocTextTokenFlavored extends NDocTextTokenBase {
     private String flavor;
     private String value;
 
-    public NDocTextTokenCustom(String flavor, String value) {
+    public NDocTextTokenFlavored(String flavor, String value) {
         this.flavor = flavor;
         this.value = value;
     }
 
-    public String getFlavor() {
+    public String flavor() {
         return flavor;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
+
 }
