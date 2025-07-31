@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.base.model;
+package net.thevpc.ndoc.engine.document;
 
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.*;
