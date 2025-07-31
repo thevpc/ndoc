@@ -18,9 +18,9 @@ public class NDocHtmlDocumentStreamRendererFactory implements NDocDocumentRender
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "html":
-                return NCallableSupport.valid( () -> new NDocHtmlDocumentRenderer(context.engine()));
+                return NCallableSupport.ofValid( () -> new NDocHtmlDocumentRenderer(context.engine()));
             default:
-                return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
+                return NCallableSupport.ofInvalid(() -> NMsg.ofPlain("factory"));
         }
     }
 
