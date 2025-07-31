@@ -1,10 +1,10 @@
 /renderers/core/target/
 /renderers/pdf-renderer/target/
 /core/ndoc-api/target/
-/core/renderers/pdf-renderer/target/
-/core/renderers/ndoc-renderer-pdf/target/
-/core/renderers/ndoc-renderer-html/target/
-/core/renderers/ndoc-renderer-screen/target/
+/renderers/pdf-renderer/target/
+/renderers/ndoc-renderer-pdf/target/
+/renderers/ndoc-renderer-html/target/
+/renderers/ndoc-renderer-screen/target/
 /test/ndoc-api/target/
 /test/ndoc-examples/target/
 /core/ndoc-engine/target/
@@ -37,7 +37,7 @@ extensions/ndoc-extension-presenters/target
 /extensions/ndoc-extension-plantuml/target/
 /app/ndoc-viewer-backend/target/
 /app/ndoc-viewer/target/
-/core/renderers/ndoc-renderer-web/target/
+/renderers/ndoc-renderer-web/target/
 /ndoc-full/target/
 
 /app/ndoc/target

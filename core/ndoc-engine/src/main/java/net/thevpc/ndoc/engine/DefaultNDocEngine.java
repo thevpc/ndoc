@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.tools;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
+import net.thevpc.ndoc.api.engine.NDocEngineTools;
 import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
 import net.thevpc.ndoc.api.engine.NDocEngine;
@@ -24,7 +25,10 @@ import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
+import net.thevpc.ndoc.engine.NDocEngineUtils;
+import net.thevpc.ndoc.engine.document.DefaultNDocNode;
 import net.thevpc.ndoc.engine.eval.NDocCompilePageContextImpl;
+import net.thevpc.ndoc.engine.ext.NDocNodeCustomBuilderContextImpl;
 import net.thevpc.ndoc.engine.log.NDocMessageList;
 import net.thevpc.ndoc.engine.log.SilentNDocLogger;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
@@ -38,7 +42,7 @@ import net.thevpc.ndoc.engine.parser.DefaultNDocDocumentItemParserFactory;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
 import net.thevpc.ndoc.engine.renderer.NDocGraphicsImpl;
 import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.engine.eval.NDocNodeEvalNDoc;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -56,7 +60,8 @@ public class DefaultNDocEngine implements NDocEngine {
     private List<NDocNodeParserFactory> nodeParserFactories;
 
     private Map<String, NDocNodeParser> nodeTypeFactories;
-    private List<MyNDocNodeCustomBuilderContext> customBuilderContexts;
+    private NDocEngineTools tools= new MyNDocEngineTools();
+    private List<NDocNodeCustomBuilderContextImpl> customBuilderContexts;
     private Map<String, String> nodeTypeAliases;
     private NDocDocumentFactory factory;
     private NDocPropCalculator propCalculator = new NDocPropCalculator();
@@ -64,14 +69,46 @@ public class DefaultNDocEngine implements NDocEngine {
     private List<NDocFunction> functions = new ArrayList<>();
     private NDocMessageList log = new NDocMessageList();
     private DefaultNDocDocumentItemParserFactory documentItemParserFactory;
+    private Map<String, NDocTextRendererFlavor> flavorsMap;
 
     public DefaultNDocEngine() {
+        NDocEngineTools tools= new MyNDocEngineTools(this);
         documentItemParserFactory = new DefaultNDocDocumentItemParserFactory();
         ServiceLoader<NDocFunction> all = ServiceLoader.load(NDocFunction.class);
         for (NDocFunction h : all) {
             functions.add(h);
         }
         addLog(new DefaultNDocLogger());
+    }
+
+    public NOptional<NDocTextRendererFlavor> textRendererFlavor(String id){
+        return NOptional.ofNamed(flavorsMap().get(NDocUtils.uid(id)),id);
+    }
+
+    public List<NDocTextRendererFlavor> textRendererFlavors(){
+        return new ArrayList<>(flavorsMap().values());
+    }
+
+    protected Map<String, NDocTextRendererFlavor> flavorsMap(){
+        if (flavorsMap == null) {
+            Map<String, NDocTextRendererFlavor> flavors2=new HashMap<>();
+            ServiceLoader<NDocTextRendererFlavor> all = ServiceLoader.load(NDocTextRendererFlavor.class);
+            for (NDocTextRendererFlavor h : all) {
+                String t = NDocUtils.uid(h.type());
+                if (flavors2.containsKey(t)) {
+                    throw new IllegalArgumentException("already registered text flavor " + t);
+                }
+                flavors2.put(t, h);
+            }
+            for (NDocNodeCustomBuilderContextImpl cb : customBuilderContexts()) {
+                NDocTextRendererFlavor f = cb.createTextFlavor();
+                if(f!=null){
+                    flavors2.put(cb.id(), f);
+                }
+            }
+            this.flavorsMap =flavors2;
+        }
+        return flavorsMap;
     }
 
     public DefaultNDocDocumentItemParserFactory getDocumentItemParserFactory() {
@@ -219,12 +256,12 @@ public class DefaultNDocEngine implements NDocEngine {
         return new ArrayList<>(nodeTypeFactories0().values());
     }
 
-    public List<MyNDocNodeCustomBuilderContext> customBuilderContexts() {
+    public List<NDocNodeCustomBuilderContextImpl> customBuilderContexts() {
         if (customBuilderContexts == null) {
             ServiceLoader<NDocNodeCustomBuilder> customBuilders = ServiceLoader.load(NDocNodeCustomBuilder.class);
-            List<MyNDocNodeCustomBuilderContext> builderContexts = new ArrayList<>();
+            List<NDocNodeCustomBuilderContextImpl> builderContexts = new ArrayList<>();
             for (NDocNodeCustomBuilder customBuilder : customBuilders) {
-                MyNDocNodeCustomBuilderContext b = new MyNDocNodeCustomBuilderContext(customBuilder,this);
+                NDocNodeCustomBuilderContextImpl b = new NDocNodeCustomBuilderContextImpl(customBuilder, this);
                 customBuilder.build(b);
                 b.compile();
                 builderContexts.add(b);
@@ -242,13 +279,17 @@ public class DefaultNDocEngine implements NDocEngine {
             for (NDocNodeParser renderer : renderers) {
                 addNodeTypeFactory(renderer);
             }
-            for (MyNDocNodeCustomBuilderContext cb : customBuilderContexts()) {
+            for (NDocNodeCustomBuilderContextImpl cb : customBuilderContexts()) {
                 addNodeTypeFactory(cb.createParser());
             }
         }
         return nodeTypeFactories;
     }
 
+
+    public NDocNode newDefaultNode(String id) {
+        return new DefaultNDocNode(id);
+    }
 
     public NOptional<NDocNodeParser> nodeTypeParser(String id) {
         id = NStringUtils.trim(id);
@@ -804,4 +845,5 @@ public class DefaultNDocEngine implements NDocEngine {
             return String.valueOf(expression);
         }
     }
+
 }

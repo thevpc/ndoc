@@ -1,0 +1,62 @@
+package net.thevpc.ndoc.elem.base.shape.polygon;
+
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
+import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+
+import java.awt.*;
+import java.util.Arrays;
+
+public final class NDocPolygonHelper {
+
+
+    public static void renderPointsCount(int count, NDocNode p, NDocNodeRendererContext ctx, NDocProperties defaultStyles) {
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
+        NDocPoint2D[] points = null;
+        if (count < 3) {
+            count = 3;
+        }
+        points = new NDocPoint2D[count];
+        double x0 = 50;
+        double y0 = 50;
+        double w0 = 50;
+        double h0 = 50;
+        for (int i = 0; i < points.length; i++) {
+            double angle = i * 1.0 / points.length * 2 * Math.PI;
+            points[i] = new NDocPoint2D(
+                    x0 + w0 * Math.cos(angle)
+                    , y0 + h0 * Math.sin(angle)
+            );
+        }
+        renderPoints(p, points, ctx);
+    }
+    public static void renderPoints(NDocNode node, NDocPoint2D[] points, NDocNodeRendererContext ctx) {
+        NDocBounds2 b = ctx.selfBounds(node);
+        NDocGraphics g = ctx.graphics();
+        if (!ctx.isDry()) {
+            Paint bc = NDocValueByName.resolveBackgroundColor(node, ctx);
+            Paint fc = NDocValueByName.getForegroundColor(node, ctx, bc == null);
+            NDocPoint2D[] points2 = Arrays.stream(points)
+                    .map(p -> new NDocPoint2D(
+                            p.x / 100 * b.getWidth() + b.getMinX(),
+                            p.y / 100 * b.getHeight() + b.getMinY()
+                    ))
+                    .toArray(NDocPoint2D[]::new);
+            g.draw2D(NDocElement2DFactory.polygon(points2)
+                    .setFill(bc != null)
+                    .setContour(fc != null)
+                    .setLineStroke(NDocNodeRendererUtils.resolveStroke(node, g, ctx))
+                    .setBackgroundPaint(bc)
+                    .setLinePaint(fc));
+            NDocNodeRendererUtils.paintBorderLine(node, ctx, g, b);
+        }
+        NDocNodeRendererUtils.paintDebugBox(node, ctx, g, b);
+    }
+
+}
