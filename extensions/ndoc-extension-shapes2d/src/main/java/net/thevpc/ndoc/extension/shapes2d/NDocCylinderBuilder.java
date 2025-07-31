@@ -32,9 +32,8 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext
                 .id(NDocNodeType.CYLINDER)
-                .parseParamNames(NDocPropName.ELLIPSE_H,NDocPropName.TOP_COLOR,NDocPropName.SEGMENT_COUNT)
-                .parseDefaultParamNames()
-                .render(this::render);
+                .parseParam().named(NDocPropName.ELLIPSE_H,NDocPropName.TOP_COLOR,NDocPropName.SEGMENT_COUNT).end()
+                .renderComponent(this::render);
     }
 
 
