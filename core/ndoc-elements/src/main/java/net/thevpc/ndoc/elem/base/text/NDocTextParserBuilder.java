@@ -2,31 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.thevpc.ndoc.elem.base.text.text;
+package net.thevpc.ndoc.elem.base.text;
 
-import net.thevpc.ndoc.api.base.parser.HTextUtils;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
-import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.api.util.ToElementHelper;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
+import net.thevpc.ndoc.api.util.HTextUtils;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementType;
-import net.thevpc.nuts.elem.NElementTypeGroup;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.ArrayList;
@@ -43,16 +34,15 @@ public class NDocTextParserBuilder implements NDocNodeCustomBuilder {
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.TEXT)
-                .parseParam().named(NDocPropName.VALUE, NDocPropName.LANG).then()
+                .parseParam().named(NDocPropName.VALUE).then()
                 .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
                     @Override
                     public NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
-                        NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.getNode());
+                        NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
                         info.getContext().document().resources().add(nPath);
                         return NDocProp.ofString(uid, nPath.readString().trim());
                     }
                 }).then()
-                .parseParam().matchesName().set(NDocPropName.LANG).then()
                 .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
                 .renderText(this::buildText,this::parseImmediate)
         ;
