@@ -7,9 +7,9 @@ package net.thevpc.ndoc.elem.base.container;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.document.style.NDocProps;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -28,12 +28,14 @@ public class NDocGridBuilder implements NDocNodeCustomBuilder {
                 .parseParam((info, buildContext) -> {
                     NElement p = info.peek();
                     if(p.isInt()) {
-                        info.node().setProperty(NDocProps.elem(NDocPropName.COLUMNS,p));
-                        info.node().setProperty(NDocProps.elem(NDocPropName.ROWS,p));
+                        info.read();
+                        info.node().setProperty(NDocProp.of(NDocPropName.COLUMNS,p));
+                        info.node().setProperty(NDocProp.of(NDocPropName.ROWS,p));
                         return true;
                     }else if(p.isUplet() && p.asUplet().get().size()==2  && p.asUplet().get().get(0).get().isInt()  && p.asUplet().get().get(1).get().isInt()){
-                        info.node().setProperty(NDocProps.elem(NDocPropName.COLUMNS,p.asUplet().get().get(0).get()));
-                        info.node().setProperty(NDocProps.elem(NDocPropName.ROWS,p.asUplet().get().get(1).get()));
+                        info.read();
+                        info.node().setProperty(NDocProp.of(NDocPropName.COLUMNS,p.asUplet().get().get(0).get()));
+                        info.node().setProperty(NDocProp.of(NDocPropName.ROWS,p.asUplet().get().get(1).get()));
                         return true;
                     }else{
                         return false;
@@ -47,7 +49,7 @@ public class NDocGridBuilder implements NDocNodeCustomBuilder {
 
     public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.selfBounds(p);
+        NDocBounds2 expectedBounds = ctx.defaultSelfBounds(p);
 //        HGraphics g = ctx.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
