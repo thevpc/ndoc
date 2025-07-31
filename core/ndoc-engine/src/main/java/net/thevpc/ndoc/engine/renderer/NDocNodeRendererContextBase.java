@@ -1,15 +1,18 @@
-package net.thevpc.ndoc.api.base.renderer;
+package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
+import net.thevpc.ndoc.engine.renderer.text.NutsHighlighterMapper;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
@@ -68,12 +71,12 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     @Override
     public boolean isAnimate() {
-        return isCapability(NDocNodeRendererContext.CAPABILITY_ANIMATE);
+        return isCapability(CAPABILITY_ANIMATE);
     }
 
     @Override
     public boolean isPrint() {
-        return isCapability(NDocNodeRendererContext.CAPABILITY_PRINT);
+        return isCapability(CAPABILITY_PRINT);
     }
 
     public Object getCapability(String name) {
@@ -87,6 +90,11 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     public boolean isCapability(String name) {
         return NLiteral.of(getCapability(name))
                 .asBoolean().orElse(false);
+    }
+
+    @Override
+    public void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocTextRendererBuilder result) {
+        NutsHighlighterMapper.highlightNutsText(lang, rawText, parsedText, p, this, result);
     }
 
     @Override
