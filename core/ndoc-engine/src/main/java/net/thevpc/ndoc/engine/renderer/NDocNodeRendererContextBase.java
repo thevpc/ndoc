@@ -5,6 +5,7 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
@@ -15,6 +16,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NLiteral;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
@@ -35,14 +37,14 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     private Map<String, Object> capabilities = new HashMap<>();
 
     public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound) {
-        this.engine=engine;
+        this.engine = engine;
         this.bound = new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.g3 = g;
     }
 
     public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound) {
-        this(engine,g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()));
+        this(engine, g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()));
     }
 
     @Override
@@ -154,7 +156,12 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     @Override
     public void render(NDocNode p, NDocNodeRendererContext ctx) {
-        manager().getRenderer(p.type()).get().render(p, ctx);
+        NOptional<NDocNodeRenderer> renderer = manager().getRenderer(p.type());
+        if (renderer.isPresent()) {
+            renderer.get().render(p, ctx);
+        } else {
+            engine().log().log(NMsg.ofC("%s for %s",renderer.getMessage().get(),NDocUtils.snippet(p)).asError(),NDocUtils.sourceOf(p));
+        }
     }
 
     @Override
