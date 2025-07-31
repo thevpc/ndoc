@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.text.text;
+package net.thevpc.ndoc.extension.latex.eq;
 
 import java.util.HashMap;
 import java.util.Map;
