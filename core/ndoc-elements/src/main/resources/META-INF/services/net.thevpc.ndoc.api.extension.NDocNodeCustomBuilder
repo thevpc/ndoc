@@ -30,6 +30,7 @@ net.thevpc.ndoc.elem.base.shape.NDocParallelogramBuilder
 net.thevpc.ndoc.elem.base.shape.NDocPentagonBuilder
 net.thevpc.ndoc.elem.base.shape.NDocPolygonBuilder
 net.thevpc.ndoc.elem.base.shape.NDocRectangleBuilder
+net.thevpc.ndoc.elem.base.shape.NDocTriangleBuilder
 net.thevpc.ndoc.elem.base.shape.NDocRhombusBuilder
 net.thevpc.ndoc.elem.base.shape.NDocSquareBuilder
 net.thevpc.ndoc.elem.base.shape.NDocTrapezoidBuilder
@@ -37,6 +38,6 @@ net.thevpc.ndoc.elem.base.shape.NDocTrapezoidBuilder
 net.thevpc.ndoc.elem.base.text.NDocNtfBuilder
 net.thevpc.ndoc.elem.base.text.NDocPlainTextBuilder
 net.thevpc.ndoc.elem.base.text.NDocSourceBuilder
-net.thevpc.ndoc.elem.base.text.NDocTextParserBuilder
+net.thevpc.ndoc.elem.base.text.NDocTextBuilder
 
 
