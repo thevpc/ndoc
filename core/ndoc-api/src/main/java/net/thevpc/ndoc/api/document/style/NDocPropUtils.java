@@ -11,7 +11,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HPropUtils {
+public class NDocPropUtils {
+    public static boolean addPoints(NDocNode line, NDocPoint2D[] points) {
+        boolean result = false;
+        for (NDocPoint2D point : points) {
+            result |= addPoint(line, point);
+        }
+        return result;
+    }
+
+    public static boolean addPoints(NDocNode line, NDocPoint3D[] points) {
+        boolean result = false;
+        for (NDocPoint3D point : points) {
+            result |= addPoint(line, point);
+        }
+        return result;
+    }
+
     public static boolean addPoint(NDocNode line, NDocPoint2D point) {
         if (point != null) {
             NDocObjEx o = NDocObjEx.of(line.getPropertyValue(NDocPropName.POINTS).orNull());
