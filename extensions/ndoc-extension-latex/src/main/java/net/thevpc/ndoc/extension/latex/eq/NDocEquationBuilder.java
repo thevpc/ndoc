@@ -36,8 +36,8 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.EQUATION)
                 .alias("eq")
-                .parseParam().named(NDocPropName.VALUE).asString().then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).asString().then()
+                .parseParam().named(NDocPropName.VALUE).then()
+                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
                 .renderComponent(this::renderMain)
                 .sizeRequirements(this::sizeRequirements)
                 .selfBounds(this::selfBounds);
