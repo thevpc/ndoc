@@ -28,7 +28,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
             case NAMED_PARAMETRIZED_OBJECT: {
                 NObjectElement obj = tsonElement.asObject().get();
                 if(obj.isNamed(id())) {
-                    return NCallableSupport.valid(()-> {
+                    return NCallableSupport.ofValid(()-> {
                         NElement __varName = null;
                         NElement __varDomain = null;
                         List<NElement> block = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
             case NAMED_OBJECT: {
                 NObjectElement obj = tsonElement.asObject().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid( () -> {
+                    return NCallableSupport.ofValid( () -> {
                         _logError(NMsg.ofC("missing for condition from %s", NDocUtils.snippet(tsonElement)), context);
                         return new NDocItemList();
                     });
@@ -63,7 +63,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
             case NAMED_UPLET: {
                 NUpletElement obj = tsonElement.asUplet().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid( () -> {
+                    return NCallableSupport.ofValid( () -> {
                         _logError(NMsg.ofC("missing for body from %s", NDocUtils.snippet(tsonElement)), context);
                         return new NDocItemList();
                     });
@@ -71,7 +71,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
                 break;
             }
         }
-        return NCallableSupport.invalid(NMsg.ofC("missing for construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing for construct from %s", NDocUtils.snippet(tsonElement)).asError());
     }
 
 
