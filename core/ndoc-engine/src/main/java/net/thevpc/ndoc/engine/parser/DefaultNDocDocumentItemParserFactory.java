@@ -40,7 +40,7 @@ public class DefaultNDocDocumentItemParserFactory
         if (c.annotations().stream().anyMatch(x -> NDocNodeType.CTRL_DEFINE.equals(x.name()))) {
             //this is a node definition
             if (c.isAnyObject() || c.isNamed()) {
-                return NCallableSupport.valid(() -> {
+                return NCallableSupport.ofValid(() -> {
                     NObjectElement object = c.asObject().get();
                     String templateName = object.name().get();
                     List<NDocNodeDefParam> params;
@@ -102,7 +102,7 @@ public class DefaultNDocDocumentItemParserFactory
                             NOptional<String> nn = kh.asStringOrName();
                             if (nn.isPresent()) {
                                 String nnn = NStringUtils.trim(nn.get());
-                                return NCallableSupport.valid(() -> DefaultNDocNode.ofAssign(nnn, v, context.source()));
+                                return NCallableSupport.ofValid(() -> DefaultNDocNode.ofAssign(nnn, v, context.source()));
                             } else {
                                 return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
                             }
@@ -143,7 +143,7 @@ public class DefaultNDocDocumentItemParserFactory
                             return p.parseNode(context);
                         }
                         if (c.isNamedUplet() || c.isAnyObject()) {
-                            return NCallableSupport.valid(() -> createCtrlNDocNodeCall(c, context));
+                            return NCallableSupport.ofValid(() -> createCtrlNDocNodeCall(c, context));
                         }
                         return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
                     }
@@ -179,7 +179,7 @@ public class DefaultNDocDocumentItemParserFactory
                 break;
             }
             case NAME: {
-                return NCallableSupport.valid(()->new CtrlNDocNodeName(context.source(),c));
+                return NCallableSupport.ofValid(()->new CtrlNDocNodeName(context.source(),c));
             }
         }
         return _invalidSupport(NMsg.ofC("[%s] unable to resolve node : %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(c)), context);
@@ -188,7 +188,7 @@ public class DefaultNDocDocumentItemParserFactory
     private NCallableSupport<NDocItem> _invalidSupport(NMsg msg, NDocNodeFactoryParseContext context) {
         msg = msg.asError();
         context.messages().log(msg.asError());
-        return NCallableSupport.invalid(msg);
+        return NCallableSupport.ofInvalid(msg);
     }
 
 
@@ -388,7 +388,7 @@ public class DefaultNDocDocumentItemParserFactory
                     ), context);
                 }
             }
-            return NCallableSupport.valid(pg);
+            return NCallableSupport.ofValid(pg);
         } else {
             NDocItemList pg = new NDocItemList();
             for (NElement child : ee.body()) {
@@ -402,7 +402,7 @@ public class DefaultNDocDocumentItemParserFactory
                     ), context);
                 }
             }
-            return NCallableSupport.valid(pg);
+            return NCallableSupport.ofValid(pg);
         }
     }
 
