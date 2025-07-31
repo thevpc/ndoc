@@ -1,10 +1,10 @@
-package net.thevpc.ndoc.api.base.renderer;
+package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 import net.thevpc.ndoc.api.renderer.NDocPageOrientation;
 
 public class HSpiUtils {
-    public static NDocDocumentStreamRendererConfig validateConfig(NDocDocumentStreamRendererConfig config0) {
+    public static NDocDocumentStreamRendererConfig validateDocumentStreamRendererConfig(NDocDocumentStreamRendererConfig config0) {
         NDocDocumentStreamRendererConfig config = config0 == null ? new NDocDocumentStreamRendererConfig() : config0.copy();
         int imagesPerRow = config.getGridX();
         if (imagesPerRow <= 0) {
