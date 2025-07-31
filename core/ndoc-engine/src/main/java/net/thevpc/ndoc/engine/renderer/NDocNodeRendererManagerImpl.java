@@ -5,12 +5,11 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
 import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
-import net.thevpc.ndoc.api.base.renderer.NDocNodeRendererContextBase;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.engine.MyNDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.engine.ext.NDocNodeCustomBuilderContextImpl;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
@@ -29,13 +28,13 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
         this.engine = engine;
     }
 
-    public Map<String, NDocNodeRenderer> getRenderers() {
+    public synchronized Map<String, NDocNodeRenderer> getRenderers() {
         if (renderers == null) {
             renderers = new HashMap<>();
             for (NDocNodeRenderer renderer : ServiceLoader.load(NDocNodeRenderer.class)) {
                 registerRenderer(renderer);
             }
-            for (MyNDocNodeCustomBuilderContext cb : ((DefaultNDocEngine) engine).customBuilderContexts()) {
+            for (NDocNodeCustomBuilderContextImpl cb : ((DefaultNDocEngine) engine).customBuilderContexts()) {
                 NDocNodeRenderer renderer=cb.createRenderer();
                 registerRenderer(renderer);
             }
