@@ -1,38 +1,93 @@
 package net.thevpc.ndoc.api.extension;
 
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.parser.ParseArgumentInfo;
+import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.renderer.NDocTextToken;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public interface NDocNodeCustomBuilderContext {
     NDocNodeCustomBuilderContext id(String id);
 
-    NDocNodeCustomBuilderContext withAliases(String... aliases);
+    NDocNodeCustomBuilderContext alias(String... aliases);
+
+    NDocNodeCustomBuilderContext sizeRequirements(SizeRequirementsAction e);
+
+    NDocNodeCustomBuilderContext selfBounds(SelfBoundsAction e);
 
     NDocNodeCustomBuilderContext withToElem(ToElemAction e);
 
     NDocNodeCustomBuilderContext withToElem(String... props);
 
-    NDocNodeCustomBuilderContext parseDefaultParamNames();
+    NDocNodeCustomBuilderContext parseDefaults();
 
-    NDocNodeCustomBuilderContext render(RenderAction e);
+    NDocNodeCustomBuilderContext renderComponent(RenderAction e);
 
-    NDocNodeCustomBuilderContext parseParamNames(String... names);
+    NDocNodeCustomBuilderContext renderText(RenderTextAction renderTextAction, RenderEmbeddedTextAction embeddedTextAction);
 
-    NDocNodeCustomBuilderContext parseAsDouble(String... names);
+    NDocNodeCustomBuilderContext renderText(RenderTextAction renderTextAction);
+    NDocNodeCustomBuilderContext renderConvert(RenderConvertAction renderConvertAction);
 
-    NDocNodeCustomBuilderContext parseAsDoubleArray(String... names);
-    NDocNodeCustomBuilderContext parseAsStringArray(String... names);
-    NDocNodeCustomBuilderContext parseAsInt(String... names);
-    NDocNodeCustomBuilderContext parseParamNamesAsIntArray(String... names);
+    NamedParamAction parseParam();
 
-    NDocNodeCustomBuilderContext withProcessArg(ProcessArgAction e);
-
-    NDocNodeCustomBuilderContext withProcessArgs(ProcessArgAction e);
+    NDocNodeCustomBuilderContext parseParam(ProcessParamAction e);
 
     NDocEngine engine();
+
+    boolean isAncestorScene3D(NDocNode p0);
+
+    NDocNodeCustomBuilderContext addParamName(String points);
+
+
+    interface NamedParamAction {
+        NamedParamAction ignoreDuplicates(boolean ignoreDuplicates);
+
+        NamedParamAction named(String... names);
+
+        NamedParamAction matches(Predicate<NElement> predicate);
+
+        NamedParamAction matchesString();
+
+        NamedParamAction matchesName();
+
+        NamedParamAction matchesStringOrName();
+
+        NamedParamAction set(String newName);
+
+        NamedParamAction asDouble();
+
+        NamedParamAction asDoubleArray();
+
+        NamedParamAction asStringArray();
+
+        NamedParamAction asString();
+
+        NamedParamAction asInt();
+
+        NamedParamAction asIntArray();
+
+        NamedParamAction resolvedAs(PropResolver a);
+
+        NDocNodeCustomBuilderContext then();
+
+        NDocNodeCustomBuilderContext end();
+
+        NamedParamAction asFlags();
+    }
+
+    interface PropResolver {
+        NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext);
+    }
 
     interface ToElemAction {
         NElement toElem(NDocNode item, NDocNodeCustomBuilderContext buildContext);
@@ -42,7 +97,27 @@ public interface NDocNodeCustomBuilderContext {
         void renderMain(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext);
     }
 
-    interface ProcessArgAction {
-        boolean processArgument(ParseArgumentInfo info, NDocNodeCustomBuilderContext buildContext);
+    interface RenderTextAction {
+        void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext renderContext, NDocTextRendererBuilder builder, NDocNodeCustomBuilderContext buildContext);
+    }
+
+    interface RenderConvertAction {
+        NDocNode convert(NDocNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext buildContext);
+    }
+
+    interface RenderEmbeddedTextAction {
+        List<NDocTextToken> parseImmediate(NReservedSimpleCharQueue queue, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext);
+    }
+
+    interface SizeRequirementsAction {
+        NDocSizeRequirements sizeRequirements(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext);
+    }
+
+    interface SelfBoundsAction {
+        NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext);
+    }
+
+    interface ProcessParamAction {
+        boolean processParam(NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext);
     }
 }
