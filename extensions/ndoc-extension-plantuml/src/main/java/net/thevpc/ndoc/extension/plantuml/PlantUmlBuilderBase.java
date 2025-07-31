@@ -2,31 +2,21 @@ package net.thevpc.ndoc.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
-import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
-import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.api.base.parser.HParserUtils;
-import net.thevpc.ndoc.api.util.ToElementHelper;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,14 +24,25 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 
-public abstract class PlantUmlParser implements NDocNodeCustomBuilder {
+public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
     private String id;
+    private String mode;
     private String[] aliases;
     private NDocProperties defaultStyles = new NDocProperties();
 
-    public PlantUmlParser(String id, String[] aliases) {
+    public PlantUmlBuilderBase(String id) {
+        this("plantuml-" + id, id);
+    }
+
+    public PlantUmlBuilderBase(String id, String... aliases) {
+        this(id, id, aliases);
+    }
+
+    public PlantUmlBuilderBase(String id, String mode, String[] aliases) {
         this.id = id;
+        this.mode = mode;
         this.aliases = aliases;
+        this.mode = id;
     }
 
     @Override
@@ -56,17 +57,17 @@ public abstract class PlantUmlParser implements NDocNodeCustomBuilder {
                 }).then()
                 .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
                 .renderComponent(this::renderMain)
-                ;
+        ;
     }
 
 
-    public void renderMain(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         String txt = NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
-        String mode = NDocUtils.uid(this.id);
         if (NBlankable.isBlank(txt)) {
             return;
         }
+        String mode = NDocUtils.uid(this.mode);
         NDocGraphics g = ctx.graphics();
         NDocBounds2 b = ctx.selfBounds(p);
         double x = b.getX();
@@ -133,7 +134,7 @@ public abstract class PlantUmlParser implements NDocNodeCustomBuilder {
                     int w = NDocUtils.intOf(b.getWidth());
                     int h = NDocUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
-                        BufferedImage resized = ctx.engine().tools().resize(image, w, h);
+                        BufferedImage resized = ctx.engine().tools().resizeBufferedImage(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);
                     }
                 }
