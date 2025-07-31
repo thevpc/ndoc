@@ -24,8 +24,8 @@ public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext
                 .id("my-shape")
-                .parseParamNames(NDocPropName.WIDTH, NDocPropName.HEIGHT,"base","hat")
-                .render(this::render)
+                .parseParam().named(NDocPropName.WIDTH, NDocPropName.HEIGHT,"base","hat").end()
+                .renderComponent(this::render)
         ;
     }
 
