@@ -53,7 +53,6 @@
 
     <dependencies>
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
         <!--delauney 3D-->
         <dependency><groupId>org.locationtech.jts</groupId><artifactId>jts-core</artifactId><version>1.18.2</version><!-- Replace with the latest version --></dependency>
     </dependencies>
