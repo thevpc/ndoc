@@ -2,8 +2,8 @@ package net.thevpc.ndoc.extension.plantuml.modes;
 
 import net.thevpc.ndoc.extension.plantuml.PlantUmlBuilderBase;
 
-public class PlantUmlGanttParser extends PlantUmlBuilderBase {
-    public PlantUmlGanttParser() {
+public class PlantUmlGanttBuilder extends PlantUmlBuilderBase {
+    public PlantUmlGanttBuilder() {
         super("gantt");
     }
 }
