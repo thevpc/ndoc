@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.main;
 
-import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.config.NDocProject;
@@ -9,7 +8,6 @@ import net.thevpc.ndoc.config.UserConfig;
 import net.thevpc.ndoc.config.UserConfigManager;
 import net.thevpc.ndoc.debug.HDebugFrame;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
-import net.thevpc.ndoc.engine.log.NDocMessageList;
 import net.thevpc.ndoc.main.components.NewProjectPanel;
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererListener;
 import net.thevpc.ndoc.api.renderer.NDocDocumentScreenRenderer;
