@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 class CustomNDocTextRendererFlavorFromBuilder2 implements NDocTextRendererFlavor {
-    private final MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext;
+    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public CustomNDocTextRendererFlavorFromBuilder2(MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext) {
+    public CustomNDocTextRendererFlavorFromBuilder2(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
 
