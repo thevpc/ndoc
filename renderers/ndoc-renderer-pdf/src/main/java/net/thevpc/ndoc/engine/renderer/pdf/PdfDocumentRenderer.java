@@ -24,7 +24,6 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.base.renderer.HSpiUtils;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -68,7 +67,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 
 
     public void renderStream(NDocument document, OutputStream stream) {
-        NDocDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
+        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         Document pdfDocument = new Document();
         try {
             PdfWriter pdfWriter = PdfWriter.getInstance(pdfDocument, stream);
@@ -196,7 +195,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
     }
 
     private void applyConfigSettings(Document document, PdfWriter pdfWriter) throws DocumentException {
-        NDocDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
+        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
             document.setPageSize(PageSize.A4.rotate());
         } else {
@@ -211,7 +210,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
 
 
     private void addContent(Document document) throws DocumentException {
-        NDocDocumentStreamRendererConfig config = HSpiUtils.validateConfig(this.config);
+        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         if (config.isShowFileName()) {
             String fileName = "my-document.pdf";
             PdfPTable table = new PdfPTable(1);
