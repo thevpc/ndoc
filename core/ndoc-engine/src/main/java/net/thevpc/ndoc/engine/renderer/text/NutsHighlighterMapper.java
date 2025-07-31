@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.text.text;
+package net.thevpc.ndoc.engine.renderer.text;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.text.*;
