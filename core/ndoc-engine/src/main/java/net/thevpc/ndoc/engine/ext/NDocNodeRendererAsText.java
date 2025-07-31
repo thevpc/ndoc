@@ -18,6 +18,8 @@ class NDocNodeRendererAsText extends NDocTextRendererBase {
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
         if (myNDocNodeCustomBuilderContext.renderMainAction != null) {
             myNDocNodeCustomBuilderContext.renderMainAction.renderMain(p, ctx, myNDocNodeCustomBuilderContext);
+        }else {
+            super.renderMain(p, ctx);
         }
     }
 
