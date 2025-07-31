@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.line.arc;
+package net.thevpc.ndoc.elem.base.line;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -23,7 +23,6 @@ public class NDocArcBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.ARC)
                 .parseParam().named(NDocPropName.FROM,NDocPropName.TO).then()
-                .parseDefaults()
                 .renderComponent(this::renderMain);
     }
 
