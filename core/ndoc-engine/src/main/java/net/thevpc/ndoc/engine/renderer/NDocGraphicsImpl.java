@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.engine.renderer;
 
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.model.HArrowType;
 import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DTriangle;
@@ -45,6 +46,7 @@ import java.util.List;
 public class NDocGraphicsImpl implements NDocGraphics {
 
     private Graphics2D g;
+    private NDocEngine engine;
     private Color secondaryColor;
     private NDocProjection3D projection3D = new NDocProjection3D(1000);
     private NDocMatrix3D transform3D = NDocMatrix3D.identity();
@@ -66,24 +68,31 @@ public class NDocGraphicsImpl implements NDocGraphics {
         }
     };
 
-    public NDocGraphicsImpl(Graphics2D g) {
+    public NDocGraphicsImpl(Graphics2D g,NDocEngine engine) {
         this.g = g;
+        this.engine = engine;
         ServiceLoader<NDocImageTypeRendererFactory> sl = ServiceLoader.load(NDocImageTypeRendererFactory.class);
         for (NDocImageTypeRendererFactory s : sl) {
             imageTypeRendererFactories.add(s);
         }
     }
 
-    public NDocGraphicsImpl(Graphics2D g, NDocImageTypeRendererFactory[] factories) {
+    public NDocGraphicsImpl(Graphics2D g, NDocImageTypeRendererFactory[] factories,NDocEngine engine) {
         this.g = g;
+        this.engine = engine;
         this.imageTypeRendererFactories.addAll(Arrays.asList(factories));
     }
 
+    @Override
+    public NDocEngine engine() {
+        return engine;
+    }
 
     @Override
     public NDocGraphics copy() {
         NDocGraphicsImpl hGraphics = new NDocGraphicsImpl((Graphics2D) g.create(),
-                imageTypeRendererFactories.toArray(new NDocImageTypeRendererFactory[0])
+                imageTypeRendererFactories.toArray(new NDocImageTypeRendererFactory[0]),
+                engine
         );
         hGraphics.transform3D = transform3D;
         hGraphics.light3D = light3D;
