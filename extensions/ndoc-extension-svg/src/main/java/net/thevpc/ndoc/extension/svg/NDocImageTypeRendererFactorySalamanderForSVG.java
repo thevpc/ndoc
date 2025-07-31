@@ -20,13 +20,13 @@ public class NDocImageTypeRendererFactorySalamanderForSVG implements NDocImageTy
     @Override
     public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, NDocImageOptions options, NDocGraphics graphics) {
         if (path.getName().toLowerCase().endsWith(".svg")) {
-            return NCallableSupport.valid(
+            return NCallableSupport.ofValid(
                     () -> {
                         return new SvgNDocImageByTypeRenderer(path);
                     }
             );
         }
-        return NCallableSupport.invalid(() -> NMsg.ofC("not supported %s", path));
+        return NCallableSupport.ofInvalid(() -> NMsg.ofC("not supported %s", path));
     }
 
     private static SVGIcon createSVGIconFromBytes(byte[] svgBytes) {
