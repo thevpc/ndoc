@@ -25,7 +25,7 @@ public class NDocTextRendererBase extends NDocTextBaseRenderer {
         NDocTextRendererFlavor f = ctx.engine().textRendererFlavor(flavor).orNull();
         if(f==null){
             ctx.engine().log().log(NMsg.ofC("TextRendererFlavor not found %s",flavor));
-            f=ctx.engine().textRendererFlavor("").get();
+            f=ctx.engine().textRendererFlavor("text").get();
         }
         ctx = ctx.withDefaultStyles(p, defaultStyles);
 //        List<NDocNode> all=new ArrayList<>();
