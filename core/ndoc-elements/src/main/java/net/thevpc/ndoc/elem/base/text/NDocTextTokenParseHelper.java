@@ -43,6 +43,12 @@ class NDocTextTokenParseHelper {
             if (s != null) {
                 return s;
             }
+            String p2 = cq.peek(2);
+            //this is not special now
+            if (p2.equals("[[") || p2.equals("\\(")) {
+                cq.read(2);
+                return readPlain(cq, p2);
+            }
             switch (cq.peek()) {
                 case '*': {
                     if (cq.peek(3).equals("***")) {
@@ -50,7 +56,7 @@ class NDocTextTokenParseHelper {
                     } else if (cq.peek(2).equals("**")) {
                         return readBold();
                     } else {
-                        return readPlain(cq);
+                        return readPlain(cq,"");
                     }
                 }
                 case '#': {
@@ -66,11 +72,11 @@ class NDocTextTokenParseHelper {
                     if (cq.peek(2).equals("__")) {
                         return readItalic();
                     } else {
-                        return readPlain(cq);
+                        return readPlain(cq,"");
                     }
                 }
                 default: {
-                    return readPlain(cq);
+                    return readPlain(cq,"");
                 }
             }
         }
@@ -157,8 +163,8 @@ class NDocTextTokenParseHelper {
     }
 
 
-    private List<NDocTextToken> readPlain(NReservedSimpleCharQueue cq) {
-        StringBuilder sb = new StringBuilder();
+    private List<NDocTextToken> readPlain(NReservedSimpleCharQueue cq,String prefix) {
+        StringBuilder sb = new StringBuilder(prefix);
         boolean stop = false;
         while (!stop && cq.hasNext()) {
             String p3 = cq.peek(2);
