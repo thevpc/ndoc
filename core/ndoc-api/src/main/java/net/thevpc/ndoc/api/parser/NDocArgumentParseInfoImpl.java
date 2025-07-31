@@ -3,16 +3,16 @@ package net.thevpc.ndoc.api.parser;
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public class ParseArgumentInfoImpl implements ParseArgumentInfo {
+public class NDocArgumentParseInfoImpl implements NDocArgumentParseInfo {
     private String id;
     private String uid;
     private NElement tsonElement;
     private NDocNode node;
-    private NElement currentArg;
     private NElement[] arguments;
     private List<NElement> remainingArguments;
     private int currentArgIndex;
@@ -30,7 +30,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return id;
     }
 
-    public ParseArgumentInfo setId(String id) {
+    public NDocArgumentParseInfo setId(String id) {
         this.id = id;
         return this;
     }
@@ -40,7 +40,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return uid;
     }
 
-    public ParseArgumentInfo setUid(String uid) {
+    public NDocArgumentParseInfo setUid(String uid) {
         this.uid = uid;
         return this;
     }
@@ -50,28 +50,18 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return tsonElement;
     }
 
-    public ParseArgumentInfo setTsonElement(NElement tsonElement) {
+    public NDocArgumentParseInfo setTsonElement(NElement tsonElement) {
         this.tsonElement = tsonElement;
         return this;
     }
 
     @Override
-    public NDocNode getNode() {
+    public NDocNode node() {
         return node;
     }
 
-    public ParseArgumentInfo setNode(NDocNode node) {
+    public NDocArgumentParseInfo setNode(NDocNode node) {
         this.node = node;
-        return this;
-    }
-
-    @Override
-    public NElement getCurrentArg() {
-        return currentArg;
-    }
-
-    public ParseArgumentInfo setCurrentArg(NElement currentArg) {
-        this.currentArg = currentArg;
         return this;
     }
 
@@ -89,7 +79,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return Collections.unmodifiableList(remainingArguments);
     }
 
-    public ParseArgumentInfo setArguments(NElement[] arguments) {
+    public NDocArgumentParseInfo setArguments(NElement[] arguments) {
         this.arguments = arguments;
         this.remainingArguments = new ArrayList<>(Arrays.asList(arguments));
         return this;
@@ -117,10 +107,10 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
     }
 
     @Override
-    public NElement peekNamedPair() {
+    public NPairElement peekNamedPair() {
         for (NElement remainingArgument : remainingArguments) {
             if (remainingArgument.isNamedPair()) {
-                return remainingArgument;
+                return (NPairElement) remainingArgument;
             }
         }
         return null;
@@ -149,8 +139,8 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
     }
 
     @Override
-    public NElement readNamedPair() {
-        return read(NElement::isNamedPair);
+    public NPairElement readNamedPair() {
+        return (NPairElement)read(NElement::isNamedPair);
     }
 
     @Override
@@ -158,7 +148,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return currentArgIndex;
     }
 
-    public ParseArgumentInfo setCurrentArgIndex(int currentArgIndex) {
+    public NDocArgumentParseInfo setCurrentArgIndex(int currentArgIndex) {
         this.currentArgIndex = currentArgIndex;
         return this;
     }
@@ -168,7 +158,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return f;
     }
 
-    public ParseArgumentInfo setF(NDocDocumentFactory f) {
+    public NDocArgumentParseInfo setF(NDocDocumentFactory f) {
         this.f = f;
         return this;
     }
@@ -178,7 +168,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return context;
     }
 
-    public ParseArgumentInfo setContext(NDocNodeFactoryParseContext context) {
+    public NDocArgumentParseInfo setContext(NDocNodeFactoryParseContext context) {
         this.context = context;
         return this;
     }
@@ -188,7 +178,7 @@ public class ParseArgumentInfoImpl implements ParseArgumentInfo {
         return props;
     }
 
-    public ParseArgumentInfo setProps(Map<String, Object> props) {
+    public NDocArgumentParseInfo setProps(Map<String, Object> props) {
         this.props = props;
         return this;
     }
