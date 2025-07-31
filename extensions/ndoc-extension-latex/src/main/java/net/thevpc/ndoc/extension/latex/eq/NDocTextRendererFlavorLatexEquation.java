@@ -2,28 +2,30 @@ package net.thevpc.ndoc.extension.latex.eq;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.Colors;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
-import net.thevpc.ndoc.api.renderer.NDocGraphics;
-import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.text.NDocRichTextToken;
 import net.thevpc.ndoc.api.renderer.text.NDocRichTextTokenType;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
+import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.List;
 
 public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlavor {
     @Override
     public String type() {
         return "latex-equation";
     }
+
 
     @Override
     public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
@@ -39,6 +41,39 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
             builder.currRow().addToken(r);
         }
     }
+
+    @Override
+    public List<NDocTextToken> parseImmediate(NReservedSimpleCharQueue queue, NDocNodeRendererContext ctx) {
+        String end;
+        if(queue.peek(2).equals("\\(")) {
+            end = "\\)";
+        }else if(queue.peek(5).equals("[[eq:")){
+            end = "]]";
+        }else{
+            return null;
+        }
+        NExtendedLatexMathBuilder sb=new NExtendedLatexMathBuilder();
+        while (queue.hasNext()) {
+            String u = queue.peek(3);
+            if(u.equals("\\"+end)){
+                sb.append(queue.read(3));
+            }else if(queue.peek(2).equals(end)){
+                queue.read(2);
+                sb.flush();
+                return Arrays.asList(
+                        new NDocTextTokenFlavored(type(),sb.toString().trim())
+                );
+            }else{
+                char c = queue.read();
+                sb.append(c);
+            }
+        }
+        sb.flush();
+        return Arrays.asList(
+                new NDocTextTokenFlavored(type(),sb.toString().trim())
+        );
+    }
+
 
 
     public NDocTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx) {
@@ -91,4 +126,5 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
             }
         };
     }
+
 }
