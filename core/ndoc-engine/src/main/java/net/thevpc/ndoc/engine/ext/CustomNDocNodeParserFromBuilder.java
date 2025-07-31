@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
@@ -8,9 +8,9 @@ import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.nuts.elem.NElement;
 
 class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
-    private final MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext;
+    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public CustomNDocNodeParserFromBuilder(MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext) {
+    public CustomNDocNodeParserFromBuilder(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         super(true, myNDocNodeCustomBuilderContext.id, myNDocNodeCustomBuilderContext.aliases);
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
