@@ -1,7 +1,6 @@
-package net.thevpc.ndoc.api.base.parser;
+package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
-import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.document.style.*;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
