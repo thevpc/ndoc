@@ -30,10 +30,10 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext
                 .id(NDocNodeType.DONUT)
-                .parseParam().named(NDocPropName.INNER_RADIUS,NDocPropName.START_ANGLE,NDocPropName.EXTENT_ANGLE,NDocPropName.DASH).asDouble().then()
-                .parseParam().named(NDocPropName.SLICE_COUNT).asInt().then()
-                .parseParam().named(NDocPropName.SLICES).asDoubleArray().then()
-                .parseParam().named(NDocPropName.COLORS).asStringArray().then()
+                .parseParam().named(NDocPropName.INNER_RADIUS,NDocPropName.START_ANGLE,NDocPropName.EXTENT_ANGLE,NDocPropName.DASH).then()
+                .parseParam().named(NDocPropName.SLICE_COUNT).then()
+                .parseParam().named(NDocPropName.SLICES).then()
+                .parseParam().named(NDocPropName.COLORS).then()
                 .renderComponent(this::render)
                 ;
     }
