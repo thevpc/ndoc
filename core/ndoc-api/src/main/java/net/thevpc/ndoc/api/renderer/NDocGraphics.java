@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.api.renderer;
 
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.model.HArrow;
 import net.thevpc.ndoc.api.document.elem3d.NDocElement3D;
 import net.thevpc.ndoc.api.document.elem3d.NDocLight3D;
@@ -15,10 +16,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
+
 import net.thevpc.ndoc.api.document.elem2d.primitives.*;
 import net.thevpc.ndoc.api.document.elem2d.*;
 import net.thevpc.ndoc.api.document.elem3d.*;
+
 public interface NDocGraphics {
+
+    NDocEngine engine();
 
     NDocGraphics copy();
 
