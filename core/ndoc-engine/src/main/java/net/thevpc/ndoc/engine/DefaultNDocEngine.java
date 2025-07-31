@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.tools;
+package net.thevpc.ndoc.engine;
 
 import java.awt.*;
 import java.io.InputStream;
@@ -25,7 +25,6 @@ import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.NElemUtils;
-import net.thevpc.ndoc.engine.NDocEngineUtils;
 import net.thevpc.ndoc.engine.document.DefaultNDocNode;
 import net.thevpc.ndoc.engine.eval.NDocCompilePageContextImpl;
 import net.thevpc.ndoc.engine.ext.NDocNodeCustomBuilderContextImpl;
@@ -44,6 +43,7 @@ import net.thevpc.ndoc.engine.renderer.NDocGraphicsImpl;
 import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.engine.eval.NDocNodeEvalNDoc;
+import net.thevpc.ndoc.engine.tools.MyNDocEngineTools;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
@@ -60,7 +60,7 @@ public class DefaultNDocEngine implements NDocEngine {
     private List<NDocNodeParserFactory> nodeParserFactories;
 
     private Map<String, NDocNodeParser> nodeTypeFactories;
-    private NDocEngineTools tools= new MyNDocEngineTools();
+    private NDocEngineTools tools;
     private List<NDocNodeCustomBuilderContextImpl> customBuilderContexts;
     private Map<String, String> nodeTypeAliases;
     private NDocDocumentFactory factory;
@@ -72,7 +72,7 @@ public class DefaultNDocEngine implements NDocEngine {
     private Map<String, NDocTextRendererFlavor> flavorsMap;
 
     public DefaultNDocEngine() {
-        NDocEngineTools tools= new MyNDocEngineTools(this);
+        tools = new MyNDocEngineTools(this);
         documentItemParserFactory = new DefaultNDocDocumentItemParserFactory();
         ServiceLoader<NDocFunction> all = ServiceLoader.load(NDocFunction.class);
         for (NDocFunction h : all) {
@@ -81,17 +81,22 @@ public class DefaultNDocEngine implements NDocEngine {
         addLog(new DefaultNDocLogger());
     }
 
-    public NOptional<NDocTextRendererFlavor> textRendererFlavor(String id){
-        return NOptional.ofNamed(flavorsMap().get(NDocUtils.uid(id)),id);
+    @Override
+    public NDocEngineTools tools() {
+        return tools;
     }
 
-    public List<NDocTextRendererFlavor> textRendererFlavors(){
+    public NOptional<NDocTextRendererFlavor> textRendererFlavor(String id) {
+        return NOptional.ofNamed(flavorsMap().get(NDocUtils.uid(id)), id);
+    }
+
+    public List<NDocTextRendererFlavor> textRendererFlavors() {
         return new ArrayList<>(flavorsMap().values());
     }
 
-    protected Map<String, NDocTextRendererFlavor> flavorsMap(){
+    protected Map<String, NDocTextRendererFlavor> flavorsMap() {
         if (flavorsMap == null) {
-            Map<String, NDocTextRendererFlavor> flavors2=new HashMap<>();
+            Map<String, NDocTextRendererFlavor> flavors2 = new HashMap<>();
             ServiceLoader<NDocTextRendererFlavor> all = ServiceLoader.load(NDocTextRendererFlavor.class);
             for (NDocTextRendererFlavor h : all) {
                 String t = NDocUtils.uid(h.type());
@@ -102,11 +107,11 @@ public class DefaultNDocEngine implements NDocEngine {
             }
             for (NDocNodeCustomBuilderContextImpl cb : customBuilderContexts()) {
                 NDocTextRendererFlavor f = cb.createTextFlavor();
-                if(f!=null){
+                if (f != null) {
                     flavors2.put(cb.id(), f);
                 }
             }
-            this.flavorsMap =flavors2;
+            this.flavorsMap = flavors2;
         }
         return flavorsMap;
     }
@@ -671,7 +676,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public NDocGraphics createGraphics(Graphics2D g2d) {
-        return new NDocGraphicsImpl(g2d);
+        return new NDocGraphicsImpl(g2d,this);
     }
 
     @Override
