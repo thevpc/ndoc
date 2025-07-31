@@ -52,7 +52,6 @@
 
     <dependencies>
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.sourceforge.plantuml</groupId><artifactId>plantuml</artifactId><version>1.2024.5</version></dependency>
         <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>31.0.1-jre</version></dependency>
     </dependencies>
