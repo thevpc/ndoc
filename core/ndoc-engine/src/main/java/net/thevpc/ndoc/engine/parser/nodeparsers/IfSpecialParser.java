@@ -29,7 +29,7 @@ public class IfSpecialParser extends NDocNodeParserBase {
             case NAMED_PARAMETRIZED_OBJECT: {
                 NObjectElement obj = tsonElement.asObject().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid(()->{
+                    return NCallableSupport.ofValid(()->{
                         NElement __cond = null;
                         List<NDocNode> __trueBloc = new ArrayList<>();
                         List<NDocNode> __falseBloc = new ArrayList<>();
@@ -68,7 +68,7 @@ public class IfSpecialParser extends NDocNodeParserBase {
             case NAMED_OBJECT: {
                 NObjectElement obj = tsonElement.asObject().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid( () -> {
+                    return NCallableSupport.ofValid( () -> {
                         _logError(NMsg.ofC("missing if condition from %s", NDocUtils.snippet(tsonElement)), context);
                         return new NDocItemList();
                     });
@@ -78,14 +78,14 @@ public class IfSpecialParser extends NDocNodeParserBase {
             case NAMED_UPLET: {
                 NUpletElement obj = tsonElement.asUplet().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid( () -> {
+                    return NCallableSupport.ofValid( () -> {
                         _logError(NMsg.ofC("missing if body from %s", NDocUtils.snippet(tsonElement)), context);
                         return new NDocItemList();
                     });
                 }
             }
         }
-        return NCallableSupport.invalid(NMsg.ofC("missing if construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing if construct from %s", NDocUtils.snippet(tsonElement)).asError());
     }
 
 }
