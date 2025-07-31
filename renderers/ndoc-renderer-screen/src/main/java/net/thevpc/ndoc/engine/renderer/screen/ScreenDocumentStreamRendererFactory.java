@@ -19,9 +19,9 @@ public class ScreenDocumentStreamRendererFactory implements NDocDocumentRenderer
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "screen":
-                return NCallableSupport.valid( () -> new ScreenDocumentRenderer(context.engine()));
+                return NCallableSupport.ofValid( () -> new ScreenDocumentRenderer(context.engine()));
             default:
-                return NCallableSupport.invalid(() -> NMsg.ofPlain("factory"));
+                return NCallableSupport.ofInvalid(() -> NMsg.ofPlain("factory"));
         }
     }
 
