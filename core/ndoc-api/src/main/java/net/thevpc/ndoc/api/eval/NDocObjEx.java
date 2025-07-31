@@ -763,6 +763,19 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("string from " + element);
     }
 
+    public NOptional<String> asString() {
+        if (element instanceof String) {
+            return NOptional.of((String) element);
+        }
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
+            if (te.isString()) {
+                return NOptional.of(te.asStringValue().get());
+            }
+        }
+        return NOptional.ofNamedEmpty("string from " + element);
+    }
+
     public NOptional<int[]> asIntArray() {
         if (element instanceof int[]) {
             return NOptional.of((int[]) element);
