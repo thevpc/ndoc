@@ -171,35 +171,38 @@ public class DefaultNDocNode implements NDocNode {
         return properties.get(propertyNames);
     }
 
-    @Override
-    public NDocNode setProperty(String name, NElement value) {
-        if(value!=null){
-            if(false) {
-                String s = NDocUtils.findCompilerDeclarationPath(value).orNull();
-                if (s == null) {
-                    throw new NIllegalArgumentException(NMsg.ofC("var property %s=%s is missing CompilerDeclarationPath", name, value));
-                }
+    public NDocNode setProperty(NDocProp prop) {
+        if(false) {
+            String s = NDocUtils.findCompilerDeclarationPath(prop.getValue()).orNull();
+            if (s == null) {
+                throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", prop.getName(), prop.getValue()));
             }
         }
-        properties.set(name, value);
+        properties.set(prop);
+        return this;
+    }
+
+    public NDocNode unsetProperty(String s) {
+        properties.unset(s);
+        return this;
+    }
+
+    @Override
+    public NDocNode setProperty(String name, NElement value) {
+        if(value!=null) {
+            setProperty(NDocProp.of(name, value));
+        }else{
+            unsetProperty(name);
+        }
         return this;
     }
 
     @Override
     public NDocNode setProperty(String name, NToElement value) {
         if(value!=null){
-            NElement e = value.toElement();
-            if(e!=null){
-                if(false) {
-                    String s = NDocUtils.findCompilerDeclarationPath(e).orNull();
-                    if (s == null) {
-                        throw new NIllegalArgumentException(NMsg.ofC("var property %s=%s is missing CompilerDeclarationPath", name, value));
-                    }
-                }
-            }
-            properties.set(name, e);
+            setProperty(NDocProp.of(name, value));
         }else {
-            properties.set(name, null);
+            unsetProperty(name);
         }
         return this;
     }
@@ -221,21 +224,6 @@ public class DefaultNDocNode implements NDocNode {
     }
 
 
-    public NDocNode setProperty(NDocProp prop) {
-        if(false) {
-            String s = NDocUtils.findCompilerDeclarationPath(prop.getValue()).orNull();
-            if (s == null) {
-                throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", prop.getName(), prop.getValue()));
-            }
-        }
-        properties.set(prop);
-        return this;
-    }
-
-    public NDocNode unsetProperty(String s) {
-        properties.unset(s);
-        return this;
-    }
 
     @Override
     public NDocItem parent() {
