@@ -27,6 +27,7 @@ public interface NDocNodeRendererContext {
     }
 
     NDocBounds2 selfBounds(NDocNode e);
+    NDocBounds2 defaultSelfBounds(NDocNode e);
 
     NDocNodeRendererManager manager();
 
