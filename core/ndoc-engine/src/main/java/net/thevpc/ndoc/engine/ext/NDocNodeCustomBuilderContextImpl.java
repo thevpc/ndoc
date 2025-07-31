@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.engine.ext;
 
+import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -7,17 +8,18 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocNodeParser;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.util.ToElementHelper;
+import net.thevpc.nuts.NConstants;
 import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderContext {
     NDocNodeCustomBuilder builder;
@@ -34,6 +36,9 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
     boolean compiled;
     NDocEngine engine;
     Set<String> knownArgNames;
+    NDocItemSpecialParser extraElementSupport;
+    Predicate<NElement> extraElementSupportByPredicate;
+    int extraElementSupportByPredicateSupport;
     CustomNamedParamAction customNamedParamAction;
     RenderTextAction renderTextAction;
     RenderConvertAction renderConvertAction;
@@ -47,6 +52,25 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
     @Override
     public NDocNodeCustomBuilderContext sizeRequirements(SizeRequirementsAction e) {
         this.sizeRequirementsAction = e;
+        return this;
+    }
+
+    public NDocNodeCustomBuilderContext parseAny(NDocItemSpecialParser a) {
+        this.extraElementSupport = a;
+        return this;
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext parseAny(Predicate<NElement> a) {
+        this.extraElementSupportByPredicate = a;
+        this.extraElementSupportByPredicateSupport = NConstants.Support.DEFAULT_SUPPORT;
+        return this;
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext parseAny(Predicate<NElement> a, int support) {
+        this.extraElementSupportByPredicate = a;
+        this.extraElementSupportByPredicateSupport = support;
         return this;
     }
 
@@ -226,7 +250,7 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
 
     public NDocTextRendererFlavor createTextFlavor() {
         if (renderTextAction != null && createdTextFlavor == null) {
-            createdTextFlavor = new CustomNDocTextRendererFlavorFromBuilder2(this);
+            createdTextFlavor = new CustomNDocTextRendererFlavorFromBuilder(this);
         }
         return createdTextFlavor;
     }
