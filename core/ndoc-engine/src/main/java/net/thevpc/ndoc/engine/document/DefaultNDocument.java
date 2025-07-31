@@ -13,7 +13,6 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
 import net.thevpc.ndoc.api.util.PagesHelper;
 import net.thevpc.nuts.util.NOptional;
