@@ -1,0 +1,70 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package net.thevpc.ndoc.elem.base.text;
+
+import net.thevpc.ndoc.api.document.style.NDocProp;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import  net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.renderer.*;
+import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.ndoc.api.util.HTextUtils;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
+
+import java.util.*;
+
+/**
+ * @author vpc
+ */
+public class NDocTextParserBuilder implements NDocNodeCustomBuilder {
+
+    @Override
+    public void build(NDocNodeCustomBuilderContext builderContext) {
+        builderContext.id(NDocNodeType.TEXT)
+                .parseParam().named(NDocPropName.VALUE).then()
+                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
+                    NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
+                    info.getContext().document().resources().add(nPath);
+                    return NDocProp.ofString(uid, nPath.readString().trim());
+                }).then()
+                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .renderText(this::buildText,this::parseImmediate)
+        ;
+    }
+
+    public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder,NDocNodeCustomBuilderContext builderContext) {
+        NDocTextTokenParseHelper aa = new NDocTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(HTextUtils.trimBloc(text).toCharArray()),builderContext);
+        List<NDocTextToken> all=aa.parse();
+        for (NDocTextToken a : all) {
+            consumeSpecialTokenType(a, p, ctx, builder);
+        }
+    }
+
+    private void consumeSpecialTokenType(NDocTextToken a, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+        if (a == null) {
+            return;
+        }
+        if (a instanceof NDocTextTokenFlavored) {
+            NDocTextTokenFlavored b=(NDocTextTokenFlavored)a;
+            builder.appendCustom(b.flavor(), b.value(), b.options(), p, ctx);
+        }else{
+            NDocTextTokenText b=(NDocTextTokenText)a;
+            builder.appendText(b.value(), b.options(), p, ctx);
+        }
+    }
+
+    public List<NDocTextToken> parseImmediate(NReservedSimpleCharQueue queue, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
+        NDocTextTokenParseHelper aa = new NDocTextTokenParseHelper(ctx, queue,builderContext);
+        return aa.parse();
+    }
+
+
+}

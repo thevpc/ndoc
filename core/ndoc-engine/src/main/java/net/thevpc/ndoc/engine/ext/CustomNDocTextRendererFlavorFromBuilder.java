@@ -65,4 +65,11 @@ class CustomNDocTextRendererFlavorFromBuilder2 implements NDocTextRendererFlavor
                 new NDocTextTokenFlavored(type(), sb.toString().trim())
         );
     }
+
+    @Override
+    public String toString() {
+        return "CustomNDocTextRendererFlavorFromBuilder2{" +
+                "myNDocNodeCustomBuilderContext=" + myNDocNodeCustomBuilderContext +
+                '}';
+    }
 }

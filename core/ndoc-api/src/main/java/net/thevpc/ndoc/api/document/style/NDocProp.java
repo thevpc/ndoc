@@ -27,67 +27,67 @@ public class NDocProp implements NDocItem, NToElement {
     private NDocItem parent;
 
     public static NDocProp ofDouble(String name, Double value) {
-        return NDocProps.elem(name, NElement.ofDouble(value));
+        return of(name, NElement.ofDouble(value));
     }
 
     public static NDocProp ofInt(String name, Integer value) {
-        return NDocProps.elem(name, NElement.ofInt(value));
+        return of(name, NElement.ofInt(value));
     }
 
     public static NDocProp ofBoolean(String name, Boolean value) {
-        return NDocProps.elem(name, NElement.ofBoolean(value));
+        return of(name, NElement.ofBoolean(value));
     }
 
     public static NDocProp ofString(String name, String value) {
-        return NDocProps.elem(name, NElement.ofString(value));
+        return of(name, NElement.ofString(value));
     }
 
     public static NDocProp ofObject(String name, NElement value) {
-        return NDocProps.elem(name, value);
+        return of(name, value);
     }
 
     public static NDocProp ofStringArray(String name, String[] value) {
-        return NDocProps.elem(name, NElement.ofStringArray(value));
+        return of(name, NElement.ofStringArray(value));
     }
 
     public static NDocProp ofDouble2(String name, double x, double y) {
-        return NDocProps.elem(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+        return of(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
     public static NDocProp ofHPoint2D(String name, double x, double y) {
-        return NDocProps.elem(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
+        return of(name, NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y)));
     }
 
     public static NDocProp ofDouble2(String name, NDocDouble2 d) {
-        return NDocProps.elem(name, d == null ? null : d.toElement());
+        return of(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofHPoint2D(String name, NDocPoint2D d) {
-        return NDocProps.elem(name, d == null ? null : d.toElement());
+        return of(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofHPoint3D(String name, NDocPoint3D d) {
-        return NDocProps.elem(name, d == null ? null : d.toElement());
+        return of(name, d == null ? null : d.toElement());
     }
 
     public static NDocProp ofDouble2Array(String name, NDocDouble2... d) {
-        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
+        return of(name, NElement.ofArray(Arrays.stream(d).map(NDocDouble2::toElement).toArray(NElement[]::new)));
     }
 
     public static NDocProp ofDoubleArray(String name, double[] d) {
-        return NDocProps.elem(name, NElement.ofDoubleArray(d));
+        return of(name, NElement.ofDoubleArray(d));
     }
 
     public static NDocProp ofIntArray(String name, int[] d) {
-        return NDocProps.elem(name, NElement.ofIntArray(d));
+        return of(name, NElement.ofIntArray(d));
     }
 
     public static NDocProp ofHPoint2DArray(String name, NDocPoint2D... d) {
-        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
+        return of(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint2D::toElement).toArray(NElement[]::new)));
     }
 
     public static NDocProp ofHPoint3DArray(String name, NDocPoint3D... d) {
-        return NDocProps.elem(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
+        return of(name, NElement.ofArray(Arrays.stream(d).map(NDocPoint3D::toElement).toArray(NElement[]::new)));
     }
 
     public NDocProp(String name, NElement value, NDocItem parent) {
@@ -100,6 +100,14 @@ public class NDocProp implements NDocItem, NToElement {
         this.name = name;
         this.value = value == null ? null : value.toElement();
         this.parent = parent;
+    }
+
+    public static NDocProp of(String name, NElement v) {
+        return new NDocProp(name, v, null);
+    }
+
+    public static NDocProp of(String name, NToElement v) {
+        return new NDocProp(name,(v==null?null:NDocUtils.addCompilerDeclarationPathDummy(v.toElement())), null);
     }
 
     @Override
