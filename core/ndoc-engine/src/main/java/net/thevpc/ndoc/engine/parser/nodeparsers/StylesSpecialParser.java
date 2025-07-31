@@ -35,7 +35,7 @@ public class StylesSpecialParser extends NDocNodeParserBase {
             case NAMED_OBJECT: {
                 NObjectElement obj = tsonElement.toObject().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid(() -> {
+                    return NCallableSupport.ofValid(() -> {
                         for (NElement yy : obj.children()) {
                             NOptional<NDocStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                             if (!u.isPresent()) {
@@ -56,7 +56,7 @@ public class StylesSpecialParser extends NDocNodeParserBase {
             case NAMED_ARRAY: {
                 NArrayElement obj = tsonElement.toArray().get();
                 if (obj.isNamed(id())) {
-                    return NCallableSupport.valid(() -> {
+                    return NCallableSupport.ofValid(() -> {
                         for (NElement yy : obj.children()) {
                             NOptional<NDocStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
                             if (!u.isPresent()) {
@@ -75,7 +75,7 @@ public class StylesSpecialParser extends NDocNodeParserBase {
             case PAIR: {
                 NPairElement obj = tsonElement.toNamedPair().get();
                 if (obj.isNamedPair() && NNameFormat.equalsIgnoreFormat(obj.key().asStringValue().get(), id())) {
-                    return NCallableSupport.valid(() -> {
+                    return NCallableSupport.ofValid(() -> {
                         if (obj.value().isAnyObject()) {
                             for (NElement yy : obj.value().asObject().get().children()) {
                                 NOptional<NDocStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
@@ -96,7 +96,7 @@ public class StylesSpecialParser extends NDocNodeParserBase {
                 break;
             }
         }
-        return NCallableSupport.invalid(NMsg.ofC("missing style construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing style construct from %s", NDocUtils.snippet(tsonElement)).asError());
     }
 
 }
