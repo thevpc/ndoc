@@ -39,8 +39,8 @@ public class NDocImageBuilder implements NDocNodeCustomBuilder {
         builderContext
                 .id(NDocNodeType.IMAGE)
                 .parseParam().named(NDocPropName.TRANSPARENT_COLOR).then()
-                .parseParam().named(NDocPropName.VALUE, NDocPropName.FILE, "content", "src").set(NDocPropName.VALUE).asString().then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).ignoreDuplicates(true).asString().then()
+                .parseParam().named(NDocPropName.VALUE, NDocPropName.FILE, "content", "src").set(NDocPropName.VALUE).then()
+                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).ignoreDuplicates(true).then()
                 .renderComponent(this::renderMain)
         ;
     }
