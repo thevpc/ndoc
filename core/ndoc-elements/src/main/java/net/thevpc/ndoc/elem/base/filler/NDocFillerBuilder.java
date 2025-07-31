@@ -4,9 +4,14 @@
  */
 package net.thevpc.ndoc.elem.base.filler;
 
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 /**
  * @author vpc
@@ -15,11 +20,23 @@ public class NDocFillerBuilder implements NDocNodeCustomBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.VOID)
-                .parseDefaults();
+        builderContext.id(NDocNodeType.FILLER)
+                .renderComponent(this::renderMain);
     }
 
-//    NDocNodeType.VOID,
-//    NDocNodeType.CTRL_ASSIGN,
-//    NDocNodeType.CTRL_DEFINE
+    public void renderMain(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
+        NDocGraphics g = ctx.graphics();
+        NDocBounds2 bounds = ctx.getBounds();
+        NDocBounds2 b = new NDocBounds2(
+                bounds.getMinX(),
+                bounds.getMinY(),
+                bounds.getWidth(),
+                bounds.getHeight());
+        if (!ctx.isDry()) {
+            NDocNodeRendererUtils.paintBackground(p, ctx, g, bounds);
+            NDocNodeRendererUtils.paintBorderLine(p, ctx, g, b);
+        }
+        NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+    }
+
 }
