@@ -30,13 +30,10 @@ public class NDocPlainTextBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.PLAIN)
                 .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
-                    @Override
-                    public NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
-                        NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                        info.getContext().document().resources().add(nPath);
-                        return NDocProp.ofString(uid, nPath.readString().trim());
-                    }
+                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
+                    NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
+                    info.getContext().document().resources().add(nPath);
+                    return NDocProp.ofString(uid, nPath.readString().trim());
                 }).then()
                 .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
                 .renderText(this::renderTextBuildText)
