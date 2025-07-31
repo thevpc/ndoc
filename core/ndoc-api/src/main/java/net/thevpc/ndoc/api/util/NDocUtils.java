@@ -422,6 +422,9 @@ public class NDocUtils {
     }
 
     public static String snippet(NElement yy) {
+        if(yy==null){
+            return "null";
+        }
         yy = removeCompilerDeclarationPathAnnotations(yy);
         return yy.snippet();
     }
