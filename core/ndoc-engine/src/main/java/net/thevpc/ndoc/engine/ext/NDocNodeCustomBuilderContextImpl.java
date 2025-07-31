@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
@@ -19,27 +19,27 @@ import net.thevpc.nuts.util.NMsg;
 
 import java.util.*;
 
-public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderContext {
-    private NDocNodeCustomBuilder builder;
-    private RenderAction renderMainAction;
-    private SizeRequirementsAction sizeRequirementsAction;
-    private SelfBoundsAction selfBoundsAction;
-    private String id;
-    private String[] aliases;
-    private ToElemAction toElem;
-    private NDocNodeRenderer createdRenderer;
-    private NDocNodeParserBase createdParser;
-    private NDocTextRendererFlavor createdTextFlavor;
-    private List<ProcessParamAction> processSingleArgumentList;
-    private boolean compiled;
-    private NDocEngine engine;
+public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderContext {
+    NDocNodeCustomBuilder builder;
+    RenderAction renderMainAction;
+    SizeRequirementsAction sizeRequirementsAction;
+    SelfBoundsAction selfBoundsAction;
+    String id;
+    String[] aliases;
+    ToElemAction toElem;
+    NDocNodeRenderer createdRenderer;
+    NDocNodeParserBase createdParser;
+    NDocTextRendererFlavor createdTextFlavor;
+    List<ProcessParamAction> processSingleArgumentList;
+    boolean compiled;
+    NDocEngine engine;
     Set<String> knownArgNames;
     CustomNamedParamAction customNamedParamAction;
     RenderTextAction renderTextAction;
     RenderConvertAction renderConvertAction;
     RenderEmbeddedTextAction renderEmbeddedTextAction;
 
-    public MyNDocNodeCustomBuilderContext(NDocNodeCustomBuilder builder, NDocEngine engine) {
+    public NDocNodeCustomBuilderContextImpl(NDocNodeCustomBuilder builder, NDocEngine engine) {
         this.builder = builder;
         this.engine = engine;
     }
@@ -225,7 +225,7 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
     }
 
     public NDocTextRendererFlavor createTextFlavor() {
-        if (renderTextAction != null && createdTextFlavor != null) {
+        if (renderTextAction != null && createdTextFlavor == null) {
             createdTextFlavor = new CustomNDocTextRendererFlavorFromBuilder2(this);
         }
         return createdTextFlavor;
@@ -245,5 +245,11 @@ public class MyNDocNodeCustomBuilderContext implements NDocNodeCustomBuilderCont
         return createdRenderer;
     }
 
-
+    @Override
+    public String toString() {
+        return "NDocNodeCustomBuilderContextImpl{" +
+                "id='" + id + '\'' +
+                ", aliases=" + Arrays.toString(aliases) +
+                '}';
+    }
 }
