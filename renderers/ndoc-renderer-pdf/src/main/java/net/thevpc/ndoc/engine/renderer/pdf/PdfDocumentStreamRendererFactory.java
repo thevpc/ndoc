@@ -16,12 +16,12 @@ public class PdfDocumentStreamRendererFactory implements NDocDocumentRendererFac
     public NCallableSupport<NDocDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "pdf":
-                return NCallableSupport.valid( () -> {
+                return NCallableSupport.ofValid( () -> {
                     NDocDocumentStreamRendererConfig config = new NDocDocumentStreamRendererConfig();
                     return new PdfDocumentRenderer(context.engine(), config);
                 });
             default:
-                return NCallableSupport.invalid(() -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
+                return NCallableSupport.ofInvalid(() -> NMsg.ofPlain("Invalid renderer type: " + context.rendererType()));
         }
     }
 }
