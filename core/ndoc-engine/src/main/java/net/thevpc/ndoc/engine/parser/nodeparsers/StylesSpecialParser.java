@@ -1,13 +1,13 @@
 package net.thevpc.ndoc.engine.parser.nodeparsers;
 
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
+import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocItemList;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.base.parser.HStyleParser;
+import net.thevpc.ndoc.engine.parser.HStyleParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NObjectElement;
