@@ -1,10 +1,9 @@
-package net.thevpc.ndoc.api.base.parser;
+package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
 import net.thevpc.ndoc.api.util.ToElementHelper;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.document.node.*;
@@ -79,7 +78,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         Predicate<NElement> filter = x -> x.isNamedPair() || x.isName();
         NElement e = info.peek(filter);
         if (e != null) {
-            if(e.isNamedPair()) {
+            if (e.isNamedPair()) {
                 NPairElement p = e.asPair().get();
                 String sid = NDocUtils.uid(p.key().asStringValue().get());
                 if (HParserUtils.isCommonStyleProperty(sid)) {
@@ -87,7 +86,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     info.read(filter);
                     return true;
                 }
-            }else {
+            } else {
                 String sid = NDocUtils.uid(e.asStringValue().get());
                 if (HParserUtils.isCommonStyleProperty(sid)) {
                     info.node().setProperty(sid, NDocUtils.addCompilerDeclarationPath(NElement.ofTrue(), info.source()));
@@ -229,16 +228,18 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             if (b) {
                 if (after == before) {
                     processArgument(info);
-                    NElement skipped = info.read();
+                    NElement skipped = info.peek();
                     engine().log().log(NMsg.ofC("process arg is buggy, skipped %s...", NDocUtils.snippet(skipped)));
+                    info.read();
                 }
             } else {
                 if (!processArgumentAsCommonStyleProperty(info)) {
-                    NElement skipped = info.read();
+                    NElement skipped = info.peek();
                     engine().log().log(NMsg.ofC("[%s] invalid argument %s", id,
                                     NDocUtils.snippet(skipped)
                             ).asSevere(), info.source()
                     );
+                    info.read();
                 }
             }
         }
@@ -318,7 +319,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
 
     @Override
     public NDocNode newNode() {
-        return new DefaultNDocNode(id());
+        return engine().newDefaultNode(id());
     }
 
     @Override
