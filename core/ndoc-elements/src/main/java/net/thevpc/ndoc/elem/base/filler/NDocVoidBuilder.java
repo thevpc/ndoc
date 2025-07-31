@@ -4,15 +4,23 @@
  */
 package net.thevpc.ndoc.elem.base.filler;
 
-import net.thevpc.ndoc.api.base.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 
 /**
  * @author vpc
  */
-public class NDocVoidBuilder extends NDocNodeParserBase {
+public class NDocVoidBuilder implements NDocNodeCustomBuilder {
 
-    public NDocVoidBuilder() {
-        super(false, NDocNodeType.VOID);
+    @Override
+    public void build(NDocNodeCustomBuilderContext builderContext) {
+        builderContext.id(NDocNodeType.VOID)
+                .parseDefaults()
+        ;
     }
+
+//    NDocNodeType.VOID,
+//    NDocNodeType.CTRL_ASSIGN,
+//    NDocNodeType.CTRL_DEFINE
 }
