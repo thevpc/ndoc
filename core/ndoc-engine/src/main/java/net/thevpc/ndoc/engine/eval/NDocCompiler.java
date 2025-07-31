@@ -19,7 +19,7 @@ import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeDefImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeDefParamImpl;
-import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.engine.document.DefaultNDocNode;
 import net.thevpc.ndoc.engine.parser.ctrlnodes.*;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NElement;
