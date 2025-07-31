@@ -3,13 +3,13 @@ package net.thevpc.ndoc.api.parser;
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public interface ParseArgumentInfo {
+public interface NDocArgumentParseInfo {
     NDocResource source();
 
     String getId();
@@ -18,9 +18,7 @@ public interface ParseArgumentInfo {
 
     NElement getTsonElement();
 
-    NDocNode getNode();
-
-    NElement getCurrentArg();
+    NDocNode node();
 
     int getRemainingArgumentsCount();
 
@@ -38,9 +36,9 @@ public interface ParseArgumentInfo {
 
     NElement peek(Predicate<NElement> e);
 
-    NElement peekNamedPair();
+    NPairElement peekNamedPair();
 
-    NElement readNamedPair();
+    NPairElement readNamedPair();
 
     int getCurrentArgIndex();
 
