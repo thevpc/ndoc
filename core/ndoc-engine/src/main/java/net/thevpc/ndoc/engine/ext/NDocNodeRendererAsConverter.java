@@ -1,13 +1,13 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
-import net.thevpc.ndoc.api.base.renderer.ConvertedNDocNodeRenderer;
+import net.thevpc.ndoc.engine.renderer.ConvertedNDocNodeRenderer;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
 class NDocNodeRendererAsConverter extends ConvertedNDocNodeRenderer {
-    private final MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext;
+    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public NDocNodeRendererAsConverter(MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext) {
+    public NDocNodeRendererAsConverter(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
 
