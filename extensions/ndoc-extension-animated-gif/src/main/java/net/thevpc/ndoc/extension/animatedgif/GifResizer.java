@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -33,7 +32,7 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import com.madgag.gif.fmsware.GifDecoder;
-import net.thevpc.ndoc.api.base.renderer.HImageUtils;
+import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.nuts.NApp;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -81,7 +80,8 @@ public class GifResizer {
 
     public static FutureTask<NPath> transformWithCache(byte[] source, String suffix,
                                                        GifFrameTransformer transform,
-                                                       Map<String,FutureTask<NPath>> pendingCache
+                                                       Map<String,FutureTask<NPath>> pendingCache,
+                                                       NDocEngine engine
                                                        ) {
         Color t = transform.transparentColor();
         String name = hash(source);
@@ -133,7 +133,7 @@ public class GifResizer {
         FutureTask<NPath> f = new FutureTask<>(new Callable<NPath>() {
             @Override
             public NPath call() throws Exception {
-                byte[] bytes = transform(source, transform);
+                byte[] bytes = transform(source, transform,engine);
                 n.writeBytes(bytes);
                 return n;
             }
@@ -148,7 +148,7 @@ public class GifResizer {
         return f;
     }
 
-    public static byte[] transform(byte[] source, GifFrameTransformer transform) {
+    public static byte[] transform(byte[] source, GifFrameTransformer transform,NDocEngine engine) {
         GifDecoder decoder = new GifDecoder();
         decoder.read(new ByteArrayInputStream(source));
 
@@ -179,7 +179,7 @@ public class GifResizer {
             }
             Dimension size = transform.size();
             if(size!=null && size.width>0 && size.height>0){
-                tframe= HImageUtils.resize(tframe, size.width, size.height);
+                tframe= engine.tools().resizeBufferedImage(tframe, size.width, size.height);
             }
             encoder.addFrame(tframe);
         }
