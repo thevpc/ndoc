@@ -185,7 +185,7 @@ public class DefaultNDocEngine implements NDocEngine {
         NOptional<NDocItem> optional = NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        () -> NMsg.ofC("support for node '%s' ", NDocUtils.snippet(element)))
+                        () -> NMsg.ofC("missing support for node from type '%s' value '%s'", element.type().id(),NDocUtils.snippet(element)))
                 .toOptional();
         if (optional.isPresent()) {
             NDocItem nDocItem = optional.get();
