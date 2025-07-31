@@ -13,10 +13,10 @@ import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import java.util.Arrays;
 import java.util.List;
 
-class CustomNDocTextRendererFlavorFromBuilder2 implements NDocTextRendererFlavor {
+class CustomNDocTextRendererFlavorFromBuilder implements NDocTextRendererFlavor {
     private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public CustomNDocTextRendererFlavorFromBuilder2(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+    public CustomNDocTextRendererFlavorFromBuilder(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
 
@@ -68,8 +68,6 @@ class CustomNDocTextRendererFlavorFromBuilder2 implements NDocTextRendererFlavor
 
     @Override
     public String toString() {
-        return "CustomNDocTextRendererFlavorFromBuilder2{" +
-                "myNDocNodeCustomBuilderContext=" + myNDocNodeCustomBuilderContext +
-                '}';
+        return "CustomFlavorFromBuilder(" + myNDocNodeCustomBuilderContext.id() + ")";
     }
 }
