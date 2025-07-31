@@ -1,5 +1,1 @@
-net.thevpc.ndoc.extension.shapes2d.NDocArrowBuilder
-net.thevpc.ndoc.extension.shapes2d.NDocCylinderBuilder
-net.thevpc.ndoc.extension.shapes2d.NDocDonutBuilder
-net.thevpc.ndoc.extension.shapes2d.NDocPieBuilder
-
+net.thevpc.ndoc.extension.latex.eq.NDocEquationBuilder
