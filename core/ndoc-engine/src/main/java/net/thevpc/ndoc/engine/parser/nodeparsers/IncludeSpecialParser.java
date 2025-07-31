@@ -24,12 +24,12 @@ public class IncludeSpecialParser extends NDocNodeParserBase {
             case NAMED_UPLET: {
                 NUpletElement uplet = tsonElement.asUplet().get();
                 if (uplet.isNamed("include")) {
-                    return NCallableSupport.valid( () -> new CtrlNDocNodeInclude(context.source(),uplet.params()));
+                    return NCallableSupport.ofValid( () -> new CtrlNDocNodeInclude(context.source(),uplet.params()));
                 }
                 break;
             }
         }
-        return NCallableSupport.invalid(NMsg.ofC("missing include from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing include from %s", NDocUtils.snippet(tsonElement)).asError());
     }
 
 
