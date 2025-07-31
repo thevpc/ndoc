@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.shape.polygon;
+package net.thevpc.ndoc.elem.base.shape;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
