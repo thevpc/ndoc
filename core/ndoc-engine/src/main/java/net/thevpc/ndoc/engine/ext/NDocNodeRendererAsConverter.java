@@ -8,6 +8,7 @@ class NDocNodeRendererAsConverter extends ConvertedNDocNodeRenderer {
     private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
     public NDocNodeRendererAsConverter(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+        super(myNDocNodeCustomBuilderContext.id());
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
 
