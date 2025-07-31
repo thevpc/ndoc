@@ -119,30 +119,25 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 }
                 break;
             }
-            case UPLET:
             case NAMED_UPLET: {
                 NUpletElement uplet = e.asUplet().get();
-                if (uplet.isNamed() && acceptTypeName(uplet.name().orNull())) {
+                if (acceptTypeName(uplet.name().orNull())) {
                     return uplet.name().orNull();
                 }
                 break;
             }
-            case OBJECT:
             case NAMED_PARAMETRIZED_OBJECT:
-            case PARAMETRIZED_OBJECT:
             case NAMED_OBJECT: {
                 NObjectElement h = e.toObject().get();
-                if (h.isNamed() && acceptTypeName(h.name().orNull())) {
+                if (acceptTypeName(h.name().orNull())) {
                     return h.name().orNull();
                 }
                 break;
             }
-            case ARRAY:
             case NAMED_PARAMETRIZED_ARRAY:
-            case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY: {
                 NArrayElement h = e.toArray().get();
-                if (h.isNamed() && acceptTypeName(h.name().orNull())) {
+                if (acceptTypeName(h.name().orNull())) {
                     return h.name().orNull();
                 }
                 break;
@@ -167,9 +162,10 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     @Override
     public NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement e = context.element();
+
         String s = acceptTypeName(e);
         if (s != null) {
-            return NCallableSupport.valid(
+            return NCallableSupport.ofValid(
                     () -> {
                         NOptional<NDocItem> o = parseItem(s, e, context);
                         if (!o.isPresent()) {
@@ -180,7 +176,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
             );
         }
         //context.messages().addError(NMsg.ofC("invalid %s : %s", id(), e), context.source());
-        return NCallableSupport.invalid(() -> NMsg.ofC("invalid %s : %s", id(), e));
+        return NCallableSupport.ofInvalid(() -> NMsg.ofC("invalid %s : %s", id(), e));
     }
 
     public String resolveEffectiveId(String id) {
@@ -330,7 +326,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     protected NCallableSupport<NDocItem> _invalidSupport(NMsg msg, NDocNodeFactoryParseContext context) {
         msg = msg.asError();
         context.messages().log(msg.asError());
-        return NCallableSupport.invalid(msg);
+        return NCallableSupport.ofInvalid(msg);
     }
 
     protected void _logError(NMsg nMsg, NDocNodeFactoryParseContext context) {
