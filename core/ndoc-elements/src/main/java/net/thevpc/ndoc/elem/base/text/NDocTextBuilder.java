@@ -7,7 +7,6 @@ package net.thevpc.ndoc.elem.base.text;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
@@ -15,7 +14,6 @@ import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.util.HTextUtils;
-import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 
@@ -24,7 +22,7 @@ import java.util.*;
 /**
  * @author vpc
  */
-public class NDocTextParserBuilder implements NDocNodeCustomBuilder {
+public class NDocTextBuilder implements NDocNodeCustomBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
@@ -36,6 +34,7 @@ public class NDocTextParserBuilder implements NDocNodeCustomBuilder {
                     return NDocProp.ofString(uid, nPath.readString().trim());
                 }).then()
                 .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .parseAny(x->true)
                 .renderText(this::buildText,this::parseImmediate)
         ;
     }
