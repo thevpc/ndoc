@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.parser;
+package net.thevpc.ndoc.api.util;
 
 import net.thevpc.nuts.util.NStringUtils;
 
