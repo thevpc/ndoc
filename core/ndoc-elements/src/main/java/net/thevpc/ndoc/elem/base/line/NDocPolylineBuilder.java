@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.shape.polyline;
+package net.thevpc.ndoc.elem.base.line;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
