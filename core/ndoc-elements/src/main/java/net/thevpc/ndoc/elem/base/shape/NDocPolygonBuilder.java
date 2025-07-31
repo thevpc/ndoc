@@ -1,5 +1,6 @@
-package net.thevpc.ndoc.elem.base.shape.polygon;
+package net.thevpc.ndoc.elem.base.shape;
 
+import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
@@ -29,7 +30,11 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                     public boolean processParam(NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
                         NElement k = info.peek();
                         if (k != null) {
-                            if(k.isNamedPair()) {
+                            if(k.isInt()) {
+                                info.read();
+                                info.node().setProperty(NDocPropName.COUNT,k);
+                                return true;
+                            }else if(k.isNamedPair()) {
                                 NPairElement kk=k.asPair().get();
                                 String ks = kk.key().asStringValue().orNull();
                                 if (NDocPropName.POINT.equals(ks)) {
