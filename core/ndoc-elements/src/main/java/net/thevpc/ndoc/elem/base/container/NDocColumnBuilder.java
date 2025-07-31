@@ -7,9 +7,9 @@ package net.thevpc.ndoc.elem.base.container;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.document.style.NDocProps;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -28,7 +28,8 @@ public class NDocColumnBuilder implements NDocNodeCustomBuilder {
                 .parseParam((info, buildContext) -> {
                     NElement p = info.peek();
                     if(p.isInt()) {
-                        info.node().setProperty(NDocProps.elem(NDocPropName.ROWS,p));
+                        info.read();
+                        info.node().setProperty(NDocProp.of(NDocPropName.ROWS,p));
                         return true;
                     }else{
                         return false;
@@ -42,7 +43,7 @@ public class NDocColumnBuilder implements NDocNodeCustomBuilder {
 
     public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.selfBounds(p);
+        NDocBounds2 expectedBounds = ctx.defaultSelfBounds(p);
         NDocGridRendererHelper h = new NDocGridRendererHelper(p.children());
         return h.computeBound(p, ctx, expectedBounds);
     }
