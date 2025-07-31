@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -7,9 +7,9 @@ import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.engine.renderer.text.NDocTextRendererBase;
 
 class NDocNodeRendererAsText extends NDocTextRendererBase {
-    private final MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext;
+    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public NDocNodeRendererAsText(MyNDocNodeCustomBuilderContext myNDocNodeCustomBuilderContext) {
+    public NDocNodeRendererAsText(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         super(myNDocNodeCustomBuilderContext.id, myNDocNodeCustomBuilderContext.id);
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
