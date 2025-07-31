@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProps;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamAction, NDocNodeCustomBuilderContext.ProcessParamAction {
-    MyNDocNodeCustomBuilderContext base;
+    NDocNodeCustomBuilderContextImpl base;
     Set<String> expectedNames = new HashSet<>();
     Predicate<NElement> matches;
     String toName;
@@ -27,7 +27,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     NDocNodeCustomBuilderContext.PropResolver propResolver;
     boolean ignoreDuplicates;
 
-    public CustomNamedParamAction(MyNDocNodeCustomBuilderContext base) {
+    public CustomNamedParamAction(NDocNodeCustomBuilderContextImpl base) {
         if (base.customNamedParamAction != null) {
             throw new RuntimeException("must call end");
         }
