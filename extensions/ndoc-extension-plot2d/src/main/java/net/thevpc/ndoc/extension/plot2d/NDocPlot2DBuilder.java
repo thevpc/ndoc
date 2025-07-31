@@ -20,7 +20,7 @@ import java.awt.*;
 /**
  *
  */
-public class NDocPlot2DImpl implements NDocNodeCustomBuilder {
+public class NDocPlot2DBuilder implements NDocNodeCustomBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
