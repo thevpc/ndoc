@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.text.source;
+package net.thevpc.ndoc.elem.base.text;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProp;
@@ -8,21 +8,13 @@ import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.renderer.NDocTextToken;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import net.thevpc.nuts.text.NTextCode;
 import net.thevpc.nuts.text.NTexts;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
-
-import java.util.List;
 
 public class NDocSourceBuilder implements NDocNodeCustomBuilder {
 
@@ -33,7 +25,7 @@ public class NDocSourceBuilder implements NDocNodeCustomBuilder {
                 .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
                     @Override
                     public NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
-                        NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.getNode());
+                        NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
                         info.getContext().document().resources().add(nPath);
                         return NDocProp.ofString(uid, nPath.readString().trim());
                     }
