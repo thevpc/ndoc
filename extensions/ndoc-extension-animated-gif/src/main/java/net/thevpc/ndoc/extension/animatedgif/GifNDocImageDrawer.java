@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.extension.animatedgif;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
-import net.thevpc.ndoc.api.base.renderer.HImageUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.nuts.io.NPath;
@@ -30,24 +29,23 @@ class GifNDocImageDrawer implements NDocGraphicsImageDrawer {
         Color transparentColor = options.getTransparentColor();
         Dimension size = options.getSize();
         FutureTask<NPath> location = GifResizer.transformWithCache(ic, null,
-                        new GifResizer.GifFrameTransformer() {
-                            @Override
-                            public BufferedImage frame(BufferedImage image, int index) {
-                                return null;
-                            }
+                new GifResizer.GifFrameTransformer() {
+                    @Override
+                    public BufferedImage frame(BufferedImage image, int index) {
+                        return null;
+                    }
 
-                            @Override
-                            public Color transparentColor() {
-                                return transparentColor;
-                            }
+                    @Override
+                    public Color transparentColor() {
+                        return transparentColor;
+                    }
 
-                            @Override
-                            public Dimension size() {
-                                return size;
-                            }
-                        }, pendingCache)
-                ;
-        if(location.isDone() || options.isDisableAnimation()) {
+                    @Override
+                    public Dimension size() {
+                        return size;
+                    }
+                }, pendingCache, g.engine());
+        if (location.isDone() || options.isDisableAnimation()) {
             ImageIcon ii = null;
             try {
                 ii = new ImageIcon(location.get().toURL().get());
@@ -57,21 +55,21 @@ class GifNDocImageDrawer implements NDocGraphicsImageDrawer {
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             }
-        }else{
+        } else {
             BufferedImage image = null;
             try {
                 image = ImageIO.read(new ByteArrayInputStream(ic));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if(image!=null){
-                image= HImageUtils.resize(image, options.getSize());
+            if (image != null) {
+                image = g.engine().tools().resizeBufferedImage(image, options.getSize());
                 g.drawImage(image, x, y, options.getImageObserver());
             }
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
-                    if(options.getAsyncLoad()!=null){
+                    if (options.getAsyncLoad() != null) {
                         options.getAsyncLoad().run();
                     }
                 }
