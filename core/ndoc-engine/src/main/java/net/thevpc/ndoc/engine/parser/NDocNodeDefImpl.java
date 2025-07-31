@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeDef;
 import net.thevpc.ndoc.api.document.node.NDocNodeDefParam;
 import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.base.model.DefaultNDocNode;
+import net.thevpc.ndoc.engine.document.DefaultNDocNode;
 
 public class NDocNodeDefImpl implements NDocNodeDef {
     private final String templateName;
