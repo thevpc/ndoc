@@ -19,7 +19,7 @@ public class NDocImageTypeRendererFactoryForGif implements NDocImageTypeRenderer
     public NCallableSupport<NDocGraphicsImageDrawer> resolveRenderer(NPath path, NDocImageOptions options, NDocGraphics graphics) {
         if (!options.isDisableAnimation()) {
             if (path.getName().toLowerCase().endsWith(".gif")) {
-                return NCallableSupport.valid(
+                return NCallableSupport.ofValid(
                         () -> {
                             byte[] b = path.readBytes();
                             return new GifNDocImageDrawer(b, pendingCache);
@@ -27,6 +27,6 @@ public class NDocImageTypeRendererFactoryForGif implements NDocImageTypeRenderer
                 );
             }
         }
-        return NCallableSupport.invalid(() -> NMsg.ofC("not supported %s", path));
+        return NCallableSupport.ofInvalid(() -> NMsg.ofC("not supported %s", path));
     }
 }
