@@ -35,6 +35,7 @@ public class NDocPropName {
     public static final String RAISED="raised";
     public static final String COLUMNS="columns";
     public static final String POINTS="points";
+    public static final String POINT="point";
     public static final String COUNT="count";
     public static final String ROWS="rows";
     public static final String ROWS_WEIGHT="rows-weight";
