@@ -54,7 +54,6 @@
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-elements</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.6.0</version></dependency>
-        <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-spi-base</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-swing</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-plantuml</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-extension-animated-gif</artifactId><version>0.8.6.0</version></dependency>
