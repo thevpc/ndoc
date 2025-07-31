@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.document.style.NDocProps;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
@@ -53,17 +52,45 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
 
     @Override
     public NDocNodeCustomBuilderContext.NamedParamAction matchesString() {
-        return matches(x -> x.type().typeGroup() == NElementTypeGroup.STRING);
+        return matches(new Predicate<NElement>() {
+            @Override
+            public boolean test(NElement x) {
+                return x.type().typeGroup() == NElementTypeGroup.STRING;
+            }
+            @Override
+            public String toString() {
+                return "(type().typeGroup() == STRING)";
+            }
+        });
     }
 
     @Override
     public NDocNodeCustomBuilderContext.NamedParamAction matchesStringOrName() {
-        return matches(x -> x.type().typeGroup() == NElementTypeGroup.STRING || x.type().typeGroup() == NElementTypeGroup.NAME);
+        return matches(new Predicate<NElement>() {
+            @Override
+            public boolean test(NElement x) {
+                return x.type().typeGroup() == NElementTypeGroup.STRING || x.type().typeGroup() == NElementTypeGroup.NAME;
+            }
+            @Override
+            public String toString() {
+                return "(type().typeGroup() == STRING|NAME)";
+            }
+        });
     }
 
     @Override
     public NDocNodeCustomBuilderContext.NamedParamAction matchesName() {
-        return matches(x -> x.type().typeGroup() == NElementTypeGroup.NAME);
+        return matches(new Predicate<NElement>() {
+            @Override
+            public boolean test(NElement x) {
+                return x.type().typeGroup() == NElementTypeGroup.NAME;
+            }
+
+            @Override
+            public String toString() {
+                return "(type().typeGroup() == NAME)";
+            }
+        });
     }
 
     @Override
@@ -81,49 +108,6 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     @Override
     public NDocNodeCustomBuilderContext.NamedParamAction set(String newName) {
         this.toName = newName;
-        return this;
-    }
-
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asDouble() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofDouble(uid, NDocObjEx.of(value).asDouble().get()));
-        return this;
-    }
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asDoubleArray() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofDoubleArray(uid, NDocObjEx.of(value).asDoubleArray().get()));
-        return this;
-    }
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asStringArray() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofStringArray(uid, NDocObjEx.of(value).asStringArray().get()));
-        return this;
-    }
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asString() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofString(uid, NDocObjEx.of(value).asString().get()));
-        return this;
-    }
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asInt() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofInt(uid, NDocObjEx.of(value).asInt().get()));
-        return this;
-    }
-
-    @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asIntArray() {
-        this.propResolver = (uid, value, info, buildContext)
-                -> (NDocProp.ofIntArray(uid, NDocObjEx.of(value).asIntArray().get()));
         return this;
     }
 
@@ -162,7 +146,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
             if (matches.test(n)) {
                 info.read();
                 String uid = NDocUtils.uid(toName);
-                setProp(uid, NElement.ofTrue(), info, buildContext);
+                setProp(uid, n, info, buildContext);
                 return true;
             }
         } else {
@@ -207,8 +191,13 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
                 okName = NDocUtils.uid(toName);
             }
             NDocProp prp = propResolver == null ?
-                    NDocProps.elem(okName, p)
+                    NDocProp.of(okName, p)
                     : propResolver.resolve(okName, p, info, buildContext);
+            String oldCDP = NDocUtils.getCompilerDeclarationPath(p);
+            String newCDP = NDocUtils.getCompilerDeclarationPath(prp.getValue());
+            if(newCDP==null){
+                prp=NDocProp.of(prp.getName(), NDocUtils.addCompilerDeclarationPath(prp.getValue(), oldCDP));
+            }
             if (ignoreDuplicates) {
                 NOptional<NDocProp> o = info.node().getProperty(prp.getName());
                 if (!o.isPresent()) {
