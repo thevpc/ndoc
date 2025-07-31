@@ -1,6 +1,7 @@
 cover{
     @(title)       text("NDoc")
-    @(subtitle)    text("Text Based Presentation")
+    @(subtitle)    text("A declarative, text-based document
+    & presentation generator",font-size:15%P)
     @(subsubtitle) text("Open Source")
     @(author)      text("thevpc")
     @(email)       text("https://github.com/thevpc/ndoc")
