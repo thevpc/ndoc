@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.base.renderer;
+package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
@@ -6,11 +6,13 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererManager;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
 
@@ -41,6 +43,11 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
         this.defaultStyles = defaultStyles;
         this.dry = dry;
         this.graphics = graphics;
+    }
+
+    @Override
+    public void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocTextRendererBuilder result) {
+        base.highlightNutsText(lang,  rawText, parsedText, p, result);
     }
 
     @Override
