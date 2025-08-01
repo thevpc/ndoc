@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer.page;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.engine.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -20,7 +20,7 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
 
     @Override
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        NDocBounds2 b = ctx.selfBounds(p, null, null);
 
          drawBackground(ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
