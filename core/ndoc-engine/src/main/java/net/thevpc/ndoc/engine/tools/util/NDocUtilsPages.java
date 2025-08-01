@@ -7,7 +7,7 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PagesHelper {
+public class NDocUtilsPages {
     public static List<NDocNode> resolvePages(NDocument document) {
         List<NDocNode> all = new ArrayList<>();
         fillPages(document.root(), all);
