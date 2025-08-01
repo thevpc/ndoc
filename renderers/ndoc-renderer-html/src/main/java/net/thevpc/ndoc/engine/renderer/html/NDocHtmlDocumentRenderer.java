@@ -10,11 +10,9 @@ import java.io.PrintStream;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.engine.NDocLogger;
-import net.thevpc.ndoc.api.engine.DefaultNDocLogger;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.renderer.AbstractNDocDocumentStreamRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererBase;
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererContext;
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererSupplier;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRenderer;
@@ -24,7 +22,7 @@ import net.thevpc.nuts.io.NPath;
 /**
  * @author vpc
  */
-public class NDocHtmlDocumentRenderer extends AbstractNDocDocumentStreamRenderer implements NDocDocumentStreamRenderer {
+public class NDocHtmlDocumentRenderer extends NDocDocumentStreamRendererBase implements NDocDocumentStreamRenderer {
 
     private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
 
