@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.tools.util;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class HImageUtils {
+public class NDocUtilsImages {
     public static BufferedImage toBufferedImage(Image originalImage) {
         if (originalImage instanceof BufferedImage) {
             return (BufferedImage) originalImage;
