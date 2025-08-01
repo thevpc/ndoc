@@ -9,10 +9,9 @@ import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -50,12 +49,12 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
         builderContext.id(id)
                 .alias(aliases)
                 .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
+                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
                     NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                    info.getContext().document().resources().add(nPath);
+                    info.parseContext().document().resources().add(nPath);
                     return NDocProp.ofString(uid, nPath.readString().trim());
                 }).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
                 .renderComponent(this::renderMain)
         ;
     }
@@ -124,11 +123,11 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
         if (image != null) {
 
             if (!ctx.isDry()) {
-                if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+                if (ctx.applyBackgroundColor(p)) {
                     g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
                 }
 
-                NDocNodeRendererUtils.applyForeground(p, g, ctx, false);
+                ctx.applyForeground(p, false);
                 if (image != null) {
                     // would resize?
                     int w = NDocUtils.intOf(b.getWidth());
@@ -139,7 +138,7 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
                     }
                 }
             }
-            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            ctx.paintDebugBox(p, b);
         }
     }
 
