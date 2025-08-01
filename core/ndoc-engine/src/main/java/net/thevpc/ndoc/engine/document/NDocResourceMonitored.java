@@ -1,9 +1,10 @@
 package net.thevpc.ndoc.engine.document;
 
-import net.thevpc.ndoc.api.parser.*;
+import net.thevpc.ndoc.api.source.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResourceMonitor;
+import net.thevpc.ndoc.engine.parser.resources.NDocResourceFactory;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStringBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
