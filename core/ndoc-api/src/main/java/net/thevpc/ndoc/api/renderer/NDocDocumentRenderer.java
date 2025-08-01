@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.api.renderer;
 
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.nuts.io.NPath;
 
 public interface NDocDocumentRenderer {
