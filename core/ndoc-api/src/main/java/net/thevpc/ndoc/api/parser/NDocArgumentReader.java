@@ -2,27 +2,28 @@ package net.thevpc.ndoc.api.parser;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.List;
 import java.util.Map;
 
-public interface NDocArgumentParseInfo {
+public interface NDocArgumentReader {
     NDocResource source();
 
     String getId();
 
     String getUid();
 
-    NElement getTsonElement();
+    NElement element();
 
     NDocNode node();
 
-    int getRemainingArgumentsCount();
+    int availableCount();
 
-    List<NElement> getRemainingArguments();
+    List<NElement> availableArguments();
 
-    NElement[] getArguments();
+    NElement[] allArguments();
 
     boolean isEmpty();
 
@@ -30,10 +31,11 @@ public interface NDocArgumentParseInfo {
 
     NElement read();
 
+    NDocDocumentFactory documentFactory();
 
-    NDocDocumentFactory getDocumentFactory();
+    NDocNodeFactoryParseContext parseContext();
 
-    NDocNodeFactoryParseContext getContext();
+    Map<String, Object> props();
 
-    Map<String, Object> getProps();
+    int currentIndex();
 }
