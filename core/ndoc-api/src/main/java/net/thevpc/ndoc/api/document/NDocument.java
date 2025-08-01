@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Properties;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
+import net.thevpc.ndoc.api.source.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 
 public interface NDocument {
