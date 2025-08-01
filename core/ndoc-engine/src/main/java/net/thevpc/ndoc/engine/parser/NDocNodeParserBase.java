@@ -16,7 +16,6 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public abstract class NDocNodeParserBase implements NDocNodeParser {
 
@@ -62,7 +61,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return aliases;
     }
 
-    protected void processImplicitStyles(NDocArgumentParseInfo info) {
+    protected void processImplicitStyles(NDocArgumentReader info) {
 
     }
 
@@ -70,27 +69,26 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return false;
     }
 
-    protected boolean processArgument(NDocArgumentParseInfo info) {
+    protected boolean processArgument(NDocArgumentReader info) {
         return defaultProcessArgument(info);
     }
 
-    public boolean defaultProcessArgument(NDocArgumentParseInfo info) {
-        Predicate<NElement> filter = x -> x.isNamedPair() || x.isName();
-        NElement e = info.peek(filter);
+    public boolean defaultProcessArgument(NDocArgumentReader info) {
+        NElement e = info.peek();
         if (e != null) {
             if (e.isNamedPair()) {
                 NPairElement p = e.asPair().get();
                 String sid = NDocUtils.uid(p.key().asStringValue().get());
                 if (HParserUtils.isCommonStyleProperty(sid)) {
                     info.node().setProperty(sid, NDocUtils.addCompilerDeclarationPath(p.value(), info.source()));
-                    info.read(filter);
+                    info.read();
                     return true;
                 }
-            } else {
+            } else if(e.isName()) {
                 String sid = NDocUtils.uid(e.asStringValue().get());
                 if (HParserUtils.isCommonStyleProperty(sid)) {
                     info.node().setProperty(sid, NDocUtils.addCompilerDeclarationPath(NElement.ofTrue(), info.source()));
-                    info.read(filter);
+                    info.read();
                     return true;
                 }
             }
@@ -187,40 +185,40 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         return NDocUtils.uid(id);
     }
 
-    public void onStartParsingItem(String id, NDocNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onStartParsingItem(String id, NDocNode p, NElement element, NDocNodeFactoryParseContext context) {
 
     }
 
-    public void onFinishParsingItem(String id, NDocNode p, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public void onFinishParsingItem(NDocAllArgumentReader info) {
 
     }
 
-    protected boolean processArgumentAsCommonStyleProperty(NDocArgumentParseInfo info) {
+    protected boolean processArgumentAsCommonStyleProperty(NDocArgumentReader info) {
         NElement currentArg = info.peek();
         if (HParserUtils.isCommonStyleProperty(info.getId())) {
             NDocObjEx es = NDocObjEx.of(currentArg);
             if (es.isFunction()) {
-                info.getContext().messages().log(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
-                        info.getContext().source(),
+                info.parseContext().messages().log(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
+                        info.parseContext().source(),
                         currentArg,
                         es.name(), NElement.ofUplet(es.args().toArray(new NElement[0]))
-                ).asSevere(), info.getContext().source());
+                ).asSevere(), info.parseContext().source());
                 // empty result
                 return false;
             }
-            info.getContext().messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.getContext().source(), currentArg, info.getTsonElement()).asSevere(), info.getContext().source());
+            info.parseContext().messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", info.parseContext().source(), currentArg, info.element()).asSevere(), info.parseContext().source());
             return false;
         } else {
-            info.getContext().messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", NDocUtils.shortName(info.getContext().source()), NDocUtils.snippet(currentArg), NDocUtils.snippet(info.getTsonElement())).asSevere(), info.getContext().source());
+            info.parseContext().messages().log(NMsg.ofC("[%s] invalid argument %s in : %s", NDocUtils.shortName(info.parseContext().source()), NDocUtils.snippet(currentArg), NDocUtils.snippet(info.element())).asSevere(), info.parseContext().source());
             return false;
         }
     }
 
-    protected void processArguments(NDocArgumentParseInfo info) {
+    protected void processArguments(NDocArgumentReader info) {
         while (!info.isEmpty()) {
-            int before = info.getRemainingArgumentsCount();
+            int before = info.availableCount();
             boolean b = processArgument(info);
-            int after = info.getRemainingArgumentsCount();
+            int after = info.availableCount();
             if (b) {
                 if (after == before) {
                     processArgument(info);
@@ -241,10 +239,10 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         }
     }
 
-    public NOptional<NDocItem> parseItem(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
+    public NOptional<NDocItem> parseItem(String id, NElement element, NDocNodeFactoryParseContext context) {
         NDocEngine engine = context.engine();
         NDocDocumentFactory f = context.documentFactory();
-        switch (tsonElement.type()) {
+        switch (element.type()) {
             case NAMED_UPLET:
 
             case OBJECT:
@@ -259,32 +257,32 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 NDocNode p = context.documentFactory().of(resolveEffectiveId(id));
                 p.setSource(context.source());
                 NDocNodeFactoryParseContext context2 = context.push(p);
-                onStartParsingItem(id, p, tsonElement, context);
-//                NDocObjEx ee = NDocObjEx.of(tsonElement);
-                NDocParseHelper.fillAnnotations(tsonElement, p);
-                NDocArgumentParseInfoImpl info = new NDocArgumentParseInfoImpl();
+                onStartParsingItem(id, p, element, context);
+//                NDocObjEx ee = NDocObjEx.of(element);
+                NDocParseHelper.fillAnnotations(element, p);
+                NDocArgumentReaderImpl info = new NDocArgumentReaderImpl();
                 info.setContext(context2);
                 info.setId(id);
                 info.setUid(NDocUtils.uid(id));
-                info.setTsonElement(NDocUtils.addCompilerDeclarationPath(tsonElement, info.getContext().source()));
+                info.setElement(NDocUtils.addCompilerDeclarationPath(element, info.parseContext().source()));
                 info.setNode(p);
                 List<NElement> body;
-                switch (tsonElement.type()) {
+                switch (element.type()) {
                     case UPLET:
                     case NAMED_UPLET: {
-                        info.setArguments(tsonElement.asUplet().get().params().toArray(new NElement[0]));
+                        info.setArguments(element.asUplet().get().params().toArray(new NElement[0]));
                         body = Collections.emptyList();
                         break;
                     }
                     default: {
-                        info.setArguments(tsonElement.asParametrizedContainer().flatMap(x -> x.params()).orElse(Collections.emptyList()).toArray(new NElement[0]));
-                        body = tsonElement.asListContainer().map(x -> x.children()).orElse(Collections.emptyList());
+                        info.setArguments(element.asParametrizedContainer().flatMap(x -> x.params()).orElse(Collections.emptyList()).toArray(new NElement[0]));
+                        body = element.asListContainer().map(x -> x.children()).orElse(Collections.emptyList());
                     }
                 }
-                if (info.getArguments() != null) {
-                    NElement[] arguments = info.getArguments();
+                if (info.allArguments() != null) {
+                    NElement[] arguments = info.allArguments();
                     for (int i = 0; i < arguments.length; i++) {
-                        info.getArguments()[i] = NDocUtils.addCompilerDeclarationPath(arguments[i], info.getContext().source());
+                        info.allArguments()[i] = NDocUtils.addCompilerDeclarationPath(arguments[i], info.parseContext().source());
                     }
                 }
 
@@ -300,11 +298,11 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                         return NOptional.of(new NDocItemList());
                     }
                 }
-                onFinishParsingItem(id, p, tsonElement, context);
+                onFinishParsingItem(info);
                 return NOptional.of(p);
             }
         }
-        return NOptional.ofNamedEmpty(NMsg.ofC("%s item %s", id(), tsonElement));
+        return NOptional.ofNamedEmpty(NMsg.ofC("%s item %s", id(), element));
     }
 
     @Override
