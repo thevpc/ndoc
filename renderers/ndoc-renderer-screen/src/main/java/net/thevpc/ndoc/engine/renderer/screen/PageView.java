@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.document.NDocMsg;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNode;
