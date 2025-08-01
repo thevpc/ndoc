@@ -2,12 +2,9 @@ package net.thevpc.ndoc.api.eval;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.document.elem2d.primitives.*;
 import net.thevpc.ndoc.api.document.elem2d.*;
-import net.thevpc.ndoc.api.document.elem3d.*;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.*;
-import net.thevpc.ndoc.api.model.*;
 
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocSizeRef;
@@ -91,7 +88,7 @@ public class NDocValueByName {
     }
 
     public static NElement getStroke(NDocNode t, NDocNodeRendererContext ctx) {
-        return NDocValueByType.getTson(t, ctx, NDocPropName.STROKE).orNull();
+        return NDocValueByType.getElement(t, ctx, NDocPropName.STROKE).orNull();
     }
 
     public static NDocBounds2 selfBounds(NDocNode t, NDocDouble2 selfSize, NDocDouble2 minSize, NDocNodeRendererContext ctx) {
@@ -143,7 +140,7 @@ public class NDocValueByName {
     }
 
     public static double getFontSize(NDocNode t, NDocNodeRendererContext ctx) {
-        NElement e = NDocValueByType.getTson(t, ctx, NDocPropName.FONT_SIZE).orNull();
+        NElement e = NDocValueByType.getElement(t, ctx, NDocPropName.FONT_SIZE).orNull();
         NDocSizeRef sr = ctx.sizeRef();
         NOptional<Double> srpx = sr.x(e);
         NOptional<Double> srpy = sr.y(e);
