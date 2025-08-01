@@ -12,12 +12,12 @@ import net.thevpc.nuts.io.NPath;
 /**
  * @author vpc
  */
-public abstract class AbstractNDocDocumentStreamRenderer extends AbstractNDocDocumentRenderer implements NDocDocumentStreamRenderer {
+public abstract class NDocDocumentStreamRendererBase extends NDocDocumentRendererBase implements NDocDocumentStreamRenderer {
 
     protected Object output;
     protected NDocDocumentStreamRendererConfig config;
 
-    public AbstractNDocDocumentStreamRenderer(NDocEngine engine) {
+    public NDocDocumentStreamRendererBase(NDocEngine engine) {
         super(engine);
     }
 
