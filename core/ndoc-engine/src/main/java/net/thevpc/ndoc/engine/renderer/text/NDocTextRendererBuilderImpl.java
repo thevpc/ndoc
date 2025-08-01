@@ -6,9 +6,9 @@ import net.thevpc.ndoc.api.document.elem2d.Shadow;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.renderer.text.*;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -247,7 +247,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
     }
 
     public void render(NDocNode p, NDocNodeRendererContext ctx, NDocBounds2 bgBounds, NDocBounds2 selfBounds) {
-        boolean debug = NDocValueByName.isDebug(p, ctx);
+        boolean debug = ctx.isDebug(p);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
         NDocGraphics g = ctx.graphics();
