@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 import net.thevpc.ndoc.engine.renderer.screen.utils.JPopupMenuHelper;
 import net.thevpc.nuts.io.NPath;
