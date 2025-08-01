@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.document;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 
