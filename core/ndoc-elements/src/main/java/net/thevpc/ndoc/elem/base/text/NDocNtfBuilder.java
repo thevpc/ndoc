@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
@@ -20,15 +20,16 @@ public class NDocNtfBuilder implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.NTF)
                 .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
+                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
                     @Override
-                    public NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
+                    public NDocProp resolve(String uid, NElement value, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
                         NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                        info.getContext().document().resources().add(nPath);
+                        info.parseContext().document().resources().add(nPath);
                         return NDocProp.ofString(uid, nPath.readString().trim());
                     }
                 }).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .parseDefaultParams()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
                 .renderText(this::renderTextBuildText)
         ;
     }
