@@ -1,4 +1,6 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser.resources;
+
+import net.thevpc.ndoc.api.source.NDocResource;
 
 import java.util.Objects;
 
