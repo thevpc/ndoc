@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.debug;
 
-import net.thevpc.ndoc.api.engine.NDocLogger;
-import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.log.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocMsg;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 
 import javax.swing.*;
