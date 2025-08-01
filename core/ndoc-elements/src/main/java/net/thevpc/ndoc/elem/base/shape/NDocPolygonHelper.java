@@ -5,8 +5,6 @@ import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
@@ -40,8 +38,8 @@ public final class NDocPolygonHelper {
         NDocBounds2 b = ctx.selfBounds(node);
         NDocGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
-            Paint bc = NDocValueByName.resolveBackgroundColor(node, ctx);
-            Paint fc = NDocValueByName.getForegroundColor(node, ctx, bc == null);
+            Paint bc = ctx.resolveBackgroundColor(node);
+            Paint fc = ctx.getForegroundColor(node, bc == null);
             NDocPoint2D[] points2 = Arrays.stream(points)
                     .map(p -> new NDocPoint2D(
                             p.x / 100 * b.getWidth() + b.getMinX(),
@@ -51,12 +49,12 @@ public final class NDocPolygonHelper {
             g.draw2D(NDocElement2DFactory.polygon(points2)
                     .setFill(bc != null)
                     .setContour(fc != null)
-                    .setLineStroke(NDocNodeRendererUtils.resolveStroke(node, g, ctx))
+                    .setLineStroke(ctx.resolveStroke(node))
                     .setBackgroundPaint(bc)
                     .setLinePaint(fc));
-            NDocNodeRendererUtils.paintBorderLine(node, ctx, g, b);
+            ctx.paintBorderLine(node, b);
         }
-        NDocNodeRendererUtils.paintDebugBox(node, ctx, g, b);
+        ctx.paintDebugBox(node, b);
     }
 
 }
