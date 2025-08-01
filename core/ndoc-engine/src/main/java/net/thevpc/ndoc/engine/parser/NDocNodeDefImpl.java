@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.parser;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeDef;
 import net.thevpc.ndoc.api.document.node.NDocNodeDefParam;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.engine.document.DefaultNDocNode;
 
 public class NDocNodeDefImpl implements NDocNodeDef {
