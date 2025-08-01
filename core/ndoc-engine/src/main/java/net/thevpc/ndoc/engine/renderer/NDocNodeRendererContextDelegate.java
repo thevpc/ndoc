@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
@@ -47,7 +47,7 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
 
     @Override
     public void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocTextRendererBuilder result) {
-        base.highlightNutsText(lang,  rawText, parsedText, p, result);
+        base.highlightNutsText(lang, rawText, parsedText, p, result);
     }
 
     @Override
@@ -203,5 +203,10 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     @Override
     public boolean isCapability(String name) {
         return base.isCapability(name);
+    }
+
+    @Override
+    public boolean isDebug(NDocNode p) {
+        return base.isDebug(p);
     }
 }
