@@ -48,6 +48,12 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
         return NDocValueByName.selfBounds(p, new NDocDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
     }
 
+    public NDocBounds2 defaultSelfBounds(NDocNode p, NDocNodeRendererContext ctx) {
+        NDocTextRendererBuilder helper = createRichTextHelper(p, ctx);
+        NDocBounds2 bounds2 = helper.computeBound(ctx);
+        return NDocValueByName.selfBounds(p, new NDocDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+    }
+
     protected abstract NDocTextRendererBuilder createRichTextHelper(NDocNode p, NDocNodeRendererContext ctx);
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx) {

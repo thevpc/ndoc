@@ -2,9 +2,9 @@ package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.engine.renderer.HImageUtils;
+import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererListener;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 
@@ -64,7 +64,7 @@ public class HDebugFrame extends JFrame {
         setContentPane(debugPanel = new NDocDebugPanel(engine));
         setMinimumSize(new Dimension(400, 600));
         this.setIconImage(
-                HImageUtils.resizeImage(
+                NDocUtilsImages.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/ndoc/ndoc.png")).getImage(),
                         16, 16)
         );

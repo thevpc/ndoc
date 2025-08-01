@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.model;
 
-public enum HArrowType {
+public enum NDocArrowType {
     DEFAULT,
     SIMPLE,
     TRIANGLE,

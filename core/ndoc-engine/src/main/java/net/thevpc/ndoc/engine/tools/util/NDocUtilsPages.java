@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.util;
+package net.thevpc.ndoc.engine.tools.util;
 
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;

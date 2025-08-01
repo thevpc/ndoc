@@ -92,4 +92,8 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
         return NDocValueByName.selfBounds(t, null, null, ctx);
     }
 
+    public NDocBounds2 defaultSelfBounds(NDocNode t, NDocNodeRendererContext ctx) {
+        return NDocValueByName.selfBounds(t, null, null, ctx);
+    }
+
 }

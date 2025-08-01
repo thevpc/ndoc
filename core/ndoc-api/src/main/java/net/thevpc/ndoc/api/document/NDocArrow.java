@@ -1,25 +1,25 @@
 package net.thevpc.ndoc.api.model;
 
-public class HArrow {
-    private HArrowType type;
+public class NDocArrow {
+    private NDocArrowType type;
     private double width;
     private double height;
 
-    public HArrow() {
-        this(HArrowType.DEFAULT);
+    public NDocArrow() {
+        this(NDocArrowType.DEFAULT);
     }
 
-    public HArrow(HArrowType type) {
+    public NDocArrow(NDocArrowType type) {
         this(type, 0,0);
     }
 
-    public HArrow(HArrowType type, double width, double height) {
+    public NDocArrow(NDocArrowType type, double width, double height) {
         this.type = type;
         this.width = width;
         this.height = height;
     }
 
-    public HArrowType getType() {
+    public NDocArrowType getType() {
         return type;
     }
 

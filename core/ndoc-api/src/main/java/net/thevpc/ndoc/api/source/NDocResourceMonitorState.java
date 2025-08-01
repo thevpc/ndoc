@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.api.source;
 
 public interface NDocResourceMonitorState {
 }
