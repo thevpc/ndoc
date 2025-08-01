@@ -4,8 +4,6 @@
  */
 package net.thevpc.ndoc.api.renderer;
 
-import net.thevpc.ndoc.api.engine.NDocLogger;
-
 /**
  * @author vpc
  */
