@@ -9,13 +9,11 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 import java.awt.*;
 
@@ -45,11 +43,11 @@ public class NDocCubicCurveBuilder implements NDocNodeCustomBuilder {
                 .plus(translation);
         NDocGraphics g = rendererContext.graphics();
         if (!rendererContext.isDry()) {
-            Paint fc = NDocValueByName.getForegroundColor(p, rendererContext, true);
+            Paint fc = rendererContext.getForegroundColor(p, true);
             g.draw2D(NDocElement2DFactory.cubic(from, ctrl1, ctrl2, to)
                     .setStartArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.START_ARROW).orNull())
                     .setEndArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.END_ARROW).orNull())
-                    .setLineStroke(g.createStroke(NDocValueByName.getStroke(p, rendererContext)))
+                    .setLineStroke(g.createStroke(rendererContext.getStroke(p)))
                     .setLinePaint(fc)
             );
         }
@@ -58,7 +56,7 @@ public class NDocCubicCurveBuilder implements NDocNodeCustomBuilder {
         double maxX = Math.max(from.getX(), to.getX());
         double maxY = Math.max(from.getY(), to.getY());
         NDocBounds2 b2 = new NDocBounds2(minx, miny, maxX, maxY);
-        NDocNodeRendererUtils.paintDebugBox(p, rendererContext, g, b2);
+        rendererContext.paintDebugBox(p, b2);
     }
 
 }
