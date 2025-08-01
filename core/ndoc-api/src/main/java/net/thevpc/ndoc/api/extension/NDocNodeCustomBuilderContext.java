@@ -5,11 +5,12 @@ import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
+import net.thevpc.ndoc.api.parser.NDocAllArgumentReader;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.renderer.NDocTextToken;
+import net.thevpc.ndoc.api.renderer.text.NDocTextToken;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.nuts.NCallableSupport;
@@ -29,6 +30,7 @@ public interface NDocNodeCustomBuilderContext {
     public NDocNodeCustomBuilderContext parseAny(NDocItemSpecialParser a);
 
     public NDocNodeCustomBuilderContext parseAny(Predicate<NElement> a);
+
     public NDocNodeCustomBuilderContext parseAny(Predicate<NElement> a, int support);
 
     NDocNodeCustomBuilderContext sizeRequirements(SizeRequirementsAction e);
@@ -39,7 +41,7 @@ public interface NDocNodeCustomBuilderContext {
 
     NDocNodeCustomBuilderContext withToElem(String... props);
 
-    NDocNodeCustomBuilderContext parseDefaults();
+    NDocNodeCustomBuilderContext parseDefaultParams();
 
     NDocNodeCustomBuilderContext renderComponent(RenderAction e);
 
@@ -53,6 +55,8 @@ public interface NDocNodeCustomBuilderContext {
 
     NDocNodeCustomBuilderContext parseParam(ProcessParamAction e);
 
+    NDocNodeCustomBuilderContext afterParsingAllParams(ProcessNodeAction e);
+
     NDocEngine engine();
 
     boolean isAncestorScene3D(NDocNode p0);
@@ -61,15 +65,20 @@ public interface NDocNodeCustomBuilderContext {
 
 
     interface NDocItemSpecialParser {
-        NCallableSupport<NDocItem> parseElement(String id, NElement tsonElement, NDocNodeFactoryParseContext context);
+        NCallableSupport<NDocItem> parseElement(String id, NElement element, NDocNodeFactoryParseContext context);
     }
 
     interface NamedParamAction {
+        NDocNodeCustomBuilderContext.NamedParamAction ignoreDuplicates();
+
         NamedParamAction ignoreDuplicates(boolean ignoreDuplicates);
+
+        NamedParamAction matchesLeading(boolean ignoreDuplicates);
+        NamedParamAction matchesLeading();
 
         NamedParamAction named(String... names);
 
-        NamedParamAction matches(Predicate<NElement> predicate);
+        NamedParamAction matches(Predicate<NDocArgumentReader> predicate);
 
         NamedParamAction matchesString();
 
@@ -77,7 +86,7 @@ public interface NDocNodeCustomBuilderContext {
 
         NamedParamAction matchesStringOrName();
 
-        NamedParamAction set(String newName);
+        NamedParamAction store(String newName);
 
 
         NamedParamAction resolvedAs(PropResolver a);
@@ -90,7 +99,7 @@ public interface NDocNodeCustomBuilderContext {
     }
 
     interface PropResolver {
-        NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext);
+        NDocProp resolve(String uid, NElement value, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext);
     }
 
     interface ToElemAction {
@@ -122,6 +131,9 @@ public interface NDocNodeCustomBuilderContext {
     }
 
     interface ProcessParamAction {
-        boolean processParam(NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext);
+        boolean processParam(NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext);
+    }
+    interface ProcessNodeAction {
+        void processNode(NDocAllArgumentReader info, NDocNodeCustomBuilderContext buildContext);
     }
 }
