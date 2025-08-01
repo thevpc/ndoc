@@ -4,14 +4,13 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
-import net.thevpc.ndoc.api.parser.NDocResourceNew;
+import net.thevpc.ndoc.api.source.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResourceMonitor;
+import net.thevpc.ndoc.engine.parser.resources.NDocResourceNew;
 import net.thevpc.ndoc.api.renderer.*;
 
 
-import net.thevpc.ndoc.engine.renderer.HImageUtils;
-import net.thevpc.ndoc.api.util.PagesHelper;
+import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -54,7 +53,7 @@ public class DocumentView {
         frame = new JFrame();
         frame.setTitle("NDoc Viewer");
         frame.setIconImage(
-                HImageUtils.resizeImage(
+                NDocUtilsImages.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/ndoc/ndoc.png")).getImage(),
                         16, 16)
         );
@@ -260,7 +259,7 @@ public class DocumentView {
                 document = engine.documentFactory().ofDocument(null);
             }
             document.resources().save();
-            List<NDocNode> pages = PagesHelper.resolvePages(document);
+            List<NDocNode> pages = engine.tools().resolvePages(document);
             pageViews.clear();
             contentPane.removeAll();
             pagesMapById.clear();
