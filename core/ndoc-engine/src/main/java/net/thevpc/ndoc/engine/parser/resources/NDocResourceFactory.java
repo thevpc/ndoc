@@ -1,5 +1,6 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser.resources;
 
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.io.NPath;
 
 import java.io.InputStream;
