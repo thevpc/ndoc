@@ -1,15 +1,19 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocAllArgumentReader;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
+import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
 
-public class NDocArgumentReaderImpl implements NDocArgumentReader {
+public class NDocArgumentReaderImpl implements NDocArgumentReader, NDocAllArgumentReader {
     private String id;
     private String uid;
-    private NElement tsonElement;
+    private NElement element;
     private NDocNode node;
     private NElement[] arguments;
     private List<NElement> availableArguments;
@@ -45,11 +49,11 @@ public class NDocArgumentReaderImpl implements NDocArgumentReader {
 
     @Override
     public NElement element() {
-        return tsonElement;
+        return element;
     }
 
-    public NDocArgumentReader setTsonElement(NElement tsonElement) {
-        this.tsonElement = tsonElement;
+    public NDocArgumentReader setElement(NElement tsonElement) {
+        this.element = tsonElement;
         return this;
     }
 
