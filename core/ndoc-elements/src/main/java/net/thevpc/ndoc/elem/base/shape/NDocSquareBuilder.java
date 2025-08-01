@@ -6,12 +6,10 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 
 public class NDocSquareBuilder implements NDocNodeCustomBuilder {
@@ -34,14 +32,14 @@ public class NDocSquareBuilder implements NDocNodeCustomBuilder {
         double x = b.getX();
         double y = b.getY();
         NDocGraphics g = rendererContext.graphics();
-        Boolean threeD = NDocValueByName.get3D(p, rendererContext);
-        Boolean raised = NDocValueByName.getRaised(p, rendererContext);
+        Boolean threeD = rendererContext.get3D(p);
+        Boolean raised = rendererContext.getRaised(p);
         if (raised != null) {
             if (threeD == null) {
                 threeD = true;
             }
         }
-        NDocDouble2 roundCorners = NDocValueByName.getRoundCornerArcs(p, rendererContext);
+        NDocDouble2 roundCorners = rendererContext.getRoundCornerArcs(p);
         boolean round = roundCorners != null;
         boolean d3 = threeD == null ? false : threeD;
         if (!rendererContext.isDry()) {
@@ -53,11 +51,11 @@ public class NDocSquareBuilder implements NDocNodeCustomBuilder {
             int finalHh = hh;
             if (!round && !d3) {
                 boolean someBG = false;
-                if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, rendererContext)) {
+                if (someBG = rendererContext.applyBackgroundColor(p)) {
                     g.fillRect((int) x, (int) y, ww, hh);
                 }
-                if (NDocNodeRendererUtils.applyForeground(p, g, rendererContext, !someBG)) {
-                    NDocNodeRendererUtils.withStroke(p, g, rendererContext, () -> {
+                if (rendererContext.applyForeground(p, !someBG)) {
+                    rendererContext.withStroke(p, () -> {
                         g.drawRect((int) x, (int) y, finalWw, finalHh);
                     });
                 }
@@ -65,27 +63,27 @@ public class NDocSquareBuilder implements NDocNodeCustomBuilder {
                 double cx = NDocUtils.doubleOf(roundCorners.getX()) / 100 * rendererContext.getGlobalBounds().getWidth();
                 double cy = NDocUtils.doubleOf(roundCorners.getY()) / 100 * rendererContext.getGlobalBounds().getHeight();
                 boolean someBG = false;
-                if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, rendererContext)) {
+                if (someBG = rendererContext.applyBackgroundColor(p)) {
                     g.fillRoundRect((int) x, (int) y, ww, hh, (int) cx, (int) cy);
                 }
-                if (NDocNodeRendererUtils.applyForeground(p, g, rendererContext, !someBG)) {
-                    NDocNodeRendererUtils.withStroke(p, g, rendererContext, () -> {
+                if (rendererContext.applyForeground(p, !someBG)) {
+                    rendererContext.withStroke(p, () -> {
                         g.drawRoundRect((int) x, (int) y, finalWw, finalHh, (int) cx, (int) cy);
                     });
                 }
             } else if (threeD) {
                 boolean someBG = false;
-                if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, rendererContext)) {
+                if (someBG = rendererContext.applyBackgroundColor(p)) {
                     g.fill3DRect((int) x, (int) y, ww, hh, raised != null && raised);
                 }
-                if (NDocNodeRendererUtils.applyForeground(p, g, rendererContext, !someBG)) {
-                    NDocNodeRendererUtils.withStroke(p, g, rendererContext, () -> {
+                if (rendererContext.applyForeground(p, !someBG)) {
+                    rendererContext.withStroke(p, () -> {
                         g.draw3DRect((int) x, (int) y, finalWw, finalHh, raised != null && raised);
                     });
                 }
             }
         }
-        NDocNodeRendererUtils.paintDebugBox(p, rendererContext, g, b);
+        rendererContext.paintDebugBox(p, b);
     }
 
 }
