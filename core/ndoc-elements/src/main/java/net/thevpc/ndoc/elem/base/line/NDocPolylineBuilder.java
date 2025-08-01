@@ -7,15 +7,13 @@ import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
-import net.thevpc.ndoc.api.document.style.NDocPropUtils;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.engine.NDocEngineTools;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.util.NOptional;
@@ -29,6 +27,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
         builderContext.id(NDocNodeType.POLYLINE)
                 .parseParam((info, buildContext) -> {
                     NElement k = info.peek();
+                    NDocEngineTools tools = buildContext.engine().tools();
                     if (k != null) {
                         if(k.isNamedPair()) {
                             NPairElement kk=k.asPair().get();
@@ -38,7 +37,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                 if (buildContext.isAncestorScene3D(info.node())) {
                                     NOptional<NDocPoint3D> p2d = NDocObjEx.of(kk.value()).asHPoint3D();
                                     if (p2d.isPresent()) {
-                                        NDocPropUtils.addPoint(info.node(), p2d.get());
+                                        tools.addPoint(info.node(), p2d.get());
                                         info.read();
                                         return true;
                                     } else {
@@ -47,7 +46,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                 } else {
                                     NOptional<NDocPoint2D> p2d = NDocObjEx.of(kk.value()).asHPoint2D();
                                     if (p2d.isPresent()) {
-                                        NDocPropUtils.addPoint(info.node(), p2d.get());
+                                        tools.addPoint(info.node(), p2d.get());
                                         info.read();
                                         return true;
                                     } else {
@@ -59,7 +58,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                 if (buildContext.isAncestorScene3D(info.node())) {
                                     NOptional<NDocPoint3D[]> p2d = NDocObjEx.of(kk.value()).asHPoint3DArray();
                                     if (p2d.isPresent()) {
-                                        NDocPropUtils.addPoints(info.node(), p2d.get());
+                                        tools.addPoints(info.node(), p2d.get());
                                         info.read();
                                         return true;
                                     } else {
@@ -69,7 +68,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                     NOptional<NDocPoint2D[]> p2d = NDocObjEx.of(kk.value()).asHPoint2DArray();
                                     if (p2d.isPresent()) {
                                         info.read();
-                                        NDocPropUtils.addPoints(info.node(), p2d.get());
+                                        tools.addPoints(info.node(), p2d.get());
                                         return true;
                                     } else {
                                         return false;
@@ -81,7 +80,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                 NOptional<NDocPoint3D> p2d = NDocObjEx.of(k).asHPoint3D();
                                 if (p2d.isPresent()) {
                                     buildContext.addParamName(NDocPropName.POINTS);
-                                    NDocPropUtils.addPoint(info.node(), p2d.get());
+                                    tools.addPoint(info.node(), p2d.get());
                                     info.read();
                                     return true;
                                 } else {
@@ -91,7 +90,7 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
                                 NOptional<NDocPoint2D> p2d = NDocObjEx.of(k).asHPoint2D();
                                 if (p2d.isPresent()) {
                                     buildContext.addParamName(NDocPropName.POINTS);
-                                    NDocPropUtils.addPoint(info.node(), p2d.get());
+                                    tools.addPoint(info.node(), p2d.get());
                                     info.read();
                                     return true;
                                 } else {
@@ -112,12 +111,12 @@ public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
         NDocGraphics g = rendererContext.graphics();
         NDocPoint2D[] points = NDocObjEx.ofProp(p, NDocPropName.POINTS).asHPoint2DArray().get();
         if (!rendererContext.isDry()) {
-            Paint fc = NDocValueByName.getForegroundColor(p, rendererContext, true);
+            Paint fc = rendererContext.getForegroundColor(p, true);
             g.draw2D(NDocElement2DFactory.polyline(points)
-                    .setLineStroke(NDocNodeRendererUtils.resolveStroke(p, g, rendererContext))
+                    .setLineStroke(rendererContext.resolveStroke(p))
                     .setLinePaint(fc));
         }
-        NDocNodeRendererUtils.paintDebugBox(p, rendererContext, g, b);
+        rendererContext.paintDebugBox(p, b);
     }
 
 }
