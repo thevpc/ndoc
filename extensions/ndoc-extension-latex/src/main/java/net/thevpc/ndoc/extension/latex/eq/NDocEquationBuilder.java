@@ -11,13 +11,11 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -37,7 +35,7 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
         builderContext.id(NDocNodeType.EQUATION)
                 .alias("eq")
                 .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
                 .renderComponent(this::renderMain)
                 .sizeRequirements(this::sizeRequirements)
                 .selfBounds(this::selfBounds);
@@ -74,7 +72,7 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (NDocValueByName.getFontSize(p, ctx) * 1.0);
+            float size = (float) (ctx.getFontSize(p) * 1.0);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
@@ -84,21 +82,21 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
     }
 
 
-    public void renderMain(NDocNode p, NDocNodeRendererContext rendererContext,NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NDocNode p, NDocNodeRendererContext renderContext,NDocNodeCustomBuilderContext builderContext) {
         String message = NDocObjEx.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
-        NDocGraphics g = rendererContext.graphics();
+        NDocGraphics g = renderContext.graphics();
 
 
         String msg = NStringUtils.trim(message);
         if (msg.isEmpty()) {
-            NDocBounds2 selfBounds = rendererContext.selfBounds(p);
+            NDocBounds2 selfBounds = renderContext.selfBounds(p);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
-            if (!rendererContext.isDry()) {
-                if (NDocNodeRendererUtils.applyBackgroundColor((NDocNode) p, g, rendererContext)) {
+            if (!renderContext.isDry()) {
+                if (renderContext.applyBackgroundColor((NDocNode) p)) {
                     g.fillRect((int) x, (int) y, NDocUtils.intOf(selfBounds.getWidth()), NDocUtils.intOf(selfBounds.getHeight()));
                 }
             }
@@ -112,30 +110,30 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
                 formula = new TeXFormula("?error?");
                 ex.printStackTrace();
             }
-            float size = (float) (NDocValueByName.getFontSize(p, rendererContext) /* * 0.43 */);
+            float size = (float) (renderContext.getFontSize(p) /* * 0.43 */);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            NDocBounds2 selfBounds = NDocValueByName.selfBounds((NDocNode) p
+            NDocBounds2 selfBounds = renderContext.selfBounds((NDocNode) p
                     , new NDocDouble2(icon.getIconWidth(), icon.getIconHeight())
                     , null
-                    , rendererContext);
+                    );
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
-            if (!rendererContext.isDry()) {
-                NDocNodeRendererUtils.paintBackground(p, rendererContext, g, selfBounds);
+            if (!renderContext.isDry()) {
+                renderContext.paintBackground(p, selfBounds);
                 if (error) {
                     g.setColor(Color.RED);
                     g.fillRect(selfBounds);
                 }
-                Paint fg = NDocValueByName.getForegroundColor(p, rendererContext,true);
-                icon.setForeground(NDocNodeRendererUtils.colorFromPaint(fg).orElse(Color.BLACK));
+                Paint fg = renderContext.getForegroundColor(p,true);
+                icon.setForeground(renderContext.colorFromPaint(fg).orElse(Color.BLACK));
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
 
-                NDocNodeRendererUtils.paintBorderLine(p, rendererContext, g, selfBounds);
+                renderContext.paintBorderLine(p, selfBounds);
             }
         }
     }
