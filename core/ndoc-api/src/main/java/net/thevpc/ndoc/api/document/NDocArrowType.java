@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.model;
+package net.thevpc.ndoc.api.document;
 
 public enum NDocArrowType {
     DEFAULT,
