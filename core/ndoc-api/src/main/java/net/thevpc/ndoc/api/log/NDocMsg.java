@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.api.document;
+package net.thevpc.ndoc.api.log;
 
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 
 public class NDocMsg {
