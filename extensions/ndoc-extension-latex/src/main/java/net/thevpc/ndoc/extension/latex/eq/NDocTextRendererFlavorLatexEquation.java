@@ -3,13 +3,10 @@ package net.thevpc.ndoc.extension.latex.eq;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.*;
+import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.ndoc.api.util.Colors;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
-import net.thevpc.ndoc.api.renderer.text.NDocRichTextToken;
-import net.thevpc.ndoc.api.renderer.text.NDocRichTextTokenType;
-import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -34,7 +31,7 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
                     NDocRichTextTokenType.IMAGE_PAINTER,
                     text.toString()
             );
-            double fontSize = NDocValueByName.getFontSize(p, ctx);
+            double fontSize = ctx.getFontSize(p);
             r.imagePainter = this.createLatex(text, fontSize,options,p,ctx);
             NDocDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
@@ -102,7 +99,7 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
         }
         Color fg= NDocUtils.paintAsColor(NDocUtils.resolveForegroundColor(options));
         if(fg==null) {
-            fg = NDocUtils.paintAsColor(NDocValueByName.getForegroundColor(p, ctx, true));
+            fg = NDocUtils.paintAsColor(ctx.getForegroundColor(p, true));
         }
         if(fg==null) {
             fg = Color.BLACK;
