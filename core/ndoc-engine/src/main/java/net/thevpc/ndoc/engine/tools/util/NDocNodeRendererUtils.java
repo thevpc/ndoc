@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.util;
+package net.thevpc.ndoc.engine.tools.util;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
@@ -9,6 +9,7 @@ import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
