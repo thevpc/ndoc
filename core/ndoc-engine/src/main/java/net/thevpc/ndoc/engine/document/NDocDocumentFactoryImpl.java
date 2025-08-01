@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.document;
 import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import  net.thevpc.ndoc.api.document.style.NDocProp;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import  net.thevpc.ndoc.api.document.style.NDocProps;
