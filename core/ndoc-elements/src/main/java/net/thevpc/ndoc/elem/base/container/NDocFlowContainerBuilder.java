@@ -9,13 +9,11 @@ import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +46,7 @@ public class NDocFlowContainerBuilder implements NDocNodeCustomBuilder {
 
     private Elems compute(NDocNode p, NDocBounds2 expectedBounds, NDocNodeRendererContext ctx) {
         List<NDocNode> texts = p.children()
-                .stream().filter(x -> NDocValueByName.isVisible(x, ctx)).collect(Collectors.toList());
+                .stream().filter(x -> ctx.isVisible(x)).collect(Collectors.toList());
         Elems e = new Elems();
         e.elems = new Elem[texts.size()];
         double allWidth = 0;
@@ -110,11 +108,11 @@ public class NDocFlowContainerBuilder implements NDocNodeCustomBuilder {
 
         NDocBounds2 bg = ctx.selfBounds(p);
         Elems ee = compute(p, bg, ctx);
-        NDocBounds2 newExpectedBounds = NDocValueByName.selfBounds(p, ee.size, null, ctx);
+        NDocBounds2 newExpectedBounds = ctx.selfBounds(p, ee.size, null);
 
 //        g.setColor(Color.BLUE);
 //        g.drawRect(newExpectedBounds);
-        if (NDocValueByName.getDebugLevel(p, ctx) >= 10) {
+        if (ctx.getDebugLevel(p) >= 10) {
             g.debugString(
                     "Flow:\n"
                             + "expected=" + bg + "\n"
@@ -128,7 +126,7 @@ public class NDocFlowContainerBuilder implements NDocNodeCustomBuilder {
 
         bg = bg.expand(newExpectedBounds);
         if (!ctx.isDry()) {
-            NDocNodeRendererUtils.paintBackground(p, ctx, g, bg);
+            ctx.paintBackground(p, bg);
         }
 
         for (Elem elem : ee.elems) {
@@ -137,6 +135,6 @@ public class NDocFlowContainerBuilder implements NDocNodeCustomBuilder {
         }
 
 
-        NDocNodeRendererUtils.paintBorderLine(p, ctx, g, bg);
+        ctx.paintBorderLine(p, bg);
     }
 }
