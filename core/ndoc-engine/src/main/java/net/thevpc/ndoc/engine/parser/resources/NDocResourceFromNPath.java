@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser.resources;
 
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
