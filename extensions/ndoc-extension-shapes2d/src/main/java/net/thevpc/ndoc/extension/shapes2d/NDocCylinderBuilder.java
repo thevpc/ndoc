@@ -8,12 +8,10 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.util.NOptional;
 
@@ -41,10 +39,10 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
 
     public void render(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
         renderContext = renderContext.withDefaultStyles(p, defaultStyles);
-        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, NDocPropName.SHADOW, renderContext);
+        NOptional<Shadow> shadowOptional = renderContext.readStyleAsShadow(p, NDocPropName.SHADOW);
 
 
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, renderContext);
+        NDocBounds2 b = renderContext.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -93,9 +91,9 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
 
             }
             double finalEllipse_height = ellipse_height;
-            if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, renderContext)) {
+            if (someBG = renderContext.applyBackgroundColor(p)) {
 
-                NDocNodeRendererUtils.withStroke(p, g, renderContext, () -> {
+                renderContext.withStroke(p, () -> {
                     g.setColor(sideColor);
                     g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
                     g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, NDocUtils.intOf(width), NDocUtils.intOf(finalEllipse_height));
@@ -131,8 +129,8 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
             }
 
 
-            if (NDocNodeRendererUtils.applyForeground(p, g, renderContext, !someBG)) {
-                NDocNodeRendererUtils.withStroke(p, g, renderContext, () -> {
+            if (renderContext.applyForeground(p, !someBG)) {
+                renderContext.withStroke(p, () -> {
                     g.drawOval((int) x, (int) y, NDocUtils.doubleOf(width), NDocUtils.intOf(finalEllipse_height));
 
                     g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
@@ -147,7 +145,7 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
                     }
                 });
             }
-            NDocNodeRendererUtils.paintDebugBox(p, renderContext, g, b);
+            renderContext.paintDebugBox(p, b);
         }
     }
 }
