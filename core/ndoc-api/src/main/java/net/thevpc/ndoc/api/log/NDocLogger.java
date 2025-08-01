@@ -1,8 +1,7 @@
-package net.thevpc.ndoc.api.engine;
+package net.thevpc.ndoc.api.log;
 
 
-import net.thevpc.ndoc.api.document.NDocMsg;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.util.NMsg;
 
 public interface NDocLogger {
