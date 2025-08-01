@@ -12,9 +12,9 @@ import net.thevpc.ndoc.api.document.NDocDocumentClass;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.parser.NDocResource;
-import net.thevpc.ndoc.api.parser.NDocResourceMonitor;
-import net.thevpc.ndoc.api.util.PagesHelper;
+import net.thevpc.ndoc.api.source.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResourceMonitor;
+import net.thevpc.ndoc.engine.tools.util.NDocUtilsPages;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -128,6 +128,6 @@ public class DefaultNDocument implements NDocument, Cloneable {
 
     @Override
     public List<NDocNode> pages() {
-        return PagesHelper.resolvePages(this);
+        return NDocUtilsPages.resolvePages(this);
     }
 }
