@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document.node;
 
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 
 import java.util.ArrayList;
 import java.util.List;
