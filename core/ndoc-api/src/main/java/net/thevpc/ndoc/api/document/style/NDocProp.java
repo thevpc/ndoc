@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocItem;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
