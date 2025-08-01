@@ -91,7 +91,7 @@ public class NDocUnorderedListBuilder implements NDocNodeCustomBuilder {
                 newNode.setProperty(s, v);
             }
         }
-        if(NDocValueByName.isDebug(p, ctx)){
+        if(ctx.isDebug(p)){
             Object v = ctx.computePropertyValue(p, NDocPropName.DRAW_GRID).orNull();
             if(v==null){
                 newNode.setProperty(NDocPropName.DRAW_GRID, NElement.ofBoolean(true));
