@@ -3,14 +3,12 @@ package net.thevpc.ndoc.extension.tutorials.myshape;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -30,13 +28,13 @@ public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
     }
 
     public void render(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext) {
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, renderContext);
+        NDocBounds2 b = renderContext.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
         double height = b.getHeight();
 
-        Paint color = NDocValueByName.getForegroundColor(p, renderContext, true);
+        Paint color = renderContext.getForegroundColor(p, true);
         NDocPoint2D base = NDocObjEx.of(p.getPropertyValue("base")).asHPoint2D().orNull();
         if (base == null) {
             Double base3 = NDocObjEx.of(p.getPropertyValue("base")).asDouble().orNull();
@@ -80,7 +78,7 @@ public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
         arrow.closePath();
         g.draw(arrow);
         g.fill(arrow);
-        NDocNodeRendererUtils.paintDebugBox(p, renderContext, g, b);
+        renderContext.paintDebugBox(p, b);
 
     }
 }
