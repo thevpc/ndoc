@@ -11,9 +11,7 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.*;
-import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
-import net.thevpc.ndoc.api.util.HTextUtils;
+import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 
@@ -27,20 +25,21 @@ public class NDocTextBuilder implements NDocNodeCustomBuilder {
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.TEXT)
+                .parseAny(x->true)
                 .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
+                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
                     NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                    info.getContext().document().resources().add(nPath);
+                    info.parseContext().document().resources().add(nPath);
                     return NDocProp.ofString(uid, nPath.readString().trim());
                 }).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
-                .parseAny(x->true)
+                .parseDefaultParams()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
                 .renderText(this::buildText,this::parseImmediate)
         ;
     }
 
     public void buildText(String text, NDocTextOptions options, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder,NDocNodeCustomBuilderContext builderContext) {
-        NDocTextTokenParseHelper aa = new NDocTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(HTextUtils.trimBloc(text).toCharArray()),builderContext);
+        NDocTextTokenParseHelper aa = new NDocTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(ctx.engine().tools().trimBloc(text).toCharArray()),builderContext);
         List<NDocTextToken> all=aa.parse();
         for (NDocTextToken a : all) {
             consumeSpecialTokenType(a, p, ctx, builder);
