@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -21,17 +21,18 @@ public class NDocSourceBuilder implements NDocNodeCustomBuilder {
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.SOURCE)
+                .parseParam().matchesName().matchesLeading().store(NDocPropName.LANG).then()
                 .parseParam().named(NDocPropName.VALUE, NDocPropName.LANG).then()
-                .parseParam().named(NDocPropName.FILE).set(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
+                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
                     @Override
-                    public NDocProp resolve(String uid, NElement value, NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
+                    public NDocProp resolve(String uid, NElement value, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
                         NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                        info.getContext().document().resources().add(nPath);
+                        info.parseContext().document().resources().add(nPath);
                         return NDocProp.ofString(uid, nPath.readString().trim());
                     }
                 }).then()
-                .parseParam().matchesName().set(NDocPropName.LANG).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).then()
+                .parseDefaultParams()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
                 .renderText(this::renderTextBuildText)
         ;
     }
