@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.debug;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.function.Supplier;
