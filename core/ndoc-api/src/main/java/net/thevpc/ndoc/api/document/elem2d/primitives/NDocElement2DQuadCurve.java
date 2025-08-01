@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document.elem2d.primitives;
 
-import net.thevpc.ndoc.api.model.HArrow;
+import net.thevpc.ndoc.api.document.NDocArrow;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitiveType;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 
@@ -8,8 +8,8 @@ public class NDocElement2DQuadCurve extends AbstractNDocElement2DPrimitive {
     private NDocPoint2D from;
     private NDocPoint2D to;
     private NDocPoint2D ctrl;
-    private HArrow startArrow;
-    private HArrow endArrow;
+    private NDocArrow startArrow;
+    private NDocArrow endArrow;
 
     public NDocElement2DQuadCurve(NDocPoint2D from, NDocPoint2D to) {
         this.from = from;
@@ -49,20 +49,20 @@ public class NDocElement2DQuadCurve extends AbstractNDocElement2DPrimitive {
         return this;
     }
 
-    public HArrow getStartArrow() {
+    public NDocArrow getStartArrow() {
         return startArrow;
     }
 
-    public NDocElement2DQuadCurve setStartArrow(HArrow startType) {
+    public NDocElement2DQuadCurve setStartArrow(NDocArrow startType) {
         this.startArrow = startType;
         return this;
     }
 
-    public HArrow getEndArrow() {
+    public NDocArrow getEndArrow() {
         return endArrow;
     }
 
-    public NDocElement2DQuadCurve setEndArrow(HArrow toType) {
+    public NDocElement2DQuadCurve setEndArrow(NDocArrow toType) {
         this.endArrow = toType;
         return this;
     }
