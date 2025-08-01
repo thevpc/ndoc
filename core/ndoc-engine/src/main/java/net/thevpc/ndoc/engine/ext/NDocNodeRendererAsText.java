@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.engine.renderer.text.NDocTextRendererBase;
 
