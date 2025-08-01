@@ -1,6 +1,5 @@
 package net.thevpc.ndoc.api.renderer;
 
-import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.nuts.util.NAssert;
 
 import java.util.HashMap;
