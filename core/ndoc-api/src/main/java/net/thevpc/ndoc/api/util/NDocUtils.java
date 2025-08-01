@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocItemList;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
@@ -268,7 +268,7 @@ public class NDocUtils {
         throw new IllegalArgumentException("Unsupported toElement(" + o.getClass().getName() + ")");
     }
 
-    public static Object fromTson(NElement v) {
+    public static Object fromElement(NElement v) {
         if (v == null) {
             return null;
         }
@@ -284,7 +284,7 @@ public class NDocUtils {
             case LINE_STRING:
                 return v.asStringValue().get();
         }
-        throw new IllegalArgumentException("unsupported yet : fromTson(" + v.type() + ")");
+        throw new IllegalArgumentException("unsupported yet : fromElement(" + v.type() + ")");
     }
 
     public static String[] uids(String[]... ids) {
