@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.parser.ctrlnodes;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 
 public class CtrlNDocNodeName extends CtrlNDocNodeBase {
