@@ -5,7 +5,7 @@ import net.thevpc.nuts.util.NStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HTextUtils {
+public class NDocUtilsText {
     public static String trimBloc(String code) {
         List<String> rows = new ArrayList<>();
         for (String string : code.split("[\n\r]")) {
