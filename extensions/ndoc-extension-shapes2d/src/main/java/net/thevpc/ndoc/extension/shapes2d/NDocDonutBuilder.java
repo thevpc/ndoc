@@ -6,12 +6,10 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;
@@ -49,7 +47,7 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
                                   ) {
         renderContext = renderContext.withDefaultStyles(p, defaultStyles);
 
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, renderContext);
+        NDocBounds2 b = renderContext.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -76,7 +74,7 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
         g.setColor(Color.black);
         if (!renderContext.isDry()) {
             double finalInnerRadius = innerRadius;
-            NDocNodeRendererUtils.withStroke(p, g, renderContext, () -> {
+            renderContext.withStroke(p, () -> {
                 int sliceCount = NDocObjEx.of(p.getPropertyValue(NDocPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
@@ -137,8 +135,8 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
             });
 
 
-//            if (NDocNodeRendererUtils.applyForeground(p, g, renderContext, !someBG)) {
-//                NDocNodeRendererUtils.applyStroke(p, g, renderContext);
+//            if (renderContext.applyForeground(p, !someBG)) {
+//                renderContext.applyStroke(p);
 //
 //                double centerX = x + width / 2;
 //                double centerY = y + height / 2;
@@ -147,7 +145,7 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
 //                g.drawOval((int) (centerX - innerRadius), (int) (centerY - innerRadius), (int) (innerRadius * 2), (int) (innerRadius * 2));
 //            }
 
-            NDocNodeRendererUtils.paintDebugBox(p, renderContext, g, b);
+            renderContext.paintDebugBox(p, b);
         }
     }
 
