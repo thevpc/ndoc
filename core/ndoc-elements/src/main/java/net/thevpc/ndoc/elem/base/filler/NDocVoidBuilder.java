@@ -16,7 +16,7 @@ public class NDocVoidBuilder implements NDocNodeCustomBuilder {
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.VOID)
-                .parseDefaults()
+                .parseDefaultParams()
         ;
     }
 
