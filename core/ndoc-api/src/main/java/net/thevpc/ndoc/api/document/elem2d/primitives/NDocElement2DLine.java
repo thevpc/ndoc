@@ -1,14 +1,14 @@
 package net.thevpc.ndoc.api.document.elem2d.primitives;
 
-import net.thevpc.ndoc.api.model.HArrow;
+import net.thevpc.ndoc.api.document.NDocArrow;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DPrimitiveType;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 
 public class NDocElement2DLine extends AbstractNDocElement2DPrimitive {
     private NDocPoint2D from;
     private NDocPoint2D to;
-    private HArrow startArrow;
-    private HArrow endArrow;
+    private NDocArrow startArrow;
+    private NDocArrow endArrow;
 
     public NDocElement2DLine(NDocPoint2D from, NDocPoint2D to) {
         this.from = from;
@@ -38,20 +38,20 @@ public class NDocElement2DLine extends AbstractNDocElement2DPrimitive {
         return this;
     }
 
-    public HArrow getStartArrow() {
+    public NDocArrow getStartArrow() {
         return startArrow;
     }
 
-    public NDocElement2DLine setStartArrow(HArrow startType) {
+    public NDocElement2DLine setStartArrow(NDocArrow startType) {
         this.startArrow = startType;
         return this;
     }
 
-    public HArrow getEndArrow() {
+    public NDocArrow getEndArrow() {
         return endArrow;
     }
 
-    public NDocElement2DLine setEndArrow(HArrow toType) {
+    public NDocElement2DLine setEndArrow(NDocArrow toType) {
         this.endArrow = toType;
         return this;
     }
