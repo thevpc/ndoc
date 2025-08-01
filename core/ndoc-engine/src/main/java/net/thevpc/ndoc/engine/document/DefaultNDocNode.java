@@ -5,7 +5,7 @@ import net.thevpc.ndoc.api.document.style.*;
 import net.thevpc.ndoc.api.eval.NDocFunction;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.NDocAlign;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -751,7 +751,7 @@ public class DefaultNDocNode implements NDocNode {
 //        return this;
 //    }
 //
-    private NElement toTson0() {
+    private NElement toElem0() {
         if (NDocNodeType.CTRL_ASSIGN.equals(type())) {
             return NElement.ofPair("$" + getName(), getPropertyValue(NDocPropName.VALUE).orNull());
         }
@@ -779,7 +779,7 @@ public class DefaultNDocNode implements NDocNode {
             }
             for (NDocNode child : children()) {
                 if (child instanceof DefaultNDocNode) {
-                    o.add(((DefaultNDocNode) child).toTson0());
+                    o.add(((DefaultNDocNode) child).toElem0());
                 } else {
                     o.add(NElement.ofString(child.toString()));
                 }
@@ -809,7 +809,7 @@ public class DefaultNDocNode implements NDocNode {
 
     @Override
     public String toString() {
-        return toTson0().toString();
+        return toElem0().toString();
     }
 
     @Override
