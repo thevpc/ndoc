@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.api.renderer;
+package net.thevpc.ndoc.api.renderer.text;
 
 public class NDocTextTokenText extends NDocTextTokenBase {
     private String value;
