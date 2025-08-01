@@ -1,6 +1,4 @@
-package net.thevpc.ndoc.api.renderer;
-
-import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
+package net.thevpc.ndoc.api.renderer.text;
 
 public interface NDocTextToken {
     NDocTextOptions options();
