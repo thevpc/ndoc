@@ -2,9 +2,9 @@ package net.thevpc.ndoc.elem.base.text;
 
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
-import net.thevpc.ndoc.api.renderer.NDocTextToken;
-import net.thevpc.ndoc.api.renderer.NDocTextTokenText;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
+import net.thevpc.ndoc.api.renderer.text.NDocTextToken;
+import net.thevpc.ndoc.api.renderer.text.NDocTextTokenText;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import net.thevpc.nuts.util.NStringUtils;
