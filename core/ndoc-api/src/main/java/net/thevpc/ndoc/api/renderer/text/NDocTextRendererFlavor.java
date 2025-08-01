@@ -1,8 +1,7 @@
-package net.thevpc.ndoc.api.renderer;
+package net.thevpc.ndoc.api.renderer.text;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 
 import java.util.List;
