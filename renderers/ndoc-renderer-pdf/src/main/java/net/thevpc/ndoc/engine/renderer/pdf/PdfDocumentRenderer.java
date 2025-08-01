@@ -25,7 +25,6 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.*;
-import net.thevpc.ndoc.api.util.PagesHelper;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
@@ -35,7 +34,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 /**
  * @author vpc
  */
-public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer implements NDocDocumentStreamRenderer {
+public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implements NDocDocumentStreamRenderer {
 
     private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
 
@@ -293,7 +292,7 @@ public class PdfDocumentRenderer extends AbstractNDocDocumentStreamRenderer impl
         try {
             NDocDocumentStreamRenderer htmlRenderer = engine.newHtmlRenderer().get();
             List<Supplier<InputStream>> all = new ArrayList<>();
-            for (NDocNode page : PagesHelper.resolvePages(part)) {
+            for (NDocNode page : engine.tools().resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
                 if (y != null) {
                     all.add(y);
