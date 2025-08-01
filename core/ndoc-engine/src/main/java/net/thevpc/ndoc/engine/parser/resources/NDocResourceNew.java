@@ -1,12 +1,8 @@
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser.resources;
 
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
-
-import java.time.Instant;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class NDocResourceNew implements NDocResource {
     public NDocResourceNew() {
