@@ -1,15 +1,16 @@
-package net.thevpc.ndoc.api.renderer.text;
+package net.thevpc.ndoc.engine.renderer.text;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.*;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
-import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.renderer.NDocNodeRendererBase;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
@@ -39,7 +40,7 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
     }
 
     public NDocBounds2 bgBounds(NDocNode p, NDocNodeRendererContext ctx) {
-        return NDocValueByName.selfBounds(p, null, null, ctx);
+        return ctx.selfBounds(p, null, null);
     }
 
     public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx) {
