@@ -2,7 +2,6 @@ package net.thevpc.ndoc.api.renderer;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.engine.NDocLogger;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 
 import net.thevpc.nuts.io.NPath;
 
-public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRenderer {
+public abstract class NDocDocumentRendererBase implements NDocDocumentRenderer {
 
     private List<NDocDocumentRendererListener> eventListeners = new ArrayList<>();
     protected NDocDocumentRendererListener eventListenerDelegate = new NDocDocumentRendererListener() {
@@ -51,7 +50,7 @@ public abstract class AbstractNDocDocumentRenderer implements NDocDocumentRender
     };
     protected final NDocEngine engine;
 
-    public AbstractNDocDocumentRenderer(NDocEngine engine) {
+    public NDocDocumentRendererBase(NDocEngine engine) {
         this.engine = engine;
     }
 
