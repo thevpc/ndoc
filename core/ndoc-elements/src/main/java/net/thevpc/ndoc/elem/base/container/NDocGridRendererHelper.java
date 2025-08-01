@@ -5,9 +5,7 @@ import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.SizeD;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -62,7 +60,7 @@ public class NDocGridRendererHelper {
         NDocGraphics g = ctx.graphics();
 
         if (drawBackground) {
-            if (NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+            if (ctx.applyBackgroundColor(p)) {
                 g.fillRect(expectedBounds);
             }
         }
@@ -73,8 +71,8 @@ public class NDocGridRendererHelper {
                 if (ee.node != null && ee.visible) {
                     NDocNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
                     if (!ctx.isDry()) {
-                        if (NDocValueByName.isDebug(p, ctx)) {
-                            g.setColor(NDocValueByName.getDebugColor(p, ctx));
+                        if (ctx.isDebug(p)) {
+                            g.setColor(ctx.getDebugColor(p));
                             g.setFont(new Font("Verdana", Font.PLAIN, 8));
                             g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
                         }
@@ -90,8 +88,8 @@ public class NDocGridRendererHelper {
                 if (ee.colRow != null) {
                     NDocNodeRendererContext ctx3 = ctx.withBounds(p, ee.bounds);
                     if (!ctx.isDry()) {
-                        if (NDocValueByName.isDebug(p, ctx)) {
-                            g.setColor(NDocValueByName.getDebugColor(p, ctx));
+                        if (ctx.isDebug(p)) {
+                            g.setColor(ctx.getDebugColor(p));
                             g.setFont(new Font("Verdana", Font.PLAIN, 8));
                             g.drawString(String.valueOf(ee.index), ee.bounds.getCenterX(), ee.bounds.getCenterY());
                         }
@@ -101,7 +99,7 @@ public class NDocGridRendererHelper {
             }
             drawGrid(p, r, ctx);
         }
-        NDocNodeRendererUtils.paintBorderLine(p, ctx, g, expectedBounds);
+        ctx.paintBorderLine(p, expectedBounds);
     }
 
     private int[] resolveColsAndRows(NDocNode t, NDocNodeRendererContext ctx) {
@@ -109,8 +107,8 @@ public class NDocGridRendererHelper {
         int minRows = 0;
         for (int i = 0; i < children.size(); i++) {
             NDocNode cc = children.get(i);
-            int colspan = NDocValueByName.getColSpan(cc, ctx);
-            int rowspan = NDocValueByName.getRowSpan(cc, ctx);
+            int colspan = ctx.getColSpan(cc);
+            int rowspan = ctx.getRowSpan(cc);
             if (colspan > minColumns) {
                 minColumns = colspan;
             }
@@ -118,8 +116,8 @@ public class NDocGridRendererHelper {
                 minRows = rowspan;
             }
         }
-        int cols = NDocValueByName.getColumns(t, ctx);
-        int rows = NDocValueByName.getRows(t, ctx);
+        int cols = ctx.getColumns(t);
+        int rows = ctx.getRows(t);
         if (cols < 0) {
             cols = -1;
         }
@@ -148,8 +146,8 @@ public class NDocGridRendererHelper {
             FlagMMap flagmap = new FlagMMap(rows, cols);
             for (int i = 0; i < children.size(); i++) {
                 NDocNode cc = children.get(i);
-                int colspan = NDocValueByName.getColSpan(cc, ctx);
-                int rowspan = NDocValueByName.getRowSpan(cc, ctx);
+                int colspan = ctx.getColSpan(cc);
+                int rowspan = ctx.getRowSpan(cc);
                 flagmap.firstFreeAddRow(colspan, rowspan);
             }
             rows = flagmap.map.length;
@@ -173,8 +171,8 @@ public class NDocGridRendererHelper {
             NDocSizeRequirements NDocSizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
             n.setMinimumSize(new SizeD(NDocSizeRequirements.minX, NDocSizeRequirements.minY));
             n.setPreferredSize(new SizeD(NDocSizeRequirements.preferredX,  NDocSizeRequirements.preferredY));
-            int colSpan = NDocValueByName.getColSpan(cc, ctx);
-            int rowSpan = NDocValueByName.getRowSpan(cc, ctx);
+            int colSpan = ctx.getColSpan(cc);
+            int rowSpan = ctx.getRowSpan(cc);
             n.setGridwidth(colSpan);
             n.setGridheight(rowSpan);
             Point pos = flagmap.firstFreeAddRow(colSpan, rowSpan);
@@ -234,8 +232,8 @@ public class NDocGridRendererHelper {
             NDocNode cc = children.get(i);
             HPagePartExtInfo e = new HPagePartExtInfo();
             e.node = cc;
-            e.colspan = NDocValueByName.getColSpan(cc, ctx);
-            e.rowspan = NDocValueByName.getRowSpan(cc, ctx);
+            e.colspan = ctx.getColSpan(cc);
+            e.rowspan = ctx.getRowSpan(cc);
             if (e.colspan > minColumns) {
                 minColumns = e.colspan;
             }
@@ -247,8 +245,8 @@ public class NDocGridRendererHelper {
             effPositions.add(e);
         }
 
-        int cols = NDocValueByName.getColumns(t, ctx);
-        int rows = NDocValueByName.getRows(t, ctx);
+        int cols = ctx.getColumns(t);
+        int rows = ctx.getRows(t);
         if (cols < 0) {
             cols = -1;
         }
@@ -468,8 +466,8 @@ public class NDocGridRendererHelper {
             return;
         }
         NDocGraphics g = ctx.graphics();
-        if (NDocValueByName.requireDrawGrid(p, ctx)) {
-            if (NDocNodeRendererUtils.applyGridColor(p, g, ctx, true)) {
+        if (ctx.requireDrawGrid(p)) {
+            if (ctx.applyGridColor(p, true)) {
                 for (int i = 0; i < r.wi.colsWeight.length; i++) {
                     g.drawLine(
                             (int) (r.wi.colStart[i] / 100 * r.childrenWidth + r.xOffset),
