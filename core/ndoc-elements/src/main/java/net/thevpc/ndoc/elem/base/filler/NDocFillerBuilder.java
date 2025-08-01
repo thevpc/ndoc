@@ -11,7 +11,6 @@ import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 
 /**
  * @author vpc
@@ -33,10 +32,10 @@ public class NDocFillerBuilder implements NDocNodeCustomBuilder {
                 bounds.getWidth(),
                 bounds.getHeight());
         if (!ctx.isDry()) {
-            NDocNodeRendererUtils.paintBackground(p, ctx, g, bounds);
-            NDocNodeRendererUtils.paintBorderLine(p, ctx, g, b);
+            ctx.paintBackground(p, bounds);
+            ctx.paintBorderLine(p, b);
         }
-        NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+        ctx.paintDebugBox(p, b);
     }
 
 }
