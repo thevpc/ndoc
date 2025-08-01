@@ -1,14 +1,15 @@
-package net.thevpc.ndoc.api.renderer;
+package net.thevpc.ndoc.engine.renderer;
 
-import net.thevpc.ndoc.api.document.elem2d.primitives.*;
 import net.thevpc.ndoc.api.document.elem2d.*;
-import net.thevpc.ndoc.api.document.elem3d.*;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
 public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
 
@@ -57,7 +58,7 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
                             ///HSizeRef sr=new HSizeRef();
                             double rotX = NDocObjEx.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
                             double rotY = NDocObjEx.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
-                            if (NDocValueByName.isDebug(p, ctx)) {
+                            if (ctx.isDebug(p)) {
                                 g.setColor(NDocValueByName.getDebugColor(p, ctx));
                                 g.drawRect(selfBounds);
                                 g.fillRect(rotX - 3, rotY - 3, 6, 6);
@@ -85,7 +86,7 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
     public abstract void renderMain(NDocNode p, NDocNodeRendererContext ctx);
 
     public NDocBounds2 bgBounds(NDocNode p, NDocNodeRendererContext ctx) {
-        return NDocValueByName.selfBounds(p, null, null, ctx);
+        return ctx.selfBounds(p, null, null);
     }
 
     public NDocBounds2 selfBounds(NDocNode t, NDocNodeRendererContext ctx) {
