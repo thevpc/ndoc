@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.extension.plot2d;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -10,7 +9,6 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.MinMax;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NDoubleFunction;
 
@@ -39,7 +37,7 @@ public class NDocPlot2DBuilder implements NDocNodeCustomBuilder {
     }
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        NDocBounds2 b = ctx.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -51,7 +49,7 @@ public class NDocPlot2DBuilder implements NDocNodeCustomBuilder {
         boolean zoom = true;
         MinMax minMaxY = new MinMax();
 
-        Paint color = NDocValueByName.getForegroundColor(p, ctx, true);
+        Paint color = ctx.getForegroundColor(p, true);
 
         NDocGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
@@ -105,7 +103,7 @@ public class NDocPlot2DBuilder implements NDocNodeCustomBuilder {
                     }
                 }
             }
-            NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+            ctx.paintDebugBox(p, b);
         }
     }
 
