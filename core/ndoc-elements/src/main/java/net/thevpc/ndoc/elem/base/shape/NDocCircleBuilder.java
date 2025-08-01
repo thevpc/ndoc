@@ -4,12 +4,10 @@ import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 
 public class NDocCircleBuilder implements NDocNodeCustomBuilder {
@@ -25,7 +23,7 @@ public class NDocCircleBuilder implements NDocNodeCustomBuilder {
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 b = NDocValueByName.selfBounds(p, null, null, ctx);
+        NDocBounds2 b = ctx.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         NDocGraphics g = ctx.graphics();
@@ -35,17 +33,17 @@ public class NDocCircleBuilder implements NDocNodeCustomBuilder {
             int hh = NDocUtils.intOf(b.getHeight());
             ww=Math.min(ww,hh);
             hh=ww;
-            if (someBG = NDocNodeRendererUtils.applyBackgroundColor(p, g, ctx)) {
+            if (someBG = ctx.applyBackgroundColor(p)) {
                 g.fillOval((int) x, (int) y, ww, hh);
             }
-            if (NDocNodeRendererUtils.applyForeground(p, g, ctx, !someBG)) {
+            if (ctx.applyForeground(p, !someBG)) {
                 int finalWw = ww;
                 int finalHh = hh;
-                NDocNodeRendererUtils.withStroke(p, g, ctx,()->{
+                ctx.withStroke(p,()->{
                     g.drawOval((int) x, (int) y, finalWw, finalHh);
                 });
             }
         }
-        NDocNodeRendererUtils.paintDebugBox(p, ctx, g, b);
+        ctx.paintDebugBox(p, b);
     }
 }
