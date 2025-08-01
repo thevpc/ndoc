@@ -1,15 +1,14 @@
 package net.thevpc.ndoc.elem.base.shape;
 
-import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.engine.NDocEngineTools;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.document.style.NDocPropUtils;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
@@ -27,8 +26,9 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                 .parseParam().named(NDocPropName.COUNT).then()
                 .parseParam(new NDocNodeCustomBuilderContext.ProcessParamAction() {
                     @Override
-                    public boolean processParam(NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
+                    public boolean processParam(NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
                         NElement k = info.peek();
+                        NDocEngineTools tools = buildContext.engine().tools();
                         if (k != null) {
                             if(k.isInt()) {
                                 info.read();
@@ -42,7 +42,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                     if (buildContext.isAncestorScene3D(info.node())) {
                                         NOptional<NDocPoint3D> p2d = NDocObjEx.of(kk.value()).asHPoint3D();
                                         if (p2d.isPresent()) {
-                                            NDocPropUtils.addPoint(info.node(), p2d.get());
+                                            tools.addPoint(info.node(), p2d.get());
                                             info.read();
                                             return true;
                                         } else {
@@ -51,7 +51,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                     } else {
                                         NOptional<NDocPoint2D> p2d = NDocObjEx.of(kk.value()).asHPoint2D();
                                         if (p2d.isPresent()) {
-                                            NDocPropUtils.addPoint(info.node(), p2d.get());
+                                            tools.addPoint(info.node(), p2d.get());
                                             info.read();
                                             return true;
                                         } else {
@@ -63,7 +63,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                     if (buildContext.isAncestorScene3D(info.node())) {
                                         NOptional<NDocPoint3D[]> p2d = NDocObjEx.of(kk.value()).asHPoint3DArray();
                                         if (p2d.isPresent()) {
-                                            NDocPropUtils.addPoints(info.node(), p2d.get());
+                                            tools.addPoints(info.node(), p2d.get());
                                             info.read();
                                             return true;
                                         } else {
@@ -73,7 +73,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                         NOptional<NDocPoint2D[]> p2d = NDocObjEx.of(kk.value()).asHPoint2DArray();
                                         if (p2d.isPresent()) {
                                             info.read();
-                                            NDocPropUtils.addPoints(info.node(), p2d.get());
+                                            tools.addPoints(info.node(), p2d.get());
                                             return true;
                                         } else {
                                             return false;
@@ -85,7 +85,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                     NOptional<NDocPoint3D> p2d = NDocObjEx.of(k).asHPoint3D();
                                     if (p2d.isPresent()) {
                                         buildContext.addParamName(NDocPropName.POINTS);
-                                        NDocPropUtils.addPoint(info.node(), p2d.get());
+                                        tools.addPoint(info.node(), p2d.get());
                                         info.read();
                                         return true;
                                     } else {
@@ -95,7 +95,7 @@ public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
                                     NOptional<NDocPoint2D> p2d = NDocObjEx.of(k).asHPoint2D();
                                     if (p2d.isPresent()) {
                                         buildContext.addParamName(NDocPropName.POINTS);
-                                        NDocPropUtils.addPoint(info.node(), p2d.get());
+                                        tools.addPoint(info.node(), p2d.get());
                                         info.read();
                                         return true;
                                     } else {
