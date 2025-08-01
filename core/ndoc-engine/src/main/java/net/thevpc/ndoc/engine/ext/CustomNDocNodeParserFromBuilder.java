@@ -1,15 +1,14 @@
 package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.node.NDocItem;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfoImpl;
-import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ndoc.api.parser.NDocParseHelper;
+import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
+import net.thevpc.ndoc.engine.parser.NDocArgumentReaderImpl;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
 import net.thevpc.ndoc.api.util.ToElementHelper;
+import net.thevpc.ndoc.engine.parser.NDocParseHelper;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
@@ -71,23 +70,23 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
             if(myNDocNodeCustomBuilderContext.extraElementSupportByPredicate.test(e)) {
                 pp = new NDocNodeCustomBuilderContext.NDocItemSpecialParser() {
                     @Override
-                    public NCallableSupport<NDocItem> parseElement(String id, NElement tsonElement, NDocNodeFactoryParseContext context) {
+                    public NCallableSupport<NDocItem> parseElement(String id, NElement element, NDocNodeFactoryParseContext context) {
                         NDocNode p = context.documentFactory().of(resolveEffectiveId(id));
                         p.setSource(context.source());
                         NDocNodeFactoryParseContext context2 = context.push(p);
-                        onStartParsingItem(id, p, tsonElement, context);
-                        NDocParseHelper.fillAnnotations(tsonElement, p);
-                        NDocArgumentParseInfoImpl info = new NDocArgumentParseInfoImpl();
+                        onStartParsingItem(id, p, element, context);
+                        NDocParseHelper.fillAnnotations(element, p);
+                        NDocArgumentReaderImpl info = new NDocArgumentReaderImpl();
                         info.setContext(context2);
                         info.setId(id);
                         info.setUid(NDocUtils.uid(id));
-                        info.setTsonElement(NDocUtils.addCompilerDeclarationPath(tsonElement, info.getContext().source()));
+                        info.setElement(NDocUtils.addCompilerDeclarationPath(element, info.parseContext().source()));
                         info.setNode(p);
-                        info.setArguments(new NElement[]{tsonElement});
+                        info.setArguments(new NElement[]{element});
                         info.setF(context.documentFactory());
                         processArguments(info);
                         processImplicitStyles(info);
-                        onFinishParsingItem(id, p, tsonElement, context);
+                        onFinishParsingItem(info);
                         return NCallableSupport.ofValid(myNDocNodeCustomBuilderContext.extraElementSupportByPredicateSupport,p);
                     }
                 };
@@ -104,7 +103,7 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(NDocArgumentParseInfo info) {
+    protected boolean processArgument(NDocArgumentReader info) {
         if (myNDocNodeCustomBuilderContext.processSingleArgumentList != null) {
             for (NDocNodeCustomBuilderContext.ProcessParamAction a : myNDocNodeCustomBuilderContext.processSingleArgumentList) {
                 if (a.processParam(info, myNDocNodeCustomBuilderContext)) {
@@ -117,5 +116,15 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
             return false;
         }
         return super.processArgument(info);
+    }
+
+    @Override
+    public void onFinishParsingItem(NDocAllArgumentReader info) {
+        super.onFinishParsingItem(info);
+        if(myNDocNodeCustomBuilderContext.afterProcessAllArgumentsList!=null){
+            for (NDocNodeCustomBuilderContext.ProcessNodeAction a : myNDocNodeCustomBuilderContext.afterProcessAllArgumentsList) {
+                a.processNode(info, myNDocNodeCustomBuilderContext);
+            }
+        }
     }
 }
