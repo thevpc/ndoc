@@ -1,9 +1,8 @@
 package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.renderer.NDocNodeRendererBase;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.model.NDocSizeRequirements;
+import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 
 public abstract class ConvertedNDocNodeRenderer extends NDocNodeRendererBase {
     public ConvertedNDocNodeRenderer(String... types) {
