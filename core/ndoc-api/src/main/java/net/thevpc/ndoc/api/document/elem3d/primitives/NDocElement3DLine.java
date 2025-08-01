@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document.elem3d.primitives;
 
-import net.thevpc.ndoc.api.model.HArrow;
+import net.thevpc.ndoc.api.document.NDocArrow;
 import net.thevpc.ndoc.api.document.elem3d.AbstractElement3DPrimitive;
 import net.thevpc.ndoc.api.document.elem3d.NDocElement3DPrimitiveType;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
@@ -10,28 +10,28 @@ import java.util.Objects;
 public class NDocElement3DLine extends AbstractElement3DPrimitive {
     private NDocPoint3D from;
     private NDocPoint3D to;
-    private HArrow startArrow = null;
-    private HArrow endArrow = null;
+    private NDocArrow startArrow = null;
+    private NDocArrow endArrow = null;
 
     public NDocElement3DLine(NDocPoint3D from, NDocPoint3D to) {
         this.from = from;
         this.to = to;
     }
 
-    public HArrow getStartArrow() {
+    public NDocArrow getStartArrow() {
         return startArrow;
     }
 
-    public NDocElement3DLine setStartArrow(HArrow startArrow) {
+    public NDocElement3DLine setStartArrow(NDocArrow startArrow) {
         this.startArrow = startArrow;
         return this;
     }
 
-    public HArrow getEndArrow() {
+    public NDocArrow getEndArrow() {
         return endArrow;
     }
 
-    public NDocElement3DLine setEndArrow(HArrow endArrow) {
+    public NDocElement3DLine setEndArrow(NDocArrow endArrow) {
         this.endArrow = endArrow;
         return this;
     }
