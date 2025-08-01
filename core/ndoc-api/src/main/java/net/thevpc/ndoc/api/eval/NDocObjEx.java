@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.api.eval;
 
-import net.thevpc.ndoc.api.model.HArrow;
-import net.thevpc.ndoc.api.model.HArrowType;
+import net.thevpc.ndoc.api.document.NDocArrow;
+import net.thevpc.ndoc.api.document.NDocArrowType;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.*;
@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.List;
-
-import net.thevpc.ndoc.api.util.NElemUtils;
 
 public class NDocObjEx {
 
@@ -673,7 +671,7 @@ public class NDocObjEx {
         return asInt().orElseUse(() -> asBoolean().map(x -> x ? 1 : 0));
     }
 
-    public NOptional<NElement> asTsonInt() {
+    public NOptional<NElement> asElementInt() {
         return asInt().map(x -> NElement.ofInt(x));
     }
 
@@ -738,7 +736,7 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("boolean from " + element);
     }
 
-    public NOptional<NElement> asTsonStringOrName() {
+    public NOptional<NElement> asElementStringOrName() {
         if (element instanceof String) {
             return NOptional.of(NElement.ofString((String) element));
         }
@@ -1126,7 +1124,7 @@ public class NDocObjEx {
                 }
             }
         }
-        NOptional<NElement> te = asTson();
+        NOptional<NElement> te = asElement();
         if (te.isPresent()) {
             NElement taa = te.get();
             if (taa.isNumber()) {
@@ -1194,7 +1192,7 @@ public class NDocObjEx {
                 }
             }
         }
-        NOptional<NElement> dd = asTson();
+        NOptional<NElement> dd = asElement();
         if (dd.isPresent()) {
             return NOptional.of(new Rotation(
                     dd.get(),
@@ -1287,9 +1285,9 @@ public class NDocObjEx {
         return NOptional.ofNamedEmpty("HPoint2D from " + element);
     }
 
-    public NOptional<HArrowType> asArrowType() {
-        if (element instanceof HArrowType) {
-            return NOptional.of((HArrowType) element);
+    public NOptional<NDocArrowType> asArrowType() {
+        if (element instanceof NDocArrowType) {
+            return NOptional.of((NDocArrowType) element);
         }
         NOptional<String> s = asStringOrName();
         if (s.isPresent()) {
@@ -1298,7 +1296,7 @@ public class NDocObjEx {
                 return NOptional.ofNamedEmpty("arrow-type");
             }
             try {
-                HArrowType y = HArrowType.valueOf(NNameFormat.CONST_NAME.format(v));
+                NDocArrowType y = NDocArrowType.valueOf(NNameFormat.CONST_NAME.format(v));
                 return NOptional.of(y);
             } catch (Exception e) {
                 //
@@ -1307,16 +1305,16 @@ public class NDocObjEx {
         return NOptional.ofNamedError("HArrowType from " + element);
     }
 
-    public NOptional<HArrow> asArrow() {
-        if (element instanceof HArrow) {
-            return NOptional.of((HArrow) element);
+    public NOptional<NDocArrow> asArrow() {
+        if (element instanceof NDocArrow) {
+            return NOptional.of((NDocArrow) element);
         }
-        if (element instanceof HArrowType) {
-            return NOptional.of(new HArrow((HArrowType) element));
+        if (element instanceof NDocArrowType) {
+            return NOptional.of(new NDocArrow((NDocArrowType) element));
         }
         if (element instanceof NUpletElement && ((NUpletElement) element).isNamed()) {
             NUpletElement f = (NUpletElement) element;
-            NOptional<HArrowType> u = NDocObjEx.of(f.name().orNull()).asArrowType();
+            NOptional<NDocArrowType> u = NDocObjEx.of(f.name().orNull()).asArrowType();
             Double width = null;
             Double height = null;
             if (u.isPresent()) {
@@ -1331,7 +1329,7 @@ public class NDocObjEx {
                     }
                 }
                 return NOptional.of(
-                        new HArrow(
+                        new NDocArrow(
                                 u.get(),
                                 width == null ? 0 : width.doubleValue(),
                                 height == null ? 0 : height.doubleValue()
@@ -1340,9 +1338,9 @@ public class NDocObjEx {
             }
             return NOptional.ofNamedError("HArrow from " + element);
         }
-        NOptional<HArrowType> s = asArrowType();
+        NOptional<NDocArrowType> s = asArrowType();
         if (s.isPresent()) {
-            return NOptional.of(new HArrow(s.get()));
+            return NOptional.of(new NDocArrow(s.get()));
         }
         return NOptional.ofNamedError("HArrow from " + element);
     }
@@ -1521,13 +1519,16 @@ public class NDocObjEx {
         return e;
     }
 
-    public NOptional<NElement> asTson() {
-        try {
-            return NOptional.of(NElemUtils.toElement(element));
-        } catch (Exception e) {
-            return NOptional.ofEmpty(NMsg.ofC("not a valid element : %s : %s", e, element));
+    public  NOptional<NElement> asElement() {
+        if (element instanceof NElement) {
+            return NOptional.of((NElement) element);
         }
+        if (element instanceof String) {
+            return NOptional.of(NElement.ofString((String) element));
+        }
+        return NOptional.ofEmpty(NMsg.ofC("not a valid element : %s", element));
     }
+
 
     public NOptional<String> asName() {
         if (element instanceof NElement) {
@@ -1561,16 +1562,6 @@ public class NDocObjEx {
             return te.isString();
         }
         return false;
-    }
-
-    public NElement asElement() {
-        if (element instanceof NElement) {
-            return (NElement) element;
-        }
-        if (element instanceof String) {
-            return NElement.ofString((String) element);
-        }
-        throw new RuntimeException("not element " + element);
     }
 
     public static class SimplePair {
