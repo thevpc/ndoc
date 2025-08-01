@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.api.document.elem3d;
 
-import net.thevpc.ndoc.api.model.HArrow;
+import net.thevpc.ndoc.api.document.NDocArrow;
 import net.thevpc.ndoc.api.document.elem3d.composite.NDocElement3DBox;
 import net.thevpc.ndoc.api.document.elem3d.composite.NDocElement3DGroup;
 import net.thevpc.ndoc.api.document.elem3d.composite.NDocElement3DSurface;
@@ -21,9 +21,9 @@ public class NDocElement3DFactory {
 
     public static NDocElement3D axis(NDocPoint3D origin, double length) {
         NDocElement3DGroup g = group();
-        g.add(segment(origin, new NDocVector3D(1, 0, 0), length).setEndArrow(new HArrow()).setLinePaint(Color.BLUE));
-        g.add(segment(origin, new NDocVector3D(0, 1, 0), length).setEndArrow(new HArrow()).setLinePaint(Color.GREEN));
-        g.add(segment(origin, new NDocVector3D(0, 0, 1), length).setEndArrow(new HArrow()).setLinePaint(Color.RED));
+        g.add(segment(origin, new NDocVector3D(1, 0, 0), length).setEndArrow(new NDocArrow()).setLinePaint(Color.BLUE));
+        g.add(segment(origin, new NDocVector3D(0, 1, 0), length).setEndArrow(new NDocArrow()).setLinePaint(Color.GREEN));
+        g.add(segment(origin, new NDocVector3D(0, 0, 1), length).setEndArrow(new NDocArrow()).setLinePaint(Color.RED));
         return g;
     }
 
