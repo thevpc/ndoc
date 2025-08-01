@@ -1,7 +1,6 @@
 package net.thevpc.ndoc.engine.eval;
 
-import net.thevpc.ndoc.api.engine.NDocLogger;
-import net.thevpc.ndoc.api.document.NDocMsg;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.spi.NScopeType;
