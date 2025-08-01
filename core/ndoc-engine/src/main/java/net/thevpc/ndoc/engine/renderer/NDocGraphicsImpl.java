@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.engine.renderer;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.model.HArrow;
-import net.thevpc.ndoc.api.model.HArrowType;
+import net.thevpc.ndoc.api.document.NDocArrow;
+import net.thevpc.ndoc.api.document.NDocArrowType;
 import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DTriangle;
 import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DArc;
 import net.thevpc.ndoc.api.document.elem3d.primitives.NDocElement3DLine;
@@ -210,15 +210,15 @@ public class NDocGraphicsImpl implements NDocGraphics {
     }
 
     @Override
-    public void drawArrayHead(NDocPoint2D origin, Vector2D direction, HArrow arrow) {
+    public void drawArrayHead(NDocPoint2D origin, Vector2D direction, NDocArrow arrow) {
         if (arrow == null || arrow.getType() == null) {
             return;
         }
         int[] xPoints;
         int[] yPoints;
-        HArrowType type = arrow.getType();
-        if (type == HArrowType.DEFAULT) {
-            type = HArrowType.SIMPLE;
+        NDocArrowType type = arrow.getType();
+        if (type == NDocArrowType.DEFAULT) {
+            type = NDocArrowType.SIMPLE;
         }
         double arrowWidth = arrow.getWidth();
         double arrowHeight = arrow.getHeight();
@@ -257,7 +257,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
                 xPoints = new int[]{0, -(int) arrowWidth, -(int) arrowWidth};
                 yPoints = new int[]{0, -(int) arrowHeight, (int) arrowHeight};
                 Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
-                if (type == HArrowType.TRIANGLE_FULL) {
+                if (type == NDocArrowType.TRIANGLE_FULL) {
                     g.fill(arrowHead);
                 } else {
                     g.draw(arrowHead);
@@ -279,7 +279,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
                 xPoints = new int[]{(int) (xmin + xlen / 2), (int) (xmin + xlen), (int) (xmin + xlen / 2), (int) (xmin)};
                 yPoints = new int[]{(int) (ymin), (int) (ymin + ylen / 2), (int) (ymin + ylen), (int) (ymin + ylen / 2)};
                 Polygon arrowHead = new Polygon(xPoints, yPoints, xPoints.length);
-                if (type == HArrowType.DIAMOND_FULL) {
+                if (type == NDocArrowType.DIAMOND_FULL) {
                     g.fill(arrowHead);
                 } else {
                     g.draw(arrowHead);
@@ -298,7 +298,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
                 double ymin = -arrowHeight / 2 + arrowHeight / 4;
                 double xlen = arrowWidth / 2;
                 double ylen = arrowHeight / 2;
-                if (type == HArrowType.OVAL_FULL) {
+                if (type == NDocArrowType.OVAL_FULL) {
                     fillOval(xmin, ymin, xlen, ylen);
                 } else {
                     drawOval(xmin, ymin, xlen, ylen);
@@ -317,7 +317,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
                 double ymin = -arrowHeight / 2 + arrowHeight / 4;
                 double xlen = arrowWidth / 2;
                 double ylen = arrowHeight / 2;
-                if (type == HArrowType.RECTANGLE_FULL) {
+                if (type == NDocArrowType.RECTANGLE_FULL) {
                     fillRect(xmin, ymin, xlen, ylen);
                 } else {
                     drawRect(xmin, ymin, xlen, ylen);
