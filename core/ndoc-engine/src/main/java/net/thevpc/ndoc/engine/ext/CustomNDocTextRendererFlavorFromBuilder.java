@@ -2,9 +2,9 @@ package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.renderer.NDocTextRendererFlavor;
-import net.thevpc.ndoc.api.renderer.NDocTextToken;
-import net.thevpc.ndoc.api.renderer.NDocTextTokenFlavored;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
+import net.thevpc.ndoc.api.renderer.text.NDocTextToken;
+import net.thevpc.ndoc.api.renderer.text.NDocTextTokenFlavored;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.util.NDocUtils;
