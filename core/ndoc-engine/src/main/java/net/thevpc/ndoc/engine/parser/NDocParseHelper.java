@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.thevpc.ndoc.api.parser;
+package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.parser.NDocParseMode;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElementAnnotation;
 import net.thevpc.nuts.util.NNameFormat;
