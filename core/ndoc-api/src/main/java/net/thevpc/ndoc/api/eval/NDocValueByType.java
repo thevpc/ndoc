@@ -1,15 +1,10 @@
 package net.thevpc.ndoc.api.eval;
 
-import net.thevpc.ndoc.api.model.HArrow;
-import net.thevpc.ndoc.api.model.HArrowType;
-import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.NDocArrow;
+import net.thevpc.ndoc.api.document.NDocArrowType;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
-import net.thevpc.ndoc.api.document.elem2d.primitives.*;
 import net.thevpc.ndoc.api.document.elem2d.*;
-import net.thevpc.ndoc.api.document.elem3d.*;
 import net.thevpc.ndoc.api.document.node.*;
-import net.thevpc.ndoc.api.document.style.*;
-import net.thevpc.ndoc.api.model.*;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
@@ -18,11 +13,11 @@ import java.awt.*;
 
 public class NDocValueByType {
 
-    public static NOptional<HArrowType> getArrowType(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
+    public static NOptional<NDocArrowType> getArrowType(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
         return NDocObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asArrowType();
     }
 
-    public static NOptional<HArrow> getArrow(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
+    public static NOptional<NDocArrow> getArrow(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
         return NDocObjEx.of(ctx.computePropertyValue(t, propName, propNames).orNull()).asArrow();
     }
 
@@ -60,8 +55,8 @@ public class NDocValueByType {
         return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asDouble2();
     }
 
-    public static NOptional<NElement> getTson(NDocNode t, NDocNodeRendererContext ctx, String s) {
-        return NDocObjEx.of(ctx.computePropertyValue(t, s).orNull()).asTson();
+    public static NOptional<NElement> getElement(NDocNode t, NDocNodeRendererContext ctx, String s) {
+        return ctx.computePropertyValue(t, s);
     }
 
     public static NOptional<NDocDouble2> getDouble2OrHAlign(NDocNode t, NDocNodeRendererContext ctx, String s) {
