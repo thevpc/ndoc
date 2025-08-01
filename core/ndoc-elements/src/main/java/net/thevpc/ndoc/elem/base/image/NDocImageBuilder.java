@@ -14,11 +14,10 @@ import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
 import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
@@ -39,8 +38,8 @@ public class NDocImageBuilder implements NDocNodeCustomBuilder {
         builderContext
                 .id(NDocNodeType.IMAGE)
                 .parseParam().named(NDocPropName.TRANSPARENT_COLOR).then()
-                .parseParam().named(NDocPropName.VALUE, NDocPropName.FILE, "content", "src").set(NDocPropName.VALUE).then()
-                .parseParam().matchesStringOrName().set(NDocPropName.VALUE).ignoreDuplicates(true).then()
+                .parseParam().named(NDocPropName.VALUE, NDocPropName.FILE, "content", "src").store(NDocPropName.VALUE).then()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).ignoreDuplicates(true).then()
                 .renderComponent(this::renderMain)
         ;
     }
@@ -64,7 +63,7 @@ public class NDocImageBuilder implements NDocNodeCustomBuilder {
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
         Object img = p.getPropertyValue(NDocPropName.VALUE).orNull();
-        NOptional<NElement> imgStr = NDocObjEx.of(img).asTsonStringOrName();
+        NOptional<NElement> imgStr = NDocObjEx.of(img).asElementStringOrName();
         if (imgStr.isPresent()) {
             img = rendererContext.resolvePath(imgStr.get(), p);
         }
@@ -75,11 +74,11 @@ public class NDocImageBuilder implements NDocNodeCustomBuilder {
         double y = b.getY();
 
         if (!rendererContext.isDry()) {
-            if (NDocNodeRendererUtils.applyBackgroundColor(p, g, rendererContext)) {
+            if (rendererContext.applyBackgroundColor(p)) {
                 g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
             }
 
-            NDocNodeRendererUtils.applyForeground(p, g, rendererContext, false);
+            rendererContext.applyForeground(p, false);
             if (img instanceof NPath) {
                 NPath imgPath = (NPath) img;
                 NPath vp = resolveImagePath(imgPath);
@@ -103,7 +102,7 @@ public class NDocImageBuilder implements NDocNodeCustomBuilder {
                 }
             }
         }
-        NDocNodeRendererUtils.paintDebugBox(p, rendererContext, g, b);
+        rendererContext.paintDebugBox(p, b);
     }
 
     private NPath resolveImagePath(NPath p) {
