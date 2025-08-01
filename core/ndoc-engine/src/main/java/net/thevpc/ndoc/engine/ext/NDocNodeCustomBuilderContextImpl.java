@@ -1,6 +1,7 @@
 package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.parser.*;
+import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -33,6 +34,7 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
     NDocNodeParserBase createdParser;
     NDocTextRendererFlavor createdTextFlavor;
     List<ProcessParamAction> processSingleArgumentList;
+    List<ProcessNodeAction> afterProcessAllArgumentsList;
     boolean compiled;
     NDocEngine engine;
     Set<String> knownArgNames;
@@ -178,10 +180,10 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
         return this;
     }
 
-    public NDocNodeCustomBuilderContext parseDefaults() {
+    public NDocNodeCustomBuilderContext parseDefaultParams() {
         return parseParam(new ProcessParamAction() {
             @Override
-            public boolean processParam(NDocArgumentParseInfo info, NDocNodeCustomBuilderContext buildContext) {
+            public boolean processParam(NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
                 createParser();
                 return createdParser.defaultProcessArgument(info);
             }
@@ -206,6 +208,18 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
                 this.processSingleArgumentList = new ArrayList<>();
             }
             this.processSingleArgumentList.add(e);
+        }
+        return this;
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext afterParsingAllParams(ProcessNodeAction e) {
+        requireNonCompiled();
+        if (e != null) {
+            if (afterProcessAllArgumentsList == null) {
+                this.afterProcessAllArgumentsList = new ArrayList<>();
+            }
+            this.afterProcessAllArgumentsList.add(e);
         }
         return this;
     }
