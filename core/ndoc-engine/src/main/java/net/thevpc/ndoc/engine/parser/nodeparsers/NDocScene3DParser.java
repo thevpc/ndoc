@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.parser.nodeparsers;
 
-import net.thevpc.ndoc.api.parser.NDocArgumentParseInfo;
+import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
@@ -14,7 +14,7 @@ public class NDocScene3DParser extends NDocNodeParserBase {
     }
 
     @Override
-    protected boolean processArgument(NDocArgumentParseInfo info) {
+    protected boolean processArgument(NDocArgumentReader info) {
         NElement currentArg = info.peek();
         switch (currentArg.type()) {
             case PAIR: {
