@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.engine.renderer.screen;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.renderer.AbstractNDocDocumentRenderer;
+import net.thevpc.ndoc.api.renderer.NDocDocumentRendererBase;
 import net.thevpc.ndoc.api.renderer.NDocDocumentScreenRenderer;
 
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererSupplier;
@@ -13,7 +13,7 @@ import net.thevpc.ndoc.api.renderer.NDocDocumentRendererSupplier;
 /**
  * @author vpc
  */
-public class ScreenDocumentRenderer extends AbstractNDocDocumentRenderer implements NDocDocumentScreenRenderer {
+public class ScreenDocumentRenderer extends NDocDocumentRendererBase implements NDocDocumentScreenRenderer {
 
     public ScreenDocumentRenderer(NDocEngine engine) {
         super(engine);
