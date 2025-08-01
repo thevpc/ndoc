@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.parser.NDocNodeParserFactory;
-import net.thevpc.ndoc.api.parser.NDocResource;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeCall;
 import net.thevpc.ndoc.engine.document.DefaultNDocNode;
@@ -201,7 +201,7 @@ public class DefaultNDocDocumentItemParserFactory
         List<NElement> __args = new ArrayList<>();
         Map<String, NElement> __bodyVars = new HashMap<>();
 
-        //inline current file path in the TsonElements
+        //inline current file path in the NElements
         if (source != null && source.path().orNull() != null) {
             NPath sourcePath = source.path().orNull();
             c = NDocUtils.addCompilerDeclarationPath(c, sourcePath.toString());
