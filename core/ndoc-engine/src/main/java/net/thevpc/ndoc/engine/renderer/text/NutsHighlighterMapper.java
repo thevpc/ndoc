@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer.text;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.api.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.eval.NDocObjEx;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
