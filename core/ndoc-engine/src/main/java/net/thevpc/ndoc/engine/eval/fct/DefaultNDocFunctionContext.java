@@ -1,7 +1,7 @@
 package net.thevpc.ndoc.engine.eval.fct;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.eval.NDocFunctionContext;
 
 public class DefaultNDocFunctionContext implements NDocFunctionContext {
