@@ -4,10 +4,9 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
+import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NStringElement;
-import net.thevpc.nuts.io.NPath;
 
 public interface NDocNodeFactoryParseContext {
 
