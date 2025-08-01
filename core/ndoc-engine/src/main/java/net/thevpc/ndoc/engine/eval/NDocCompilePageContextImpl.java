@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.eval;
 
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.engine.NDocLogger;
+import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.NDocument;
 
 public class NDocCompilePageContextImpl implements NDocCompilePageContext {
