@@ -1,11 +1,12 @@
-package net.thevpc.ndoc.api.util;
+package net.thevpc.ndoc.engine.util;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
@@ -78,7 +79,7 @@ public class ToElementHelper {
     }
 
     private void applyAnnotations(NElementBuilder u) {
-        NOptional<String[]> sa = NDocObjEx.of(node.getPropertyValue(NDocPropName.CLASS).orNull()).asStringArrayOrString();
+        NOptional<String[]> sa = NDocValue.of(node.getPropertyValue(NDocPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
                     Arrays.stream(sa.get()).map(x -> NElement.ofString(x)).toArray(NElement[]::new)
@@ -150,7 +151,7 @@ public class ToElementHelper {
     }
 
     public ToElementHelper inlineStringProp(String name) {
-        String value = NDocObjEx.ofProp(node, name).asStringOrName().orNull();
+        String value = NDocValue.ofProp(node, name).asStringOrName().orNull();
         if (value != null) {
             boolean multiLine =
                     value.indexOf('\n') >= 0
