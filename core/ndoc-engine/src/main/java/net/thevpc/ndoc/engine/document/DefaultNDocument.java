@@ -14,7 +14,7 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.source.NDocResourceMonitor;
-import net.thevpc.ndoc.engine.tools.util.NDocUtilsPages;
+import net.thevpc.ndoc.engine.util.NDocUtilsPages;
 import net.thevpc.nuts.util.NOptional;
 
 /**
