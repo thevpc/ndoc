@@ -14,7 +14,6 @@
     </properties>
     <modules>
         <module>core/ndoc-api</module>
-        <module>core/ndoc-elements</module>
         <module>core/ndoc-engine</module>
         <module>test/ndoc-examples</module>
         <module>extensions/ndoc-extension-plantuml</module>
