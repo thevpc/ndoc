@@ -3,15 +3,17 @@ package net.thevpc.ndoc.cmdline;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRenderer;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 import net.thevpc.ndoc.config.UserConfigManager;
 import net.thevpc.ndoc.engine.DefaultNDocEngine;
 import net.thevpc.nuts.NOut;
+import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 
-public class TerminalProcessor {
+public class NDocTerminalProcessor {
 
     public void runTerminal(Options options) {
         NDocEngine engine = new DefaultNDocEngine();
@@ -20,7 +22,18 @@ public class TerminalProcessor {
                 break;
             }
             case LIST_TEMPLATES:{
-                NOut.println(engine.getTemplates());
+                if(NSession.of().isPlainOut()){
+                    for (NDocTemplateInfo template : engine.getTemplates()) {
+                        NOut.println(NMsg.ofC("%s (%s @ %s) %s",
+                                NMsg.ofStyledPath(template.url()),
+                                NMsg.ofStyledPrimary1(template.name()),
+                                NMsg.ofStyledPrimary2(template.repoName()),
+                                template.recommended()? NMsg.ofStyledError(" (*)"):""
+                        ));
+                    }
+                }else{
+                    NOut.println(engine.getTemplates());
+                }
                 break;
             }
             case OPEN: {
