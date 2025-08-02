@@ -10,13 +10,14 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -27,15 +28,15 @@ import java.awt.*;
 /**
  * @author vpc
  */
-public class NDocEquationBuilder implements NDocNodeCustomBuilder {
+public class NDocEquationBuilder implements NDocNodeBuilder {
 
     NDocProperties defaultStyles = new NDocProperties();
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(NDocNodeType.EQUATION)
                 .alias("eq")
-                .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
+                .parseParam().named(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderComponent(this::renderMain)
                 .sizeRequirements(this::sizeRequirements)
                 .selfBounds(this::selfBounds);
@@ -56,21 +57,21 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
     }
 
     public NDocBounds2 selfBounds(NDocNode p, NDocNodeRendererContext ctx,NDocNodeCustomBuilderContext builderContext) {
-        String message = NDocObjEx.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
+        String message = NDocValue.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
         NDocGraphics g = ctx.graphics();
-        String msg = NStringUtils.trim(message);
-        if (msg.isEmpty()) {
+        String tex = NStringUtils.trim(message);
+        if (tex.isEmpty()) {
             return new NDocBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
         } else {
             TeXFormula formula;
             try {
-                formula = new TeXFormula(msg);
+                formula = new TeXFormula(tex);
             } catch (Exception ex) {
                 formula = new TeXFormula("?error?");
-                ex.printStackTrace();
+                ctx.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex),NDocUtils.sourceOf(p));
             }
             float size = (float) (ctx.getFontSize(p) * 1.0);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
@@ -83,20 +84,20 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
 
 
     public void renderMain(NDocNode p, NDocNodeRendererContext renderContext,NDocNodeCustomBuilderContext builderContext) {
-        String message = NDocObjEx.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
+        String message = NDocValue.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
         NDocGraphics g = renderContext.graphics();
 
 
-        String msg = NStringUtils.trim(message);
-        if (msg.isEmpty()) {
+        String tex = NStringUtils.trim(message);
+        if (tex.isEmpty()) {
             NDocBounds2 selfBounds = renderContext.selfBounds(p);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
             if (!renderContext.isDry()) {
-                if (renderContext.applyBackgroundColor((NDocNode) p)) {
+                if (renderContext.applyBackgroundColor(p)) {
                     g.fillRect((int) x, (int) y, NDocUtils.intOf(selfBounds.getWidth()), NDocUtils.intOf(selfBounds.getHeight()));
                 }
             }
@@ -104,11 +105,11 @@ public class NDocEquationBuilder implements NDocNodeCustomBuilder {
             TeXFormula formula;
             boolean error = false;
             try {
-                formula = new TeXFormula(msg);
+                formula = new TeXFormula(tex);
             } catch (Exception ex) {
                 error = true;
                 formula = new TeXFormula("?error?");
-                ex.printStackTrace();
+                builderContext.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex),NDocUtils.sourceOf(p));
             }
             float size = (float) (renderContext.getFontSize(p) /* * 0.43 */);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
