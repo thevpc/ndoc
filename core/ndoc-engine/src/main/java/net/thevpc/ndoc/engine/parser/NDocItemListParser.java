@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.NDocItemList;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -27,7 +27,7 @@ public class NDocItemListParser {
             case PARAMETRIZED_ARRAY:
             case NAMED_ARRAY:
             {
-                NDocObjEx ee = NDocObjEx.of(ff);
+                NDocValue ee = NDocValue.of(ff);
                 for (NElement e : ee.args()) {
                     NOptional<NDocProp[]> u = HStyleParser.parseStyle(e, f, context);
                     if (u.isPresent()) {
