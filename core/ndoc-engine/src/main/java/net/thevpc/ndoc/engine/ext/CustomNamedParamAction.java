@@ -1,12 +1,13 @@
 package net.thevpc.ndoc.engine.ext;
 
 import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementTypeGroup;
 import net.thevpc.nuts.elem.NPairElement;
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
@@ -135,6 +136,23 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     public NDocNodeCustomBuilderContext.NamedParamAction resolvedAs(NDocNodeCustomBuilderContext.PropResolver a) {
         this.propResolver = a;
         return this;
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedBloc() {
+        return resolvedAs((uid, value, info, buildContext) -> NDocProp.ofString(uid, buildContext.engine().tools().trimBloc(value.asStringValue().orNull())));
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedPathTextContent() {
+        return resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
+            @Override
+            public NDocProp resolve(String uid, NElement value, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
+                NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
+                info.parseContext().document().resources().add(nPath);
+                return NDocProp.ofString(uid, nPath.readString().trim());
+            }
+        });
     }
 
     @Override
