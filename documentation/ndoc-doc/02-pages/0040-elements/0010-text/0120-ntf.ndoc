@@ -1,0 +1,40 @@
+normal{
+    header {
+        text("Latex Equations"),
+    }
+    body{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:6%P}
+                }
+                "[[eq: X^2=\sin(x) ]]"
+            }
+            source(tson,
+                """
+                "[[eq: X^2=\sin(x) ]]"
+                """)
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:3%P}
+                }
+                eq("X²²=\sin(πx)",draw-contour:false)
+            }
+            source(tson,
+                """
+                eq("X²²=\sin(πx)")
+                """)
+        }
+    }
+
+}

@@ -1,0 +1,57 @@
+package net.thevpc.ndoc.elem.base.line;
+
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
+import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
+import net.thevpc.ndoc.api.document.elem2d.NDocPoint;
+import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
+import net.thevpc.ndoc.api.document.style.NDocProperties;
+import net.thevpc.ndoc.api.eval.NDocValueByType;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
+import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.document.node.NDocNodeType;
+import net.thevpc.ndoc.api.document.style.NDocPropName;
+import net.thevpc.ndoc.api.renderer.NDocGraphics;
+import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+
+import java.awt.*;
+
+public class NDocLineBuilder implements NDocNodeCustomBuilder {
+    NDocProperties defaultStyles = new NDocProperties();
+
+    @Override
+    public void build(NDocNodeCustomBuilderContext builderContext) {
+        builderContext.id(NDocNodeType.LINE)
+                .parseParam().named(NDocPropName.FROM, NDocPropName.TO, NDocPropName.START_ARROW, NDocPropName.END_ARROW).then()
+                .renderComponent(this::renderMain)
+                ;
+    }
+
+
+    public void renderMain(NDocNode p, NDocNodeRendererContext rendererContext, NDocNodeCustomBuilderContext builderContext) {
+        rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
+        NDocBounds2 b = rendererContext.selfBounds(p);
+        NDocPoint2D translation = new NDocPoint2D(b.getX(), b.getY());
+        NDocPoint2D from = NDocPoint.ofParent(NDocValue.ofProp(p, NDocPropName.FROM).asHPoint2D().orElse(new NDocPoint2D(0, 0))).valueHPoint2D(b, rendererContext.getGlobalBounds())
+                .plus(translation);
+        NDocPoint2D to = NDocPoint.ofParent(NDocValue.ofProp(p, NDocPropName.TO).asHPoint2D().orElse(new NDocPoint2D(0, 0))).valueHPoint2D(b, rendererContext.getGlobalBounds())
+                .plus(translation);
+        NDocGraphics g = rendererContext.graphics();
+        if (!rendererContext.isDry()) {
+            Paint fc = rendererContext.getForegroundColor(p, true);
+            g.draw2D(NDocElement2DFactory.line(from, to)
+                    .setStartArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.START_ARROW).orNull())
+                    .setEndArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.END_ARROW).orNull())
+                    .setLineStroke(g.createStroke(rendererContext.getStroke(p)))
+                    .setLinePaint(fc)
+            );
+        }
+        double minx = Math.min(from.getX(), to.getX());
+        double miny = Math.min(from.getY(), to.getY());
+        double maxX = Math.max(from.getX(), to.getX());
+        double maxY = Math.max(from.getY(), to.getY());
+        NDocBounds2 b2 = new NDocBounds2(minx, miny, maxX, maxY);
+        rendererContext.paintDebugBox(p, b2);
+    }
+}

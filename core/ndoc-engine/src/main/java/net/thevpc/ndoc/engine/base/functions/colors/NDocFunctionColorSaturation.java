@@ -1,0 +1,35 @@
+package net.thevpc.ndoc.engine.eval.fct.colors;
+
+import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.eval.NDocFunctionArgs;
+import net.thevpc.ndoc.api.eval.NDocFunctionContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.engine.util.NDocColorUtils;
+import net.thevpc.ndoc.engine.util.NDocElementUtils;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.util.NMsg;
+
+import java.awt.*;
+
+public class NDocFunctionColorSaturation implements NDocFunction {
+    @Override
+    public String name() {
+        return "colorSaturation";
+    }
+
+    @Override
+    public NElement invoke(NDocFunctionArgs args, NDocFunctionContext context) {
+        if (args.size() == 0) {
+            return NElement.ofNull();
+        }
+        if (args.size() == 1) {
+            return args.eval(0);
+        }
+        if (args.size() > 2) {
+            context.messages().log(NMsg.ofC("%s: expected 2 argument, got %s", name(), args.size()));
+        }
+        Color c = NDocValue.of(args.eval(0)).asColor().get();
+        float factor = NDocValue.of(args.eval(1)).asFloat().get();
+        return NDocElementUtils.toElement(NDocColorUtils.adjustSaturation(c, factor));
+    }
+}

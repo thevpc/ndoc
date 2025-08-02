@@ -1,0 +1,10 @@
+net.thevpc.ndoc.engine.base.functions.general.NDocFunctionArrayRightRotate
+net.thevpc.ndoc.engine.base.functions.general.NDocFunctionArrayLeftRotate
+net.thevpc.ndoc.engine.base.functions.general.NDocFunctionEither
+net.thevpc.ndoc.engine.base.functions.general.NDocFunctionEitherPath
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionInvertColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionColorBrightness
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionColorSaturation
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionComplementaryColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionGrayScaleColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionRotateHueColor
