@@ -43,6 +43,7 @@ class CustomNDocTextRendererFlavorFromBuilder implements NDocTextRendererFlavor 
         String end;
         if (queue.peek(3 + flavor.length()).equals("[[" + flavor + ":")) {
             end = "]]";
+            queue.read(3 + flavor.length());
         } else {
             return null;
         }
