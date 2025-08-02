@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.thevpc.ndoc.api.util.NElemUtils;
+import net.thevpc.ndoc.engine.util.NDocElementUtils;
 
 public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContextBaseBase {
 
@@ -129,7 +129,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             Object y = r.get();
-            NElement u = engine.evalExpression(NElemUtils.toElement(y), t);
+            NElement u = engine.evalExpression(NDocElementUtils.toElement(y), t);
             if (u != null) {
                 return NOptional.of(u);
             }
