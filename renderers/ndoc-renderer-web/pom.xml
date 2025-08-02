@@ -33,7 +33,6 @@
 	<dependencies>
 		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
 		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.6.0</version></dependency>
-		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-elements</artifactId><version>0.8.6.0</version></dependency>
 		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.6.0</version></dependency>
 		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-spring-boot</artifactId><version>0.8.6.0</version></dependency>
 
