@@ -10,7 +10,7 @@ import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocSizeRef;
-import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.util.NDocNodeRendererUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
