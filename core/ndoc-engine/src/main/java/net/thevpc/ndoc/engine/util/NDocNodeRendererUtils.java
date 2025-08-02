@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.tools.util;
+package net.thevpc.ndoc.engine.util;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
@@ -8,7 +8,7 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
@@ -65,8 +65,8 @@ public class NDocNodeRendererUtils {
     }
 
     public static NDocBounds2 bounds(NDocNode t, NDocNodeRendererContext ctx) {
-        NDocObjEx oSize = NDocObjEx.of(ctx.computePropertyValue(t, NDocPropName.SIZE));
-        NOptional<NElement[]> a = oSize.asNArrayElement();
+        NDocValue oSize = NDocValue.of(ctx.computePropertyValue(t, NDocPropName.SIZE));
+        NOptional<NElement[]> a = oSize.asElementArray();
         NDocDouble2 size=null;
         if(a.isPresent()){
             NElement[] tt = a.get();
