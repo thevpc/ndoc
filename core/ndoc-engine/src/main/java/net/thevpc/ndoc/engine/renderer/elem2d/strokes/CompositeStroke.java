@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.nuts.elem.NElement;
 
@@ -12,7 +12,7 @@ public class CompositeStroke implements Stroke {
     private Stroke[] strokes;
 
     public static Stroke of(NElement e, NDocGraphics g) {
-        NDocObjEx o = NDocObjEx.of(e);
+        NDocValue o = NDocValue.of(e);
         List<NElement> args = new ArrayList<>();
         args.addAll(o.args());
         args.addAll(o.body());
