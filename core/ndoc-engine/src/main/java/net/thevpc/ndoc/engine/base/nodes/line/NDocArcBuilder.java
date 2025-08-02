@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.line;
+package net.thevpc.ndoc.engine.base.nodes.line;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -6,15 +6,15 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
 
 import java.awt.*;
 
-public class NDocArcBuilder implements NDocNodeCustomBuilder {
+public class NDocArcBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
 
     @Override
