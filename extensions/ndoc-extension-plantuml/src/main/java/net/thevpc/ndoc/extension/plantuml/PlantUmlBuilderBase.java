@@ -2,18 +2,16 @@ package net.thevpc.ndoc.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
@@ -23,7 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 
-public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
+public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
     private String id;
     private String mode;
     private String[] aliases;
@@ -48,13 +46,9 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext.id(id)
                 .alias(aliases)
-                .parseParam().named(NDocPropName.VALUE).then()
-                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAs((uid, value, info, buildContext) -> {
-                    NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                    info.parseContext().document().resources().add(nPath);
-                    return NDocProp.ofString(uid, nPath.readString().trim());
-                }).then()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).then()
+                .parseParam().named(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
+                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderComponent(this::renderMain)
         ;
     }
@@ -62,7 +56,7 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
 
     public void renderMain(NDocNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String txt = NDocObjEx.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
+        String txt = NDocValue.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
         if (NBlankable.isBlank(txt)) {
             return;
         }
@@ -73,6 +67,9 @@ public abstract class PlantUmlBuilderBase implements NDocNodeCustomBuilder {
         double y = b.getY();
         BufferedImage image = null;
         String plantUMLText = null;
+        if(mode.startsWith("plantuml-")){
+            mode=mode.substring("plantuml-".length());
+        }
         switch (mode) {
             case "": {
                 plantUMLText = txt;
