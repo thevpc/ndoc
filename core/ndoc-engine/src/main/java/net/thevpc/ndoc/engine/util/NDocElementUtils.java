@@ -13,7 +13,7 @@ import net.thevpc.nuts.elem.NToElement;
 /**
  * @author vpc
  */
-public class NElemUtils {
+public class NDocElementUtils {
 
     public static NElement toElement(NToElement[] r) {
         if(r==null){
