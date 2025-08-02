@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.engine.eval.fct.general;
+package net.thevpc.ndoc.engine.base.functions.general;
 
-import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.eval.NDocFunctionArgs;
 import net.thevpc.ndoc.api.eval.NDocFunctionContext;
