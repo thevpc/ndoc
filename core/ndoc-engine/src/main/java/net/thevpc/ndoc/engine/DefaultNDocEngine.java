@@ -11,40 +11,38 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
+import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.source.NDocResource;
+import net.thevpc.ndoc.engine.eval.*;
 import net.thevpc.ndoc.engine.log.DefaultNDocLogger;
 import net.thevpc.ndoc.api.engine.NDocEngineTools;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.*;
-import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.eval.NDocVar;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
 import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.util.NElemUtils;
+import net.thevpc.ndoc.engine.templates.NDocTemplateInfoImpl;
+import net.thevpc.ndoc.engine.util.NDocElementUtils;
 import net.thevpc.ndoc.engine.document.DefaultNDocNode;
-import net.thevpc.ndoc.engine.eval.NDocCompilePageContextImpl;
 import net.thevpc.ndoc.engine.ext.NDocNodeCustomBuilderContextImpl;
 import net.thevpc.ndoc.engine.log.NDocMessageList;
 import net.thevpc.ndoc.engine.log.SilentNDocLogger;
 import net.thevpc.ndoc.engine.parser.*;
-import net.thevpc.ndoc.engine.eval.NDocCompiler;
-import net.thevpc.ndoc.engine.eval.GitHelper;
 import net.thevpc.ndoc.engine.parser.resources.NDocResourceFactory;
 import net.thevpc.ndoc.engine.renderer.NDocDocumentRendererFactoryContextImpl;
 import net.thevpc.ndoc.engine.document.NDocPropCalculator;
 import net.thevpc.ndoc.engine.document.NDocDocumentFactoryImpl;
 import net.thevpc.ndoc.engine.renderer.NDocGraphicsImpl;
 import net.thevpc.ndoc.engine.renderer.NDocNodeRendererManagerImpl;
-import net.thevpc.ndoc.engine.eval.NDocNodeEvalNDoc;
 import net.thevpc.ndoc.engine.tools.MyNDocEngineTools;
-import net.thevpc.nuts.NCallableSupport;
-import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.*;
@@ -184,7 +182,7 @@ public class DefaultNDocEngine implements NDocEngine {
         NOptional<NDocItem> optional = NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        () -> NMsg.ofC("missing support for node from type '%s' value '%s'", element.type().id(),NDocUtils.snippet(element)))
+                        () -> NMsg.ofC("missing support for node from type '%s' value '%s'", element.type().id(), NDocUtils.snippet(element)))
                 .toOptional();
         if (optional.isPresent()) {
             NDocItem nDocItem = optional.get();
@@ -262,9 +260,9 @@ public class DefaultNDocEngine implements NDocEngine {
 
     public List<NDocNodeCustomBuilderContextImpl> customBuilderContexts() {
         if (customBuilderContexts == null) {
-            ServiceLoader<NDocNodeCustomBuilder> customBuilders = ServiceLoader.load(NDocNodeCustomBuilder.class);
+            ServiceLoader<NDocNodeBuilder> customBuilders = ServiceLoader.load(NDocNodeBuilder.class);
             List<NDocNodeCustomBuilderContextImpl> builderContexts = new ArrayList<>();
-            for (NDocNodeCustomBuilder customBuilder : customBuilders) {
+            for (NDocNodeBuilder customBuilder : customBuilders) {
                 NDocNodeCustomBuilderContextImpl b = new NDocNodeCustomBuilderContextImpl(customBuilder, this);
                 customBuilder.build(b);
                 b.compile();
@@ -675,7 +673,7 @@ public class DefaultNDocEngine implements NDocEngine {
 
     @Override
     public NDocGraphics createGraphics(Graphics2D g2d) {
-        return new NDocGraphicsImpl(g2d,this);
+        return new NDocGraphicsImpl(g2d, this);
     }
 
     @Override
@@ -740,17 +738,84 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public String getDefaultTemplateUrl() {
-        return baseNDocTemplatesUrl() + "/main/default/v1.0/boot/medium";
+    public NDocTemplateInfo[] getTemplates() {
+        List<NDocTemplateInfo> allTemplates = new ArrayList<>();
+        class Repo {
+            String name;
+            NPath path;
+
+            public Repo(String name, NPath path) {
+                this.name = name;
+                this.path = path;
+            }
+        }
+        for (Repo repo : new Repo[]{
+                new Repo("dev", NPath.ofUserHome().resolve("xprojects/nuts-world/nuts-productivity/ndoc-templates/main")),
+                new Repo("local", NApp.of().getSharedConfFolder().resolve("templates")),
+                new Repo("user", NPath.ofUserStore(NStoreType.CONF).resolve("ndoc/templates")),
+                new Repo("user", NPath.ofSystemStore(NStoreType.CONF).resolve("ndoc/templates")),
+                new Repo("central-github", NPath.of("github://thevpc/ndoc-templates/main"))
+        }) {
+            try {
+                if (GitHelper.isGithubFolder(repo.path.toString())) {
+                    NPath nPath1 = GitHelper.resolveGithubPath(repo.path.toString(), log());
+                    if (nPath1.resolve("ndoc-repository.tson").isRegularFile()) {
+                        try {
+                            loadNDocTemplateInfo(NElementParser.ofTson().parse(nPath1.resolve("ndoc-repository.tson")), repo.name, repo.path, allTemplates);
+                        } catch (Exception e) {
+                            log().log(NMsg.ofC("unable to parse repository templates '%s' at '%s' : %s", repo.name, repo.path, e).asError());
+                        }
+                    }else{
+                        log().log(NMsg.ofC("repository template not found '%s' at '%s'", repo.name, repo.path).asWarning());
+                    }
+                }else if (repo.path.isLocal()) {
+                    if (repo.path.resolve("ndoc-repository.tson").isRegularFile()) {
+                        try {
+                            loadNDocTemplateInfo(NElementParser.ofTson().parse(repo.path.resolve("ndoc-repository.tson")), repo.name, repo.path, allTemplates);
+                        } catch (Exception e) {
+                            log().log(NMsg.ofC("unable to parse repository templates '%s' at '%s' : %s", repo.name, repo.path, e).asError());
+                        }
+                    }else{
+                        log().log(NMsg.ofC("repository template not found '%s' at '%s'", repo.name, repo.path).asWarning());
+                    }
+                }else{
+                    log().log(NMsg.ofC("unable to parse repository templates '%s' at '%s'", repo.name, repo.path).asWarning());
+                }
+            } catch (Exception e) {
+                log().log(NMsg.ofC("unable to load repository '%s' at '%s' : %s", repo.name, repo.path, e).asError());
+            }
+        }
+        return allTemplates.toArray(new NDocTemplateInfo[0]);
     }
 
-    @Override
-    public String[] getDefaultTemplateUrls() {
-        return new String[]{
-                baseNDocTemplatesUrl() + "/main/default/v1.0/boot/small",
-                baseNDocTemplatesUrl() + "/main/default/v1.0/boot/medium",
-                baseNDocTemplatesUrl() + "/main/default/v1.0/boot/large"
-        };
+    private void loadNDocTemplateInfo(NElement elem, String repoName, NPath repoPath, List<NDocTemplateInfo> allTemplates) {
+        if (elem.isObject()) {
+            for (NElement o : elem.asObject().get().children()) {
+                loadNDocTemplateInfo(o, repoName, repoPath, allTemplates);
+            }
+        } else if (elem.isString()) {
+            String name = null;
+            String localPath = elem.asStringValue().orNull();
+            boolean recommended = false;
+            for (NElementAnnotation annotation : elem.annotations()) {
+                if (annotation.name().equals("recommended")) {
+                    recommended = true;
+                } else if (annotation.name().equals("name") && !annotation.params().isEmpty() && annotation.param(0).isString()) {
+                    name = annotation.param(0).asStringValue().orNull();
+                }
+            }
+            if (!NBlankable.isBlank(localPath) && !NBlankable.isBlank(name)) {
+                allTemplates.add(
+                        new NDocTemplateInfoImpl(
+                                NStringUtils.trim(name),
+                                repoPath.resolveChild(localPath).toString(),
+                                recommended,
+                                repoName, repoPath.toString(),
+                                NStringUtils.trim(localPath)
+                        )
+                );
+            }
+        }
     }
 
     private void copyTemplate(NPath from, NPath to, Function<String, String> vars) {
@@ -777,16 +842,10 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NDocFunctionArg createRawArg(NDocNode node, NElement expression) {
-        return new ExprNDocFunctionArg(node, expression);
-    }
-
-
-    @Override
     public NElement evalExpression(NElement expression, NDocNode node) {
         String baseSrc = NDocUtils.findCompilerDeclarationPath(expression).orNull();
         NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this);
-        NElement u = ne.eval(NElemUtils.toElement(expression), node);
+        NElement u = ne.eval(NDocElementUtils.toElement(expression), node);
         if (u == null) {
             u = NElement.ofNull();
         }
@@ -826,28 +885,6 @@ public class DefaultNDocEngine implements NDocEngine {
             return NDocUtils.resolvePath(path, source);
         }
         throw new NIllegalArgumentException(NMsg.ofC("unsupported path type", path));
-    }
-
-    private class ExprNDocFunctionArg implements NDocFunctionArg {
-        private final NDocNode node;
-        private final NElement expression;
-
-        public ExprNDocFunctionArg(NDocNode node, NElement expression) {
-            this.node = node;
-            this.expression = expression;
-        }
-
-        @Override
-        public NElement eval() {
-            NElement u = evalExpression(expression, node);
-            NElement u2 = evalExpression(u, node);
-            return u2;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(expression);
-        }
     }
 
 }
