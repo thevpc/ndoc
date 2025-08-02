@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.engine.eval.fct.colors;
+package net.thevpc.ndoc.engine.base.functions.colors;
 
-import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArgs;
 import net.thevpc.ndoc.api.eval.NDocFunctionContext;
 import net.thevpc.ndoc.api.eval.NDocValue;
