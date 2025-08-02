@@ -1,6 +1,6 @@
-package net.thevpc.ndoc.elem.base.text;
+package net.thevpc.ndoc.engine.base.nodes.text;
 
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.renderer.text.NDocTextToken;
