@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.container;
+package net.thevpc.ndoc.engine.base.nodes.container;
 
 /*
  * Inspired from Java's GridBagLayout!!
