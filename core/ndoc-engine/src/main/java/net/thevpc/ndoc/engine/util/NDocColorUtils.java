@@ -1,6 +1,9 @@
-package net.thevpc.ndoc.engine.eval.fct;
+package net.thevpc.ndoc.engine.util;
+
+import net.thevpc.ndoc.api.eval.NDocValue;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class NDocColorUtils {
     public static float[] rgbToHsl(Color color) {
@@ -51,6 +54,10 @@ public class NDocColorUtils {
         return p;
     }
 
+    private static float clamp(double v) {
+        return (float) Math.max(0.0, Math.min(1.0, v));
+    }
+
     private static float clamp(float v) {
         return Math.max(0f, Math.min(1f, v));
     }
@@ -82,6 +89,30 @@ public class NDocColorUtils {
         float[] hsl = rgbToHsl(color);
         hsl[1] = clamp(hsl[1] * factor);
         return hslToColor(hsl[0], hsl[1], hsl[2]);
+    }
+
+    public static Color cubehelix(float t) {
+        t = t % 1f;
+        double angle = 2 * Math.PI * (0.5 + 1.5 * t);
+        double amp = 0.5 * (1 - t) * t;
+
+        double r = t + amp * (-0.14861 * Math.cos(angle) + 1.78277 * Math.sin(angle));
+        double g = t + amp * (-0.29227 * Math.cos(angle) - 0.90649 * Math.sin(angle));
+        double b = t + amp * (1.97294 * Math.cos(angle));
+
+        return new Color(clamp(r), clamp(g), clamp(b));
+    }
+
+    public static Color rotateCubehelixDegrees(Color color, float deltaT) {
+        float degrees = (float) (deltaT/360);
+        return rotateCubehelix(color, degrees);
+    }
+
+    public static Color rotateCubehelix(Color color, float deltaT) {
+        float[] hsl = rgbToHsl(color);
+        float t = hsl[2]; // use lightness as position in the cubehelix spiral
+        t = (t + deltaT) % 1.0f;
+        return cubehelix(t);
     }
 
     public static Color rotateHue(Color color, float degrees) {
@@ -119,5 +150,63 @@ public class NDocColorUtils {
             result[i] = hslToColor(hsl[0], hsl[1], newL);
         }
         return result;
+    }
+
+    public static Color sinebow(float t) {
+        t = t % 1.0f;
+        float angle = (float) (2 * Math.PI * t); // rotate around the circle
+
+        float r = (float) Math.sin(angle) * 0.5f + 0.5f;
+        float g = (float) Math.sin(angle + (2 * Math.PI / 3)) * 0.5f + 0.5f;
+        float b = (float) Math.sin(angle + (4 * Math.PI / 3)) * 0.5f + 0.5f;
+
+        return new Color(clamp(r), clamp(g), clamp(b));
+    }
+
+    public static Color rotateSinebowDegrees(Color color, float deltaT) {
+        float degrees = (float) (deltaT/360);
+        return rotateSinebow(color, degrees);
+    }
+
+    public static Color rotateSinebow(Color color, float deltaT) {
+        float[] hsl = rgbToHsl(color);
+        float t = hsl[0]; // hue as a proxy
+        t = (t + deltaT) % 1.0f;
+        return sinebow(t);
+    }
+
+    /**
+     * Creates a linear gradient from a list of colors between two points.
+     *
+     * @param start   the start point
+     * @param end     the end point
+     * @param palette array of colors
+     * @param cyclic  whether the gradient is cyclic
+     * @return a LinearGradientPaint to use in Java2D
+     */
+    public static Paint createLinearGradient(Point2D start, Point2D end, Color[] palette, boolean cyclic) {
+        if (palette == null || palette.length < 2) {
+            throw new IllegalArgumentException("At least two colors are required for a gradient.");
+        }
+
+        float[] fractions = new float[palette.length];
+        for (int i = 0; i < palette.length; i++) {
+            fractions[i] = i / (float) (palette.length - 1);
+        }
+
+        return new LinearGradientPaint(start, end, fractions, palette,
+                MultipleGradientPaint.CycleMethod.NO_CYCLE);
+    }
+
+    /**
+     * Shortcut version using fixed start/end points (horizontal left to right).
+     */
+    public static Paint createLinearGradient(int width, Color[] palette) {
+        return createLinearGradient(
+                new Point2D.Float(0, 0),
+                new Point2D.Float(width, 0),
+                palette,
+                false
+        );
     }
 }
