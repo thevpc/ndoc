@@ -14,8 +14,6 @@ public interface NDocTextRendererBuilder {
 
     void appendCustom(String lang, String rawText, NDocTextOptions options, NDocNode node, NDocNodeRendererContext ctx);
 
-    public void appendEq(String text, NDocNode node, NDocNodeRendererContext ctx);
-
     public void appendPlain(String text, NDocNodeRendererContext ctx);
 
     NDocRichTextRow nextLine();
@@ -33,8 +31,6 @@ public interface NDocTextRendererBuilder {
 
         NDocDouble2 size();
     }
-
-    public ImagePainter createLatex(String tex, double fontSize);
 
     public void render(NDocNode p, NDocNodeRendererContext ctx, NDocBounds2 bgBounds, NDocBounds2 selfBounds);
 
