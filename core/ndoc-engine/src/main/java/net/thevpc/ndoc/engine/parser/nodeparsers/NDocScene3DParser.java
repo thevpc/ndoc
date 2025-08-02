@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.engine.parser.NDocNodeParserBase;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
@@ -18,10 +18,10 @@ public class NDocScene3DParser extends NDocNodeParserBase {
         NElement currentArg = info.peek();
         switch (currentArg.type()) {
             case PAIR: {
-                NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(currentArg).asSimplePair();
+                NOptional<NDocValue.SimplePair> sp = NDocValue.of(currentArg).asSimplePair();
                 if (sp.isPresent()) {
-                    NDocObjEx.SimplePair spp = sp.get();
-                    NDocObjEx v = spp.getValue();
+                    NDocValue.SimplePair spp = sp.get();
+                    NDocValue v = spp.getValue();
                     switch (spp.getNameId()) {
                         case "camera-orientation":
                         case "light-orientation": {
