@@ -7,7 +7,7 @@ import net.thevpc.nuts.reflect.NReflectUtils;
 
 import java.math.MathContext;
 
-public class NElemCalc {
+public class NDocCompilerNumberUtils {
     public static NElement simplifyPars(NElement e) {
         if (e.isUplet()) {
             NUpletElement u = e.asUplet().get();
