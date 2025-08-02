@@ -8,7 +8,7 @@ import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.renderer.text.*;
-import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -18,9 +18,6 @@ import net.thevpc.nuts.text.NTextStyles;
 import net.thevpc.nuts.text.NTexts;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
-import org.scilab.forge.jlatexmath.TeXConstants;
-import org.scilab.forge.jlatexmath.TeXFormula;
-import org.scilab.forge.jlatexmath.TeXIcon;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -94,20 +91,6 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
             hTextRendererFlavor=engine.textRendererFlavor("").get();
         }
         hTextRendererFlavor.buildText(rawText, options, node, ctx, this);
-    }
-
-    public void appendEq(String text, NDocNode node, NDocNodeRendererContext ctx) {
-        if (!text.isEmpty()) {
-            NDocRichTextToken r = new NDocRichTextToken(
-                    NDocRichTextTokenType.IMAGE_PAINTER,
-                    text
-            );
-            double fontSize = NDocValueByName.getFontSize(node, ctx);
-            r.imagePainter = this.createLatex(text, fontSize);
-            NDocDouble2 size = r.imagePainter.size();
-            r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
-            this.currRow().addToken(r);
-        }
     }
 
     public void appendPlain(String text, NDocNodeRendererContext ctx) {
@@ -198,43 +181,6 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
 
     public void setCode(String rawText) {
         this.code = rawText;
-    }
-
-    public ImagePainter createLatex(String tex, double fontSize) {
-        TeXFormula formula;
-        boolean error = false;
-        try {
-            formula = new TeXFormula(tex);
-        } catch (Exception ex) {
-            error = true;
-            formula = new TeXFormula("?error?");
-            ex.printStackTrace();
-        }
-        float size = (float) (fontSize / 2.0);
-        TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-
-        // insert a border
-        icon.setInsets(new Insets(0, 0, 0, 0));
-        if (error) {
-            return null;
-        }
-        return new ImagePainter() {
-            @Override
-            public void paint(NDocGraphics g, double x, double y) {
-                Font plainFont = g.getFont().deriveFont(g.getFont().getSize() / 2f);
-                g.setFont(plainFont);
-                FontMetrics fontMetrics = g.getFontMetrics(plainFont);
-                double xx = x;
-                double yy = y;//+ascent-descent;
-                icon.setForeground(g.getColor());
-                icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
-                g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
-            }
-
-            public NDocDouble2 size() {
-                return new NDocDouble2(icon.getIconWidth(), icon.getIconHeight());
-            }
-        };
     }
 
     @Override
