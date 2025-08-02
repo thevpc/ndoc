@@ -1,8 +1,8 @@
-package net.thevpc.ndoc.elem.base.text;
+package net.thevpc.ndoc.engine.base.nodes.text;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -13,7 +13,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NTextCode;
 import net.thevpc.nuts.text.NTexts;
 
-public class NDocSourceBuilder implements NDocNodeCustomBuilder {
+public class NDocSourceBuilder implements NDocNodeBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
