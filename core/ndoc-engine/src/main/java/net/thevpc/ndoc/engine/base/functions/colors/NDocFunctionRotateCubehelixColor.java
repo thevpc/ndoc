@@ -11,10 +11,10 @@ import net.thevpc.nuts.util.NMsg;
 
 import java.awt.*;
 
-public class NDocFunctionRotateCubeHelixColor implements NDocFunction {
+public class NDocFunctionRotateCubehelixColor implements NDocFunction {
     @Override
     public String name() {
-        return "rotateHueColor";
+        return "rotateCubehelixColor";
     }
 
     @Override
@@ -30,6 +30,6 @@ public class NDocFunctionRotateCubeHelixColor implements NDocFunction {
         }
         Color c = NDocValue.of(args.eval(0)).asColor().get();
         float degrees = NDocValue.of(args.eval(1)).asFloat().get();
-        return NDocElementUtils.toElement(NDocColorUtils.rotateCubehelix(c, degrees));
+        return NDocElementUtils.toElement(NDocColorUtils.rotateCubehelixDegrees(c, degrees));
     }
 }
