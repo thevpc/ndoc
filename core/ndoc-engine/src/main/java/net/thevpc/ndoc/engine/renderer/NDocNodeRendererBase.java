@@ -6,7 +6,7 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
 import net.thevpc.ndoc.api.document.NDocSizeRequirements;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRenderer;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -49,15 +49,15 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
             //if (!ctx.isDry()) {
                 Rotation rotation = NDocValueByType.getRotation(p, ctx, NDocPropName.ROTATE).orNull();
                 if (rotation != null) {
-                    double angle = NDocObjEx.of(rotation.getAngle()).asDouble().orElse(0.0);
+                    double angle = NDocValue.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
                         angle = angle / 180.0 * Math.PI;
                         if (angle != 0) {
                             NDocGraphics g = ctx.graphics();
                             nv = g.copy();
                             ///HSizeRef sr=new HSizeRef();
-                            double rotX = NDocObjEx.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
-                            double rotY = NDocObjEx.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
+                            double rotX = NDocValue.of(rotation.getX()).asDouble().get() / 100.0 * selfBounds.getWidth() + selfBounds.getX();
+                            double rotY = NDocValue.of(rotation.getY()).asDouble().get() / 100.0 * selfBounds.getHeight() + selfBounds.getY();
                             if (ctx.isDebug(p)) {
                                 g.setColor(NDocValueByName.getDebugColor(p, ctx));
                                 g.drawRect(selfBounds);
