@@ -31,7 +31,6 @@ normal{
                         - Hello ####World####
                     "
              """)
-
             // Row
             group(background:white,draw-contour){
                 //rectangle(at:center, color:themeColors[2])
