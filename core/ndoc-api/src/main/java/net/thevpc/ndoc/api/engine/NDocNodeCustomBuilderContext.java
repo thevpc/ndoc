@@ -1,10 +1,9 @@
-package net.thevpc.ndoc.api.extension;
+package net.thevpc.ndoc.api.engine;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocSizeRequirements;
 import net.thevpc.ndoc.api.parser.NDocAllArgumentReader;
 import net.thevpc.ndoc.api.parser.NDocArgumentReader;
