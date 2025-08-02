@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.shape;
+package net.thevpc.ndoc.engine.base.nodes.shape;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
