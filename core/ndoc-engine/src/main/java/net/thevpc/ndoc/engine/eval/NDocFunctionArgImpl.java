@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine;
+package net.thevpc.ndoc.engine.eval;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.engine.NDocEngine;
@@ -10,7 +10,7 @@ public class NDocFunctionArgImpl implements NDocFunctionArg {
     private final NElement expression;
     private final NDocEngine engine;
 
-    public NDocFunctionArgImpl(NDocNode node, NElement expression, NDocEngine engine) {
+    public NDocFunctionArgImpl(NElement expression, NDocNode node, NDocEngine engine) {
         this.node = node;
         this.expression = expression;
         this.engine = engine;
