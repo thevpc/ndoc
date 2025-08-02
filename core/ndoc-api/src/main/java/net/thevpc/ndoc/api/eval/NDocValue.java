@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.List;
 
-public class NDocObjEx {
+public class NDocValue {
 
     private Object element;
     private String name;
@@ -295,24 +295,24 @@ public class NDocObjEx {
 
     private boolean parsedChildren;
 
-    public static NDocObjEx ofProp(NDocNode n, String name) {
+    public static NDocValue ofProp(NDocNode n, String name) {
         if (n == null) {
             return of(null);
         }
         return of(n.getPropertyValue(name).orNull());
     }
 
-    public static NDocObjEx of(Object element) {
-        if (element instanceof NDocObjEx) {
-            return (NDocObjEx) element;
+    public static NDocValue of(Object element) {
+        if (element instanceof NDocValue) {
+            return (NDocValue) element;
         }
         if (element instanceof NOptional) {
             return of(((NOptional) element).orNull());
         }
-        return new NDocObjEx(element);
+        return new NDocValue(element);
     }
 
-    public NDocObjEx(Object element) {
+    public NDocValue(Object element) {
         if (element instanceof NListContainerElement) {
             element = ((NListContainerElement) element);
         }
@@ -365,13 +365,13 @@ public class NDocObjEx {
                 case PAIR: {
                     NPairElement pair = te.asPair().get();
                     NElement key = pair.key();
-                    NOptional<String> s = NDocObjEx.of(key).asStringOrName();
+                    NOptional<String> s = NDocValue.of(key).asStringOrName();
                     if (s.isPresent()) {
                         return NOptional.of(
                                 new SimplePair(
                                         s.get(),
                                         key,
-                                        NDocObjEx.of(pair.value())
+                                        NDocValue.of(pair.value())
                                 )
                         );
                     }
@@ -394,16 +394,16 @@ public class NDocObjEx {
         return a;
     }
 
-    public Map<String, NDocObjEx> argsOrBodyMap() {
-        Map<String, NDocObjEx> a = new HashMap<>();
+    public Map<String, NDocValue> argsOrBodyMap() {
+        Map<String, NDocValue> a = new HashMap<>();
         for (NElement arg : args()) {
-            NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
+            NOptional<SimplePair> sp = NDocValue.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
         }
         for (NElement arg : body()) {
-            NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
+            NOptional<SimplePair> sp = NDocValue.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
@@ -411,10 +411,10 @@ public class NDocObjEx {
         return a;
     }
 
-    public Map<String, NDocObjEx> argsMap() {
-        Map<String, NDocObjEx> a = new HashMap<>();
+    public Map<String, NDocValue> argsMap() {
+        Map<String, NDocValue> a = new HashMap<>();
         for (NElement arg : args()) {
-            NOptional<SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
+            NOptional<SimplePair> sp = NDocValue.of(arg).asSimplePair();
             if (sp.isPresent()) {
                 a.put(NDocUtils.uid(sp.get().name), sp.get().value);
             }
@@ -449,7 +449,7 @@ public class NDocObjEx {
                 case SHORT:
                 case LONG:
                 case INT: {
-                    return NDocObjEx.of(te.asIntValue().get()).asColor();
+                    return NDocValue.of(te.asIntValue().get()).asColor();
                 }
                 case UPLET:
                 case NAMED_UPLET: {
@@ -491,9 +491,9 @@ public class NDocObjEx {
                 case TRIPLE_ANTI_QUOTED_STRING:
                 case LINE_STRING:
                 case NAME: {
-                    NDocObjEx h = NDocObjEx.of(element);
+                    NDocValue h = NDocValue.of(element);
                     String s = h.asStringOrName().get();
-                    return NDocObjEx.of(s).asColor();
+                    return NDocValue.of(s).asColor();
                 }
             }
         } else {
@@ -517,10 +517,10 @@ public class NDocObjEx {
                 if (s.indexOf(",") >= 0) {
                     String[] a = s.split(",");
                     if (a.length == 3 || a.length == 4) {
-                        NDocObjEx r = NDocObjEx.of(a[0]);
-                        NDocObjEx g = NDocObjEx.of(a[1]);
-                        NDocObjEx b = NDocObjEx.of(a[2]);
-                        NDocObjEx aa = NDocObjEx.of(a.length == 4 ? a[3] : null);
+                        NDocValue r = NDocValue.of(a[0]);
+                        NDocValue g = NDocValue.of(a[1]);
+                        NDocValue b = NDocValue.of(a[2]);
+                        NDocValue aa = NDocValue.of(a.length == 4 ? a[3] : null);
                         if (r.asInt().isPresent() && g.asInt().isPresent() && b.asInt().isPresent()) {
                             return NOptional.of(
                                     new Color(
@@ -659,7 +659,7 @@ public class NDocObjEx {
                 }
                 return NOptional.of(te.asDoubleValue().get());
             } else if (te.type().isAnyString()) {
-                return NDocObjEx.of(te.asStringValue().get()).asDouble();
+                return NDocValue.of(te.asStringValue().get()).asDouble();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
             }
@@ -698,7 +698,7 @@ public class NDocObjEx {
                     }
                 }
             } else if (te.type().isAnyString()) {
-                return NDocObjEx.of(te.asStringValue().get()).asInt();
+                return NDocValue.of(te.asStringValue().get()).asInt();
             } else {
                 return NOptional.ofNamedEmpty("double from " + element);
             }
@@ -782,7 +782,7 @@ public class NDocObjEx {
             NElement[] arr = (NElement[]) element;
             int[] aa = new int[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Integer> d = NDocObjEx.of(arr[i]).asInt();
+                NOptional<Integer> d = NDocValue.of(arr[i]).asInt();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -794,7 +794,7 @@ public class NDocObjEx {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if (te.isListContainer()) {
-                return NDocObjEx.of(te.toListContainer().get().children().toArray(new NElement[0])).asIntArray();
+                return NDocValue.of(te.toListContainer().get().children().toArray(new NElement[0])).asIntArray();
             }
         }
         if (element instanceof NDocInt2) {
@@ -837,7 +837,7 @@ public class NDocObjEx {
         });
     }
 
-    public NOptional<NElement[]> asNArrayElement() {
+    public NOptional<NElement[]> asElementArray() {
         if (element instanceof NElement[]) {
             return NOptional.of(((NElement[]) element));
         }
@@ -874,21 +874,21 @@ public class NDocObjEx {
             }
         }
         if (element instanceof NDocDouble2) {
-            return NDocObjEx.of(new double[]{((NDocDouble2) element).getX(), ((NDocDouble2) element).getY()}).asNArrayElement();
+            return NDocValue.of(new double[]{((NDocDouble2) element).getX(), ((NDocDouble2) element).getY()}).asElementArray();
         }
         if (element instanceof NDocPoint2D) {
-            return NDocObjEx.of(new double[]{((NDocPoint2D) element).getX(), ((NDocPoint2D) element).getY()}).asNArrayElement();
+            return NDocValue.of(new double[]{((NDocPoint2D) element).getX(), ((NDocPoint2D) element).getY()}).asElementArray();
         }
         if (element instanceof NDocPoint3D) {
-            return NDocObjEx.of(new double[]{((NDocPoint3D) element).getX(), ((NDocPoint3D) element).getY(), ((NDocPoint3D) element).getZ()}).asNArrayElement();
+            return NDocValue.of(new double[]{((NDocPoint3D) element).getX(), ((NDocPoint3D) element).getY(), ((NDocPoint3D) element).getZ()}).asElementArray();
         }
         if (element instanceof NDocDouble4) {
-            return NDocObjEx.of(new double[]{
+            return NDocValue.of(new double[]{
                     ((NDocDouble4) element).getX1(),
                     ((NDocDouble4) element).getX2()
                     , ((NDocDouble4) element).getX3()
                     , ((NDocDouble4) element).getX4()
-            }).asNArrayElement();
+            }).asElementArray();
         }
         return NOptional.ofNamedEmpty("NElement[] from " + element);
     }
@@ -901,7 +901,7 @@ public class NDocObjEx {
             Object[] arr = (Object[]) element;
             double[] aa = new double[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
+                NOptional<Double> d = NDocValue.of(arr[i]).asDouble();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -913,7 +913,7 @@ public class NDocObjEx {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if (te.isListContainer()) {
-                return NDocObjEx.of(te.asListContainer().get().children().toArray(new NElement[0])).asDoubleArray();
+                return NDocValue.of(te.asListContainer().get().children().toArray(new NElement[0])).asDoubleArray();
             }
         }
         if (element instanceof NDocDouble2) {
@@ -937,7 +937,7 @@ public class NDocObjEx {
             Object[] arr = ((Collection) element).toArray();
             double[] aa = new double[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Double> d = NDocObjEx.of(arr[i]).asDouble();
+                NOptional<Double> d = NDocValue.of(arr[i]).asDouble();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -991,7 +991,7 @@ public class NDocObjEx {
         if (o.isPresent()) {
             List<Color> cc = new ArrayList<>();
             for (Object oi : o.get()) {
-                NOptional<Color> y = NDocObjEx.of(oi).asColor();
+                NOptional<Color> y = NDocValue.of(oi).asColor();
                 if (y.isPresent()) {
                     cc.add(y.get());
                 } else {
@@ -1011,7 +1011,7 @@ public class NDocObjEx {
             NElement[] arr = (NElement[]) element;
             String[] aa = new String[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<String> d = NDocObjEx.of(arr[i]).asStringOrName();
+                NOptional<String> d = NDocValue.of(arr[i]).asStringOrName();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -1037,7 +1037,7 @@ public class NDocObjEx {
             NElement[] arr = (NElement[]) element;
             boolean[] aa = new boolean[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<Boolean> d = NDocObjEx.of(arr[i]).asBoolean();
+                NOptional<Boolean> d = NDocValue.of(arr[i]).asBoolean();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -1085,7 +1085,7 @@ public class NDocObjEx {
     }
 
     public NOptional<NDocElemNumber2> asNNumberElement2Or1OrHAlign() {
-        NOptional<NElement[]> ta = asNArrayElement();
+        NOptional<NElement[]> ta = asElementArray();
         if (ta.isPresent()) {
             NElement[] taa = ta.get();
             switch (taa.length) {
@@ -1093,7 +1093,7 @@ public class NDocObjEx {
                     if (taa[0].isNumber()) {
                         return NOptional.of(new NDocElemNumber2((NNumberElement) taa[0], (NNumberElement) taa[0]));
                     } else if (taa[0].isAnyString()) {
-                        NDocDouble2 size = NDocAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                        NDocDouble2 size = NDocAlign.parse(NDocValue.of(taa[0]).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                         return NOptional.of(
                                 new NDocElemNumber2(
                                         NElement.ofDouble(size.getX()).asNumber().get(),
@@ -1109,14 +1109,14 @@ public class NDocObjEx {
                     if (taa[0].isNumber()) {
                         xx = taa[0].asNumber().get();
                     } else if (taa[0].isAnyString()) {
-                        xx = NElement.ofDouble(NDocAlign.parse(NDocObjEx.of(taa[0]).asStringOrName().get()).flatMap(NDocAlign::toPosition).get().getX()).asNumber().get();
+                        xx = NElement.ofDouble(NDocAlign.parse(NDocValue.of(taa[0]).asStringOrName().get()).flatMap(NDocAlign::toPosition).get().getX()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[0], element));
                     }
                     if (taa[1].isNumber()) {
                         yy = taa[1].asNumber().get();
                     } else if (taa[1].isAnyString()) {
-                        yy = NElement.ofDouble(NDocAlign.parse(NDocObjEx.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
+                        yy = NElement.ofDouble(NDocAlign.parse(NDocValue.of(taa[1]).asStringOrName().get()).flatMap(x -> x.toPosition()).get().getY()).asNumber().get();
                     } else {
                         return NOptional.ofNamedError(NMsg.ofC("not a number %s in %s", taa[1], element));
                     }
@@ -1130,7 +1130,7 @@ public class NDocObjEx {
             if (taa.isNumber()) {
                 return NOptional.of(new NDocElemNumber2((NNumberElement) taa, (NNumberElement) taa));
             } else if (taa.isAnyString()) {
-                NDocDouble2 size = NDocAlign.parse(NDocObjEx.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
+                NDocDouble2 size = NDocAlign.parse(NDocValue.of(taa).asStringOrName().get()).flatMap(x -> x.toPosition()).get();
                 return NOptional.of(
                         new NDocElemNumber2(
                                 NElement.ofDouble(size.getX()).asNumber().get(),
@@ -1314,12 +1314,12 @@ public class NDocObjEx {
         }
         if (element instanceof NUpletElement && ((NUpletElement) element).isNamed()) {
             NUpletElement f = (NUpletElement) element;
-            NOptional<NDocArrowType> u = NDocObjEx.of(f.name().orNull()).asArrowType();
+            NOptional<NDocArrowType> u = NDocValue.of(f.name().orNull()).asArrowType();
             Double width = null;
             Double height = null;
             if (u.isPresent()) {
                 for (NElement arg : f.params()) {
-                    NOptional<Number> n = NDocObjEx.of(arg).asNumber();
+                    NOptional<Number> n = NDocValue.of(arg).asNumber();
                     if (n.isPresent()) {
                         if (width == null) {
                             width = n.get().doubleValue();
@@ -1426,7 +1426,7 @@ public class NDocObjEx {
             NElement[] arr = (NElement[]) element;
             NDocDouble2[] aa = new NDocDouble2[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<NDocDouble2> d = NDocObjEx.of(arr[i]).asDouble2();
+                NOptional<NDocDouble2> d = NDocValue.of(arr[i]).asDouble2();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -1438,7 +1438,7 @@ public class NDocObjEx {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if (te.isListContainer()) {
-                return NDocObjEx.of(te.toArray().get().children().toArray(new NElement[0])).asDouble2Array();
+                return NDocValue.of(te.toArray().get().children().toArray(new NElement[0])).asDouble2Array();
             }
         }
         return NOptional.ofNamedEmpty("Double2[] from " + element);
@@ -1452,7 +1452,7 @@ public class NDocObjEx {
             NElement[] arr = (NElement[]) element;
             NDocDouble3[] aa = new NDocDouble3[arr.length];
             for (int i = 0; i < aa.length; i++) {
-                NOptional<NDocDouble3> d = NDocObjEx.of(arr[i]).asDouble3();
+                NOptional<NDocDouble3> d = NDocValue.of(arr[i]).asDouble3();
                 if (d.isPresent()) {
                     aa[i] = d.get();
                 } else {
@@ -1464,7 +1464,7 @@ public class NDocObjEx {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if (te.isListContainer()) {
-                return NDocObjEx.of(te.toArray().get().children().toArray(new NElement[0])).asDouble3Array();
+                return NDocValue.of(te.toArray().get().children().toArray(new NElement[0])).asDouble3Array();
             }
         }
         return NOptional.ofNamedEmpty("Double3[] from " + element);
@@ -1568,9 +1568,9 @@ public class NDocObjEx {
 
         private String name;
         private NElement key;
-        private NDocObjEx value;
+        private NDocValue value;
 
-        public SimplePair(String name, NElement key, NDocObjEx value) {
+        public SimplePair(String name, NElement key, NDocValue value) {
             this.name = name;
             this.key = key;
             this.value = value;
@@ -1588,7 +1588,7 @@ public class NDocObjEx {
             return key;
         }
 
-        public NDocObjEx getValue() {
+        public NDocValue getValue() {
             return value;
         }
     }
