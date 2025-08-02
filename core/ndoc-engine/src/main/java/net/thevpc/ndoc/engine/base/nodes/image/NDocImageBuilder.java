@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.thevpc.ndoc.elem.base.image;
+package net.thevpc.ndoc.engine.base.nodes.image;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
@@ -12,8 +12,8 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -30,7 +30,7 @@ import java.awt.*;
 /**
  * @author vpc
  */
-public class NDocImageBuilder implements NDocNodeCustomBuilder {
+public class NDocImageBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
 
     @Override
