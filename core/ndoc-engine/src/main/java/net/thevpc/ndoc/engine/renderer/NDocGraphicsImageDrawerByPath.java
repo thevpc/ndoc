@@ -3,7 +3,7 @@ package net.thevpc.ndoc.engine.renderer;
 import net.thevpc.ndoc.api.document.elem2d.NDocImageOptions;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
-import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
+import net.thevpc.ndoc.engine.util.NDocUtilsImages;
 import net.thevpc.nuts.io.NPath;
 
 import javax.imageio.ImageIO;
