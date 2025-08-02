@@ -1,4 +1,4 @@
-package net.thevpc.ndoc;
+package net.thevpc.ndoc.cmdline;
 
 public enum Action {
     OPEN,
