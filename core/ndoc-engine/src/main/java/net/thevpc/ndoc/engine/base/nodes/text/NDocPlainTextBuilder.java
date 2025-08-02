@@ -2,11 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.thevpc.ndoc.elem.base.text;
+package net.thevpc.ndoc.engine.base.nodes.text;
 
-import net.thevpc.ndoc.api.document.style.NDocProp;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
@@ -17,13 +16,12 @@ import net.thevpc.ndoc.api.renderer.text.NDocRichTextTokenType;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NStringUtils;
 
 /**
  * @author vpc
  */
-public class NDocPlainTextBuilder implements NDocNodeCustomBuilder {
+public class NDocPlainTextBuilder implements NDocNodeBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
