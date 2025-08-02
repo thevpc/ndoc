@@ -17,12 +17,12 @@ import java.util.Map;
 
 public class NDocValueByName {
     public static NOptional<Paint> getColorProperty(String propName, NDocNode t, NDocNodeRendererContext ctx) {
-        NDocObjEx r = NDocObjEx.of(ctx.computePropertyValue(t, propName).orElse(null));
+        NDocValue r = NDocValue.of(ctx.computePropertyValue(t, propName).orElse(null));
         return NOptional.of(r.asColor().orElse(null));
     }
 
     protected static boolean isPreserveShapeRatio(NDocNode t, NDocNodeRendererContext ctx) {
-        Boolean b = NDocObjEx.of(ctx.computePropertyValue(t, NDocPropName.PRESERVE_ASPECT_RATIO).orNull()).asBoolean().orElse(false);
+        Boolean b = NDocValue.of(ctx.computePropertyValue(t, NDocPropName.PRESERVE_ASPECT_RATIO).orNull()).asBoolean().orElse(false);
         return b == null ? false : b;
     }
 
@@ -179,7 +179,7 @@ public class NDocValueByName {
     }
 
     public static NDocDouble2 getRoundCornerArcs(NDocNode t, NDocNodeRendererContext ctx) {
-        return NDocObjEx.of(ctx.computePropertyValue(t, NDocPropName.ROUND_CORNER).orNull()).asDouble2().orNull();
+        return NDocValue.of(ctx.computePropertyValue(t, NDocPropName.ROUND_CORNER).orNull()).asDouble2().orNull();
     }
 
     public static int getColSpan(NDocNode t, NDocNodeRendererContext ctx) {
@@ -214,7 +214,7 @@ public class NDocValueByName {
 
     public static NOptional<Shadow> readStyleAsShadow(NDocNode t, String s, NDocNodeRendererContext ctx) {
         Object sv = ctx.computePropertyValue(t, s).orNull();
-        NDocObjEx o = NDocObjEx.of(sv);
+        NDocValue o = NDocValue.of(sv);
         NOptional<NDocPoint2D> r = getStyleAsShadowDistance(sv, ctx);
         if (r.isPresent()) {
             Shadow ss = new Shadow();
@@ -223,7 +223,7 @@ public class NDocValueByName {
         }
         if (sv instanceof NElement && ((NElement) sv).isListContainer()) {
             Shadow shadow = new Shadow();
-            for (Map.Entry<String, NDocObjEx> e : o.argsOrBodyMap().entrySet()) {
+            for (Map.Entry<String, NDocValue> e : o.argsOrBodyMap().entrySet()) {
                 switch (e.getKey()) {
                     case "distance":
                     case "shift":
@@ -261,7 +261,7 @@ public class NDocValueByName {
             }
             return NOptional.of(shadow);
         }
-        NOptional<Boolean> rb = NDocObjEx.of(sv).asBoolean();
+        NOptional<Boolean> rb = NDocValue.of(sv).asBoolean();
         if (rb.isPresent()) {
             if (rb.get()) {
                 Shadow ss = new Shadow();
@@ -269,7 +269,7 @@ public class NDocValueByName {
                 return NOptional.of(ss);
             }
         }
-        NOptional<Double> rd = NDocObjEx.of(sv).asDouble();
+        NOptional<Double> rd = NDocValue.of(sv).asDouble();
         if (r.isPresent()) {
             Shadow ss = new Shadow();
             ss.setTranslation(new NDocPoint2D(rd.get(), rd.get()));
@@ -359,7 +359,7 @@ public class NDocValueByName {
     }
 
     public static NOptional<NDocPoint2D> getStyleAsShadowDistance(Object sv, NDocNodeRendererContext ctx) {
-        NDocObjEx o = NDocObjEx.of(sv);
+        NDocValue o = NDocValue.of(sv);
         double ww = ctx.getBounds().getWidth();
         double hh = ctx.getBounds().getHeight();
         if (o.isNumber()) {
