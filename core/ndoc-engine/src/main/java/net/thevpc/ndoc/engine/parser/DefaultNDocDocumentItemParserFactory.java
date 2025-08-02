@@ -10,7 +10,7 @@ import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeCall;
 import net.thevpc.ndoc.engine.document.DefaultNDocNode;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.parser.NDocNodeParser;
 import net.thevpc.ndoc.engine.parser.ctrlnodes.CtrlNDocNodeName;
 import net.thevpc.ndoc.engine.document.NDocItemBag;
@@ -97,12 +97,29 @@ public class DefaultNDocDocumentItemParserFactory
                         NOperatorElement p = c.asOperator().get();
                         NElement k = p.first().get();
                         NElement v = p.second().get();
-                        NDocObjEx kh = NDocObjEx.of(k);
+                        NDocValue kh = NDocValue.of(k);
                         if (k.isName()) {
                             NOptional<String> nn = kh.asStringOrName();
                             if (nn.isPresent()) {
                                 String nnn = NStringUtils.trim(nn.get());
                                 return NCallableSupport.ofValid(() -> DefaultNDocNode.ofAssign(nnn, v, context.source()));
+                            } else {
+                                return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
+                            }
+                        } else {
+                            return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
+                        }
+                    }
+                    case OP_COLON_EQ: {
+                        NOperatorElement p = c.asOperator().get();
+                        NElement k = p.first().get();
+                        NElement v = p.second().get();
+                        NDocValue kh = NDocValue.of(k);
+                        if (k.isName()) {
+                            NOptional<String> nn = kh.asStringOrName();
+                            if (nn.isPresent()) {
+                                String nnn = NStringUtils.trim(nn.get());
+                                return NCallableSupport.ofValid(() -> DefaultNDocNode.ofAssignIfEmpty(nnn, v, context.source()));
                             } else {
                                 return _invalidSupport(NMsg.ofC("unable to interpret left hand of assignment as a valid var : %s", k), context);
                             }
@@ -136,7 +153,7 @@ public class DefaultNDocDocumentItemParserFactory
                     case NAMED_UPLET:
                     case NAMED_PARAMETRIZED_ARRAY:
                     case NAMED_ARRAY: {
-                        NDocObjEx ee = NDocObjEx.of(c);
+                        NDocValue ee = NDocValue.of(c);
                         String uid = NDocUtils.uid(ee.name());
                         NDocNodeParser p = engine.nodeTypeParser(uid).orNull();
                         if (p != null) {
@@ -349,7 +366,7 @@ public class DefaultNDocDocumentItemParserFactory
         NDocDocumentFactory f = engine.documentFactory();
         HashSet<String> allAncestors = null;
         HashSet<String> allStyles = null;
-        NDocObjEx ee = NDocObjEx.of(c);
+        NDocValue ee = NDocValue.of(c);
         for (NElementAnnotation a : c.annotations()) {
             String nn = a.name();
             if (!NNameFormat.equalsIgnoreFormat(nn, NDocUtils.COMPILER_DECLARATION_PATH)) {
@@ -366,7 +383,7 @@ public class DefaultNDocDocumentItemParserFactory
                         if (allStyles == null) {
                             allStyles = new HashSet<>();
                         }
-                        NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                        NOptional<String[]> ss = NDocValue.of(cls).asStringArrayOrString();
                         if (ss.isPresent()) {
                             allStyles.addAll(Arrays.asList(ss.get()));
                         }
