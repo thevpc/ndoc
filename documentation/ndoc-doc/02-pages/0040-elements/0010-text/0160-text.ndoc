@@ -44,13 +44,16 @@ normal{
                 """
             }
             source(tson,
+                ```
                 """
                     **Bold X**
                     __Italic Y__
                     #Title 1#
                     ##Title 2##
                     ###Title 3###
-                """)
+                """
+                ```
+                )
 
 
             // Row
@@ -58,23 +61,15 @@ normal{
                 styles:{
                     "*":{font-size:4%P}
                 }
-                ntf(
-                """
-                    ##:p1 color 1## ##:p2 color 2##
-                    ##:p3 color 3## ##:p10 color 4##
-                    ##:/ italic##   ##:info hint##
-                """
-                )
+                    """
+                        [[ntf: ##:p1: hello##]] world
+                    """
             }
             source(tson,
                 ```
-                    ntf(
                     """
-                        ##:p1:color 1## ##:p2:color 2##
-                        ##:p3:color 3## ##:p10:color 4##
-                        ##:/:italic## ##:info hint##
+                        [[ntf: ##:p1: hello##]] world
                     """
-                    )
                 ```)
 
 
@@ -92,8 +87,8 @@ normal{
                     [[eq: X^2=\sin(x) ]]
                 """
             }
-//            text("hello" draw-contour:true)
             source(tson,
+                ```
                 """
                     #Equation 1# =
                     [[eq: X²=\sin(πx) ]]
@@ -101,7 +96,9 @@ normal{
                     [[eq: X^2=\sin \left( \pi x \right) ]]
                     ###Equation 3### =
                     [[eq: X^2=\sin(x) ]]
-                """)
+                """
+                ```
+                )
 
         }
     }
