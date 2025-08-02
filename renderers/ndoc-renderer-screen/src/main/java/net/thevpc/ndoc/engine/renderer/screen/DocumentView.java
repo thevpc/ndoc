@@ -10,7 +10,7 @@ import net.thevpc.ndoc.engine.parser.resources.NDocResourceNew;
 import net.thevpc.ndoc.api.renderer.*;
 
 
-import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
+import net.thevpc.ndoc.engine.util.NDocUtilsImages;
 
 import javax.swing.*;
 import java.awt.event.*;
