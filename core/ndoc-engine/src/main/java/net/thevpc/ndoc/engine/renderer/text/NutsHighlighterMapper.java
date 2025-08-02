@@ -3,8 +3,8 @@ package net.thevpc.ndoc.engine.renderer.text;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.renderer.text.*;
 import net.thevpc.ndoc.api.util.Colors;
-import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.engine.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.text.*;
@@ -203,12 +203,12 @@ public class NutsHighlighterMapper {
         }
         ss = new NDocTextPartStyle();
         {
-            NDocObjEx e = NDocObjEx.of(ctx.computePropertyValue(node, prefix + "color").orNull());
+            NDocValue e = NDocValue.of(ctx.computePropertyValue(node, prefix + "color").orNull());
             Color[] colors = e.asColorArrayOrColor().orNull();
             ss.foreground = Colors.resolveDefaultColorByIndex(nTextStyle.getVariant(), colors);
         }
         {
-            NDocObjEx e = NDocObjEx.of(ctx.computePropertyValue(node, prefix + "background").orNull());
+            NDocValue e = NDocValue.of(ctx.computePropertyValue(node, prefix + "background").orNull());
             Color[] colors = e.asColorArray().orNull();
             if (colors == null || colors.length == 0) {
                 // od nothing
@@ -218,7 +218,7 @@ public class NutsHighlighterMapper {
             }
         }
         {
-            NDocObjEx e = NDocObjEx.of(
+            NDocValue e = NDocValue.of(
                     ctx.computePropertyValue(node, prefix + "font-family")
                             .orElseUse(() -> ctx.computePropertyValue(node, "font-family"))
                             .orNull()
@@ -231,7 +231,7 @@ public class NutsHighlighterMapper {
             }
         }
         {
-            NDocObjEx e = NDocObjEx.of(
+            NDocValue e = NDocValue.of(
                     ctx.computePropertyValue(node, prefix + "font-family-size")
                             .orElseUse(() -> ctx.computePropertyValue(node, "font-family-size"))
                             .orNull()
@@ -244,11 +244,11 @@ public class NutsHighlighterMapper {
             }
         }
         {
-            ss.bold = NDocObjEx.of(ctx.computePropertyValue(node, prefix + "font-bold")
+            ss.bold = NDocValue.of(ctx.computePropertyValue(node, prefix + "font-bold")
                     .orElseUse(() -> ctx.computePropertyValue(node, "font-bold"))
                     .orNull()).asBoolean().orElse(false);
 
-            ss.italic = NDocObjEx.of(ctx.computePropertyValue(node, prefix + "font-italic")
+            ss.italic = NDocValue.of(ctx.computePropertyValue(node, prefix + "font-italic")
                     .orElseUse(() -> ctx.computePropertyValue(node, "font-italic"))
                     .orNull()).asBoolean().orElse(false);
         }
