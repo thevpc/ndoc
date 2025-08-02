@@ -2,6 +2,7 @@ package net.thevpc.ndoc.main;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
+import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
 import net.thevpc.ndoc.config.NDocProject;
 import net.thevpc.ndoc.config.NDocViewerConfigManager;
 import net.thevpc.ndoc.config.UserConfig;
@@ -82,7 +83,7 @@ public class ServiceHelper {
 
     public NPath getLatestProjectPath() {
         NDocProject[] p = config().getRecentProjects();
-        if(p!=null && p.length>0) {
+        if (p != null && p.length > 0) {
             return NPath.of(p[0].getPath());
         }
         return null;
@@ -123,8 +124,14 @@ public class ServiceHelper {
     public void showNewProject() {
         NewProjectPanel projectPanel = new NewProjectPanel(this);
         if (projectPanel.showDialog(mainFrame.getContentPane())) {
-            String selectedTemplate = projectPanel.getSelectedTemplate();
-            String templateBootUrl = NStringUtils.firstNonBlank(selectedTemplate, engine.getDefaultTemplateUrl());
+            NDocTemplateInfo selectedTemplate = projectPanel.getSelectedTemplate();
+            if (selectedTemplate == null) {
+                selectedTemplate = Arrays.stream(engine.getTemplates()).filter(NDocTemplateInfo::recommended).findAny().orElse(null);
+            }
+            if (selectedTemplate == null) {
+                JOptionPane.showMessageDialog(mainFrame.getContentPane(), "Missing template", "Warning", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             NPath rootPath = NPath.of(NStringUtils.firstNonBlank(projectPanel.getSelectedRootFolder(), "."));
             NPath newProjectPath;
             String baseName = NStringUtils.trim(projectPanel.getSelectedProjectName());
@@ -141,15 +148,15 @@ public class ServiceHelper {
                 }
                 index++;
             }
-            if(index!=1){
-                if (JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "Folder "+baseName+" already exists. Should we consider new name "+newProjectPath.getName(), "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (index != 1) {
+                if (JOptionPane.showConfirmDialog(mainFrame.getContentPane(), "Folder " + baseName + " already exists. Should we consider new name " + newProjectPath.getName(), "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     //usersConfig().saveUserConfig(newUserConfig);
-                }else{
+                } else {
                     return;
                 }
             }
             Map<String, String> propValues = projectPanel.getPropValues();
-            engine.createProject(newProjectPath, NPath.of(templateBootUrl), propValues::get);
+            engine.createProject(newProjectPath, NPath.of(selectedTemplate.url()), propValues::get);
             UserConfig newUserConfig = projectPanel.getUserConfig();
             UserConfig oldUser = usersConfig().loadUserConfig(newUserConfig.getId());
             if (oldUser != null && Objects.equals(newUserConfig, oldUser)) {
