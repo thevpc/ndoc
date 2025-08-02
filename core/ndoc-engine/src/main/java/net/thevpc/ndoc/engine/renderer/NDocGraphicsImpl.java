@@ -17,7 +17,7 @@ import net.thevpc.ndoc.engine.renderer.elem2d.strokes.CompositeStroke;
 import net.thevpc.ndoc.engine.renderer.elem2d.strokes.StrokeFactory;
 import net.thevpc.ndoc.engine.renderer.elem3d.Element3DUIFactory;
 import net.thevpc.ndoc.api.renderer.NDocImageTypeRendererFactory;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocGraphicsImageDrawer;
 import net.thevpc.ndoc.api.renderer.text.NDocTextOptions;
@@ -166,7 +166,7 @@ public class NDocGraphicsImpl implements NDocGraphics {
         if (e == null || e.isNull()) {
             return null;
         }
-        NDocObjEx o = NDocObjEx.of(e);
+        NDocValue o = NDocValue.of(e);
         if (o.name() != null) {
             return StrokeFactory.createStroke(o.name(), e, this);
         }
