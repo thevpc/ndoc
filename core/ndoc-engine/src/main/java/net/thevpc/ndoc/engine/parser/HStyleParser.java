@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.style.*;
 import net.thevpc.ndoc.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.nuts.util.*;
 
 import net.thevpc.nuts.elem.NElement;
@@ -121,12 +121,12 @@ public class HStyleParser {
                 for (NElement child : e.asUplet().get().params()) {
                     switch (child.type()) {
                         case PAIR: {
-                            NDocObjEx h = NDocObjEx.of(e.asPair().get().key());
+                            NDocValue h = NDocValue.of(e.asPair().get().key());
                             NOptional<String> k = h.asStringOrName();
                             if (k.isPresent()) {
                                 switch (NDocUtils.uid(k.get())) {
                                     case "class": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
+                                        NDocValue h2 = NDocValue.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             classes.addAll(Arrays.asList(cc.get()));
@@ -136,7 +136,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "name": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
+                                        NDocValue h2 = NDocValue.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             names.addAll(Arrays.asList(cc.get()));
@@ -148,7 +148,7 @@ public class HStyleParser {
                                         }
                                     }
                                     case "type": {
-                                        NDocObjEx h2 = NDocObjEx.of(e.asPair().get().value());
+                                        NDocValue h2 = NDocValue.of(e.asPair().get().value());
                                         NOptional<String[]> cc = h2.asStringArrayOrString();
                                         if (cc.isPresent()) {
                                             types.addAll(Arrays.asList(cc.get()));
@@ -257,7 +257,7 @@ public class HStyleParser {
     public static NOptional<NDocProp[]> parseStyle(NElement e, NDocDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NDocObjEx h = NDocObjEx.of(e.asPair().get().key());
+                NDocValue h = NDocValue.of(e.asPair().get().key());
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = NDocUtils.uid(u.get());
@@ -266,7 +266,7 @@ public class HStyleParser {
                 break;
             }
             case NAME: {
-                NDocObjEx h = NDocObjEx.of(e);
+                NDocValue h = NDocValue.of(e);
                 NOptional<String> u = h.asStringOrName();
                 if (u.isPresent()) {
                     String uid = NDocUtils.uid(u.get());
