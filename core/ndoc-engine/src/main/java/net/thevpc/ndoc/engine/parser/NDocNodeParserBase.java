@@ -4,8 +4,8 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.parser.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.util.ToElementHelper;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.engine.util.ToElementHelper;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.*;
@@ -196,7 +196,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     protected boolean processArgumentAsCommonStyleProperty(NDocArgumentReader info) {
         NElement currentArg = info.peek();
         if (HParserUtils.isCommonStyleProperty(info.getId())) {
-            NDocObjEx es = NDocObjEx.of(currentArg);
+            NDocValue es = NDocValue.of(currentArg);
             if (es.isFunction()) {
                 info.parseContext().messages().log(NMsg.ofC("[%s] invalid argument %s. did you mean %s:%s ?",
                         info.parseContext().source(),
