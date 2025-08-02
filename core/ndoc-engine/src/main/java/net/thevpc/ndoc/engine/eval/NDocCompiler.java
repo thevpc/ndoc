@@ -4,6 +4,7 @@ import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.eval.*;
 import net.thevpc.ndoc.api.engine.NDocEngine;
@@ -308,7 +309,15 @@ public class NDocCompiler {
         NDocNode n = (NDocNode) p;
         String varName = node.getProperty(NDocPropName.NAME).get().getValue().asStringValue().get();
         NElement varExpr = node.getProperty(NDocPropName.VALUE).get().getValue();
-        n.setVar(varName, engine.evalExpression(varExpr, node));
+        boolean ifempty = NDocValue.of(node.getProperty("ifempty").map(x->x.getValue()).orNull()).asBoolean().orElse(false);
+        if(ifempty) {
+            NElement old = n.getVar(varName).orNull();
+            if(old==null || old.isNull()) {
+                n.setVar(varName, engine.evalExpression(varExpr, node));
+            }
+        }else{
+            n.setVar(varName, engine.evalExpression(varExpr, node));
+        }
         return new ArrayList<>();
     }
 
@@ -336,9 +345,9 @@ public class NDocCompiler {
         }
         NDocNodeParser p = engine.nodeTypeParser(name).orNull();
         if (p != null) {
-            h.messages().log(NMsg.ofC("variable '%s' not found, rendering as plain text.  If you meant a component, use '%s()' syntax",name).asWarning());
+            h.messages().log(NMsg.ofC("variable '%s' not found, rendering as plain text.  If you meant a component, use '%s()' syntax",name,name).asWarning(),NDocUtils.sourceOf(node));
         }else {
-            h.messages().log(NMsg.ofC("variable '%s' not found, rendering as plain text", name).asWarning());
+            h.messages().log(NMsg.ofC("variable '%s' not found, rendering as plain text", name).asWarning(),NDocUtils.sourceOf(node));
         }
         DefaultNDocNode t = DefaultNDocNode.ofText(name);
         t.setSource(node.source());
@@ -562,8 +571,7 @@ public class NDocCompiler {
     private List<NDocItem> _process_call_fct(NDocFunction t, CtrlNDocNodeCall c, NodeHierarchy h) {
         NDocResource source = NDocUtils.sourceOf(c);
         NDocFunctionContext ctx = new DefaultNDocFunctionContext(engine);
-        List<NElement> callArgs = c.getCallArgs();
-        NElement result = t.invoke(callArgs.stream().map(x -> engine.createRawArg(c, x)).toArray(NDocFunctionArg[]::new), ctx);
+        NElement result = t.invoke(new NDocFunctionArgsImpl(c.getCallArgs(),c,engine), ctx);
         if (result == null) {
             return new ArrayList<>();
         }
