@@ -1,8 +1,8 @@
 package net.thevpc.ndoc.extension.plot2d;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
@@ -18,7 +18,7 @@ import java.awt.*;
 /**
  *
  */
-public class NDocPlot2DBuilder implements NDocNodeCustomBuilder {
+public class NDocPlot2DBuilder implements NDocNodeBuilder {
 
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
