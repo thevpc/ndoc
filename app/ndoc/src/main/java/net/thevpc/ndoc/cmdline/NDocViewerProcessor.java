@@ -7,7 +7,7 @@ import net.thevpc.nuts.nswing.NSwingUtils;
 
 import javax.swing.*;
 
-public class ViewerProcessor {
+public class NDocViewerProcessor {
     public void runViewer(Options options) {
         NSwingUtils.setSharedWorkspaceInstance();
         FlatLightLaf.setup(new com.formdev.flatlaf.FlatDarculaLaf());
