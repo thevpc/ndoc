@@ -1,5 +1,7 @@
 package net.thevpc.ndoc.main.components;
 
+import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
+import net.thevpc.ndoc.engine.templates.NDocTemplateInfoImpl;
 import net.thevpc.ndoc.main.NDocUIHelper;
 import net.thevpc.ndoc.main.ServiceHelper;
 
@@ -29,7 +31,7 @@ public class NewProjectPropsPanel extends JPanel {
         template.setEditable(true);
         row++;
         DefaultComboBoxModel aModel = new DefaultComboBoxModel();
-        for (String defaultTemplateUrl : serviceHelper.engine().getDefaultTemplateUrls()) {
+        for (NDocTemplateInfo defaultTemplateUrl : serviceHelper.engine().getTemplates()) {
             aModel.addElement(defaultTemplateUrl);
         }
         template.setModel(aModel);
@@ -45,8 +47,17 @@ public class NewProjectPropsPanel extends JPanel {
             row++;
         }
     }
-    public String getSelectedTemplate() {
-        return (String) template.getSelectedItem();
+    public NDocTemplateInfo getSelectedTemplate() {
+        Object s = template.getSelectedItem();
+        if(s instanceof String){
+            String ss=(String)s;
+            return new NDocTemplateInfoImpl(
+                    ss,
+                    ss, false, null, null,
+                    ss
+            );
+        }
+        return (NDocTemplateInfo) s;
     }
 
     public String getSelectedProperty(String property) {
