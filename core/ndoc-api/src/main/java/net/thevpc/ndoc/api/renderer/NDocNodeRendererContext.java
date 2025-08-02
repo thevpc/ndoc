@@ -21,14 +21,15 @@ import java.awt.image.ImageObserver;
 import java.util.List;
 
 public interface NDocNodeRendererContext {
-    String CAPABILITY_PRINT="print";
-    String CAPABILITY_ANIMATE ="animate";
+    String CAPABILITY_PRINT = "print";
+    String CAPABILITY_ANIMATE = "animate";
 
     default NDocSizeRequirements sizeRequirementsOf(NDocNode p) {
         return manager().getRenderer(p.type()).get().sizeRequirements(p, this);
     }
 
     NDocBounds2 selfBounds(NDocNode e);
+
     NDocBounds2 defaultSelfBounds(NDocNode e);
 
     NDocNodeRendererManager manager();
