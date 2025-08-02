@@ -5,7 +5,7 @@
 package net.thevpc.ndoc.engine.parser;
 
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.parser.NDocParseMode;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElementAnnotation;
@@ -51,7 +51,7 @@ public class NDocParseHelper {
                 List<NElement> params = a.params();
                 if (params != null) {
                     for (NElement cls : params) {
-                        NOptional<String[]> ss = NDocObjEx.of(cls).asStringArrayOrString();
+                        NOptional<String[]> ss = NDocValue.of(cls).asStringArrayOrString();
                         if (ss.isPresent()) {
                             allClasses.addAll(Arrays.asList(ss.get()));
                         }
