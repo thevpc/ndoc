@@ -6,14 +6,14 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.util.function.Supplier;
 
-public class DefaultVar implements NDocVar {
+public class NDocVarImpl implements NDocVar {
     private Supplier<NElement>e;
 
     public static NOptional<NDocVar> ofOptional(String name, Supplier<NElement> e) {
-        return NOptional.ofNamed(new DefaultVar(e),"var "+name);
+        return NOptional.ofNamed(new NDocVarImpl(e),"var "+name);
     }
 
-    public DefaultVar(Supplier<NElement> e) {
+    public NDocVarImpl(Supplier<NElement> e) {
         this.e = e;
     }
 
