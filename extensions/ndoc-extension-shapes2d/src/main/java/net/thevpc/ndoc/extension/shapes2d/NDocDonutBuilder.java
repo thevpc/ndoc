@@ -5,9 +5,9 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
@@ -21,7 +21,7 @@ import java.util.Arrays;
 /**
  *
  */
-public class NDocDonutBuilder implements NDocNodeCustomBuilder {
+public class NDocDonutBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
 
     @Override
@@ -56,7 +56,7 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
         double outerRadius = Math.min(width, height) / 2;
         double innerRadius=0;
         if(isDonut) {
-            innerRadius = NDocObjEx.of(p.getPropertyValue(NDocPropName.INNER_RADIUS)).asDouble().orElse(0.0);
+            innerRadius = NDocValue.of(p.getPropertyValue(NDocPropName.INNER_RADIUS)).asDouble().orElse(0.0);
             if (innerRadius <= 0) {
                 innerRadius = 50;
             } else if (innerRadius >= 100) {
@@ -65,17 +65,17 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
             innerRadius = innerRadius / 100 * outerRadius;
         }
 
-        double startAngle = NDocObjEx.of(p.getPropertyValue(NDocPropName.START_ANGLE)).asDouble().orElse(0.0);
-        double extentAngle = NDocObjEx.of(p.getPropertyValue(NDocPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
-        double dash = NDocObjEx.of(p.getPropertyValue(NDocPropName.DASH)).asDouble().orElse(0.0);
+        double startAngle = NDocValue.of(p.getPropertyValue(NDocPropName.START_ANGLE)).asDouble().orElse(0.0);
+        double extentAngle = NDocValue.of(p.getPropertyValue(NDocPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
+        double dash = NDocValue.of(p.getPropertyValue(NDocPropName.DASH)).asDouble().orElse(0.0);
         NDocGraphics g = renderContext.graphics();
 
-        String[] colors = NDocObjEx.of(p.getPropertyValue(NDocPropName.COLORS)).asStringArray().orElse(null);
+        String[] colors = NDocValue.of(p.getPropertyValue(NDocPropName.COLORS)).asStringArray().orElse(null);
         g.setColor(Color.black);
         if (!renderContext.isDry()) {
             double finalInnerRadius = innerRadius;
             renderContext.withStroke(p, () -> {
-                int sliceCount = NDocObjEx.of(p.getPropertyValue(NDocPropName.SLICE_COUNT)).asInt().orElse(-1);
+                int sliceCount = NDocValue.of(p.getPropertyValue(NDocPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
                     double sliceAngle = (extentAngle - sliceCount * dash) / sliceCount;
@@ -99,7 +99,7 @@ public class NDocDonutBuilder implements NDocNodeCustomBuilder {
                 //diff sizes
                 else {
 
-                    double[] slicePercentage = NDocObjEx.of(p.getPropertyValue(NDocPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
+                    double[] slicePercentage = NDocValue.of(p.getPropertyValue(NDocPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
                     slicePercentage = Arrays.stream(slicePercentage).filter(xx -> xx <= 0 || Double.isInfinite(xx) || Double.isNaN(xx)).toArray();
                     if (slicePercentage.length == 0) {
                         slicePercentage = new double[]{1, 1, 1};
