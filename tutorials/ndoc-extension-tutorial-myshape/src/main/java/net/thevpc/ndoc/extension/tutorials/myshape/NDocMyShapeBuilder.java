@@ -2,9 +2,9 @@ package net.thevpc.ndoc.extension.tutorials.myshape;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
@@ -17,7 +17,7 @@ import java.awt.geom.GeneralPath;
 /**
  *
  */
-public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
+public class NDocMyShapeBuilder implements NDocNodeBuilder {
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
         builderContext
@@ -35,18 +35,18 @@ public class NDocMyShapeBuilder implements NDocNodeCustomBuilder {
         double height = b.getHeight();
 
         Paint color = renderContext.getForegroundColor(p, true);
-        NDocPoint2D base = NDocObjEx.of(p.getPropertyValue("base")).asHPoint2D().orNull();
+        NDocPoint2D base = NDocValue.of(p.getPropertyValue("base")).asHPoint2D().orNull();
         if (base == null) {
-            Double base3 = NDocObjEx.of(p.getPropertyValue("base")).asDouble().orNull();
+            Double base3 = NDocValue.of(p.getPropertyValue("base")).asDouble().orNull();
             if (base3 == null) {
                 base = new NDocPoint2D(80, 20);
             } else {
                 base = new NDocPoint2D(base3, base3);
             }
         }
-        NDocPoint2D hat = NDocObjEx.of(p.getPropertyValue("hat")).asHPoint2D().orNull();
+        NDocPoint2D hat = NDocValue.of(p.getPropertyValue("hat")).asHPoint2D().orNull();
         if (hat == null) {
-            Double base3 = NDocObjEx.of(p.getPropertyValue("hat")).asDouble().orNull();
+            Double base3 = NDocValue.of(p.getPropertyValue("hat")).asDouble().orNull();
             if (base3 == null) {
                 hat = new NDocPoint2D(-1, -1);
             } else {
