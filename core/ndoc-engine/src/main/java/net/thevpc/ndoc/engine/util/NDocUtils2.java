@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.engine.tools.util;
+package net.thevpc.ndoc.engine.util;
 
 public class NDocUtils2 {
 }
