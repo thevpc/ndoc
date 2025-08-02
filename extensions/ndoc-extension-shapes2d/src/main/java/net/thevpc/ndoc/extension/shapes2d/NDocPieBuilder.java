@@ -4,15 +4,15 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 
 
 /**
  *
  */
-public class NDocPieBuilder implements NDocNodeCustomBuilder {
+public class NDocPieBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
 
     @Override
