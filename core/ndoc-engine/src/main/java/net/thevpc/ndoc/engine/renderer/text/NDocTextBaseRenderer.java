@@ -9,7 +9,7 @@ import net.thevpc.ndoc.api.eval.NDocValueByName;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ndoc.engine.tools.util.NDocNodeRendererUtils;
+import net.thevpc.ndoc.engine.util.NDocNodeRendererUtils;
 import net.thevpc.ndoc.engine.renderer.NDocNodeRendererBase;
 import net.thevpc.nuts.elem.NElement;
 
