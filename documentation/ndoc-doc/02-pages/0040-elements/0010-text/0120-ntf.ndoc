@@ -1,6 +1,6 @@
 normal{
     header {
-        text("Latex Equations"),
+        text("NTF format"),
     }
     body{
         grid((4,2),columns-weight:[1,3]){
@@ -14,27 +14,46 @@ normal{
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:6%P}
+                    "*":{font-size:4%P}
                 }
-                "[[eq: X^2=\sin(x) ]]"
+                ntf(
+                """
+                    ##Hello## ### World ###
+                """
+                )
             }
             source(tson,
-                """
-                "[[eq: X^2=\sin(x) ]]"
-                """)
+                ```
+                    ntf(
+                    """
+                    ##Hello## ### World ###
+                    """
+                    )
+                ```)
 
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:3%P}
+                    "*":{font-size:4%P}
                 }
-                eq("X²²=\sin(πx)",draw-contour:false)
+                ntf(
+                """
+                    ##:p1 color 1## ##:p2 color 2##
+                    ##:p3 color 3## ##:p10 color 4##
+                    ##:/ italic##   ##:info hint##
+                """
+                )
             }
             source(tson,
-                """
-                eq("X²²=\sin(πx)")
-                """)
-        }
+                ```
+                    ntf(
+                    """
+                        ##:p1:color 1## ##:p2:color 2##
+                        ##:p3:color 3## ##:p10:color 4##
+                        ##:/:italic## ##:info hint##
+                    """
+                    )
+                ```)        }
     }
 
 }
