@@ -7,9 +7,9 @@ import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.eval.NDocValue;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ndoc.api.util.NDocUtils;
@@ -21,7 +21,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 
 
-public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
+public class NDocCylinderBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
     private static final Color DEFAULT_SIDE_COLOR = new Color(0x00215E);
     //private static final Color DEFAULT_TOP_COLOR = new Color(0xD1D8C5);
@@ -48,16 +48,16 @@ public class NDocCylinderBuilder implements NDocNodeCustomBuilder {
         double width = b.getWidth();
         double height = b.getHeight();
 
-        double arcStroke = NDocObjEx.of(p.getPropertyValue(NDocPropName.STROKE)).asDouble().orElse(5.0);
-        double ellipse_height = NDocObjEx.of(p.getPropertyValue(NDocPropName.ELLIPSE_H)).asDouble().orElse(50.0);
+        double arcStroke = NDocValue.of(p.getPropertyValue(NDocPropName.STROKE)).asDouble().orElse(5.0);
+        double ellipse_height = NDocValue.of(p.getPropertyValue(NDocPropName.ELLIPSE_H)).asDouble().orElse(50.0);
         ellipse_height = ellipse_height / 100 * height;
         double arcY = y + height - ellipse_height / 2;
 
 
-        Color sideColor = NDocObjEx.of(p.getPropertyValue(NDocPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
-        Color topColor = NDocObjEx.of(p.getPropertyValue(NDocPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
+        Color sideColor = NDocValue.of(p.getPropertyValue(NDocPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
+        Color topColor = NDocValue.of(p.getPropertyValue(NDocPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
 
-        int segmentCount = NDocObjEx.of(p.getPropertyValue(NDocPropName.SEGMENT_COUNT)).asInt().orElse(0);
+        int segmentCount = NDocValue.of(p.getPropertyValue(NDocPropName.SEGMENT_COUNT)).asInt().orElse(0);
 
         boolean someBG = false;
         NDocGraphics g = renderContext.graphics();
