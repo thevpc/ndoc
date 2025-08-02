@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.node.NDocNode;
-import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
+import net.thevpc.ndoc.engine.util.NDocUtilsImages;
 import net.thevpc.ndoc.api.renderer.NDocDocumentRendererListener;
 import net.thevpc.ndoc.api.renderer.NDocDocumentStreamRendererConfig;
 
