@@ -4,7 +4,7 @@ import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.NDocAlign;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
-import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
