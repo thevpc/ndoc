@@ -1,6 +1,6 @@
 package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.nuts.elem.NElement;
 
@@ -23,7 +23,7 @@ public class CompoundStroke implements Stroke {
     private Op operation;
 
     public static Stroke of(NElement ee, CompoundStroke.Op op, NDocGraphics g) {
-        NDocObjEx o = NDocObjEx.of(ee);
+        NDocValue o = NDocValue.of(ee);
         Stroke base1 = null;
         Stroke base2 = null;
         for (NElement arg : o.args()) {
@@ -41,7 +41,7 @@ public class CompoundStroke implements Stroke {
             }
         }
         if (base1 == null && base2 == null) {
-            return StrokeFactory.createBasic(NDocObjEx.of(null));
+            return StrokeFactory.createBasic(NDocValue.of(null));
         }
         if (base1 == null) {
             return base2;
