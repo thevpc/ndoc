@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.main.components;
 
+import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
 import net.thevpc.ndoc.config.UserConfig;
 import net.thevpc.ndoc.main.NDocUIHelper;
 import net.thevpc.ndoc.main.ServiceHelper;
@@ -84,7 +85,7 @@ public class NewProjectPanel extends JPanel {
         return rootFolder.path.getText();
     }
 
-    public String getSelectedTemplate() {
+    public NDocTemplateInfo getSelectedTemplate() {
         return props.getSelectedTemplate();
     }
 
