@@ -1,6 +1,8 @@
 package net.thevpc.ndoc.api.extension;
 
-public interface NDocNodeCustomBuilder {
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
+
+public interface NDocNodeBuilder {
 
     void build(NDocNodeCustomBuilderContext builderContext);
 
