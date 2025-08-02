@@ -14,7 +14,7 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
-import net.thevpc.ndoc.api.eval.NDocFunction;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -96,11 +96,7 @@ public interface NDocEngine {
 
     void createProject(NPath path, NPath projectUrl, Function<String, String> vars);
 
-    String[] getDefaultTemplateUrls();
-
-    String getDefaultTemplateUrl();
-
-    NDocFunctionArg createRawArg(NDocNode node, NElement expression);
+    NDocTemplateInfo[] getTemplates();
 
     NElement evalExpression(NElement expression, NDocNode node);
 
