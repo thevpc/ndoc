@@ -7,11 +7,11 @@ import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.engine.NDocEngine;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.api.util.ToElementHelper;
+import net.thevpc.ndoc.engine.util.ToElementHelper;
 import net.thevpc.nuts.NConstants;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.NElement;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderContext {
-    NDocNodeCustomBuilder builder;
+    NDocNodeBuilder builder;
     RenderAction renderMainAction;
     SizeRequirementsAction sizeRequirementsAction;
     SelfBoundsAction selfBoundsAction;
@@ -46,7 +46,7 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
     RenderConvertAction renderConvertAction;
     RenderEmbeddedTextAction renderEmbeddedTextAction;
 
-    public NDocNodeCustomBuilderContextImpl(NDocNodeCustomBuilder builder, NDocEngine engine) {
+    public NDocNodeCustomBuilderContextImpl(NDocNodeBuilder builder, NDocEngine engine) {
         this.builder = builder;
         this.engine = engine;
     }
