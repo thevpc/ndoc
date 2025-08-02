@@ -1,9 +1,9 @@
-package net.thevpc.ndoc.elem.base.shape;
+package net.thevpc.ndoc.engine.base.nodes.shape;
 
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.engine.NDocEngineTools;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.parser.NDocArgumentReader;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
@@ -18,7 +18,7 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.util.Arrays;
 
-public class NDocPolygonBuilder implements NDocNodeCustomBuilder {
+public class NDocPolygonBuilder implements NDocNodeBuilder {
     private NDocProperties defaultStyles = new NDocProperties();
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
