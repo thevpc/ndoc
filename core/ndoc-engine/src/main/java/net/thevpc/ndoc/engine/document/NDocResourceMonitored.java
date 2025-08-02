@@ -4,6 +4,7 @@ import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.source.NDocResourceMonitor;
 import net.thevpc.ndoc.engine.parser.resources.NDocResourceFactory;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.*;
@@ -20,6 +21,18 @@ public class NDocResourceMonitored implements NDocResource, NDocResourceMonitor 
     public NDocResourceMonitored() {
     }
 
+    @Override
+    public NOptional<NDocResource> find(String path) {
+        for (NDocResource resource : resources) {
+            NPath p = resource.path().orNull();
+            if(p!=null){
+                if(p.toString().equals(path)){
+                    return NOptional.of(resource);
+                }
+            }
+        }
+        return NOptional.ofNamedEmpty(NMsg.ofC("resource %s",path));
+    }
 
     @Override
     public void save() {
