@@ -11,10 +11,10 @@ import net.thevpc.nuts.util.NMsg;
 
 import java.awt.*;
 
-public class NDocFunctionRotateCubehelixColor implements NDocFunction {
+public class NDocFunctionCubehelixColor implements NDocFunction {
     @Override
     public String name() {
-        return "rotateCubehelixColor";
+        return "cubehelixColor";
     }
 
     @Override
@@ -22,14 +22,10 @@ public class NDocFunctionRotateCubehelixColor implements NDocFunction {
         if (args.size() == 0) {
             return NElement.ofNull();
         }
-        if (args.size() == 1) {
-            return args.eval(0);
+        if (args.size() > 1) {
+            context.messages().log(NMsg.ofC("%s: expected 1 argument, got %s", name(), args.size()));
         }
-        if (args.size() > 2) {
-            context.messages().log(NMsg.ofC("%s: expected 2 argument, got %s", name(), args.size()));
-        }
-        Color c = NDocValue.of(args.eval(0)).asColor().get();
-        float degrees = NDocValue.of(args.eval(1)).asFloat().get();
-        return NDocElementUtils.toElement(NDocColorUtils.rotateCubehelix(c, degrees));
+        float c = NDocValue.of(args.eval(0)).asFloat().get();
+        return NDocElementUtils.toElement(NDocColorUtils.cubehelix(c));
     }
 }
