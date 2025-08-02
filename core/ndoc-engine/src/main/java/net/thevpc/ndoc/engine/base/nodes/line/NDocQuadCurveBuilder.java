@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.line;
+package net.thevpc.ndoc.engine.base.nodes.line;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
@@ -6,8 +6,8 @@ import net.thevpc.ndoc.api.document.elem2d.NDocPoint;
 import net.thevpc.ndoc.api.document.elem2d.NDocPoint2D;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocValueByType;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import net.thevpc.ndoc.api.document.style.NDocPropName;
@@ -17,7 +17,7 @@ import net.thevpc.ndoc.api.eval.NDocValue;
 
 import java.awt.*;
 
-public class NDocQuadCurveBuilder implements NDocNodeCustomBuilder {
+public class NDocQuadCurveBuilder implements NDocNodeBuilder {
     NDocProperties defaultStyles = new NDocProperties();
 
 
