@@ -2,7 +2,7 @@ package net.thevpc.ndoc.main;
 
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.main.components.EntryComponent;
-import net.thevpc.ndoc.engine.tools.util.NDocUtilsImages;
+import net.thevpc.ndoc.engine.util.NDocUtilsImages;
 import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
