@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NOptional;
@@ -22,7 +22,7 @@ public class SloppyStroke implements Stroke {
     private Stroke base;
 
     public static Stroke of(NElement e, NDocGraphics g) {
-        NDocObjEx o = NDocObjEx.of(e);
+        NDocValue o = NDocValue.of(e);
         double sloppyness = 5;
         Stroke base = null;
         NObjectElementBuilder basic = null;
@@ -38,11 +38,11 @@ public class SloppyStroke implements Stroke {
                     base = CompositeStroke.of(base, g.createStroke(arg));
                 }
             } else if (arg.type().isAnyNumber()) {
-                sloppyness = NDocObjEx.of(arg).asDouble().orElse(sloppyness);
+                sloppyness = NDocValue.of(arg).asDouble().orElse(sloppyness);
             } else {
-                NOptional<NDocObjEx.SimplePair> sp = NDocObjEx.of(arg).asSimplePair();
+                NOptional<NDocValue.SimplePair> sp = NDocValue.of(arg).asSimplePair();
                 if (sp.isPresent()) {
-                    NDocObjEx.SimplePair ke = sp.get();
+                    NDocValue.SimplePair ke = sp.get();
                     switch (NDocUtils.uid(ke.getName())) {
                         case "width":
                         case "dash-phase":
@@ -79,13 +79,13 @@ public class SloppyStroke implements Stroke {
         }
         if (base == null) {
             if (basic == null) {
-                base = StrokeFactory.createBasic(NDocObjEx.of(NElement.ofObjectBuilder()));
+                base = StrokeFactory.createBasic(NDocValue.of(NElement.ofObjectBuilder()));
             } else {
-                base = StrokeFactory.createBasic(NDocObjEx.of(basic));
+                base = StrokeFactory.createBasic(NDocValue.of(basic));
             }
         } else {
             if (basic != null) {
-                base = CompositeStroke.of(StrokeFactory.createBasic(NDocObjEx.of(basic)), base);
+                base = CompositeStroke.of(StrokeFactory.createBasic(NDocValue.of(basic)), base);
             }
         }
         return new SloppyStroke(
