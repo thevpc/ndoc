@@ -15,6 +15,7 @@ import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.eval.*;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
+import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.nuts.elem.*;
@@ -43,7 +44,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 NDocNode nd = (NDocNode) nn;
                 NOptional<NElement> v = nd.getVar(varName);
                 if (v.isPresent()) {
-                    return DefaultVar.ofOptional(varName, () -> v.get());
+                    return NDocVarImpl.ofOptional(varName, () -> v.get());
                 }
                 if (NDocUtils.isAnyDefVarName(varName)) {
                     if (nd.templateDefinition() != null) {
@@ -56,15 +57,15 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
         }
         switch (varName) {
             case "HOME": {
-                return DefaultVar.ofOptional(varName, () -> NElement.ofString(System.getProperty("user.home")));
+                return NDocVarImpl.ofOptional(varName, () -> NElement.ofString(System.getProperty("user.home")));
             }
             case "USERNAME": {
-                return DefaultVar.ofOptional(varName, () -> NElement.ofString(System.getProperty("user.name")));
+                return NDocVarImpl.ofOptional(varName, () -> NElement.ofString(System.getProperty("user.name")));
             }
         }
         String v = System.getProperty(varName);
         if (v != null) {
-            return DefaultVar.ofOptional(varName, () -> NElement.ofString(System.getProperty(varName)));
+            return NDocVarImpl.ofOptional(varName, () -> NElement.ofString(System.getProperty(varName)));
         }
         return NOptional.ofNamedEmpty("var " + varName);
     }
@@ -86,10 +87,10 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
             return element;
         }
         NElement u = eval(indices[0], node);
-        NOptional<Integer> i = NDocObjEx.of(u).asInt();
+        NOptional<Integer> i = NDocValue.of(u).asInt();
         if (i.isPresent()) {
             int ii = i.get();
-            NOptional<Object[]> asObjectArray = NDocObjEx.of(element).asObjectArray();
+            NOptional<Object[]> asObjectArray = NDocValue.of(element).asObjectArray();
             if (asObjectArray.isPresent()) {
                 Object[] obj = asObjectArray.get();
                 int len = obj.length;
@@ -154,11 +155,12 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 }
                 case NAMED_UPLET: {
                     NUpletElement ff = ((NUpletElement) elementExpr);
-                    NDocFunctionArg[] args = ff.params()
-                            .stream().map(x -> engine.createRawArg(node, x)).toArray(NDocFunctionArg[]::new);
-                    NOptional<NDocFunction> f = engine.findFunction(node, ff.name().get(), args);
+                    NDocFunctionArgsImpl args = new NDocFunctionArgsImpl(ff.params(), node, engine);
+                    NOptional<NDocFunction> f = engine.findFunction(node, ff.name().get(), args.args());
                     if (f.isPresent()) {
-                        return eval(f.get().invoke(args, new DefaultNDocFunctionContext(engine)), node);
+                        return eval(f.get().invoke(
+                                args
+                                , new DefaultNDocFunctionContext(engine)), node);
                     }
                     List<NElement> r = ff.params()
                             .stream().map(x -> eval(x, node)).collect(Collectors.toList());
@@ -169,10 +171,10 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     if (ff.isBinaryOperator()) {
                         NElement a = eval(ff.first().get(),node);
                         NElement b = eval(ff.second().get(),node);
-                        return NElemCalc.substruct(a, b);
+                        return NDocCompilerNumberUtils.substruct(a, b);
                     } else if (ff.isUnaryOperator()) {
                         NElement a = ff.first().get();
-                        return NElemCalc.negate(a);
+                        return NDocCompilerNumberUtils.negate(a);
                     } else {
                         return ff;
                     }
@@ -182,7 +184,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     if (ff.isBinaryOperator()) {
                         NElement a = eval(ff.first().get(),node);
                         NElement b = eval(ff.second().get(),node);
-                        return NElemCalc.add(a, b);
+                        return NDocCompilerNumberUtils.add(a, b);
                     } else if (ff.isUnaryOperator()) {
                         NElement a = eval(ff.first().get(),node);
                         return a;
@@ -195,7 +197,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     if (ff.isBinaryOperator()) {
                         NElement a = eval(ff.first().get(),node);
                         NElement b = eval(ff.second().get(),node);
-                        return NElemCalc.mul(a, b, MathContext.DECIMAL128);
+                        return NDocCompilerNumberUtils.mul(a, b, MathContext.DECIMAL128);
                     } else {
                         return ff;
                     }
@@ -205,7 +207,7 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                     if (ff.isBinaryOperator()) {
                         NElement a = eval(ff.first().get(),node);
                         NElement b = eval(ff.second().get(),node);
-                        return NElemCalc.div(a, b, MathContext.DECIMAL128);
+                        return NDocCompilerNumberUtils.div(a, b, MathContext.DECIMAL128);
                     } else {
                         return ff;
                     }
