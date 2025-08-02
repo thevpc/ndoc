@@ -1,4 +1,4 @@
-package net.thevpc.ndoc.elem.base.line;
+package net.thevpc.ndoc.engine.base.nodes.line;
 
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem2d.NDocElement2DFactory;
@@ -10,8 +10,8 @@ import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.engine.NDocEngineTools;
 import net.thevpc.ndoc.api.eval.NDocValue;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilder;
-import net.thevpc.ndoc.api.extension.NDocNodeCustomBuilderContext;
+import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
+import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
@@ -20,7 +20,7 @@ import net.thevpc.nuts.util.NOptional;
 
 import java.awt.*;
 
-public class NDocPolylineBuilder implements NDocNodeCustomBuilder {
+public class NDocPolylineBuilder implements NDocNodeBuilder {
     private NDocProperties defaultStyles = new NDocProperties();
     @Override
     public void build(NDocNodeCustomBuilderContext builderContext) {
