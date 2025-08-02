@@ -34,6 +34,34 @@ normal{
                 """
                 eq("X²²=\sin(πx)")
                 """)
+
+// Row
+            grid((1,3),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:4%P}
+                }
+                """
+                    ##Equation 1 (with superscript)## =
+                    [[eq: X²=\sin(πx) ]]
+                    ###Equation 2### =
+                    [[eq: X^2=\sin \left( \pi x \right) ]]
+                    ####Equation 3#### =
+                    [[eq: X^2=\sin(x) ]]
+                """
+            }
+//            text("hello" draw-contour:true)
+            column{
+                source(tson,
+                    """
+                        ##Equation 1 (with superscript)## =
+                        [[eq: X²=\sin(πx) ]]
+                        ###Equation 2### =
+                        [[eq: X^2=\sin \left( \pi x \right) ]]
+                        ####Equation 3#### =
+                        [[eq: X^2=\sin(x) ]]
+                    """)
+                text("you can embed eq in a a string...", font-size:5%P,margin:[10,20],font-italic,color:themeColors[3])
+            }
         }
     }
 
