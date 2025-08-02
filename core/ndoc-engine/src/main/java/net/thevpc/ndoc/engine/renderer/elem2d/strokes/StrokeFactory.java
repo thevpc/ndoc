@@ -2,7 +2,7 @@ package net.thevpc.ndoc.engine.renderer.elem2d.strokes;
 
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
-import net.thevpc.ndoc.api.eval.NDocObjEx;
+import net.thevpc.ndoc.api.eval.NDocValue;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.elem.NElement;
 
@@ -16,7 +16,7 @@ public class StrokeFactory {
     public static final float[] DASH_SMALL = new float[]{3};
 
     public static Stroke createStroke(String name, NElement e, NDocGraphics g) {
-        NDocObjEx o = NDocObjEx.of(e);
+        NDocValue o = NDocValue.of(e);
         switch (NDocUtils.uid(name)) {
             case "basic":
             case "simple":
@@ -55,7 +55,7 @@ public class StrokeFactory {
         return createBasic(o);
     }
 
-    private static Stroke createShaped(NDocObjEx o, NDocGraphics g) {
+    private static Stroke createShaped(NDocValue o, NDocGraphics g) {
         List<Shape> base = new ArrayList<>();
         double advance = 15;
         for (NElement arg : o.args()) {
@@ -66,9 +66,9 @@ public class StrokeFactory {
             ) {
                 base.add(g.createShape(arg));
             } else {
-                NOptional<NDocObjEx.SimplePair> sp = o.asSimplePair();
+                NOptional<NDocValue.SimplePair> sp = o.asSimplePair();
                 if (sp.isPresent()) {
-                    NDocObjEx.SimplePair ke = sp.get();
+                    NDocValue.SimplePair ke = sp.get();
                     switch (NDocUtils.uid(ke.getName())) {
                         case "advance": {
                             advance = ke.getValue().asDouble().orElse(advance);
@@ -81,7 +81,7 @@ public class StrokeFactory {
         return new ShapeStroke(base.toArray(new Shape[0]), (float) advance);
     }
 
-    public static BasicStroke createBasic(NDocObjEx o) {
+    public static BasicStroke createBasic(NDocValue o) {
         double width = .5;
         int cap = BasicStroke.CAP_SQUARE;
         int join = BasicStroke.JOIN_MITER;
@@ -100,10 +100,10 @@ public class StrokeFactory {
             }
         } else {
             for (NElement ee : o.argsOrBody()) {
-                NDocObjEx objEx = NDocObjEx.of(ee);
-                NOptional<NDocObjEx.SimplePair> sp = objEx.asSimplePair();
+                NDocValue objEx = NDocValue.of(ee);
+                NOptional<NDocValue.SimplePair> sp = objEx.asSimplePair();
                 if (sp.isPresent()) {
-                    NDocObjEx.SimplePair ke = sp.get();
+                    NDocValue.SimplePair ke = sp.get();
                     switch (ke.getNameId()) {
                         case "width": {
                             width = ke.getValue().asDouble().orElse(width);
