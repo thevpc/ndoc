@@ -12,7 +12,7 @@ import net.thevpc.nuts.util.NMsg;
 public class NDocFunctionSinebowColor implements NDocFunction {
     @Override
     public String name() {
-        return "cubehelixColor";
+        return "sinebowColor";
     }
 
     @Override
@@ -24,6 +24,6 @@ public class NDocFunctionSinebowColor implements NDocFunction {
             context.messages().log(NMsg.ofC("%s: expected 1 argument, got %s", name(), args.size()));
         }
         float c = NDocValue.of(args.eval(0)).asFloat().get();
-        return NDocElementUtils.toElement(NDocColorUtils.cubehelix(c));
+        return NDocElementUtils.toElement(NDocColorUtils.sinebow(c));
     }
 }
