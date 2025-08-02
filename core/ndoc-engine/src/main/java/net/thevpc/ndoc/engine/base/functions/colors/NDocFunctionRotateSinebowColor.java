@@ -14,7 +14,7 @@ import java.awt.*;
 public class NDocFunctionRotateSinebowColor implements NDocFunction {
     @Override
     public String name() {
-        return "rotateHueColor";
+        return "rotateSinebowColor";
     }
 
     @Override
@@ -30,6 +30,6 @@ public class NDocFunctionRotateSinebowColor implements NDocFunction {
         }
         Color c = NDocValue.of(args.eval(0)).asColor().get();
         float degrees = NDocValue.of(args.eval(1)).asFloat().get();
-        return NDocElementUtils.toElement(NDocColorUtils.rotateHue(c, degrees));
+        return NDocElementUtils.toElement(NDocColorUtils.rotateSinebowDegrees(c, degrees));
     }
 }
