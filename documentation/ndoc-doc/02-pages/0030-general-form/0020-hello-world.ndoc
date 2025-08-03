@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("Hello World"),
-    }
+normal(title:"Hello World"){
     body{
         grid((4,2),columns-weight:[1]){
             styles:{
