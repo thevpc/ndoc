@@ -23,6 +23,7 @@ public class DefaultNDocNode implements NDocNode {
     protected NDocItem parent;
     private NDocProperties properties;
     private Map<String, NElement> vars = new LinkedHashMap<>();
+    private Map<String, Object> userObjects;
     private List<NDocNode> children = new ArrayList<>();
     private List<NDocStyleRule> styleRules = new ArrayList<>();
     private List<NDocNodeDef> definitions = new ArrayList<>();
@@ -175,6 +176,33 @@ public class DefaultNDocNode implements NDocNode {
         return new LinkedHashMap<>(vars);
     }
 
+
+    @Override
+    public NDocNode setUserObject(String name, Object value) {
+        if (value == null) {
+            if(userObjects!=null) {
+                userObjects.remove(name);
+            }
+        } else {
+            if(userObjects==null) {
+                userObjects=new HashMap<>();
+            }
+            userObjects.put(name, value);
+        }
+        return this;
+    }
+
+    @Override
+    public NOptional<Object> getUserObject(String property) {
+        if(userObjects!=null) {
+            Object u = userObjects.get(property);
+            if(u!=null) {
+                return NOptional.of(u);
+            }
+        }
+        return NOptional.ofNamedEmpty(property);
+    }
+
     public NOptional<NDocProp> getProperty(String... propertyNames) {
         return properties.get(propertyNames);
     }
@@ -214,6 +242,7 @@ public class DefaultNDocNode implements NDocNode {
         }
         return this;
     }
+
 
     @Override
     public NDocNode setVar(String name, NElement value) {
@@ -705,6 +734,11 @@ public class DefaultNDocNode implements NDocNode {
         for (Map.Entry<String, NElement> e : vars.entrySet()) {
             other.setVar(e.getKey(), e.getValue());
         }
+        if(userObjects!=null) {
+            for (Map.Entry<String, Object> e : userObjects.entrySet()) {
+                other.setUserObject(e.getKey(), e.getValue());
+            }
+        }
         for (NDocNodeDef v : definitions) {
             other.addDefinitions(v);
         }
@@ -731,6 +765,9 @@ public class DefaultNDocNode implements NDocNode {
         definitions.clear();
         functions.clear();
         hierarchy.clear();
+        if(userObjects!=null){
+            userObjects.clear();
+        }
         templateDefinition = null;
         return this;
     }
