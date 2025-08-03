@@ -179,7 +179,7 @@ public class NDocValueByName {
     }
 
     public static NDocDouble2 getRoundCornerArcs(NDocNode t, NDocNodeRendererContext ctx) {
-        return NDocValue.of(ctx.computePropertyValue(t, NDocPropName.ROUND_CORNER).orNull()).asDouble2().orNull();
+        return NDocValue.of(ctx.computePropertyValue(t, NDocPropName.ROUND_CORNER).orNull()).asDouble2OrDouble().orNull();
     }
 
     public static int getColSpan(NDocNode t, NDocNodeRendererContext ctx) {
