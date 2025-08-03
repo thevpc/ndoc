@@ -44,7 +44,7 @@ public class NDocGraphicsImageDrawerByPath implements NDocGraphicsImageDrawer {
         if (image == null) {
             return;
         }
-        image = NDocUtilsImages.resize(image, options.getSize());
+        image = NDocUtilsImages.resizeImage(image, options.getSize());
         g.drawImage(image, x, y, options.getImageObserver());
     }
 }
