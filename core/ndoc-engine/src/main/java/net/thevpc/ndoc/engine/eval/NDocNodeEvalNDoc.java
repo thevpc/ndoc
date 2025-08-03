@@ -17,7 +17,6 @@ import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.util.NDocUtils;
-import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.util.NMsg;
@@ -30,13 +29,21 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
 
     //    private NDocNode node;
     private NDocEngine engine;
+    private NDocVarProvider varProvider;
 
-    public NDocNodeEvalNDoc(NDocEngine engine) {
+    public NDocNodeEvalNDoc(NDocEngine engine,NDocVarProvider varProvider) {
         this.engine = engine;
+        this.varProvider = varProvider;
     }
 
     @Override
     public NOptional<NDocVar> findVar(String varName, NDocNode node) {
+        if(varProvider !=null){
+            NOptional<NDocVar> r = varProvider.findVar(varName, node);
+            if(r!=null && r.isPresent()) {
+                return r;
+            }
+        }
         NDocItem nn = (node);
 //        NDocNode stop = null;
         while (nn != null) {
@@ -155,12 +162,12 @@ public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
                 }
                 case NAMED_UPLET: {
                     NUpletElement ff = ((NUpletElement) elementExpr);
-                    NDocFunctionArgsImpl args = new NDocFunctionArgsImpl(ff.params(), node, engine);
+                    NDocFunctionArgsImpl args = new NDocFunctionArgsImpl(ff.params(), node, engine,varProvider);
                     NOptional<NDocFunction> f = engine.findFunction(node, ff.name().get(), args.args());
                     if (f.isPresent()) {
                         return eval(f.get().invoke(
                                 args
-                                , new DefaultNDocFunctionContext(engine)), node);
+                                , new DefaultNDocFunctionContext(engine,node,varProvider)), node);
                     }
                     List<NElement> r = ff.params()
                             .stream().map(x -> eval(x, node)).collect(Collectors.toList());
