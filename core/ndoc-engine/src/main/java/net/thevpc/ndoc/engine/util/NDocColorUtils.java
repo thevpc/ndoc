@@ -209,4 +209,50 @@ public class NDocColorUtils {
                 false
         );
     }
+
+    public static Color hslToRgb(float h, float s, float l) {
+        float r, g, b;
+
+        if (s == 0f) {
+            r = g = b = l; // achromatic
+        } else {
+            float q = l < 0.5f ? l * (1f + s) : (l + s - l * s);
+            float p = 2f * l - q;
+            r = hue2rgb(p, q, h + 1f / 3f);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1f / 3f);
+        }
+
+        return new Color(clamp(r), clamp(g), clamp(b));
+    }
+
+    private static float hue2rgb(float p, float q, float t) {
+        if (t < 0f) t += 1f;
+        if (t > 1f) t -= 1f;
+        if (t < 1f / 6f) return p + (q - p) * 6f * t;
+        if (t < 1f / 2f) return q;
+        if (t < 2f / 3f) return p + (q - p) * (2f / 3f - t) * 6f;
+        return p;
+    }
+
+    public static Color darker(Color color, float factor) {
+        float[] hsl = rgbToHsl(color);
+        hsl[2] = Math.max(0f, hsl[2] * (1f - factor));
+        return hslToRgb(hsl[0], hsl[1], hsl[2]);
+    }
+
+    public static Color lighter(Color color, float factor) {
+        float[] hsl = rgbToHsl(color);
+        hsl[2] = Math.min(1f, hsl[2] + (1f - hsl[2]) * factor);
+        return hslToRgb(hsl[0], hsl[1], hsl[2]);
+    }
+
+    // Overloads with default factor
+    public static Color darker(Color color) {
+        return darker(color, 0.2f);
+    }
+
+    public static Color lighter(Color color) {
+        return lighter(color, 0.2f);
+    }
 }
