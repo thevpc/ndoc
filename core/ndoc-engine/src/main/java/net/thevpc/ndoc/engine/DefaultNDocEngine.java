@@ -12,6 +12,7 @@ import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocStyleRule;
 import net.thevpc.ndoc.api.engine.NDocTemplateInfo;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.engine.eval.*;
@@ -615,7 +616,11 @@ public class DefaultNDocEngine implements NDocEngine {
     private NOptional<NDocItem> loadNode0(NDocNode into, NPath path, NDocument document) {
         NDocResource source = NDocResourceFactory.of(path);
         document.resources().add(source);
-        NElement c = new NDocStreamParser(this).parsePath(path, source).get();
+        NOptional<NElement> u = new NDocStreamParser(this).parsePath(path, source);
+        if(!u.isPresent()) {
+            return NOptional.ofEmpty(u.getMessage());
+        }
+        NElement c = u.get();
         ArrayList<NDocNode> parents = new ArrayList<>();
         if (into != null) {
             parents.add(into);
@@ -842,9 +847,9 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NElement evalExpression(NElement expression, NDocNode node) {
+    public NElement evalExpression(NElement expression, NDocNode node, NDocVarProvider varProvider) {
         String baseSrc = NDocUtils.findCompilerDeclarationPath(expression).orNull();
-        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this);
+        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this,varProvider);
         NElement u = ne.eval(NDocElementUtils.toElement(expression), node);
         if (u == null) {
             u = NElement.ofNull();
@@ -856,18 +861,18 @@ public class DefaultNDocEngine implements NDocEngine {
     }
 
     @Override
-    public NElement resolveVarValue(String varName, NDocNode node) {
-        NOptional<NDocVar> v = findVar(varName, node);
+    public NElement resolveVarValue(String varName, NDocNode node, NDocVarProvider varProvider) {
+        NOptional<NDocVar> v = findVar(varName, node, varProvider);
         if (!v.isPresent()) {
             log().log(NMsg.ofC("var not found %s", varName).asWarning(), NDocUtils.sourceOf(node));
             return null;
         }
         NElement ee = v.get().get();
-        return evalExpression(ee, node);
+        return evalExpression(ee, node, varProvider);
     }
 
-    public NOptional<NDocVar> findVar(String varName, NDocNode node) {
-        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this);
+    public NOptional<NDocVar> findVar(String varName, NDocNode node, NDocVarProvider varProvider) {
+        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this,varProvider);
         return ne.findVar(varName, node);
     }
 
