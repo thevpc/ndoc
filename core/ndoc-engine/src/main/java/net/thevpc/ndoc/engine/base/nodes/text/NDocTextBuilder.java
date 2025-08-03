@@ -11,6 +11,7 @@ import net.thevpc.ndoc.api.document.node.NDocNodeType;
 import  net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.renderer.*;
 import net.thevpc.ndoc.api.renderer.text.*;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 
 import java.util.*;
@@ -40,16 +41,19 @@ public class NDocTextBuilder implements NDocNodeBuilder {
         }
     }
 
-    private void consumeSpecialTokenType(NDocTextToken a, NDocNode p, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
+    private void consumeSpecialTokenType(NDocTextToken a, NDocNode node, NDocNodeRendererContext ctx, NDocTextRendererBuilder builder) {
         if (a == null) {
             return;
         }
         if (a instanceof NDocTextTokenFlavored) {
             NDocTextTokenFlavored b=(NDocTextTokenFlavored)a;
-            builder.appendCustom(b.flavor(), b.value(), b.options(), p, ctx);
+            // interpolation is the to be done by the flavor implementation
+            builder.appendCustom(b.flavor(), b.value(), b.options(), node, ctx);
         }else{
             NDocTextTokenText b=(NDocTextTokenText)a;
-            builder.appendText(b.value(), b.options(), p, ctx);
+            // apply interpolation
+            String txt2 = ctx.engine().evalExpression(NElement.ofString(b.value()), node, ctx.varProvider()).asStringValue().get();
+            builder.appendText(txt2, b.options(), node, ctx);
         }
     }
 
