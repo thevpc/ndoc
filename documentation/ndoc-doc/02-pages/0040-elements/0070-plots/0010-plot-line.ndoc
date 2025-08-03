@@ -1,88 +1,56 @@
-normal(title:"UML Classes"){
-    body{
-        grid((4,1),columns-weight:[2,3]){
+normal(title:"Plot lines"){
+body{
+        grid((2,1),columns-weight:[1,3]){
             styles:{
                 "*": {margin:2}
                 source:{
                     at:left
                 }
             }
-
-            // Row 1
-            // ---------------------------------------------
+            // Row
             group(background:white,draw-contour){
-                uml(at:center,size:(100,50)
-                    """
-                        Object <|-- ArrayList
-                        List <|.. ArrayList
-                        interface List
-                        Object : equals()
-                        ArrayList : Object[] elementData
-                        ArrayList : size()
-                    """
-                )
+                plot2d(xmin:-5 , xmax: 5){
+                        f(x):sin(x)
+                }
             }
-
-            source(at:left
-            tson,
-            ```
-                 uml(
-                     """
-                        Object <|-- ArrayList
-                        List <|.. ArrayList
-                        interface List
-                        Object : equals()
-                        ArrayList : Object[] elementData
-                        ArrayList : size()
-                     """
-                 )
-
-             ```
-             )
-
-            // Row 2
-            // ---------------------------------------------
+            source(tson,
+                """
+                    plot2d(xmin:-5 , xmax: 5){
+                        f(x):sin(x)
+                    }
+                """
+            )
+            // Row
             group(background:white,draw-contour){
-                uml(at:center,size:(100,50)
-                    """
-                        actor Bob #red
-                        ' The only difference between actor
-                        'and participant is the drawing
-                        participant Alice
-                        participant "I have a really\nlong name" as L #99FF99
-                        /' You can also declare:
-                           participant L as "I have a really\nlong name"  #99FF99
-                          '/
-
-                        Alice->Bob: Authentication Request
-                        Bob->Alice: Authentication Response
-                        Bob->L: Log transaction
-                    """
-                )
+                plot2d(xmin:-5 , xmax: 5){
+                    {
+                        f(x):sin(x)
+                        title:'sin'
+                        color:red
+                    }
+                    {
+                        f(x):cos(x)
+                        title:'cos'
+                        color:blue
+                    }
+                }
             }
-
-            source(at:left
-            tson,
-            ```
-                 uml(
-                     """
-                        actor Bob #red
-                        ' The only difference between actor
-                        'and participant is the drawing
-                        participant Alice
-                        participant "I have a really\nlong name" as L #99FF99
-                        /' You can also declare:
-                           participant L as "I have a really\nlong name"  #99FF99
-                          '/
-
-                        Alice->Bob: Authentication Request
-                        Bob->Alice: Authentication Response
-                        Bob->L: Log transaction
-                     """
-                 )
-
-             ```
-             )
+            source(tson,
+                """
+                plot2d(xmin:-5 , xmax: 5){
+                    {
+                        f(x):sin(x)
+                        title:'sin'
+                        color:red
+                    }
+                    {
+                        f(x):cos(x)
+                        title:'cos'
+                        color:blue
+                    }
+                }
+                """
+            )
         }
     }
 
