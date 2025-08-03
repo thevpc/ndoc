@@ -49,6 +49,8 @@ public class NDocElementUtils {
                 return NElement.ofString((String) r);
             case "java.awt.Color":
                 return toElement((Color) r);
+            case "java.awt.LinearGradientPaint":
+                return toElement((java.awt.LinearGradientPaint) r);
             case "[D":
                 return NElement.ofDoubleArray((double[]) r);
         }
@@ -60,5 +62,8 @@ public class NDocElementUtils {
         return NElement.ofString(
                 String.format(PATTERN, color.getRed(), color.getGreen(), color.getBlue()).toUpperCase()
         );
+    }
+    public static NElement toElement(java.awt.LinearGradientPaint color) {
+        return color==null?NElement.ofNull() : NElement.ofCustom(color);
     }
 }
