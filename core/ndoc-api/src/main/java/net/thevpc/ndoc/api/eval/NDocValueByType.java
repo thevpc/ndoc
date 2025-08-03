@@ -6,6 +6,7 @@ import net.thevpc.ndoc.api.document.elem2d.NDocDouble2;
 import net.thevpc.ndoc.api.document.elem2d.*;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
+import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
@@ -38,13 +39,13 @@ public class NDocValueByType {
     }
 
     public static NOptional<Paint> getPaint(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
-        NDocValue r = NDocValue.of(ctx.computePropertyValue(t, propName, propNames).orElse(null));
-        return NOptional.of(r.asPaint().orElse(null));
+        NDocValue r = NDocValue.of(ctx.computePropertyValue(t, propName, propNames, ctx.varProvider()).orNull());
+        return NOptional.of(r.asPaint().orNull());
     }
 
     public static NOptional<Color> getColor(NDocNode t, NDocNodeRendererContext ctx, String propName, String... propNames) {
-        NDocValue r = NDocValue.of(ctx.computePropertyValue(t, propName, propNames).orElse(null));
-        return NOptional.of(r.asColor().orElse(null));
+        NDocValue r = NDocValue.of(ctx.computePropertyValue(t, propName, propNames).orNull());
+        return NOptional.of(r.asColor().orNull());
     }
 
     public static NOptional<Double> getDouble(NDocNode t, NDocNodeRendererContext ctx, String s) {
