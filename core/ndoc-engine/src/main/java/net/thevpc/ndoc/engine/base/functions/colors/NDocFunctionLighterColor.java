@@ -14,7 +14,7 @@ import java.awt.*;
 public class NDocFunctionLighterColor implements NDocFunction {
     @Override
     public String name() {
-        return "darkerColor";
+        return "lighterColor";
     }
 
     @Override
@@ -24,12 +24,12 @@ public class NDocFunctionLighterColor implements NDocFunction {
         }
         Color c = NDocValue.of(args.eval(0)).asColor().get();
         if (args.size() == 1) {
-            return NDocElementUtils.toElement(NDocColorUtils.darker(c));
+            return NDocElementUtils.toElement(NDocColorUtils.lighter(c));
         }
         if (args.size() > 2) {
             context.messages().log(NMsg.ofC("%s: expected 2 arguments, got %s", name(), args.size()));
         }
         float degrees = NDocValue.of(args.eval(1)).asFloat().get();
-        return NDocElementUtils.toElement(NDocColorUtils.rotateSinebowDegrees(c, degrees));
+        return NDocElementUtils.toElement(NDocColorUtils.lighter(c, degrees));
     }
 }
