@@ -26,7 +26,7 @@ public class NDocFunctionRotateSinebowColor implements NDocFunction {
             return args.eval(0);
         }
         if (args.size() > 2) {
-            context.messages().log(NMsg.ofC("%s: expected 2 argument, got %s", name(), args.size()));
+            context.messages().log(NMsg.ofC("%s: expected 2 arguments, got %s", name(), args.size()));
         }
         Color c = NDocValue.of(args.eval(0)).asColor().get();
         float degrees = NDocValue.of(args.eval(1)).asFloat().get();
