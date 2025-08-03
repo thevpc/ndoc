@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("Rationale"),
-    }
+normal(title:"Rationale"){
     body{
         ul{
             ¶ Uses TSON which is a derivative of JSON format but with more readability
