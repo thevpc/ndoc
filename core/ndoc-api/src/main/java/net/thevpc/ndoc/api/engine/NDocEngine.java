@@ -14,6 +14,7 @@ import net.thevpc.ndoc.api.document.NDocument;
 import net.thevpc.ndoc.api.document.NDocDocumentLoadingResult;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.eval.NDocCompilePageContext;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.extension.NDocFunction;
 import net.thevpc.ndoc.api.eval.NDocFunctionArg;
 import net.thevpc.ndoc.api.document.node.NDocItem;
@@ -98,11 +99,11 @@ public interface NDocEngine {
 
     NDocTemplateInfo[] getTemplates();
 
-    NElement evalExpression(NElement expression, NDocNode node);
+    NElement evalExpression(NElement expression, NDocNode node, NDocVarProvider varProvider);
 
-    NElement resolveVarValue(String varName, NDocNode node);
+    NElement resolveVarValue(String varName, NDocNode node, NDocVarProvider varProvider);
 
-    NOptional<NDocVar> findVar(String varName, NDocNode node);
+    NOptional<NDocVar> findVar(String varName, NDocNode node, NDocVarProvider varProvider);
 
     NPath resolvePath(NElement path, NDocNode node);
 
