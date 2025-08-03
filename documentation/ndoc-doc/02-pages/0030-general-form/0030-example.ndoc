@@ -1,7 +1,4 @@
-normal{
-   header {
-        text("More Elaborate Example"),
-    }
+normal(title:"More Elaborate Example"){
     body{
         grid((2,1)){
             source(tson,file:"0030-example.tson", position: (2,2),font-size:5%P)
