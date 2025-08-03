@@ -1,7 +1,4 @@
-normal(name:Rationale){
-    header {
-        text("Rationale"),
-    }
+normal(title:"Rationale"){
     body{
         ul{
             ¶ Text-based, declarative, and intuitive syntax
