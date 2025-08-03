@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("Gantt Diagrams"),
-    }
+normal(title:"Gantt Diagrams"){
     body{
         grid((2,2),columns-weight:[2,3]){
             styles:{
