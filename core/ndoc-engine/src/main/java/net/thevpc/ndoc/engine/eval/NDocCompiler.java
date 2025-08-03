@@ -14,7 +14,6 @@ import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.engine.document.NDocItemBag;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.engine.NDocEngineUtils;
-import net.thevpc.ndoc.engine.eval.fct.DefaultNDocFunctionContext;
 import net.thevpc.ndoc.engine.log.SilentNDocLogger;
 import net.thevpc.ndoc.engine.parser.DefaultNDocNodeFactoryParseContext;
 import net.thevpc.ndoc.engine.parser.NDocDocumentLoadingResultImpl;
@@ -30,9 +29,10 @@ import net.thevpc.nuts.util.*;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NDocCompiler {
-
+    NDocVarProvider varProvider=null;
     private NDocEngine engine;
 
     public NDocCompiler(NDocEngine engine) {
@@ -230,11 +230,11 @@ public class NDocCompiler {
             NDocUtils.setNodeParent(node, h.parent);
             // compile properties
             List<NDocProp> properties = node.getProperties();
-            for (NDocProp property : properties) {
-                NElement value0 = property.getValue();
-                NElement value = engine.evalExpression(value0, node);
-                node.setProperty(property.getName(), value);
-            }
+//            for (NDocProp property : properties) {
+//                NElement value0 = property.getValue();
+//                NElement value = engine.evalExpression(value0, node);
+//                node.setProperty(property.getName(), value);
+//            }
             // compile definitions
             NDocNodeDef[] defs = node.definitions();
             for (int i = 0; i < defs.length; i++) {
@@ -295,7 +295,7 @@ public class NDocCompiler {
 
     private List<NDocItem> compileNodeTree_expr(NDocNode node, NodeHierarchy h) {
         NElement varExpr = node.getProperty(NDocPropName.VALUE).get().getValue();
-        NElement element = engine.evalExpression(varExpr, node);
+        NElement element = engine.evalExpression(varExpr, node, varProvider);
         NDocItem h2 = engine.newNode(element, createParseContext(
                 varExpr,
                 node,
@@ -313,10 +313,10 @@ public class NDocCompiler {
         if(ifempty) {
             NElement old = n.getVar(varName).orNull();
             if(old==null || old.isNull()) {
-                n.setVar(varName, engine.evalExpression(varExpr, node));
+                n.setVar(varName, engine.evalExpression(varExpr, node, varProvider));
             }
         }else{
-            n.setVar(varName, engine.evalExpression(varExpr, node));
+            n.setVar(varName, engine.evalExpression(varExpr, node, varProvider));
         }
         return new ArrayList<>();
     }
@@ -335,7 +335,7 @@ public class NDocCompiler {
         CtrlNDocNodeName nnode = (CtrlNDocNodeName) node;
         NElement c = nnode.getVarName();
         String name = c.asStringValue().get();
-        NOptional<NDocVar> v = engine.findVar(name, h.parent);
+        NOptional<NDocVar> v = engine.findVar(name, h.parent, varProvider);
         if (v.isPresent()) {
             DefaultNDocNode e = DefaultNDocNode.ofExpr(c, h.parent.source());
             e.setParent(h.parent);
@@ -382,7 +382,7 @@ public class NDocCompiler {
                 if (pos >= 0) {
                     effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), e.getValue());
                 } else {
-                    NMsg errMsg = NMsg.ofC("undefined param %s for %s in %s. ignored", n, uid, callDeclaration);
+                    NMsg errMsg = NMsg.ofC("undefined param %s for %s in %s. ignored", n, uid, NDocUtils.snippet(callDeclaration));
                     engine.log().log(errMsg, c.source());
                 }
             }
@@ -392,7 +392,7 @@ public class NDocCompiler {
                     if (v != null) {
                         effectiveParams[i] = allExpectedParams[i];
                     } else {
-                        NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", allExpectedParams[i].name(), uid, callDeclaration);
+                        NMsg errMsg = NMsg.ofC("missing param %s for %s in %s", allExpectedParams[i].name(), uid, NDocUtils.snippet(callDeclaration));
                         engine.log().log(errMsg, c.source());
                         //throw new NIllegalArgumentException(errMsg);
                     }
@@ -405,7 +405,7 @@ public class NDocCompiler {
                 }
             }
         } else {
-            NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs);
+            NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs.stream().map(x->NDocUtils.snippet(x)).collect(Collectors.toList()));
             engine.log().log(errMsg, c.source());
             throw new NIllegalArgumentException(errMsg);
         }
@@ -464,7 +464,7 @@ public class NDocCompiler {
             CtrlNDocNodeInclude c = (CtrlNDocNodeInclude) node;
             List<NDocItem> loaded = new ArrayList<>();
             for (NElement callArg : c.getCallArgs()) {
-                NElement r = engine.evalExpression(NDocUtils.addCompilerDeclarationPath(callArg, NDocUtils.sourceOf(c)), c);
+                NElement r = engine.evalExpression(NDocUtils.addCompilerDeclarationPath(callArg, NDocUtils.sourceOf(c)), c, varProvider);
                 NPath path = engine.resolvePath(r, c);
                 if (path.isDirectory()) {
                     path = path.resolve(NDocEngineUtils.NDOC_EXT_STAR_STAR);
@@ -502,7 +502,7 @@ public class NDocCompiler {
             CtrlNDocNodeIf c = (CtrlNDocNodeIf) node;
             if (!h.isInPage || (h.isInPage && h.processPages)) {
                 NElement cond = c.getCond();
-                NElement r = engine.evalExpression(cond, c);
+                NElement r = engine.evalExpression(cond, c, varProvider);
                 boolean b = NDocUtils.asBoolean(r);
                 if (b) {
                     List<NDocNode> tb = c.getTrueBloc();
@@ -545,7 +545,7 @@ public class NDocCompiler {
                 } else {
                     throw new NIllegalArgumentException(NMsg.ofC("expected varName in for contruct : %s", node));
                 }
-                NElement anyVal = engine.evalExpression(varExpr, node);
+                NElement anyVal = engine.evalExpression(varExpr, node, varProvider);
                 List<NElement> b = new ArrayList<>();
                 if (anyVal.isAnyArray()) {
                     b.addAll(anyVal.asArray().get().children());
@@ -570,8 +570,8 @@ public class NDocCompiler {
 
     private List<NDocItem> _process_call_fct(NDocFunction t, CtrlNDocNodeCall c, NodeHierarchy h) {
         NDocResource source = NDocUtils.sourceOf(c);
-        NDocFunctionContext ctx = new DefaultNDocFunctionContext(engine);
-        NElement result = t.invoke(new NDocFunctionArgsImpl(c.getCallArgs(),c,engine), ctx);
+        NDocFunctionContext ctx = new DefaultNDocFunctionContext(engine,c,varProvider);
+        NElement result = t.invoke(new NDocFunctionArgsImpl(c.getCallArgs(),c,engine,varProvider), ctx);
         if (result == null) {
             return new ArrayList<>();
         }
