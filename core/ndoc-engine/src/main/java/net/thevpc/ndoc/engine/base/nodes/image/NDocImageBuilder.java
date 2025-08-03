@@ -62,11 +62,9 @@ public class NDocImageBuilder implements NDocNodeBuilder {
         options.setImageObserver(rendererContext.imageObserver());
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
-        Object img = p.getPropertyValue(NDocPropName.VALUE).orNull();
-        NOptional<NElement> imgStr = NDocValue.of(img).asElementStringOrName();
-        if (imgStr.isPresent()) {
-            img = rendererContext.resolvePath(imgStr.get(), p);
-        }
+        NElement eimg = p.getPropertyValue(NDocPropName.VALUE).orNull();
+        NElement eimg2 = rendererContext.engine().evalExpression(eimg, p, rendererContext.varProvider());
+        NPath img = rendererContext.engine().resolvePath(eimg2, p);
 
         NDocGraphics g = rendererContext.graphics();
 
@@ -98,7 +96,7 @@ public class NDocImageBuilder implements NDocNodeBuilder {
                     NDocResource src = NDocUtils.sourceOf(p);
                     rendererContext.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
-                            img).asSevere(), src);
+                            eimg).asSevere(), src);
                 }
             }
         }
