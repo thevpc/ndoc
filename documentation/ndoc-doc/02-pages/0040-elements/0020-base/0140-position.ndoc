@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("Positions"),
-    }
+normal(title:"Positions"){
     body{
         grid((6,3),columns-weight:[1,3]){
             styles:{
