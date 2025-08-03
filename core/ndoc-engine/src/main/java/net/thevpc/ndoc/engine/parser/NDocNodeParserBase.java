@@ -84,7 +84,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                     info.read();
                     return true;
                 }
-            } else if(e.isName()) {
+            } else if (e.isName()) {
                 String sid = NDocUtils.uid(e.asStringValue().get());
                 if (HParserUtils.isCommonStyleProperty(sid)) {
                     info.node().setProperty(sid, NDocUtils.addCompilerDeclarationPath(NElement.ofTrue(), info.source()));
@@ -266,17 +266,14 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                 info.setUid(NDocUtils.uid(id));
                 info.setElement(NDocUtils.addCompilerDeclarationPath(element, info.parseContext().source()));
                 info.setNode(p);
-                List<NElement> body;
                 switch (element.type()) {
                     case UPLET:
                     case NAMED_UPLET: {
                         info.setArguments(element.asUplet().get().params().toArray(new NElement[0]));
-                        body = Collections.emptyList();
                         break;
                     }
                     default: {
                         info.setArguments(element.asParametrizedContainer().flatMap(x -> x.params()).orElse(Collections.emptyList()).toArray(new NElement[0]));
-                        body = element.asListContainer().map(x -> x.children()).orElse(Collections.emptyList());
                     }
                 }
                 if (info.allArguments() != null) {
@@ -285,24 +282,37 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
                         info.allArguments()[i] = NDocUtils.addCompilerDeclarationPath(arguments[i], info.parseContext().source());
                     }
                 }
-
                 info.setF(f);
                 processArguments(info);
                 processImplicitStyles(info);
-                for (NElement e : body) {
-                    NOptional<NDocItem> u = engine.newNode(e, context2);
-                    if (u.isPresent()) {
-                        p.append(u.get());
-                    } else {
-                        context2.messages().log(NMsg.ofC("[%s] error parsing child : %s : %s", context2.source(), e, u.getMessage().get()).asSevere(), context2.source());
-                        return NOptional.of(new NDocItemList());
-                    }
-                }
+                processChildren(info);
                 onFinishParsingItem(info);
                 return NOptional.of(p);
             }
         }
         return NOptional.ofNamedEmpty(NMsg.ofC("%s item %s", id(), element));
+    }
+
+    protected void processChildren(NDocAllArgumentReader info) {
+        NElement element = info.element();
+        List<NElement> body = null;
+        switch (element.type()) {
+            case UPLET:
+            case NAMED_UPLET: {
+                return;
+            }
+            default: {
+                body = element.asListContainer().map(x -> x.children()).orElse(Collections.emptyList());
+            }
+        }
+        for (NElement e : body) {
+            NOptional<NDocItem> u = engine.newNode(e, info.parseContext());
+            if (u.isPresent()) {
+                info.node().append(u.get());
+            } else {
+                info.parseContext().messages().log(NMsg.ofC("[%s] error parsing child : %s : %s", info.parseContext().source(), e, u.getMessage().get()).asSevere(), info.parseContext().source());
+            }
+        }
     }
 
     @Override
