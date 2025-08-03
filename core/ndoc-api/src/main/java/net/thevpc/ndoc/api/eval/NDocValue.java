@@ -432,9 +432,162 @@ public class NDocValue {
         return children;
     }
 
+    public NOptional<NDocBounds2> asBounds2() {
+        if(element instanceof NDocBounds2) {
+            return  NOptional.of((NDocBounds2) element);
+        }
+        NOptional<double[]> d = asDoubleArrayOrDouble();
+        if(d.isPresent()) {
+            double[] arr = d.get();
+            if(arr.length==4){
+                return NOptional.of(new NDocBounds2(arr[0], arr[1], arr[2], arr[3]));
+            }
+        }
+        return NOptional.ofNamedEmpty("NDocBounds2 from " + element);
+    }
+
     public NOptional<Paint> asPaint() {
-        //TODO fix me later
-        return asColor().map(x -> x);
+        if (element instanceof Paint) {
+            return NOptional.of((Paint) element);
+        }
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
+            switch (te.type()) {
+                case CUSTOM:{
+                    Object v = te.asCustom().get().value();
+                    if(v instanceof Paint) {
+                        return NOptional.of((Paint) v);
+                    }
+                    return NOptional.ofNamedEmpty("paint from " + element);
+                }
+                case BYTE:
+                case BIG_INT:
+                case SHORT:
+                case LONG:
+                case INT: {
+                    return NDocValue.of(te.asIntValue().get()).asPaint();
+                }
+                case UPLET:
+                case NAMED_UPLET: {
+                    NOptional<int[]> ri = asIntArray();
+                    if (ri.isPresent()) {
+                        int[] ints = ri.get();
+                        if (ints.length == 3 || ints.length == 4) {
+                            return NOptional.of(
+                                    new Color(
+                                            ints[0],
+                                            ints[1],
+                                            ints[2],
+                                            ints.length == 3 ? 255 : ints[3]
+                                    )
+                            );
+                        }
+                    }
+                    NOptional<float[]> rd = asFloatArray();
+                    if (rd.isPresent()) {
+                        float[] ints = rd.get();
+                        if (ints.length == 3 || ints.length == 4) {
+                            return NOptional.of(
+                                    new Color(
+                                            ints[0],
+                                            ints[1],
+                                            ints[2],
+                                            ints.length == 3 ? 1.0f : ints[3]
+                                    )
+                            );
+                        }
+                    }
+                    break;
+                }
+                case DOUBLE_QUOTED_STRING:
+                case SINGLE_QUOTED_STRING:
+                case ANTI_QUOTED_STRING:
+                case TRIPLE_DOUBLE_QUOTED_STRING:
+                case TRIPLE_SINGLE_QUOTED_STRING:
+                case TRIPLE_ANTI_QUOTED_STRING:
+                case LINE_STRING:
+                case NAME: {
+                    NDocValue h = NDocValue.of(element);
+                    String s = h.asStringOrName().get();
+                    return NDocValue.of(s).asPaint();
+                }
+            }
+        } else {
+            if (element instanceof Integer
+                    || element instanceof Short
+                    || element instanceof Byte
+                    || element instanceof Long
+                    || element instanceof BigInteger) {
+                return NOptional.of(new Color(((Number) element).intValue()));
+            }
+            if (element instanceof String) {
+                String s = (String) element;
+                if (s.startsWith("#")) {
+                    try {
+                        Color value = new Color(Integer.parseInt(s.substring(1), 16));
+                        return NOptional.of(value);
+                    } catch (Exception ex) {
+                        return NOptional.ofNamedError(NMsg.ofC("invalid color %s", s));
+                    }
+                }
+                if (s.indexOf(",") >= 0) {
+                    String[] a = s.split(",");
+                    if (a.length == 3 || a.length == 4) {
+                        NDocValue r = NDocValue.of(a[0]);
+                        NDocValue g = NDocValue.of(a[1]);
+                        NDocValue b = NDocValue.of(a[2]);
+                        NDocValue aa = NDocValue.of(a.length == 4 ? a[3] : null);
+                        if (r.asInt().isPresent() && g.asInt().isPresent() && b.asInt().isPresent()) {
+                            return NOptional.of(
+                                    new Color(
+                                            r.asInt().get(),
+                                            g.asInt().get(),
+                                            b.asInt().get(),
+                                            aa.asInt().orElse(255)
+                                    )
+                            );
+                        }
+                        if (r.asDouble().isPresent() && g.asDouble().isPresent() && b.asDouble().isPresent()) {
+                            return NOptional.of(
+                                    new Color(
+                                            (r.asFloat().get()),
+                                            (g.asFloat().get()),
+                                            (b.asFloat().get()),
+                                            aa.asFloat().orElse(1.0f)
+                                    )
+                            );
+                        }
+                    }
+                }
+                if (s.toLowerCase().startsWith("c")) {
+                    NOptional<Integer> u = NLiteral.of(s.substring(1).trim()).asInt();
+                    if (u.isPresent()) {
+                        return NOptional.of(DefaultColorPalette.INSTANCE.getColor(u.get()));
+                    }
+                }
+                NOptional<Color> color = getRegisteredColor(s);
+                if (color.isPresent()) {
+                    return NOptional.of(color.get());
+                }
+                NOptional<NNamedColor> nc = NColors.ofName(s);
+                if(nc.isPresent()) {
+                    return NOptional.of(nc.get().getColor());
+                }
+                try {
+                    int z = Integer.parseInt(s, 16);
+                    return NOptional.of(new Color(z));
+                } catch (Exception e) {
+
+                }
+                try {
+                    int z = Integer.parseInt(s);
+                    return NOptional.of(new Color(z));
+                } catch (Exception e) {
+                    //
+                }
+            }
+        }
+        return NOptional.ofNamedEmpty("color from " + element);
     }
 
     public NOptional<Color> asColor() {
@@ -553,46 +706,9 @@ public class NDocValue {
                 if (color.isPresent()) {
                     return color;
                 }
-                switch (NNameFormat.LOWER_KEBAB_CASE.format(s.toLowerCase())) {
-                    case "red": {
-                        return NOptional.of(Color.RED);
-                    }
-                    case "blue": {
-                        return NOptional.of(Color.BLUE);
-                    }
-                    case "black": {
-                        return NOptional.of(Color.BLACK);
-                    }
-                    case "white": {
-                        return NOptional.of(Color.WHITE);
-                    }
-                    case "yellow": {
-                        return NOptional.of(Color.YELLOW);
-                    }
-                    case "cyan": {
-                        return NOptional.of(Color.CYAN);
-                    }
-                    case "orange": {
-                        return NOptional.of(Color.ORANGE);
-                    }
-                    case "pink": {
-                        return NOptional.of(Color.PINK);
-                    }
-                    case "dark-gray": {
-                        return NOptional.of(Color.DARK_GRAY);
-                    }
-                    case "light-gray": {
-                        return NOptional.of(Color.LIGHT_GRAY);
-                    }
-                    case "gray": {
-                        return NOptional.of(Color.GRAY);
-                    }
-                    case "green": {
-                        return NOptional.of(Color.GREEN);
-                    }
-                    case "magenta": {
-                        return NOptional.of(Color.MAGENTA);
-                    }
+                NOptional<NNamedColor> nc = NColors.ofName(s);
+                if(nc.isPresent()) {
+                    return NOptional.of(nc.get().getColor());
                 }
                 try {
                     int z = Integer.parseInt(s, 16);
@@ -1217,6 +1333,27 @@ public class NDocValue {
         return NOptional.ofNamedEmpty("Double4 from " + element);
     }
 
+    public NOptional<NDocDouble2> asDouble2OrDouble() {
+        if (element instanceof NDocDouble2) {
+            return NOptional.of((NDocDouble2) element);
+        }
+        if (element instanceof NDocPoint2D) {
+            NDocPoint2D p = (NDocPoint2D) element;
+            return NOptional.of(new NDocDouble2(p.x, p.y));
+        }
+        NOptional<double[]> d = asDoubleArrayOrDouble();
+        if (d.isPresent()) {
+            double[] dd = d.get();
+            if (dd.length == 1) {
+                return NOptional.of(new NDocDouble2(dd[0], dd[0]));
+            }
+            if (dd.length >= 2) {
+                return NOptional.of(new NDocDouble2(dd[0], dd[1]));
+            }
+        }
+        return NOptional.ofNamedEmpty("Double2 from " + element);
+    }
+
     public NOptional<NDocDouble2> asDouble2() {
         if (element instanceof NDocDouble2) {
             return NOptional.of((NDocDouble2) element);
@@ -1478,9 +1615,33 @@ public class NDocValue {
         return !NBlankable.isBlank(name());
     }
 
+    public boolean isPoint2() {
+        if (element instanceof NElement) {
+            NElement e = (NElement) element;
+            e = simplifyContainer(e);
+            if(e.isUplet()){
+                NUpletElement u = e.asUplet().get();
+                if(u.params().size()==2){
+                    for (NElement param : u.params()) {
+                        if(!NDocValue.of(param).isNumber()){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isBoolean() {
         if (element instanceof Boolean) {
             return true;
+        }
+        if (element instanceof NElement) {
+            NElement e = (NElement) element;
+            e = simplifyContainer(e);
+            return e.isBoolean();
         }
         return false;
     }
