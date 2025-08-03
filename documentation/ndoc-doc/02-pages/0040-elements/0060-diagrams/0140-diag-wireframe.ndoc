@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("Wireframe Diagrams"),
-    }
+normal(title:"Wireframe Diagrams"){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
