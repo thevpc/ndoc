@@ -331,20 +331,20 @@ public class NDocStreamParser {
             u = NElementParser.ofTson().parse(is);
             u = NDocUtils.addCompilerDeclarationPathAnnotations(u, source.path().map(NPath::toString).orNull());
         } catch (Exception ex) {
-            engine.log().log(NMsg.ofC("error loading tson document %s", is).asError());
+            engine.log().log(NMsg.ofC("error loading tson document %s", is).asError(),source);
             return NOptional.ofNamedError("error loading tson document", ex);
         }
         return parseElements(u);
     }
 
-    public NOptional<NElement> parsePath(NPath is, NDocResource source) {
+    public NOptional<NElement> parsePath(NPath path, NDocResource source) {
         NElement u;
         try {
-            u = NElementParser.ofTson().parse(is);
+            u = NElementParser.ofTson().parse(path);
             u = NDocUtils.addCompilerDeclarationPathAnnotations(u, source.path().map(NPath::toString).orNull());
         } catch (Exception ex) {
-            engine.log().log(NMsg.ofC("error loading tson document %s", is).asError());
-            return NOptional.ofNamedError("error loading tson document", ex);
+            engine.log().log(NMsg.ofC("error loading tson document %s : %s", path,ex).asError(),source);
+            return NOptional.ofNamedError(NMsg.ofC("error loading tson document %s : %s", path, ex), ex);
         }
         return parseElements(u);
     }
