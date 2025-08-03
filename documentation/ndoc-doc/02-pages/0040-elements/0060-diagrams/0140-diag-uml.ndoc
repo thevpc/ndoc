@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("UML Use Case"),
-    }
+normal(title:"UML Use Case"){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
