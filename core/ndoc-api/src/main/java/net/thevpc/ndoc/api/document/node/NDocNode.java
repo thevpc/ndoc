@@ -10,6 +10,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NOptional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -192,4 +193,8 @@ public interface NDocNode extends NDocItem {
     NDocNode setTemplateDefinition(NDocNodeDef n) ;
 
     NDocNodeDef templateDefinition() ;
+
+    NDocNode setUserObject(String name, Object value);
+
+    NOptional<Object> getUserObject(String property) ;
 }
