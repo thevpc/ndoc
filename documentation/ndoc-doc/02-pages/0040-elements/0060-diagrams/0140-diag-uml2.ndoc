@@ -1,7 +1,4 @@
-normal{
-    header {
-        text("UML Classes"),
-    }
+normal(title:"UML Classes"){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
