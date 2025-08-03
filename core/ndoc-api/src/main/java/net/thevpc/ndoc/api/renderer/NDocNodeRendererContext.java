@@ -4,6 +4,8 @@ import net.thevpc.ndoc.api.document.NDocDocumentFactory;
 import net.thevpc.ndoc.api.document.elem2d.*;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.eval.NDocVar;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.node.*;
 import net.thevpc.ndoc.api.document.style.*;
@@ -38,6 +40,8 @@ public interface NDocNodeRendererContext {
 
     NDocNodeRendererContext dryMode();
 
+    NDocVarProvider varProvider();
+
     ImageObserver imageObserver();
 
     boolean isDry();
@@ -57,13 +61,11 @@ public interface NDocNodeRendererContext {
 
     NDocDocumentFactory documentFactory();
 
+    NOptional<NElement> computePropertyValue(NDocNode t, String s, String[] synonyms, NDocVarProvider varProvider);
+
     NOptional<NElement> computePropertyValue(NDocNode t, String s, String... synonyms);
 
     List<NDocProp> computeProperties(NDocNode t);
-
-    NPath resolvePath(NPath path, NDocNode node);
-
-    NPath resolvePath(NElement path, NDocNode node);
 
     NDocNodeRendererContext withDefaultStyles(NDocNode node, NDocProperties defaultStyles);
 
