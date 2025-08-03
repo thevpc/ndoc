@@ -12,3 +12,6 @@ net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionSinebowColor
 net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionRotateSinebowColor
 net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionRotateCubehelixColor
 net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionCubehelixColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionLighterColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionDarkerColor
+net.thevpc.ndoc.engine.base.functions.colors.NDocFunctionLinearGradientColor
