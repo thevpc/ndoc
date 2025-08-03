@@ -55,6 +55,7 @@ public interface NDocNodeCustomBuilderContext {
     NDocNodeCustomBuilderContext parseParam(ProcessParamAction e);
 
     NDocNodeCustomBuilderContext afterParsingAllParams(ProcessNodeAction e);
+    NDocNodeCustomBuilderContext processChildren(ProcessNodeAction e);
 
     NDocEngine engine();
 
