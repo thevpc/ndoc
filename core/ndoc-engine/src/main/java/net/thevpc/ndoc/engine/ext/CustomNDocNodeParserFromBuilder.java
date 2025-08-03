@@ -51,6 +51,14 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
         return s;
     }
 
+    protected void processChildren(NDocAllArgumentReader info) {
+        if (myNDocNodeCustomBuilderContext.processChildren != null) {
+            myNDocNodeCustomBuilderContext.processChildren.processNode(info, myNDocNodeCustomBuilderContext);
+            return;
+        }
+        super.processChildren(info);
+    }
+
     @Override
     public NCallableSupport<NDocItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement e = context.element();
