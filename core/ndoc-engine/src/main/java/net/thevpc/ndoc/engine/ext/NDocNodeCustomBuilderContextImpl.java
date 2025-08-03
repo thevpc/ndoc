@@ -45,6 +45,7 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
     RenderTextAction renderTextAction;
     RenderConvertAction renderConvertAction;
     RenderEmbeddedTextAction renderEmbeddedTextAction;
+    ProcessNodeAction processChildren;
 
     public NDocNodeCustomBuilderContextImpl(NDocNodeBuilder builder, NDocEngine engine) {
         this.builder = builder;
@@ -221,6 +222,12 @@ public class NDocNodeCustomBuilderContextImpl implements NDocNodeCustomBuilderCo
             }
             this.afterProcessAllArgumentsList.add(e);
         }
+        return this;
+    }
+
+    @Override
+    public NDocNodeCustomBuilderContext processChildren(ProcessNodeAction processChildren) {
+        this.processChildren=processChildren;
         return this;
     }
 
