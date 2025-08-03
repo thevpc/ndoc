@@ -3,6 +3,7 @@ package net.thevpc.ndoc.engine.renderer;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.engine.NDocEngine;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -44,6 +45,8 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
         this.dry = dry;
         this.graphics = graphics;
     }
+
+
 
     @Override
     public void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocTextRendererBuilder result) {
@@ -138,11 +141,16 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
 
     @Override
     public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
+        return computePropertyValue(t,s,others,null);
+    }
+
+    @Override
+    public NOptional<NElement> computePropertyValue(NDocNode t, String s, String[] others, NDocVarProvider varProvider) {
         NAssert.requireNonBlank(s, "property name");
         NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
             NElement y = r.get();
-            y = engine().evalExpression(y, t);
+            y = engine().evalExpression(y, t, varProvider);
             if (y != null) {
                 return NOptional.of(y);
             }
