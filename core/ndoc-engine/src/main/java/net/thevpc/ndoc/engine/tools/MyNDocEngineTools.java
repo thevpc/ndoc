@@ -36,12 +36,12 @@ public class MyNDocEngineTools implements NDocEngineTools {
 
     @Override
     public BufferedImage resizeBufferedImage(BufferedImage img, Dimension size) {
-        return NDocUtilsImages.resize(img, size);
+        return NDocUtilsImages.resizeImage(img, size);
     }
 
     @Override
     public BufferedImage resizeBufferedImage(BufferedImage img, int newW, int newH) {
-        return NDocUtilsImages.resize(img, newW, newH);
+        return NDocUtilsImages.resizeImage(img, newW, newH);
     }
 
     @Override
