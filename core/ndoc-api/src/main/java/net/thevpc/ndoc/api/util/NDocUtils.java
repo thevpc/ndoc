@@ -1,5 +1,6 @@
 package net.thevpc.ndoc.api.util;
 
+import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.elem3d.NDocPoint3D;
 import net.thevpc.ndoc.api.document.node.NDocItem;
 import net.thevpc.ndoc.api.document.node.NDocItemList;
@@ -235,6 +236,15 @@ public class NDocUtils {
                     toElement(((Point2D.Double) o).getY())
             );
         }
+        if (o instanceof NDocBounds2) {
+            NDocBounds2 oo = (NDocBounds2) o;
+            return NElement.ofUplet(
+                    NElement.ofDouble(oo.getX()),
+                    NElement.ofDouble(oo.getY()),
+                    NElement.ofDouble(oo.getWidth()),
+                    NElement.ofDouble(oo.getHeight())
+            );
+        }
         if (o instanceof NToElement) {
             return ((NToElement) o).toElement();
         }
@@ -408,7 +418,7 @@ public class NDocUtils {
         return yy.transform(new NElementTransform() {
             @Override
             public NElement[] postTransform(NElement element) {
-                if(element.isString()) {
+                if (element.isString()) {
                     List<NElementAnnotation> oldAnn = element.annotations();
                     List<NElementAnnotation> a = oldAnn.stream().filter(x -> !COMPILER_DECLARATION_PATH.equals(x.name())).collect(Collectors.toList());
                     if (a.size() == oldAnn.size()) {
@@ -422,7 +432,7 @@ public class NDocUtils {
     }
 
     public static String snippet(NElement yy) {
-        if(yy==null){
+        if (yy == null) {
             return "null";
         }
         yy = removeCompilerDeclarationPathAnnotations(yy);
