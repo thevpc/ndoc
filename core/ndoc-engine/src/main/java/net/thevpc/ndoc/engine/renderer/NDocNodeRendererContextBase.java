@@ -3,6 +3,7 @@ package net.thevpc.ndoc.engine.renderer;
 import net.thevpc.ndoc.api.document.style.NDocProp;
 import net.thevpc.ndoc.api.engine.NDocEngine;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.log.NDocLogger;
 import net.thevpc.ndoc.api.document.elem2d.NDocBounds2;
 import net.thevpc.ndoc.api.document.node.NDocNode;
@@ -36,6 +37,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     private NDocBounds2 globalBound;
     private NDocBounds2 bound;
     private Map<String, Object> capabilities = new HashMap<>();
+    private NDocVarProvider varProvider;
 
     public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound) {
         this.engine = engine;
@@ -125,13 +127,18 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     @Override
     public NOptional<NElement> computePropertyValue(NDocNode t, String s, String... others) {
+        return computePropertyValue(t,s,others,null);
+    }
+
+    @Override
+    public NOptional<NElement> computePropertyValue(NDocNode t, String s, String[] others, NDocVarProvider varProvider) {
         NAssert.requireNonBlank(s, "property name");
         NOptional<NElement> r = computePropertyValueImpl(t, NDocUtils.uids(new String[]{s}, others));
         if (r.isPresent()) {
-            Object y = r.get();
-            NElement u = engine.evalExpression(NDocElementUtils.toElement(y), t);
-            if (u != null) {
-                return NOptional.of(u);
+            NElement y = r.get();
+            y = engine().evalExpression(y, t, varProvider);
+            if (y != null) {
+                return NOptional.of(y);
             }
         }
         return r;
