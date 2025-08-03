@@ -5,6 +5,8 @@ import net.thevpc.ndoc.api.document.elem2d.*;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.style.NDocProperties;
 import net.thevpc.ndoc.api.eval.NDocValueByName;
+import net.thevpc.ndoc.api.eval.NDocVar;
+import net.thevpc.ndoc.api.eval.NDocVarProvider;
 import net.thevpc.ndoc.api.source.NDocResource;
 import net.thevpc.ndoc.api.util.NDocUtils;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
@@ -19,6 +21,23 @@ import java.awt.*;
 
 
 public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendererContext {
+    private NDocVarProvider nDocVarProvider = new NDocVarProvider() {
+        @Override
+        public NOptional<NDocVar> findVar(String varName, NDocNode node) {
+            switch (varName) {
+                case "selfBounds": {
+                    return NOptional.of(new NDocVar() {
+                        @Override
+                        public NElement get() {
+                            NDocBounds2 nDocBounds2 = NDocNodeRendererContextBaseBase.this.selfBounds(node);
+                            return NDocUtils.toElement(nDocBounds2);
+                        }
+                    });
+                }
+            }
+            return NOptional.ofNamedEmpty("var " + varName);
+        }
+    };
     public void render(NDocNode p) {
         render(p, this);
     }
@@ -36,14 +55,6 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     @Override
     public NDocBounds2 defaultSelfBounds(NDocNode e) {
         return NDocValueByName.selfBounds(e, null, null, this);
-    }
-
-    @Override
-    public NPath resolvePath(NPath path, NDocNode node) {
-        if (path.isAbsolute()) {
-            return path;
-        }
-        return resolvePath(NElement.ofString(path.toString()), node);
     }
 
     @Override
@@ -66,12 +77,9 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
         return new NDocNodeRendererContextDelegate(null, this, null, null, isDry(), graphics);
     }
 
-
     @Override
-    public NPath resolvePath(NElement path, NDocNode node) {
-        Object src = NDocUtils.sourceOf(node);
-        NPath sp = (src instanceof NDocResource) ? ((NDocResource) src).path().orNull() : null;
-        return NDocUtils.resolvePath(path, src);
+    public NDocVarProvider varProvider() {
+        return nDocVarProvider;
     }
 
     @Override
