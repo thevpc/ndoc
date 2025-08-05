@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.api.util;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem3d.NDocPoint3D;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
 import net.thevpc.ntexup.api.document.node.NTxNode;
@@ -84,9 +84,9 @@ public class NDocUtils {
         return null;
     }
 
-    public static final MinMax minMaxZ(NDocPoint3D[] points) {
+    public static final MinMax minMaxZ(NTxPoint3D[] points) {
         MinMax m = new MinMax();
-        for (NDocPoint3D point : points) {
+        for (NTxPoint3D point : points) {
             m.registerValue(point.z);
         }
         return m;
@@ -236,8 +236,8 @@ public class NDocUtils {
                     toElement(((Point2D.Double) o).getY())
             );
         }
-        if (o instanceof NDocBounds2) {
-            NDocBounds2 oo = (NDocBounds2) o;
+        if (o instanceof NTxBounds2) {
+            NTxBounds2 oo = (NTxBounds2) o;
             return NElement.ofUplet(
                     NElement.ofDouble(oo.getX()),
                     NElement.ofDouble(oo.getY()),
