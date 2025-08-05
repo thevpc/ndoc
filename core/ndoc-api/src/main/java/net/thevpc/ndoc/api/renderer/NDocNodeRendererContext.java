@@ -42,6 +42,8 @@ public interface NDocNodeRendererContext {
 
     NDocVarProvider varProvider();
 
+    long getPageStartTime();
+
     ImageObserver imageObserver();
 
     boolean isDry();
