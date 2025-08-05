@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.engine.parser.nodeparsers;
 
-import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
+import net.thevpc.ntexup.engine.parser.NTxNodeParserBase;
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
-import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
-import net.thevpc.ntexup.engine.parser.HStyleParser;
+import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.engine.parser.NTxStyleParser;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NObjectElement;
@@ -20,13 +20,13 @@ import net.thevpc.nuts.elem.NElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StylesSpecialParser extends NDocNodeParserBase {
+public class StylesSpecialParser extends NTxNodeParserBase {
     public StylesSpecialParser() {
         super(true,"styles");
     }
 
     @Override
-    public NCallableSupport<NTxItem> parseNode(NDocNodeFactoryParseContext context) {
+    public NCallableSupport<NTxItem> parseNode(NTxNodeFactoryParseContext context) {
         List<NTxItem> styles = new ArrayList<>();
         NElement tsonElement = context.element();
         NTxDocumentFactory f = context.documentFactory();
@@ -37,10 +37,10 @@ public class StylesSpecialParser extends NDocNodeParserBase {
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid(() -> {
                         for (NElement yy : obj.children()) {
-                            NOptional<NTxStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
+                            NOptional<NTxStyleRule[]> u = NTxStyleParser.parseStyleRule(yy, f, context);
                             if (!u.isPresent()) {
-                                HStyleParser.parseStyleRule(yy, f, context).get();
-                                _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(yy), u.getMessage().get()), context);
+                                NTxStyleParser.parseStyleRule(yy, f, context).get();
+                                _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NTxUtils.shortName(context.source()), NTxUtils.snippet(yy), u.getMessage().get()), context);
                             } else {
                                 for (NTxStyleRule r : u.get()) {
                                     styles.add(r);
@@ -58,9 +58,9 @@ public class StylesSpecialParser extends NDocNodeParserBase {
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid(() -> {
                         for (NElement yy : obj.children()) {
-                            NOptional<NTxStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
+                            NOptional<NTxStyleRule[]> u = NTxStyleParser.parseStyleRule(yy, f, context);
                             if (!u.isPresent()) {
-                                _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(yy), u.getMessage().get()), context);
+                                _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NTxUtils.shortName(context.source()), NTxUtils.snippet(yy), u.getMessage().get()), context);
                             } else {
                                 for (NTxStyleRule r : u.get()) {
                                     styles.add(r);
@@ -78,9 +78,9 @@ public class StylesSpecialParser extends NDocNodeParserBase {
                     return NCallableSupport.ofValid(() -> {
                         if (obj.value().isAnyObject()) {
                             for (NElement yy : obj.value().asObject().get().children()) {
-                                NOptional<NTxStyleRule[]> u = HStyleParser.parseStyleRule(yy, f, context);
+                                NOptional<NTxStyleRule[]> u = NTxStyleParser.parseStyleRule(yy, f, context);
                                 if (!u.isPresent()) {
-                                    _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(yy), u.getMessage().get()), context);
+                                    _logError(NMsg.ofC("[%s] invalid style rule  %s :: %s", NTxUtils.shortName(context.source()), NTxUtils.snippet(yy), u.getMessage().get()), context);
                                 } else {
                                     for (NTxStyleRule r : u.get()) {
                                         styles.add(r);
@@ -89,14 +89,14 @@ public class StylesSpecialParser extends NDocNodeParserBase {
                             }
                             return new NTxItemList().addAll(styles);
                         }
-                        _logError(NMsg.ofC("[%s] invalid style rules, expected styles: {...} , got %s", NDocUtils.shortName(context.source()), NDocUtils.snippet(tsonElement)), context);
+                        _logError(NMsg.ofC("[%s] invalid style rules, expected styles: {...} , got %s", NTxUtils.shortName(context.source()), NTxUtils.snippet(tsonElement)), context);
                         return new NTxItemList();
                     });
                 }
                 break;
             }
         }
-        return NCallableSupport.ofInvalid(NMsg.ofC("missing style construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing style construct from %s", NTxUtils.snippet(tsonElement)).asError());
     }
 
 }
