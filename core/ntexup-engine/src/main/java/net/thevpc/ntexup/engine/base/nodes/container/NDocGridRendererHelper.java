@@ -1,10 +1,10 @@
 package net.thevpc.ntexup.engine.base.nodes.container;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
-import net.thevpc.ntexup.api.document.elem2d.SizeD;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxSizeD;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
 import net.thevpc.ntexup.api.eval.NDocValueByType;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
@@ -25,7 +25,7 @@ public class NDocGridRendererHelper {
         this.children = children;
     }
 
-    public NDocBounds2 computeBound(NTxNode p, NDocNodeRendererContext ctx, NDocBounds2 expectedBounds) {
+    public NTxBounds2 computeBound(NTxNode p, NDocNodeRendererContext ctx, NTxBounds2 expectedBounds) {
         if (NEWIMPL) {
             for (NDocNodeGridBagLayout.NDocNodeGridNode ee : computePositions2(p, expectedBounds, ctx)) {
                 if (ee.visible) {
@@ -53,7 +53,7 @@ public class NDocGridRendererHelper {
         WeightInfo wi;
     }
 
-    public void render(NTxNode p, NDocNodeRendererContext ctx, NDocBounds2 expectedBounds) {
+    public void render(NTxNode p, NDocNodeRendererContext ctx, NTxBounds2 expectedBounds) {
         if (ctx.isDry()) {
             return;
         }
@@ -156,7 +156,7 @@ public class NDocGridRendererHelper {
         return new int[]{cols, rows};
     }
 
-    private NDocNodeGridBagLayout.NDocNodeGridNode[] computePositions2(NTxNode p, NDocBounds2 expectedBounds, NDocNodeRendererContext ctx) {
+    private NDocNodeGridBagLayout.NDocNodeGridNode[] computePositions2(NTxNode p, NTxBounds2 expectedBounds, NDocNodeRendererContext ctx) {
         java.util.List<NDocNodeGridBagLayout.NDocNodeGridNode> childrenNodes = new ArrayList<>();
         int[] colsAndRows = resolveColsAndRows(p, ctx);
         // try initial flagMap and add required rows
@@ -169,8 +169,8 @@ public class NDocGridRendererHelper {
             NDocNodeGridBagLayout.NDocNodeGridNode n = new NDocNodeGridBagLayout.NDocNodeGridNode(cc);
             n.index = i;
             NDocSizeRequirements NDocSizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
-            n.setMinimumSize(new SizeD(NDocSizeRequirements.minX, NDocSizeRequirements.minY));
-            n.setPreferredSize(new SizeD(NDocSizeRequirements.preferredX,  NDocSizeRequirements.preferredY));
+            n.setMinimumSize(new NTxSizeD(NDocSizeRequirements.minX, NDocSizeRequirements.minY));
+            n.setPreferredSize(new NTxSizeD(NDocSizeRequirements.preferredX,  NDocSizeRequirements.preferredY));
             int colSpan = ctx.getColSpan(cc);
             int rowSpan = ctx.getRowSpan(cc);
             n.setGridwidth(colSpan);
@@ -224,7 +224,7 @@ public class NDocGridRendererHelper {
         return childrenNodesArray;
     }
 
-    private ComputePositionsResult computePositions(NTxNode t, NDocBounds2 expectedBounds, NDocNodeRendererContext ctx) {
+    private ComputePositionsResult computePositions(NTxNode t, NTxBounds2 expectedBounds, NDocNodeRendererContext ctx) {
         List<HPagePartExtInfo> effPositions = new ArrayList<>();
         int minColumns = 0;
         int minRows = 0;
@@ -300,14 +300,14 @@ public class NDocGridRendererHelper {
                 double hh = childrenHeight * (ee.height / 100);
                 double jx = (wi.colStart[ee.colRow.x] / 100) * childrenHeight + xOffset;
                 double jy = (wi.rowStart[ee.colRow.y] / 100) * childrenHeight + yOffset;
-                ee.bounds = new NDocBounds2(jx, jy, ww, hh);
+                ee.bounds = new NTxBounds2(jx, jy, ww, hh);
                 NDocNodeRendererContext ctx2 = ctx.withBounds(ee.node, ee.bounds);
                 ee.sizeRequirements = ctx2.manager().getRenderer(ee.node.type()).get().sizeRequirements(ee.node, ctx2);
             }
         }
 
         //re-evaluate paintable zone
-        NDocDouble2 posAnchor = NDocValue.of(ctx.computePropertyValue(t, NDocPropName.ORIGIN).orNull()).asDouble2OrHAlign().orElse(null);
+        NTxDouble2 posAnchor = NDocValue.of(ctx.computePropertyValue(t, NTxPropName.ORIGIN).orNull()).asDouble2OrHAlign().orElse(null);
 
         if (posAnchor != null) {
             double[] preferredRowsWeight = new double[effPositions.size()];
@@ -383,7 +383,7 @@ public class NDocGridRendererHelper {
                 double hh = r.childrenHeight * (ee.height / 100);
                 double jx = (r.wi.colStart[ee.colRow.x] / 100) * r.childrenWidth + r.xOffset;
                 double jy = (r.wi.rowStart[ee.colRow.y] / 100) * r.childrenHeight + r.yOffset;
-                ee.bounds = new NDocBounds2(jx, jy, ww, hh);
+                ee.bounds = new NTxBounds2(jx, jy, ww, hh);
             }
         }
 
@@ -401,7 +401,7 @@ public class NDocGridRendererHelper {
         int rowspan;
         int index;
 
-        NDocBounds2 bounds;
+        NTxBounds2 bounds;
     }
 
     public static class WeightInfo {
@@ -516,8 +516,8 @@ public class NDocGridRendererHelper {
 
     private NDocGridRendererHelper.WeightInfo loadWeightInfo(int cols, int rows, NTxNode t, NDocNodeRendererContext ctx) {
         NDocGridRendererHelper.WeightInfo ii = new NDocGridRendererHelper.WeightInfo();
-        ii.colsWeight = NDocValueByType.getDoubleArray(t, ctx, NDocPropName.COLUMNS_WEIGHT).orNull();
-        ii.rowsWeight = NDocValueByType.getDoubleArray(t, ctx, NDocPropName.ROWS_WEIGHT).orNull();
+        ii.colsWeight = NDocValueByType.getDoubleArray(t, ctx, NTxPropName.COLUMNS_WEIGHT).orNull();
+        ii.rowsWeight = NDocValueByType.getDoubleArray(t, ctx, NTxPropName.ROWS_WEIGHT).orNull();
         revalidateWeightInfo(cols, rows, ii);
         return ii;
     }
