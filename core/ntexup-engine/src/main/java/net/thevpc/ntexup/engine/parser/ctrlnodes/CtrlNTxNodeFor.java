@@ -2,7 +2,7 @@ package net.thevpc.ntexup.engine.parser.ctrlnodes;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ public class CtrlNTxNodeFor extends CtrlNTxNodeBase {
     private NElement __varExpr;
     private List<NElement> __body = new ArrayList<>();
 
-    private CtrlNTxNodeFor(NDocResource source) {
+    private CtrlNTxNodeFor(NTxSource source) {
         super(NTxNodeType.CTRL_FOR,source);
     }
 
-    public CtrlNTxNodeFor(NDocResource source, NElement __varName, NElement __varExpr, List<NElement> __body) {
+    public CtrlNTxNodeFor(NTxSource source, NElement __varName, NElement __varExpr, List<NElement> __body) {
         super(NTxNodeType.CTRL_FOR,source);
         this.__varName=__varName;
         this.__varExpr=__varExpr;
