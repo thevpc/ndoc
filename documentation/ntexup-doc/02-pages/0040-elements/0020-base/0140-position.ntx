@@ -1,0 +1,69 @@
+normal(title:"Positions"){
+    body{
+        grid((6,3),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+            }
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """ rectangle(at:center) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """ rectangle(at:top) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top-left, size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """ rectangle(at:top-left) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:bottom-right, size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """ rectangle(at:bottom-right) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(origin:(50,50), position:(50,50), size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """
+                rectangle(origin:(50,50)
+                    position:(50,50))
+                """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(origin:(60,60), position:(100,100), size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """
+                rectangle(origin:(60,60)
+                    position:(100,100))
+                """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(origin:(100,100), position:(100,100), size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """
+                rectangle(origin:(100,100)
+                    position:(100,100))
+                """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(origin:(100,100), position:(50,50), size:(30,30), background:themeColors[4], color:themeColors[2])
+            }
+            source(at:left tson, """
+                rectangle(origin:(100,100)
+                    position:(50,50))
+                """)
+        }
+    }
+
+}
