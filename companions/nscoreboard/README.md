@@ -1,3 +1,3 @@
 # nscoreboard
-will be embedded in an ndoc component
+will be embedded in an ntexup component
 should find a way for animation as well
