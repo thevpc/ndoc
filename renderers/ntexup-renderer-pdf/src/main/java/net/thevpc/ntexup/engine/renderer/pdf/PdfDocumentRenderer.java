@@ -88,7 +88,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
             float usableWidth;
             float usableHeight;
 
-            if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
+            if (config.getOrientation() == NTxPageOrientation.LANDSCAPE) {
                 usableWidth = PageSize.A4.getHeight() - marginLeft - marginRight - 10f;
                 usableHeight = PageSize.A4.getWidth() - marginTop - marginBottom - 10f;
             } else {
@@ -117,7 +117,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
                 }
                 Image img = Image.getInstance(engine.renderManager().renderImageBytes(
                         page,
-                        new NDocNodeRendererConfig((int) cellWidth, (int) cellHeight)
+                        new NTxNodeRendererConfig((int) cellWidth, (int) cellHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
                 ));
@@ -195,7 +195,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
 
     private void applyConfigSettings(Document document, PdfWriter pdfWriter) throws DocumentException {
         NTxDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
-        if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
+        if (config.getOrientation() == NTxPageOrientation.LANDSCAPE) {
             document.setPageSize(PageSize.A4.rotate());
         } else {
             document.setPageSize(PageSize.A4);
