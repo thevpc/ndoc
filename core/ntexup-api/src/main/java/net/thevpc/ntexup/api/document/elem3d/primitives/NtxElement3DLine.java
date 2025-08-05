@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.api.document.elem3d.primitives;
 
-import net.thevpc.ntexup.api.document.NDocArrow;
+import net.thevpc.ntexup.api.document.NTxArrow;
 import net.thevpc.ntexup.api.document.elem3d.AbstractNTxElement3DPrimitive;
-import net.thevpc.ntexup.api.document.elem3d.NDocElement3DPrimitiveType;
+import net.thevpc.ntexup.api.document.elem3d.NTxElement3DPrimitiveType;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
 
 import java.util.Objects;
@@ -10,28 +10,28 @@ import java.util.Objects;
 public class NtxElement3DLine extends AbstractNTxElement3DPrimitive {
     private NTxPoint3D from;
     private NTxPoint3D to;
-    private NDocArrow startArrow = null;
-    private NDocArrow endArrow = null;
+    private NTxArrow startArrow = null;
+    private NTxArrow endArrow = null;
 
     public NtxElement3DLine(NTxPoint3D from, NTxPoint3D to) {
         this.from = from;
         this.to = to;
     }
 
-    public NDocArrow getStartArrow() {
+    public NTxArrow getStartArrow() {
         return startArrow;
     }
 
-    public NtxElement3DLine setStartArrow(NDocArrow startArrow) {
+    public NtxElement3DLine setStartArrow(NTxArrow startArrow) {
         this.startArrow = startArrow;
         return this;
     }
 
-    public NDocArrow getEndArrow() {
+    public NTxArrow getEndArrow() {
         return endArrow;
     }
 
-    public NtxElement3DLine setEndArrow(NDocArrow endArrow) {
+    public NtxElement3DLine setEndArrow(NTxArrow endArrow) {
         this.endArrow = endArrow;
         return this;
     }
@@ -45,8 +45,8 @@ public class NtxElement3DLine extends AbstractNTxElement3DPrimitive {
     }
 
     @Override
-    public NDocElement3DPrimitiveType type() {
-        return NDocElement3DPrimitiveType.LINE;
+    public NTxElement3DPrimitiveType type() {
+        return NTxElement3DPrimitiveType.LINE;
     }
 
     @Override
