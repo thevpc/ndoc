@@ -1,25 +1,25 @@
-# NDOC
+# ntexup
 
 
 ![](documentation/website/splash.png)
 
-Download documentation here : [ndoc-doc.pdf](documentation/website/ndoc-doc.pdf)
+Download documentation here : [ntexup-doc.pdf](documentation/website/ntexup-doc.pdf)
 
 ![](documentation/website/ex02.png)
 
 ![](documentation/website/ex03.png)
 
-# NDoc – Declarative Document & Presentation Generator
+# ntexup – Declarative Document & Presentation Generator
 
 &#x20;&#x20;
 
-**NDoc** is an open-source, text-based document and presentation generator designed to make the creation of professional, math-heavy, and reusable teaching materials effortless.
+**ntexup** is an open-source, text-based document and presentation generator designed to make the creation of professional, math-heavy, and reusable teaching materials effortless.
 
 It is built on **Java**, **Nuts**, and **TSON**, combining the simplicity of Markdown with the power of LaTeX and the flexibility of template-driven document generation — all while being version-control friendly.
 
 ---
 
-## **Why NDoc?**
+## **Why ntexup?**
 
 As a teacher and researcher, I struggled with existing tools:
 
@@ -27,7 +27,7 @@ As a teacher and researcher, I struggled with existing tools:
 - **LaTeX** is powerful but overkill for simple slides, with complex setups and dependency issues.
 - **Asciidoctor** comes close but suffers from Ruby environment problems, limited equation rendering, lack of built-in figure mechanisms, and no native support for animations.
 
-**NDoc** solves these issues by providing a **declarative, text-based** solution that is:
+**ntexup** solves these issues by providing a **declarative, text-based** solution that is:
 
 - Easy to write and maintain.
 - **Math- and diagram-friendly** (built-in LaTeX-style math, UML, Gantt, network diagrams).
@@ -78,7 +78,7 @@ As a teacher and researcher, I struggled with existing tools:
 
 ## **Why TSON?**
 
-TSON is a **superset of JSON** that is more readable and flexible than YAML or XML. It powers NDoc's documents with:
+TSON is a **superset of JSON** that is more readable and flexible than YAML or XML. It powers ntexup's documents with:
 
 - **Functions**.
 - **Variables** and **expressions**.
@@ -125,14 +125,14 @@ for(i: [1 -> 2]) {
 ### **Setup**
 
 ```bash
-nuts install ndoc
+nuts install ntexup
 ```
 
 Or clone the repository:
 
 ```bash
-git clone https://github.com/thevpc/ndoc.git
-cd ndoc
+git clone https://github.com/thevpc/ntexup.git
+cd ntexup
 mvn package
 ```
 
@@ -140,7 +140,7 @@ mvn package
 
 ## **Usage Example**
 
-Create a file `slides.ndoc`:
+Create a file `slides.ntex`:
 
 ```tson
 styles: {
@@ -148,7 +148,7 @@ styles: {
 }
 
 page {
-    text("Welcome to NDoc!", style: title, at: top)
+    text("Welcome to ntexup!", style: title, at: top)
     ¶ This is an equation
     equation("x = \\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}", at: (50, 50))
 }
@@ -157,14 +157,14 @@ page {
 Render it:
 
 ```bash
-ndoc --open slides.ndoc
+ntexup --open slides.ntx
 ```
 
 ## Where to start
-Run ndoc (located under app) and open the GITHUB_ROOT/documentation/ndoc-doc folder.
-This will render a presentation of the ndoc documentation, written in ndoc and displayed as slides.
+Run ntexup (located under app) and open the GITHUB_ROOT/documentation/ntexup-doc folder.
+This will render a presentation of the ntexup documentation, written in ntexup and displayed as slides.
 
-You can play with files under ndoc-doc to understand how this tool works
+You can play with files under ntexup-doc to understand how this tool works
 
 
 ---
@@ -172,7 +172,7 @@ You can play with files under ndoc-doc to understand how this tool works
 ## **Repository**
 
 - **License**: [GPLv3](LICENSE).
-- **Source**: [https://github.com/thevpc/ndoc](https://github.com/thevpc/ndoc).
+- **Source**: [https://github.com/thevpc/ntexup](https://github.com/thevpc/ntexup).
 - **Status**: Usable, actively used for teaching, still evolving.
 
 ---
@@ -200,6 +200,6 @@ Developed and maintained by [thevpc](https://github.com/thevpc).
 ## Best practices
 ### add Idea Syntax Highlighting
 If you are using IntelliJ Idea, you would find it interesting to consider syntax highlighting of hd files.
-You need to copy `GIHUB_ROOT/documentation/integration/ndoc.xml` under your home folder
+You need to copy `GIHUB_ROOT/documentation/integration/ntexup.xml` under your home folder
 `~/.config/JetBrains/IntelliJIdea2024.1/filetypes/`
 (assuming you have IntelliJIdea2024.1 version installed, otherwise you need to consider to correct folder name)
