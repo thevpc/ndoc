@@ -1,10 +1,10 @@
 package net.thevpc.ntexup.engine.base.functions.general;
 
-import net.thevpc.ntexup.api.eval.NDocValue;
+import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.extension.NTxFunction;
-import net.thevpc.ntexup.api.eval.NDocFunctionArgs;
-import net.thevpc.ntexup.api.eval.NDocFunctionContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.eval.NTxFunctionArgs;
+import net.thevpc.ntexup.api.eval.NTxFunctionContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -21,7 +21,7 @@ public class NTxFunctionArrayRightRotate implements NTxFunction {
     }
 
     @Override
-    public NElement invoke(NDocFunctionArgs args, NDocFunctionContext context) {
+    public NElement invoke(NTxFunctionArgs args, NTxFunctionContext context) {
         if (args.size() == 0) {
             return NElement.ofNull();
         }
@@ -32,16 +32,16 @@ public class NTxFunctionArrayRightRotate implements NTxFunction {
             context.messages().log(NMsg.ofC("%s: expected 2 arguments, got %s", name(), args.size()));
         }
         NElement ue0 = args.eval(0);
-        NOptional<NElement[]> uv0 = NDocValue.of(ue0).asElementArray();
+        NOptional<NElement[]> uv0 = NTxValue.of(ue0).asElementArray();
         if (!uv0.isPresent()) {
-            context.messages().log(NMsg.ofC("unable to call %s, first arg '%s' is not a color array", name(), NDocUtils.snippet(ue0)));
+            context.messages().log(NMsg.ofC("unable to call %s, first arg '%s' is not a color array", name(), NTxUtils.snippet(ue0)));
             return ue0;
         }
 
         NElement ue1 = args.eval(1);
-        NOptional<Number> uv1 = NDocValue.of(ue1).asNumber();
+        NOptional<Number> uv1 = NTxValue.of(ue1).asNumber();
         if (!uv1.isPresent()) {
-            context.messages().log(NMsg.ofC("unable to call %s, second arg '%s' is not a number", name(), NDocUtils.snippet(ue1)));
+            context.messages().log(NMsg.ofC("unable to call %s, second arg '%s' is not a number", name(), NTxUtils.snippet(ue1)));
             return ue0;
         }
         if (uv0.get().length == 0) {
