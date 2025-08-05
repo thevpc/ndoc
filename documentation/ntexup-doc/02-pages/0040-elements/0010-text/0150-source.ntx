@@ -1,0 +1,124 @@
+normal(title:"Source Code"){
+    body{
+        grid((4,2),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                source(
+                    java
+                    """
+                        public static class
+                        MyClass{
+                            int value = 10;
+                            int add(int b){
+                                value++;
+                            }
+                        }
+                    """
+                    font-size:4%P,
+                    font-family:Monospaced
+                )
+            }
+            source(tson,
+                ```
+                    source(
+                    java
+                    """
+                        public static class
+                        MyClass{
+                            int value = 10;
+                            int add(int b){
+                                value++;
+                            }
+                        }
+                    """
+                    )
+                ```)
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:5%P}
+                }
+                source(
+                    sql
+                    """
+                        Select *
+                        From Tab
+                        Where 1=1
+                    """
+                    font-size:4%P,
+                    font-family:Monospaced
+                )
+            }
+            source(tson,
+                ```
+                    source(
+                    sql
+                    """
+                        Select *
+                        From Tab
+                        Where 1=1
+                    """
+                    )
+                ```)
+
+            // Row
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:5%P}
+                }
+                source(
+                    xml
+                    """
+                        <a value="text">
+                          <b value="text"></b>
+                        </a>
+                    """
+                    font-size:4%P,
+                    font-family:Monospaced
+                )
+            }
+            source(tson,
+                ```
+                    source(
+                    xml
+                    """
+                        <a value="text">
+                          <b value="text"></b>
+                        </a>
+                    """
+                    )
+                ```)
+
+            grid((1,2),background:white,draw-contour){
+                styles:{
+                    "*":{font-size:10%P}
+                }
+                source(
+                    text
+                    """
+                        text, java,
+                        c#, c++
+                        xml,html,json
+                        bash,fish,cmd
+                        sql,
+                        hd, ntf,hadra,
+                        tson
+                    """
+                    font-size:5%P,
+                    font-family:Monospaced
+                )
+            }
+            "Supported Languages"
+
+        }
+    }
+
+}
