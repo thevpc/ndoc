@@ -82,18 +82,18 @@ public class NDocItemBag {
 
     public NTxNode compress(boolean inPage, NDocResource source) {
         if (isEmpty()) {
-            return new DefaultNTxNode(NDocNodeType.VOID, source);
+            return new DefaultNTxNode(NTxNodeType.VOID, source);
         } else if (list.size() == 1 && list.get(0) instanceof NTxNode) {
             return (NTxNode) list.get(0);
         } else {
             if (inPage) {
-                DefaultNTxNode root = new DefaultNTxNode(NDocNodeType.GROUP, source);
+                DefaultNTxNode root = new DefaultNTxNode(NTxNodeType.GROUP, source);
                 for (NTxItem nTxItem : list) {
                     root.mergeNode(nTxItem);
                 }
                 return root;
             } else {
-                DefaultNTxNode root = new DefaultNTxNode(NDocNodeType.PAGE_GROUP, source);
+                DefaultNTxNode root = new DefaultNTxNode(NTxNodeType.PAGE_GROUP, source);
                 for (NTxItem nTxItem : list) {
                     root.mergeNode(nTxItem);
                 }
