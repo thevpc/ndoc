@@ -11,7 +11,7 @@ public class TestPdf {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NTxEngine e = new DefaultNTxEngine();
-        NPath file = NPath.of("documentation/ndoc-doc").toAbsolute().normalize();
+        NPath file = NPath.of("documentation/ntexup-doc").toAbsolute().normalize();
         NTxDocument doc = e.loadDocument(file).get();
         NTxDocumentStreamRenderer renderer = e.newPdfRenderer().get();
         renderer.setOutput(file.resolve("output.pdf"));
