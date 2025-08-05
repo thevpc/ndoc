@@ -1,14 +1,14 @@
 package net.thevpc.ntexup.engine.util;
 
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NDocUtilsPages {
-    public static List<NTxNode> resolvePages(NDocument document) {
+    public static List<NTxNode> resolvePages(NTxDocument document) {
         List<NTxNode> all = new ArrayList<>();
         fillPages(document.root(), all);
         return all;
@@ -22,17 +22,17 @@ public class NDocUtilsPages {
 
     public static void fillPages(NTxNode part, List<NTxNode> all) {
         switch (part.type()) {
-            case NDocNodeType.PAGE: {
+            case NTxNodeType.PAGE: {
                 NTxNode p = part;
                 if (!p.isDisabled()) {
                     all.add(p);
                 }
                 break;
             }
-            case NDocNodeType.PAGE_GROUP:
-            case NDocNodeType.FLOW:
-            case NDocNodeType.GRID:
-            case NDocNodeType.GROUP: {
+            case NTxNodeType.PAGE_GROUP:
+            case NTxNodeType.FLOW:
+            case NTxNodeType.GRID:
+            case NTxNodeType.GROUP: {
                 if (!part.isDisabled()) {
                     for (NTxNode p : part.children()) {
                         fillPages(p, all);
