@@ -1,16 +1,16 @@
 package net.thevpc.ntexup.engine.parser;
 
 import net.thevpc.ntexup.api.document.*;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 public class NTxDocumentLoadingResultImpl implements NTxDocumentLoadingResult {
-    private NDocResource source;
+    private NTxSource source;
     private NTxDocument document;
     private boolean successful;
 
-    public NTxDocumentLoadingResultImpl(NTxDocument document, NDocResource source, boolean successful) {
+    public NTxDocumentLoadingResultImpl(NTxDocument document, NTxSource source, boolean successful) {
         this.document = document;
         this.source = source;
         this.successful = successful;
@@ -22,7 +22,7 @@ public class NTxDocumentLoadingResultImpl implements NTxDocumentLoadingResult {
     }
 
     @Override
-    public NDocResource source() {
+    public NTxSource source() {
         return source;
     }
 
