@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.extension.plantuml;
 
 import net.sourceforge.plantuml.SourceStringReader;
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.source.NDocResource;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -25,7 +25,7 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
     private String id;
     private String mode;
     private String[] aliases;
-    private NDocProperties defaultStyles = new NDocProperties();
+    private NTxProperties defaultStyles = new NTxProperties();
 
     public PlantUmlBuilderBase(String id) {
         this("plantuml-" + id, id);
@@ -43,26 +43,26 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
     }
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext.id(id)
                 .alias(aliases)
-                .parseParam().named(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
+                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderComponent(this::renderMain)
         ;
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String txt = NDocValue.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orNull();
+        String txt = NDocValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orNull();
         if (NBlankable.isBlank(txt)) {
             return;
         }
         String mode = NDocUtils.uid(this.mode);
         NDocGraphics g = ctx.graphics();
-        NDocBounds2 b = ctx.selfBounds(p);
+        NTxBounds2 b = ctx.selfBounds(p);
         double x = b.getX();
         double y = b.getY();
         BufferedImage image = null;
@@ -139,7 +139,7 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
         }
     }
 
-    private String prepare(String type, String txt, NDocBounds2 b) {
+    private String prepare(String type, String txt, NTxBounds2 b) {
         return "@start" + type + "\n"
                 + "scale " + (b.getWidth().intValue()) + "*" + (b.getHeight().intValue()) + "\n"
                 + "skinparam backgroundcolor transparent\n"
