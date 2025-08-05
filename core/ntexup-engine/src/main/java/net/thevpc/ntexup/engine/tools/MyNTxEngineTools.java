@@ -9,9 +9,9 @@ import net.thevpc.ntexup.api.engine.NTxEngineTools;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
 import net.thevpc.ntexup.engine.renderer.HSpiUtils;
 import net.thevpc.ntexup.engine.util.NTxUtilsImages;
-import net.thevpc.ntexup.engine.util.NDocUtilsPages;
-import net.thevpc.ntexup.engine.util.NDocUtilsPoints;
-import net.thevpc.ntexup.engine.util.NDocUtilsText;
+import net.thevpc.ntexup.engine.util.NTxUtilsPages;
+import net.thevpc.ntexup.engine.util.NTxUtilsPoints;
+import net.thevpc.ntexup.engine.util.NTxUtilsText;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -50,42 +50,42 @@ public class MyNTxEngineTools implements NTxEngineTools {
     }
 
     public String trimBloc(String code) {
-        return NDocUtilsText.trimBloc(code);
+        return NTxUtilsText.trimBloc(code);
     }
 
     @Override
     public boolean addPoints(NTxNode line, NTxPoint2D[] points) {
-        return NDocUtilsPoints.addPoints(line, points);
+        return NTxUtilsPoints.addPoints(line, points);
     }
 
     @Override
     public boolean addPoints(NTxNode line, NTxPoint3D[] points) {
-        return NDocUtilsPoints.addPoints(line, points);
+        return NTxUtilsPoints.addPoints(line, points);
     }
 
     @Override
     public boolean addPoint(NTxNode line, NTxPoint2D point) {
-        return NDocUtilsPoints.addPoint(line, point);
+        return NTxUtilsPoints.addPoint(line, point);
     }
 
     @Override
     public boolean addPoint(NTxNode line, NTxPoint3D point) {
-        return NDocUtilsPoints.addPoint(line, point);
+        return NTxUtilsPoints.addPoint(line, point);
     }
 
     @Override
     public java.util.List<NTxNode> resolvePages(NTxDocument document) {
-        return NDocUtilsPages.resolvePages(document);
+        return NTxUtilsPages.resolvePages(document);
     }
 
     @Override
     public java.util.List<NTxNode> resolvePages(NTxNode part) {
-        return NDocUtilsPages.resolvePages(part);
+        return NTxUtilsPages.resolvePages(part);
     }
 
     @Override
     public void fillPages(NTxNode part, List<NTxNode> all) {
-        NDocUtilsPages.fillPages(part, all);
+        NTxUtilsPages.fillPages(part, all);
     }
 
 
