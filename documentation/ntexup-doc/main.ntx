@@ -1,0 +1,4 @@
+themeColorAccent=1
+themeShowPalette=true
+include("01-styles")
+include("02-pages")
