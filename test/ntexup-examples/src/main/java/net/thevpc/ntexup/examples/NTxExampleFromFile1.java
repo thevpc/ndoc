@@ -19,7 +19,7 @@ public class NTxExampleFromFile1 {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NTxEngine e = new DefaultNTxEngine();
-        NPath file = NPath.of("/home/mohamed/Desktop/stage/ndoc/documentation/tson-doc/main.ndoc").toAbsolute().normalize();
+        NPath file = NPath.of("/home/mohamed/Desktop/stage/ntexup/documentation/tson-doc/main.ndoc").toAbsolute().normalize();
         System.out.println(file);
         NTxDocument doc = e.loadDocument(file).get();
         System.out.println(e.toElement(doc));
