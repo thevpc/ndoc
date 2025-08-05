@@ -20,24 +20,24 @@ public class NTxViewerConfigManager {
     }
 
     public NTxViewerConfigManager(NPath viewerConfigFile) {
-        String ndocViewerConfigName = "ndoc-config.tson";
+        String configName = "ntexup-config.tson";
         NPath appCacheFolder = NApp.of().getConfFolder();
         if (viewerConfigFile == null) {
             if (appCacheFolder == null) {
-                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ntexup:ntexup"), NStoreType.CACHE).resolve(ndocViewerConfigName);
+                viewerConfigFile = NWorkspace.of().getStoreLocation(NId.of("net.thevpc.ntexup:ntexup"), NStoreType.CACHE).resolve(configName);
             } else {
-                viewerConfigFile = appCacheFolder.resolve(ndocViewerConfigName);
+                viewerConfigFile = appCacheFolder.resolve(configName);
             }
         } else if (viewerConfigFile.isDirectory()) {
-            viewerConfigFile = viewerConfigFile.resolve(ndocViewerConfigName);
+            viewerConfigFile = viewerConfigFile.resolve(configName);
         } else if (!viewerConfigFile.exists() && !viewerConfigFile.getName().endsWith(".tson")) {
-            viewerConfigFile = viewerConfigFile.resolve(ndocViewerConfigName);
+            viewerConfigFile = viewerConfigFile.resolve(configName);
         }
         this.viewerConfigFile = viewerConfigFile;
     }
 
     public void markAccessed(NPath path) {
-        NDocViewerConfig config = loadViewerConfig();
+        NTxViewerConfig config = loadViewerConfig();
         List<NTxProject> old = new ArrayList<>();
         NTxProject found = null;
         if (config.getRecentProjects() != null) {
@@ -64,7 +64,7 @@ public class NTxViewerConfigManager {
     }
 
     public void markSaved(NPath path) {
-        NDocViewerConfig config = loadViewerConfig();
+        NTxViewerConfig config = loadViewerConfig();
         List<NTxProject> old = new ArrayList<>();
         NTxProject found = null;
         if (config.getRecentProjects() != null) {
@@ -92,7 +92,7 @@ public class NTxViewerConfigManager {
         saveViewerConfig(config);
     }
 
-    public void saveViewerConfig(NDocViewerConfig config) {
+    public void saveViewerConfig(NTxViewerConfig config) {
         config = validate(config);
         NElement elem = NElements.of().toElement(config);
         viewerConfigFile.mkParentDirs();
@@ -104,27 +104,27 @@ public class NTxViewerConfigManager {
     }
 
     public NPath[] getLastAccessedPaths() {
-        NDocViewerConfig config = loadViewerConfig();
+        NTxViewerConfig config = loadViewerConfig();
         return Arrays.stream(config.getRecentProjects()).map(x -> NPath.of(x.getPath())).toArray(NPath[]::new);
     }
 
     public NTxProject[] getRecentProjects() {
-        NDocViewerConfig config = loadViewerConfig();
+        NTxViewerConfig config = loadViewerConfig();
         return config.getRecentProjects();
     }
 
     public NPath getLastAccessedPath() {
-        NDocViewerConfig config = loadViewerConfig();
+        NTxViewerConfig config = loadViewerConfig();
         NTxProject[] recentProjects = config.getRecentProjects();
         return recentProjects.length == 0 ? null : NPath.of(recentProjects[0].getPath());
     }
 
-    public NDocViewerConfig loadViewerConfig() {
-        NDocViewerConfig config = null;
+    public NTxViewerConfig loadViewerConfig() {
+        NTxViewerConfig config = null;
         if (viewerConfigFile.isRegularFile()) {
             try (InputStream is = viewerConfigFile.getInputStream()) {
                 NElement d = NElementParser.ofTson().parse(is);
-                config = NElements.of().fromElement(d, NDocViewerConfig.class);
+                config = NElements.of().fromElement(d, NTxViewerConfig.class);
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
             }
@@ -149,9 +149,9 @@ public class NTxViewerConfigManager {
         throw new IllegalArgumentException("invalid comparision");
     }
 
-    private NDocViewerConfig validate(NDocViewerConfig config) {
+    private NTxViewerConfig validate(NTxViewerConfig config) {
         if (config == null) {
-            config = new NDocViewerConfig();
+            config = new NTxViewerConfig();
         }
         if (config.getRecentProjects() == null) {
             config.setRecentProjects(new NTxProject[0]);
