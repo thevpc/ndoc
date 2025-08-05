@@ -1,0 +1,114 @@
+{styles{.H2:{
+                          font-size:12%P,
+                          color:"#FFC55A",
+                          font-bold
+                      }
+           }
+page{
+//            polygon(points:[(0,5),(12,5),(0,35),(0,35)],background-color:"#FC4100")
+//            polygon(points:[(0,0),(10,0),(0,25),(0,20)],background-color:"#00215E")
+//
+//            polygon(points:[(0,95),(12,95),(0,65),(0,65)],background-color:"#FC4100")
+//            polygon(points:[(0,100),(10,100),(0,75),(0,80)],background-color:"#00215E")
+//
+//            polygon(points:[(60,53),(70,13),(100,13),(100,93),(70,93)],background-color:"#FC4100")
+//            polygon(points:[(60,50),(70,10),(100,10),(100,90),(70,90)],background-color:"#00215E")
+//            //polygon(points:[(60,50),(75,10),(100,10),(100,90),(75,90)],background-color:"#00215E")
+//
+//            text(
+//                                "
+//                                Un arbre AVL est une structure de données auto-équilibrée,
+//                                un type spécifique d'arbre binaire de recherche (BST),
+//                                où l'équilibre est maintenu par des rotations
+//                                après chaque opération d'insertion ou de suppression
+//                                pour garantir un temps de recherche logarithmique O(logn).
+//                                L'arbre AVL assure que la différence de hauteur entre
+//                                les sous-arbres gauche et droit d'un nœud < ou = 1,
+//                                optimisant ainsi les performances de recherche et d'insertion/suppression.
+//                                "
+//                                ,font-size:8%P,position:(8,23),font-bold
+//            )
+//            text(
+//                                "
+//                                Cependant, un inconvénient des arbres AVL est le surcoût
+//                                en termes de rotations et de rééquilibrage après chaque
+//                                insertion ou suppression, ce qui peut rendre ces opérations
+//                                relativement coûteuses en comparaison avec d'autres arbres
+//                                binaires de recherche non équilibrés.
+//                                "
+//                                ,font-size:8%P,position:(8,62)
+//            )
+//            polygon(points:[(78,17),(90,48),(90,48),(78,17)])
+//            circle(bg:"#FC4100",size:(5,10),at:(80,15),stroke:10)
+//            text("10",at:(79,17),font-size:10%P)
+//            circle(bg:"#FC4100",size:(5,10),at:(85,30))
+//            text("20",at:(84,31),font-size:10%P)
+//            circle(bg:"#FC4100",size:(5,10),at:(90,45))
+//            text("30",at:(89,45),font-size:10%P)
+//
+//            polygon(points:[(78,40),(79,40),(79,45),(78,45)],bg:"#2C4E80")
+//            polygon(points:[(77,45),(80,45),(78.5,49)],background-color:"#2C4E80")
+//
+//            polygon(points:[(80,65),(85,75),(85,75),(80,65)])
+//            polygon(points:[(77,65),(72,75),(72,75),(77,65)])
+//            circle(bg:"#FC4100",size:(5,10),at:(80,65))
+//            text("20",at:(79,64),font-size:10%P)
+//            circle(bg:"#FC4100",size:(5,10),at:(85,78))
+//            text("30",at:(84,76),font-size:10%P)
+//            circle(bg:"#FC4100",size:(5,10),at:(75,78))
+//            text("10",at:(74,76),font-size:10%P)
+
+
+            polygon(points:[(0,0),(50,0),(70,100),(0,100)],background-color:"#00215E")
+            polygon(points:[(50,5),(53,5),(70,95),(67,95)],stroke:5,color:gray)
+            polygon(points:[(50,0),(53,0),(70,90),(67,90)],background-color:"#FC4100")
+
+            @(H2)text("
+                    Simulation graphique du fonctionnement de
+                    la structure de données AVL Tree:
+                    "
+                    at:(6,10)
+            )
+            text(
+                    "
+                    Un arbre AVL est une structure de données auto-équilibrée,
+                    où l'équilibre est maintenu par des rotations
+                    après chaque opération d'insertion ou de suppression
+                    pour garantir un temps de recherche logarithmique O(logn).
+                    L'arbre AVL assure que la différence de hauteur entre
+                    les sous-arbres gauche et droit d'un nœud < ou = 1,
+                    optimisant ainsi les performances de recherche et d'insertion/suppression.
+                    "
+                    ,font-size:9%P,position:(3,35),color:white
+            )
+//            text(
+//                    "
+//                    Cependant, un inconvénient des arbres AVL est le surcoût
+//                    en termes de rotations et de rééquilibrage après chaque
+//                    insertion ou suppression, ce qui peut rendre ces opérations
+//                    relativement coûteuses en comparaison avec d'autres arbres
+//                    binaires de recherche non équilibrés.
+//                    "
+//                    ,font-size:8%P,position:(3,70),color:white
+//            )
+
+            polygon(points:[(78,17),(90,48),(90,48),(78,17)])
+            circle(bg:"#FC4100",size:(5,10),at:(80,15),stroke:10)
+            text("10",at:(79,17),font-size:10%P)
+            circle(bg:"#FC4100",size:(5,10),at:(85,30))
+            text("20",at:(84,31),font-size:10%P)
+            circle(bg:"#FC4100",size:(5,10),at:(90,45))
+            text("30",at:(89,45),font-size:10%P)
+
+            polygon(points:[(78,40),(79,40),(79,45),(78,45)],bg:"#2C4E80")
+            polygon(points:[(77,45),(80,45),(78.5,49)],background-color:"#2C4E80")
+
+            polygon(points:[(80,65),(85,75),(85,75),(80,65)])
+            polygon(points:[(77,65),(72,75),(72,75),(77,65)])
+            circle(bg:"#FC4100",size:(5,10),at:(80,65))
+            text("20",at:(79,64),font-size:10%P)
+            circle(bg:"#FC4100",size:(5,10),at:(85,78))
+            text("30",at:(84,76),font-size:10%P)
+            circle(bg:"#FC4100",size:(5,10),at:(75,78))
+            text("10",at:(74,76),font-size:10%P)
+}}
