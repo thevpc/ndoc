@@ -1,11 +1,11 @@
 package net.thevpc.ntexup.extension.shapes2d;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 
 
@@ -13,22 +13,22 @@ import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
  *
  */
 public class NDocPieBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.PIE)
-                .parseParam().named(NDocPropName.START_ANGLE,NDocPropName.EXTENT_ANGLE,NDocPropName.DASH).then()
-                .parseParam().named(NDocPropName.SLICE_COUNT).then()
-                .parseParam().named(NDocPropName.SLICES).then()
-                .parseParam().named(NDocPropName.COLORS).then()
+                .id(NTxNodeType.PIE)
+                .parseParam().named(NTxPropName.START_ANGLE, NTxPropName.EXTENT_ANGLE, NTxPropName.DASH).then()
+                .parseParam().named(NTxPropName.SLICE_COUNT).then()
+                .parseParam().named(NTxPropName.SLICES).then()
+                .parseParam().named(NTxPropName.COLORS).then()
                 .renderComponent(this::render)
                 ;
     }
 
 
-    private void render(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
+    private void render(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
         NDocDonutBuilder.renderDonutOrPie(p, renderContext, builderContext, defaultStyles, false);
     }
 
