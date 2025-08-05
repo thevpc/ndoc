@@ -1,0 +1,21 @@
+// this is a comment
+page{
+    grid((2,2)){
+        rectangle(at:center,size:(50),
+            background:yellow,
+            color:red, stroke:4
+        )
+        ul(at:center){ "Item 1" , "Item 2" }
+        eq("f_1(x)=\int_x \sin(x^2)") // supports LATEX
+        uml( // supports PLANTUML
+            """
+                left to right direction
+                actor "Food Critic" as fc
+                rectangle Restaurant {
+                  usecase "Eat Food" as UC1
+                }
+                fc --> UC1
+            """
+        )
+    }
+}
