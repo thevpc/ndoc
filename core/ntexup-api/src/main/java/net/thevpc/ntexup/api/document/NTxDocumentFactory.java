@@ -1,12 +1,12 @@
 package net.thevpc.ntexup.api.document;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 
 public interface NTxDocumentFactory {
 
-    NTxDocument ofDocument(NDocResource source);
+    NTxDocument ofDocument(NTxSource source);
 
     NTxNode ofPage();
 
