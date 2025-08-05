@@ -4,14 +4,14 @@ import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.NDocSizeRequirements;
-import net.thevpc.ntexup.api.parser.NDocAllArgumentReader;
-import net.thevpc.ntexup.api.parser.NDocArgumentReader;
-import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.text.NDocTextToken;
-import net.thevpc.ntexup.api.renderer.text.NDocTextOptions;
-import net.thevpc.ntexup.api.renderer.text.NDocTextRendererBuilder;
+import net.thevpc.ntexup.api.document.NTxSizeRequirements;
+import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
+import net.thevpc.ntexup.api.parser.NTxArgumentReader;
+import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.renderer.text.NTxTextToken;
+import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
+import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
@@ -65,7 +65,7 @@ public interface NTxNodeCustomBuilderContext {
 
 
     interface NTxItemSpecialParser {
-        NCallableSupport<NTxItem> parseElement(String id, NElement element, NDocNodeFactoryParseContext context);
+        NCallableSupport<NTxItem> parseElement(String id, NElement element, NTxNodeFactoryParseContext context);
     }
 
     interface NamedParamAction {
@@ -79,7 +79,7 @@ public interface NTxNodeCustomBuilderContext {
 
         NamedParamAction named(String... names);
 
-        NamedParamAction matches(Predicate<NDocArgumentReader> predicate);
+        NamedParamAction matches(Predicate<NTxArgumentReader> predicate);
 
         NamedParamAction matchesString();
 
@@ -104,7 +104,7 @@ public interface NTxNodeCustomBuilderContext {
     }
 
     interface PropResolver {
-        NTxProp resolve(String uid, NElement value, NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext);
+        NTxProp resolve(String uid, NElement value, NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface ToElemAction {
@@ -112,34 +112,34 @@ public interface NTxNodeCustomBuilderContext {
     }
 
     interface RenderAction {
-        void renderMain(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
+        void renderMain(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface RenderTextAction {
-        void buildText(String text, NDocTextOptions options, NTxNode p, NDocNodeRendererContext renderContext, NDocTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext);
+        void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext renderContext, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface RenderConvertAction {
-        NTxNode convert(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext);
+        NTxNode convert(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface RenderEmbeddedTextAction {
-        List<NDocTextToken> parseImmediate(NReservedSimpleCharQueue queue, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
+        List<NTxTextToken> parseImmediate(NReservedSimpleCharQueue queue, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface SizeRequirementsAction {
-        NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
+        NTxSizeRequirements sizeRequirements(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface SelfBoundsAction {
-        NTxBounds2 selfBounds(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
+        NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface ProcessParamAction {
-        boolean processParam(NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext);
+        boolean processParam(NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface ProcessNodeAction {
-        void processNode(NDocAllArgumentReader info, NTxNodeCustomBuilderContext buildContext);
+        void processNode(NTxAllArgumentReader info, NTxNodeCustomBuilderContext buildContext);
     }
 }
