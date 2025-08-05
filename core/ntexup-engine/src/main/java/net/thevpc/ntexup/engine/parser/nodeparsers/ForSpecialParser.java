@@ -3,7 +3,7 @@ package net.thevpc.ntexup.engine.parser.nodeparsers;
 import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.CtrlNTxNodeFor;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ForSpecialParser extends NDocNodeParserBase {
     public ForSpecialParser() {
-        super(true, NDocNodeType.CTRL_FOR);
+        super(true, NTxNodeType.CTRL_FOR);
     }
 
     @Override
