@@ -248,14 +248,14 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
 //}
 //
 //
-//    private byte[] createPageImage(int sizeWidth, int sizeHeight, NDocNode page, NDocMessageList messages2) {
+//    private byte[] createPageImage(int sizeWidth, int sizeHeight, NTxNode page, NTxMessageList messages2) {
 //        BufferedImage newImage = new BufferedImage(
 //                sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
 //
 //        Graphics2D g = newImage.createGraphics();
-//        NDocGraphics gh = engine.createGraphics(g);
-//        NDocNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
-//        renderer.render(page, new PdfNDocNodeRendererContext(engine, gh, new Dimension(sizeWidth, sizeHeight), session, messages2));
+//        NTxGraphics gh = engine.createGraphics(g);
+//        NTxNodeRenderer renderer = engine.renderManager().getRenderer(page.type()).get();
+//        renderer.render(page, new PdfNTxNodeRendererContext(engine, gh, new Dimension(sizeWidth, sizeHeight), session, messages2));
 //        ByteArrayOutputStream bos = new ByteArrayOutputStream();
 //        try {
 //            ImageIO.write(newImage, "png", bos);
@@ -266,16 +266,16 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
 //    }
 
 
-//    public void renderStream(NDocDocument document, OutputStream stream) {
+//    public void renderStream(NTxDocument document, OutputStream stream) {
 //        try {
-//            NDocMessageList messages2 = this.messages;
+//            NTxMessageList messages2 = this.messages;
 //            if (messages2 == null) {
-//                messages2 = new NDocMessageListImpl(session, engine.computeSource(document.root()));
+//                messages2 = new NTxMessageListImpl(session, engine.computeSource(document.root()));
 //            }
 //            document = engine.compileDocument(document, messages2).get();
-//            NDocDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
+//            NTxDocumentStreamRenderer htmlRenderer = engine.newStreamRenderer("html");
 //            List<Supplier<InputStream>> all = new ArrayList<>();
-//            for (NDocNode page : document.pages()) {
+//            for (NTxNode page : document.pages()) {
 //                Supplier<InputStream> y = renderPage(page, htmlRenderer);
 //                if (y != null) {
 //                    all.add(y);
