@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="left-pane">
+    <input [(ngModel)]="repoUrl" placeholder="Enter repository URL" />
+    <button (click)="cloneRepo()">Clone Repository</button>
+
+    <ul>
+      <li *ngFor="let file of fileList" (click)="onFileSelect(file)">
+        {{ file }}
+      </li>
+    </ul>
+
+    <app-file-viewer [localPath]="selectedFilePath"></app-file-viewer>
+  </div>
+
+  <div class="right-pane">
+    <app-image-viewer [filePath]="selectedFilePath" [pageNumber]="pageNumber"></app-image-viewer>
+  </div>
+</div>
