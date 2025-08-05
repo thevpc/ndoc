@@ -3,23 +3,23 @@ package net.thevpc.ntexup.extension.simple3d.box;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3DPrimitive;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3D;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
-import net.thevpc.ntexup.api.document.elem3d.RenderState3D;
+import net.thevpc.ntexup.api.document.elem3d.NTxRenderState3D;
 import net.thevpc.ntexup.api.document.elem3d.composite.NtxElement3DBox;
 import net.thevpc.ntexup.api.document.elem3d.primitives.NtxElement3DLine;
 import net.thevpc.ntexup.api.document.elem3d.primitives.NtxElement3DPolygon;
-import net.thevpc.ntexup.api.renderer.NDocElement3DRenderer;
+import net.thevpc.ntexup.api.renderer.NTxElement3DRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Element3DBoxPrimitiveBuilder implements NDocElement3DRenderer {
+public class Element3DBoxPrimitiveBuilder implements NTxElement3DRenderer {
     @Override
     public Class<? extends NtxElement3D> forType() {
         return NtxElement3DBox.class;
     }
 
     @Override
-    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, RenderState3D renderState) {
+    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, NTxRenderState3D renderState) {
         NtxElement3DBox ee = (NtxElement3DBox) e;
         NTxPoint3D origin = ee.getOrigin();
         double sizeX = ee.getSizeX();
