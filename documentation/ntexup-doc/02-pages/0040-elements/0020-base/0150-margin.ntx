@@ -1,0 +1,46 @@
+normal(title:"Margins"){
+    body{
+        grid((6,3),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+            }
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:10)
+            }
+            source(tson, """ rectangle(margin:10) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:20)
+            }
+            source(tson, """ rectangle(margin:20) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30))
+            }
+            source(tson, """ rectangle(margin:(5,30)) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:left, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:bottom, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+                rectangle(at:right, size:(30,30), background:themeColors[4], color:themeColors[2], margin:(5,30,0,0))
+            }
+            source(tson, """ rectangle(margin:(5,30,0,0)) """)
+
+        }
+    }
+
+}
