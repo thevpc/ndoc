@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.parser;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.parser.*;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.util.ToElementHelper;
@@ -22,7 +22,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     private String id;
     private String[] aliases;
     private boolean container;
-    private NDocEngine engine;
+    private NTxEngine engine;
     private String nodeId;
 
     public NDocNodeParserBase(boolean container, String id, String... aliases) {
@@ -39,11 +39,11 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         this.nodeId = nodeId;
     }
 
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
-    public void init(NDocEngine engine) {
+    public void init(NTxEngine engine) {
         this.engine = engine;
     }
 
@@ -100,7 +100,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
         NTxItem p = p0;
         while (p != null) {
             if (p instanceof NTxNode) {
-                if (NDocNodeType.SCENE3D.equals(((NTxNode) p).type())) {
+                if (NTxNodeType.SCENE3D.equals(((NTxNode) p).type())) {
                     return true;
                 }
             }
@@ -240,7 +240,7 @@ public abstract class NDocNodeParserBase implements NDocNodeParser {
     }
 
     public NOptional<NTxItem> parseItem(String id, NElement element, NDocNodeFactoryParseContext context) {
-        NDocEngine engine = context.engine();
+        NTxEngine engine = context.engine();
         NTxDocumentFactory f = context.documentFactory();
         switch (element.type()) {
             case NAMED_UPLET:
