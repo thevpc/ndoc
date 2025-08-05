@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.ext;
 
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.parser.NDocArgumentReader;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.nuts.elem.NElement;
@@ -17,17 +17,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamAction, NDocNodeCustomBuilderContext.ProcessParamAction {
-    NDocNodeCustomBuilderContextImpl base;
+class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAction, NTxNodeCustomBuilderContext.ProcessParamAction {
+    NTxNodeCustomBuilderContextImpl base;
     Set<String> expectedNames = new HashSet<>();
     Predicate<NDocArgumentReader> matches;
     String toName;
     boolean flags;
-    NDocNodeCustomBuilderContext.PropResolver propResolver;
+    NTxNodeCustomBuilderContext.PropResolver propResolver;
     boolean ignoreDuplicates;
     boolean matchesLeading;
 
-    public CustomNamedParamAction(NDocNodeCustomBuilderContextImpl base) {
+    public CustomNamedParamAction(NTxNodeCustomBuilderContextImpl base) {
         if (base.customNamedParamAction != null) {
             throw new RuntimeException("must call end");
         }
@@ -37,7 +37,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
 
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction asFlags() {
+    public NTxNodeCustomBuilderContext.NamedParamAction asFlags() {
         this.flags = true;
         return this;
     }
@@ -46,28 +46,28 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
         return ignoreDuplicates;
     }
 
-    public NDocNodeCustomBuilderContext.NamedParamAction ignoreDuplicates() {
+    public NTxNodeCustomBuilderContext.NamedParamAction ignoreDuplicates() {
         this.ignoreDuplicates = true;
         return this;
     }
 
-    public NDocNodeCustomBuilderContext.NamedParamAction ignoreDuplicates(boolean ignoreDuplicates) {
+    public NTxNodeCustomBuilderContext.NamedParamAction ignoreDuplicates(boolean ignoreDuplicates) {
         this.ignoreDuplicates = ignoreDuplicates;
         return this;
     }
 
-    public NDocNodeCustomBuilderContext.NamedParamAction matchesLeading() {
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesLeading() {
         this.matchesLeading = true;
         return this;
     }
 
-    public NDocNodeCustomBuilderContext.NamedParamAction matchesLeading(boolean matchesLeading) {
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesLeading(boolean matchesLeading) {
         this.matchesLeading = matchesLeading;
         return this;
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction matchesString() {
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesString() {
         return matches(new Predicate<NDocArgumentReader>() {
             @Override
             public boolean test(NDocArgumentReader info) {
@@ -83,7 +83,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction matchesStringOrName() {
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesStringOrName() {
         return matches(new Predicate<NDocArgumentReader>() {
             @Override
             public boolean test(NDocArgumentReader info) {
@@ -99,7 +99,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction matchesName() {
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesName() {
         return matches(new Predicate<NDocArgumentReader>() {
             @Override
             public boolean test(NDocArgumentReader info) {
@@ -115,39 +115,39 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction matches(Predicate<NDocArgumentReader> predicate) {
+    public NTxNodeCustomBuilderContext.NamedParamAction matches(Predicate<NDocArgumentReader> predicate) {
         this.matches = predicate;
         return this;
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction named(String... names) {
+    public NTxNodeCustomBuilderContext.NamedParamAction named(String... names) {
         expectedNames.addAll(Arrays.asList(names));
         return this;
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction store(String newName) {
+    public NTxNodeCustomBuilderContext.NamedParamAction store(String newName) {
         this.toName = newName;
         return this;
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction resolvedAs(NDocNodeCustomBuilderContext.PropResolver a) {
+    public NTxNodeCustomBuilderContext.NamedParamAction resolvedAs(NTxNodeCustomBuilderContext.PropResolver a) {
         this.propResolver = a;
         return this;
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedBloc() {
+    public NTxNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedBloc() {
         return resolvedAs((uid, value, info, buildContext) -> NTxProp.ofString(uid, buildContext.engine().tools().trimBloc(value.asStringValue().orNull())));
     }
 
     @Override
-    public NDocNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedPathTextContent() {
-        return resolvedAs(new NDocNodeCustomBuilderContext.PropResolver() {
+    public NTxNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedPathTextContent() {
+        return resolvedAs(new NTxNodeCustomBuilderContext.PropResolver() {
             @Override
-            public NTxProp resolve(String uid, NElement value, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
+            public NTxProp resolve(String uid, NElement value, NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
                 NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
                 info.parseContext().document().resources().add(nPath);
                 return NTxProp.ofString(uid, nPath.readString().trim());
@@ -156,12 +156,12 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
     }
 
     @Override
-    public NDocNodeCustomBuilderContext then() {
+    public NTxNodeCustomBuilderContext then() {
         return end();
     }
 
     @Override
-    public NDocNodeCustomBuilderContext end() {
+    public NTxNodeCustomBuilderContext end() {
         if (base.knownArgNames == null) {
             base.knownArgNames = new HashSet<>();
         }
@@ -178,7 +178,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
         return base;
     }
 
-    public boolean processParam(NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
+    public boolean processParam(NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
         if (matchesLeading) {
             if (info.currentIndex() != 0) {
                 return false;
@@ -225,7 +225,7 @@ class CustomNamedParamAction implements NDocNodeCustomBuilderContext.NamedParamA
         return false;
     }
 
-    private void setProp(String uid, NElement p, NDocArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
+    private void setProp(String uid, NElement p, NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
         try {
             String okName;
             if (toName == null) {
