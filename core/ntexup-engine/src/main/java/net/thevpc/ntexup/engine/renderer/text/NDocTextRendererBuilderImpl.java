@@ -1,11 +1,11 @@
 package net.thevpc.ntexup.engine.renderer.text;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
-import net.thevpc.ntexup.api.document.elem2d.Shadow;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxShadow;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import  net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.renderer.text.NDocTextRendererFlavor;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.ntexup.engine.util.NDocNodeRendererUtils;
@@ -31,9 +31,9 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
     public List<NDocRichTextRow> rows = new ArrayList<>();
     public Rectangle2D.Double bounds;
     private Paint defaultColor;
-    private NDocEngine engine;
+    private NTxEngine engine;
 
-    public NDocTextRendererBuilderImpl(NDocEngine engine, Paint defaultColor) {
+    public NDocTextRendererBuilderImpl(NTxEngine engine, Paint defaultColor) {
         this.defaultColor = defaultColor;
         this.engine = engine;
     }
@@ -138,7 +138,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         return rows.get(rows.size() - 1);
     }
 
-    public NDocBounds2 computeBound(NDocNodeRendererContext ctx) {
+    public NTxBounds2 computeBound(NDocNodeRendererContext ctx) {
         NDocGraphics g = ctx.graphics();
         bounds = new Rectangle2D.Double(0, 0, 0, 0);
         double maxxY = 0;
@@ -172,7 +172,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
             Rectangle2D.Double.union(bounds, row.textBounds, bounds);
             maxxY = row.yOffset + row.textBounds.getHeight();
         }
-        return new NDocBounds2(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), maxxY);
+        return new NTxBounds2(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), maxxY);
     }
 
     public void setLang(String lang) {
@@ -192,7 +192,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
         return rows.isEmpty();
     }
 
-    public void render(NTxNode p, NDocNodeRendererContext ctx, NDocBounds2 bgBounds, NDocBounds2 selfBounds) {
+    public void render(NTxNode p, NDocNodeRendererContext ctx, NTxBounds2 bgBounds, NTxBounds2 selfBounds) {
         boolean debug = ctx.isDebug(p);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
@@ -203,10 +203,10 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
 
 
         NDocNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        NOptional<Shadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, NDocPropName.SHADOW, ctx);
+        NOptional<NTxShadow> shadowOptional = NDocValueByName.readStyleAsShadow(p, NTxPropName.SHADOW, ctx);
         int ascent = g.getFontMetrics(textOptions.getFont()).getAscent();
         if (shadowOptional.isPresent()) {
-            Shadow shadow = shadowOptional.get();
+            NTxShadow shadow = shadowOptional.get();
             textOptions.setShadowColor(shadow.getColor());
             if (textOptions.getShadowColor() == null) {
                 if (textOptions.getForegroundColor() instanceof Color) {
@@ -233,7 +233,7 @@ public class NDocTextRendererBuilderImpl implements NDocTextRendererBuilder {
                     }
                     case IMAGE_PAINTER: {
                         Rectangle2D b1 = col.bounds;
-                        NDocDouble2 b2 = col.imagePainter.size();
+                        NTxDouble2 b2 = col.imagePainter.size();
                         col.imagePainter.paint(g, (x + col.xOffset), y + row.yOffset);
                         if (debug) {
                             g.drawRect(
