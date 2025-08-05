@@ -2,7 +2,7 @@ package net.thevpc.ntexup.debug;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.function.Supplier;
@@ -21,7 +21,7 @@ public class NDocNodePanel extends TsonPanel {
         NTxNode m = null;
         m = model.get();
         if (m != null) {
-            return NDocUtils.removeCompilerDeclarationPathAnnotations(engine.toElement(m));
+            return NTxUtils.removeCompilerDeclarationPathAnnotations(engine.toElement(m));
         }
         return null;
     }
