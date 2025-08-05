@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.engine.base.nodes.line;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValueByType;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
@@ -15,23 +15,23 @@ import net.thevpc.ntexup.api.util.NDocUtils;
 import java.awt.*;
 
 public class NDocArcBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.ARC)
-                .parseParam().named(NDocPropName.FROM,NDocPropName.TO).then()
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.ARC)
+                .parseParam().named(NTxPropName.FROM, NTxPropName.TO).then()
                 .renderComponent(this::renderMain);
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 b = ctx.selfBounds(p, null, null);
+        NTxBounds2 b = ctx.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
-        double startAngle = NDocValueByType.getDouble(p,ctx, NDocPropName.FROM).orElse(0.0);
-        double endAngle = NDocValueByType.getDouble(p,ctx, NDocPropName.TO).orElse(0.0);
+        double startAngle = NDocValueByType.getDouble(p,ctx, NTxPropName.FROM).orElse(0.0);
+        double endAngle = NDocValueByType.getDouble(p,ctx, NTxPropName.TO).orElse(0.0);
         NDocGraphics g = ctx.graphics();
         if (!ctx.isDry()) {
             ctx.applyForeground(p , true);
