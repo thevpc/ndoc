@@ -1,0 +1,99 @@
+normal(title:"UML Use Case"){
+    body{
+        grid((4,1),columns-weight:[2,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row 1
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                uml(at:center,size:(100,50)
+                    """
+                        left to right direction
+                        actor "Food Critic" as fc
+                        rectangle Restaurant {
+                          usecase "Eat Food" as UC1
+                          usecase "Pay for Food" as UC2
+                          usecase "Drink" as UC3
+                        }
+                        fc --> UC1
+                        fc --> UC2
+                        fc --> UC3
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 uml(
+                     """
+                        left to right direction
+                        actor "Food Critic" as fc
+                        rectangle Restaurant {
+                          usecase "Eat Food" as UC1
+                          usecase "Pay for Food" as UC2
+                          usecase "Drink" as UC3
+                        }
+                        fc --> UC1
+                        fc --> UC2
+                        fc --> UC3
+                     """
+                 )
+
+             ```
+             )
+
+            // Row 2
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                uml(at:center,size:(100,50)
+                    """
+                        [c]
+                        node node {
+                          port p1
+                          port p2
+                          port p3
+                          file f1
+                        }
+
+                        c --> p1
+                        c --> p2
+                        c --> p3
+                        p1 --> f1
+                        p2 --> f1
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 uml(
+                     """
+                        [c]
+                        node node {
+                          port p1
+                          port p2
+                          port p3
+                          file f1
+                        }
+
+                        c --> p1
+                        c --> p2
+                        c --> p3
+                        p1 --> f1
+                        p2 --> f1
+                     """
+                 )
+
+             ```
+             )
+        }
+    }
+
+}
