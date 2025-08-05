@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NDocNodeRenderer;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -24,13 +24,13 @@ public class PageView extends JComponent {
     private int index;
     private String uuid;
     private NDocNodeRendererManager rendererManager;
-    private NDocEngine engine;
-    private NDocument document;
+    private NTxEngine engine;
+    private NTxDocument document;
 
     public PageView(
-            NDocument document,
+            NTxDocument document,
             NTxNode page, int index,
-            NDocEngine engine,
+            NTxEngine engine,
             NDocNodeRendererManager rendererManager
     ) {
         this.document = document;
@@ -42,7 +42,7 @@ public class PageView extends JComponent {
 
     }
 
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
