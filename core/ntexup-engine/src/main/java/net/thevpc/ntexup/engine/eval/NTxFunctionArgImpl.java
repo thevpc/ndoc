@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.eval;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
 import net.thevpc.nuts.elem.NElement;
@@ -9,10 +9,10 @@ import net.thevpc.nuts.elem.NElement;
 public class NTxFunctionArgImpl implements NTxFunctionArg {
     private final NTxNode node;
     private final NElement expression;
-    private final NDocEngine engine;
+    private final NTxEngine engine;
     private final NDocVarProvider varProvider;
 
-    public NTxFunctionArgImpl(NElement expression, NTxNode node, NDocEngine engine, NDocVarProvider varProvider) {
+    public NTxFunctionArgImpl(NElement expression, NTxNode node, NTxEngine engine, NDocVarProvider varProvider) {
         this.node = node;
         this.expression = expression;
         this.engine = engine;
