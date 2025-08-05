@@ -1,0 +1,15 @@
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlTextBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlChenBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlChronologyBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlEbnfBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlJsonDiagramBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlYamlDiagramBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlMindmapBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlUmlBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlDitaaBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlWbsBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlRegexBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlGanttBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlSaltBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlWireframeBuilder
+net.thevpc.ntexup.extension.plantuml.modes.PlantUmlNwdiagBuilder
