@@ -10,7 +10,6 @@ import net.thevpc.ndoc.api.extension.NDocNodeBuilder;
 import net.thevpc.ndoc.api.engine.NDocNodeCustomBuilderContext;
 import net.thevpc.ndoc.api.document.node.NDocNode;
 import net.thevpc.ndoc.api.document.node.NDocNodeType;
-import net.thevpc.ndoc.api.document.style.NDocPropName;
 import net.thevpc.ndoc.api.parser.NDocAllArgumentReader;
 import net.thevpc.ndoc.api.renderer.NDocGraphics;
 import net.thevpc.ndoc.api.renderer.NDocNodeRendererContext;
@@ -37,131 +36,32 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
         builderContext.id(NDocNodeType.PLOT2D)
                 .parseParam()
                 .named(
-                        NDocPropName.WIDTH,
-                        NDocPropName.HEIGHT,
                         "xmin",
                         "xmax",
-                        "function"
+
+                        "majorGridSpacing",
+                        "showMajorGrid",
+                        "majorGridColor",
+                        "majorGridStroke",
+
+                        "minorGridSpacing",
+                        "showMinorGrid",
+                        "minorGridColor",
+                        "minorGridStroke"
                 ).end()
                 .processChildren(this::processChildren)
                 .renderComponent(this::renderMain)
         ;
     }
 
-    public static class FunctionPlotInfo {
-        NElement fexpr;
-        String var1;
-        String var2;
-        String var3;
-        String var4;
-        int args;
-        NElement title;
-        NElement color;
-        NElement stroke;
-        NDoubleFunction f;
-    }
-
     public void processChildren(NDocAllArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
-        NListContainerElement nListContainerElement = info.element().asListContainer().orNull();
-        java.util.List<FunctionPlotInfo> all = new ArrayList<>();
-        if (nListContainerElement != null && !nListContainerElement.isAnyUplet()) {
-            List<NElement> c = nListContainerElement.children();
-            boolean somePairs = c.stream().anyMatch(x -> x.isPair());
-            boolean someObjects = c.stream().anyMatch(x -> x.isObject());
-            if (somePairs) {
-                all.add(load(nListContainerElement.asObject().get(), buildContext));
-            } else if (someObjects) {
-                for (NElement child : c) {
-                    if (child.isObject()) {
-                        FunctionPlotInfo a = load(child.asObject().get(), buildContext);
-                        if (a != null) {
-                            all.add(a);
-                        }
-                    }
-                }
-            }
-        }
-        if (all.isEmpty()) {
-            FunctionPlotInfo f = new FunctionPlotInfo();
-            all.add(f);
-        }
+        List<FunctionPlotInfo> all = new FunctionPlotInfoLoader().loadBody(info.element(), buildContext);
         info.node().setUserObject("def", all);
     }
 
-    private FunctionPlotInfo load(NObjectElement child, NDocNodeCustomBuilderContext buildContext) {
-        FunctionPlotInfo i = new FunctionPlotInfo();
-        for (NElement e : child.children()) {
-            if (e.isNamedPair()) {
-                switch (e.asPair().get().key().asStringValue().get()) {
-                    case "title": {
-                        i.title = e.asPair().get().value();
-                        break;
-                    }
-                    case "color": {
-                        i.color = e.asPair().get().value();
-                        break;
-                    }
-                    case "stroke": {
-                        i.stroke = e.asPair().get().value();
-                        break;
-                    }
-                    default: {
-                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(e)));
-                    }
-                }
-            } else if (e.isPair()) {
-                NPairElement p = e.asPair().get();
-                NElement k = p.key();
-                if (k.isNamedUplet("f")) {
-                    NUpletElement fk = k.asUplet().get();
-                    if (fk.params().size() == 1 && fk.params().get(0).isName()) {
-                        i.fexpr = p.value();
-                        i.var1 = fk.params().get(0).asNameValue().get();
-                        i.args = 1;
-                    } else if (fk.params().size() == 2 && fk.params().get(0).isName() && fk.params().get(1).isName()) {
-                        i.fexpr = p.value();
-                        i.var1 = fk.params().get(0).asNameValue().get();
-                        i.var2 = fk.params().get(1).asNameValue().get();
-                        i.args = 2;
-                    } else if (fk.params().size() == 3 && fk.params().get(0).isName() && fk.params().get(1).isName() && fk.params().get(2).isName()) {
-                        i.fexpr = p.value();
-                        i.var1 = fk.params().get(0).asNameValue().get();
-                        i.var2 = fk.params().get(1).asNameValue().get();
-                        i.var3 = fk.params().get(2).asNameValue().get();
-                        i.args = 3;
-                    } else if (fk.params().size() == 4 && fk.params().get(0).isName() && fk.params().get(1).isName() && fk.params().get(2).isName() && fk.params().get(3).isName()) {
-                        i.fexpr = p.value();
-                        i.var1 = fk.params().get(0).asNameValue().get();
-                        i.var2 = fk.params().get(1).asNameValue().get();
-                        i.var3 = fk.params().get(2).asNameValue().get();
-                        i.var4 = fk.params().get(3).asNameValue().get();
-                        i.args = 4;
-                    } else {
-                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(k)));
-                    }
-                } else {
-                    buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(k)));
-                }
-            }
-        }
-        return i;
-    }
 
-    NDoubleFunction compileFunctionX(FunctionPlotInfo e, NDocNodeRendererContext renderContext) {
-        NExprMutableDeclarations d = NDocExprHelper.create();
-        NOptional<NExprNode> ne = d.parse(e.fexpr.isAnyString() ? e.fexpr.asStringValue().get() : NDocUtils.removeCompilerDeclarationPathAnnotations(e.fexpr).toString(true));
-        if (!ne.isPresent()) {
-            renderContext.engine().log().log(NMsg.ofC("unable to parse expression %s : %s", ne.getMessage(), e.fexpr));
-            return null;
-        }
-        NExprNode nExprNode = ne.get();
-        return x -> {
-            NOptional<Object> r = nExprNode.eval(
-                    d.newDeclarations(new MyPlotNExprEvaluator(e, d, x, 0, 0, 0))
-            );
-            return NDocExprHelper.asDouble(r.orNull());
-        };
-    }
+
+
 
     public void renderMain(NDocNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
         NDocBounds2 selfBounds = renderContext.selfBounds(p, null, null);
@@ -186,22 +86,22 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             List<Plot2DData> allData = new ArrayList<>();
             for (FunctionPlotInfo pld : plotDefinitions) {
                 double[] xx = ArrayUtils.dtimes(minX, maxX, steps);
-                NDoubleFunction ff = compileFunctionX(pld, renderContext);
-                if(ff!=null) {
+                NDoubleFunction ff = MyPlotNExprEvaluator.compileFunctionX(pld, renderContext);
+                if (ff != null) {
                     Plot2DData pd = new Plot2DData(ff, xx, minMaxY);
-                    if(color instanceof java.awt.Color) {
-                        pd.color=(Color) color;
+                    if (color instanceof java.awt.Color) {
+                        pd.color = (Color) color;
                     }
-                    if(pld.color!=null){
+                    if (pld.color != null) {
                         NElement ev = builderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
-                        pd.color=NDocValue.of(ev).asColor().orElse(pd.color);
+                        pd.color = NDocValue.of(ev).asColor().orElse(pd.color);
                     }
-                    if(pld.stroke!=null){
+                    if (pld.stroke != null) {
                         NElement ev = builderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
-                        if(ev!=null && !ev.isNull()){
+                        if (ev != null && !ev.isNull()) {
                             Stroke stroke = renderContext.graphics().createStroke(ev);
-                            if(stroke!=null){
-                                pd.stroke=stroke;
+                            if (stroke != null) {
+                                pd.stroke = stroke;
                             }
                         }
                     }
@@ -227,13 +127,34 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
         g.setStroke(pd.stroke);
         double[] xx = pd.xx;
         double[] yy = pd.yy;
+        boolean animate = renderContext.isAnimate();
+        long pageStartTime = renderContext.getPageStartTime();
+        long now = System.currentTimeMillis();
+        long max=500;
+        double td = 1;
+        if(animate && pageStartTime>0){
+             long t=now-pageStartTime;
+             if(t<=0) {
+                 t = max;
+             }else if(t>=max){
+                 t=max;
+             }
+            td=t/(double)max;
+        }
+
         for (int i = 1; i < xx.length; i++) {
-            if (drawContext.acceptY(yy[i])) {
-                if (drawContext.acceptY(yy[i - 1])) {
+            double yy1 = yy[i];
+            if (drawContext.acceptY(yy1)) {
+                double yy0 = yy[i - 1];
+                if (drawContext.acceptY(yy0)) {
+                    if(animate){
+                        yy1=yy1*td;
+                        yy0=yy0*td;
+                    }
                     int fromX = (int) drawContext.xPixels(xx[i - 1]);
-                    int fromY = (int) drawContext.yPixels(yy[i - 1]);
+                    int fromY = (int) drawContext.yPixels(yy0);
                     int toX = (int) drawContext.xPixels(xx[i]);
-                    int toY = (int) drawContext.yPixels(yy[i]);
+                    int toY = (int) drawContext.yPixels(yy1);
                     g.drawLine(fromX, fromY, toX, toY);
                 }
             }
@@ -264,7 +185,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             g.setColor(subStepColor);
             Stroke ostroke = g.getStroke();
             g.setStroke(subStepStroke);
-            for (double xi : findMultiplesFastDouble(drawContext.gridMinX, drawContext.gridMaxX, drawContext.gridSubStepX, epsilon)) {
+            for (double xi : ArrayUtils.findMultiplesFastDouble(drawContext.gridMinX, drawContext.gridMaxX, drawContext.gridSubStepX, epsilon)) {
                 int pxi = (int) drawContext.xPixels(xi);
                 g.drawLine(pxi, drawContext.componentMinY, pxi, drawContext.componentMinY + drawContext.componentHeight);
             }
@@ -275,7 +196,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             g.setColor(subStepColor);
             Stroke ostroke = g.getStroke();
             g.setStroke(subStepStroke);
-            for (double yi : findMultiplesFastDouble(drawContext.gridMinY, drawContext.gridMaxY, drawContext.gridSubStepY, epsilon)) {
+            for (double yi : ArrayUtils.findMultiplesFastDouble(drawContext.gridMinY, drawContext.gridMaxY, drawContext.gridSubStepY, epsilon)) {
                 int pyi = (int) drawContext.yPixels(yi);
                 g.drawLine(drawContext.componentMinX, pyi, drawContext.componentMinX + drawContext.componentWidth, pyi);
             }
@@ -286,7 +207,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             g.setColor(stepColor);
             Stroke ostroke = g.getStroke();
             g.setStroke(stepStroke);
-            for (double xi : findMultiplesFastDouble(drawContext.gridMinX, drawContext.gridMaxX, drawContext.gridStepX, epsilon)) {
+            for (double xi : ArrayUtils.findMultiplesFastDouble(drawContext.gridMinX, drawContext.gridMaxX, drawContext.gridStepX, epsilon)) {
                 int pxi = (int) drawContext.xPixels(xi);
                 if (Math.abs(xi) <= epsilon) {
                     g.setColor(mainColor);
@@ -306,7 +227,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             g.setColor(stepColor);
             Stroke ostroke = g.getStroke();
             g.setStroke(stepStroke);
-            for (double yi : findMultiplesFastDouble(drawContext.gridMinY, drawContext.gridMaxY, drawContext.gridStepY, epsilon)) {
+            for (double yi : ArrayUtils.findMultiplesFastDouble(drawContext.gridMinY, drawContext.gridMaxY, drawContext.gridStepY, epsilon)) {
                 int pyi = (int) drawContext.yPixels(yi);
                 if (Math.abs(yi) <= epsilon) {
                     g.setColor(mainColor);
@@ -321,43 +242,6 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
             }
             g.setStroke(ostroke);
         }
-    }
-
-    public static double[] findMultiplesFastDouble(double xmin, double xmax, double step, double epsilon) {
-        if (step <= epsilon) { // Check if step is effectively zero or negative
-            throw new IllegalArgumentException("Step must be a positive number.");
-        }
-        if (xmin > xmax + epsilon) { // Account for xmin slightly greater than xmax due to precision
-            return new double[0]; // No multiples if xmin is greater than xmax
-        }
-
-        java.util.List<Double> multiples = new ArrayList<>();
-
-        double currentMultiple;
-
-        double numSteps = xmin / step;
-
-        long floorSteps = (long) Math.floor(numSteps);
-        currentMultiple = floorSteps * step;
-
-        if (currentMultiple < xmin - epsilon) {
-            currentMultiple += step;
-        }
-
-        if (Math.abs(xmin - currentMultiple) < epsilon) {
-            currentMultiple = xmin; // Start exactly at xmin if it's an approximate multiple
-        }
-
-        if (currentMultiple > xmax + epsilon) {
-            return new double[0];
-        }
-
-        while (currentMultiple < xmax + epsilon) {
-            multiples.add(currentMultiple);
-            currentMultiple += step;
-        }
-
-        return multiples.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
 }
