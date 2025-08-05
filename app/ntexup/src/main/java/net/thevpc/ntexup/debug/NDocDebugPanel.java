@@ -11,12 +11,12 @@ public class NDocDebugPanel extends JPanel {
     private NDocDocumentPanel compiledDocument;
     private NDocDocumentPanel rawDocument;
     private NDocNodePanel page;
-    private JTextAreaNDocMessageList textAreaHMessageList;
+    private JTextAreaNTxMessageList textAreaHMessageList;
 
     public NDocDebugPanel(NTxEngine engine) {
         super(new BorderLayout());
         model.setEngine(engine);
-        textAreaHMessageList = new JTextAreaNDocMessageList();
+        textAreaHMessageList = new JTextAreaNTxMessageList();
         model.setMessageList(textAreaHMessageList);
         JTabbedPane pane = new JTabbedPane();
         add(pane);
