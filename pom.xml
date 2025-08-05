@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.xprojects.builders</groupId>
     <artifactId>ntexup-builder</artifactId>
-    <name>NDoc :: All Builder</name>
+    <name>ntexup :: All Builder</name>
     <version>0.8.6.0</version>
     <packaging>pom</packaging>
     <properties>
@@ -13,25 +13,25 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <modules>
-        <module>core/ndoc-api</module>
-        <module>core/ndoc-engine</module>
-        <module>test/ndoc-examples</module>
-        <module>extensions/ndoc-extension-plantuml</module>
-        <module>extensions/ndoc-extension-animated-gif</module>
-        <module>extensions/ndoc-extension-svg</module>
-        <module>extensions/ndoc-extension-shapes2d</module>
-        <module>extensions/ndoc-extension-shapes3d</module>
-        <module>extensions/ndoc-extension-plot2d</module>
-        <module>extensions/ndoc-extension-latex</module>
-        <module>extensions/ndoc-extension-presenters</module>
-        <module>tutorials/ndoc-extension-tutorial-myshape</module>
+        <module>core/ntexup-api</module>
+        <module>core/ntexup-engine</module>
+        <module>test/ntexup-examples</module>
+        <module>extensions/ntexup-extension-plantuml</module>
+        <module>extensions/ntexup-extension-animated-gif</module>
+        <module>extensions/ntexup-extension-svg</module>
+        <module>extensions/ntexup-extension-shapes2d</module>
+        <module>extensions/ntexup-extension-shapes3d</module>
+        <module>extensions/ntexup-extension-plot2d</module>
+        <module>extensions/ntexup-extension-latex</module>
+        <module>extensions/ntexup-extension-presenters</module>
+        <module>tutorials/ntexup-extension-tutorial-myshape</module>
         <module>companions/nscoreboard</module>
-        <module>renderers/ndoc-renderer-pdf</module>
-        <module>renderers/ndoc-renderer-html</module>
-        <module>renderers/ndoc-renderer-screen</module>
-        <module>renderers/ndoc-renderer-web</module>
-        <module>app/ndoc</module>
-        <module>app/ndoc-viewer-backend</module>
-        <module>ndoc-full</module>
+        <module>renderers/ntexup-renderer-pdf</module>
+        <module>renderers/ntexup-renderer-html</module>
+        <module>renderers/ntexup-renderer-screen</module>
+        <module>renderers/ntexup-renderer-web</module>
+        <module>app/ntexup</module>
+        <module>app/ntexup-viewer-backend</module>
+        <module>ntexup-full</module>
     </modules>
 </project>
