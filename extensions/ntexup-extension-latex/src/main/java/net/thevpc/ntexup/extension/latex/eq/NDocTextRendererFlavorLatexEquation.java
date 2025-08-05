@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.extension.latex.eq;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.ntexup.api.renderer.text.*;
@@ -33,7 +33,7 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
             );
             double fontSize = ctx.getFontSize(p);
             r.imagePainter = this.createLatex(text, fontSize, options, p, ctx);
-            NDocDouble2 size = r.imagePainter.size();
+            NTxDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
         }
@@ -119,8 +119,8 @@ public class NDocTextRendererFlavorLatexEquation implements NDocTextRendererFlav
                 //g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
             }
 
-            public NDocDouble2 size() {
-                return new NDocDouble2(icon.getIconWidth(), icon.getIconHeight());
+            public NTxDouble2 size() {
+                return new NTxDouble2(icon.getIconWidth(), icon.getIconHeight());
             }
         };
     }
