@@ -20,6 +20,7 @@ public class PageView extends JComponent {
     public static Dimension REF_SIZE = new Dimension(1024, 768);
     private NDocNode page0;
     private NDocNode page;
+    private long pageStartTime;
     private int index;
     private String uuid;
     private NDocNodeRendererManager rendererManager;
@@ -69,6 +70,7 @@ public class PageView extends JComponent {
             c.stop();
             engine.log().log(NMsg.ofC("page %s compiled in %s", (index + 1), c), NDocUtils.sourceOf(this.page0));
         }
+        this.pageStartTime = System.currentTimeMillis();
     }
 
     public boolean isLoading() {
@@ -91,7 +93,7 @@ public class PageView extends JComponent {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         NDocNodeRendererContext ctx = new ScreenNDocPartRendererContext(this,
                 engine.createGraphics(g2d)
-                , size);
+                , size, pageStartTime);
         if (page != null) {
             render(page, ctx);
         }
