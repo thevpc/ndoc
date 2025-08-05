@@ -2,8 +2,8 @@ package net.thevpc.ntexup.engine.ext;
 
 import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.parser.NDocArgumentReader;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.parser.NTxArgumentReader;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementTypeGroup;
 import net.thevpc.nuts.elem.NPairElement;
@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAction, NTxNodeCustomBuilderContext.ProcessParamAction {
     NTxNodeCustomBuilderContextImpl base;
     Set<String> expectedNames = new HashSet<>();
-    Predicate<NDocArgumentReader> matches;
+    Predicate<NTxArgumentReader> matches;
     String toName;
     boolean flags;
     NTxNodeCustomBuilderContext.PropResolver propResolver;
@@ -68,9 +68,9 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
 
     @Override
     public NTxNodeCustomBuilderContext.NamedParamAction matchesString() {
-        return matches(new Predicate<NDocArgumentReader>() {
+        return matches(new Predicate<NTxArgumentReader>() {
             @Override
-            public boolean test(NDocArgumentReader info) {
+            public boolean test(NTxArgumentReader info) {
                 NElement x = info.peek();
                 return x.type().typeGroup() == NElementTypeGroup.STRING;
             }
@@ -84,9 +84,9 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
 
     @Override
     public NTxNodeCustomBuilderContext.NamedParamAction matchesStringOrName() {
-        return matches(new Predicate<NDocArgumentReader>() {
+        return matches(new Predicate<NTxArgumentReader>() {
             @Override
-            public boolean test(NDocArgumentReader info) {
+            public boolean test(NTxArgumentReader info) {
                 NElement x = info.peek();
                 return x.type().typeGroup() == NElementTypeGroup.STRING || x.type().typeGroup() == NElementTypeGroup.NAME;
             }
@@ -100,9 +100,9 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
 
     @Override
     public NTxNodeCustomBuilderContext.NamedParamAction matchesName() {
-        return matches(new Predicate<NDocArgumentReader>() {
+        return matches(new Predicate<NTxArgumentReader>() {
             @Override
-            public boolean test(NDocArgumentReader info) {
+            public boolean test(NTxArgumentReader info) {
                 NElement x = info.peek();
                 return x.type().typeGroup() == NElementTypeGroup.NAME;
             }
@@ -115,7 +115,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
     }
 
     @Override
-    public NTxNodeCustomBuilderContext.NamedParamAction matches(Predicate<NDocArgumentReader> predicate) {
+    public NTxNodeCustomBuilderContext.NamedParamAction matches(Predicate<NTxArgumentReader> predicate) {
         this.matches = predicate;
         return this;
     }
@@ -147,7 +147,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
     public NTxNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedPathTextContent() {
         return resolvedAs(new NTxNodeCustomBuilderContext.PropResolver() {
             @Override
-            public NTxProp resolve(String uid, NElement value, NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+            public NTxProp resolve(String uid, NElement value, NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
                 NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
                 info.parseContext().document().resources().add(nPath);
                 return NTxProp.ofString(uid, nPath.readString().trim());
@@ -178,7 +178,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
         return base;
     }
 
-    public boolean processParam(NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+    public boolean processParam(NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
         if (matchesLeading) {
             if (info.currentIndex() != 0) {
                 return false;
@@ -188,7 +188,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
             NElement n = info.peek();
             if (matches.test(info)) {
                 info.read();
-                String uid = NDocUtils.uid(toName);
+                String uid = NTxUtils.uid(toName);
                 setProp(uid, n, info, buildContext);
                 return true;
             }
@@ -198,7 +198,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
                 case PAIR: {
                     if (n.isSimplePair()) {
                         NPairElement p = n.asPair().get();
-                        String uid = NDocUtils.uid(p.key().asStringValue().get());
+                        String uid = NTxUtils.uid(p.key().asStringValue().get());
                         boolean u = expectedNames.contains(uid);
                         if (u) {
                             info.read();
@@ -210,7 +210,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
                 }
                 case NAME: {
                     if (flags) {
-                        String uid = NDocUtils.uid(n.asNameValue().get());
+                        String uid = NTxUtils.uid(n.asNameValue().get());
                         boolean u = expectedNames.contains(uid);
                         if (u) {
                             info.read();
@@ -225,21 +225,21 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
         return false;
     }
 
-    private void setProp(String uid, NElement p, NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+    private void setProp(String uid, NElement p, NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
         try {
             String okName;
             if (toName == null) {
                 okName = uid;
             } else {
-                okName = NDocUtils.uid(toName);
+                okName = NTxUtils.uid(toName);
             }
             NTxProp prp = propResolver == null ?
                     NTxProp.of(okName, p)
                     : propResolver.resolve(okName, p, info, buildContext);
-            String oldCDP = NDocUtils.getCompilerDeclarationPath(p);
-            String newCDP = NDocUtils.getCompilerDeclarationPath(prp.getValue());
+            String oldCDP = NTxUtils.getCompilerDeclarationPath(p);
+            String newCDP = NTxUtils.getCompilerDeclarationPath(prp.getValue());
             if (newCDP == null) {
-                prp = NTxProp.of(prp.getName(), NDocUtils.addCompilerDeclarationPath(prp.getValue(), oldCDP));
+                prp = NTxProp.of(prp.getName(), NTxUtils.addCompilerDeclarationPath(prp.getValue(), oldCDP));
             }
             if (ignoreDuplicates) {
                 NOptional<NTxProp> o = info.node().getProperty(prp.getName());
@@ -251,7 +251,7 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
             }
         } catch (Exception ex) {
             info.parseContext().messages().log(
-                    NMsg.ofC("unable to set %s : %s", NDocUtils.snippet(p), ex).asSevere()
+                    NMsg.ofC("unable to set %s : %s", NTxUtils.snippet(p), ex).asSevere()
             );
         }
     }
