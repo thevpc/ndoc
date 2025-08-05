@@ -4,8 +4,8 @@ import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.eval.*;
 import net.thevpc.ntexup.api.extension.NTxFunction;
-import net.thevpc.ntexup.engine.util.NDocColorUtils;
-import net.thevpc.ntexup.engine.util.NDocElementUtils;
+import net.thevpc.ntexup.engine.util.NTxColorUtils;
+import net.thevpc.ntexup.engine.util.NTxElementUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -21,15 +21,15 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
     }
 
     @Override
-    public NElement invoke(NDocFunctionArgs args, NDocFunctionContext context) {
+    public NElement invoke(NTxFunctionArgs args, NTxFunctionContext context) {
         boolean cyclic = false;
         NTxDouble2 start = null;
         NTxDouble2 end = null;
-        NTxBounds2 selfBounds = NDocValue.of(context.findVar("selfBounds").map(x->x.get()).orNull()).asBounds2().orNull();
+        NTxBounds2 selfBounds = NTxValue.of(context.findVar("selfBounds").map(x->x.get()).orNull()).asBounds2().orNull();
         java.util.List<Color> colors = new ArrayList<>();
         for (NTxFunctionArg arg : args.args()) {
             NElement v = arg.eval();
-            NDocValue vv = NDocValue.of(v);
+            NTxValue vv = NTxValue.of(v);
             if(vv.isBoolean()) {
                 cyclic = v.asBooleanValue().get();
             }else if(vv.isPoint2()){
@@ -56,7 +56,7 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
             return NElement.ofNull();
         }
         if (colors.size() == 1) {
-            return NDocElementUtils.toElement(colors.get(0));
+            return NTxElementUtils.toElement(colors.get(0));
         }
         if (start == null) {
             start = new NTxDouble2(0, 50);
@@ -81,6 +81,6 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
             end2 = new Point2D.Double(end.getX(), end.getY());
         }
 
-        return NDocElementUtils.toElement(NDocColorUtils.createLinearGradient(start2, end2, colors.toArray(new Color[0]), cyclic));
+        return NTxElementUtils.toElement(NTxColorUtils.createLinearGradient(start2, end2, colors.toArray(new Color[0]), cyclic));
     }
 }
