@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.engine.renderer.pdf;
 
 import net.thevpc.ntexup.api.renderer.NTxDocumentRenderer;
-import net.thevpc.ntexup.api.renderer.NDocDocumentRendererFactory;
-import net.thevpc.ntexup.api.renderer.NDocDocumentRendererFactoryContext;
+import net.thevpc.ntexup.api.renderer.NTxDocumentRendererFactory;
+import net.thevpc.ntexup.api.renderer.NTxDocumentRendererFactoryContext;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.util.NMsg;
@@ -10,10 +10,10 @@ import net.thevpc.nuts.util.NMsg;
 /**
  * Factory class for creating PDF document stream renderers.
  */
-public class PdfDocumentStreamRendererFactory implements NDocDocumentRendererFactory {
+public class PdfDocumentStreamRendererFactory implements NTxDocumentRendererFactory {
 
     @Override
-    public NCallableSupport<NTxDocumentRenderer> createDocumentRenderer(NDocDocumentRendererFactoryContext context) {
+    public NCallableSupport<NTxDocumentRenderer> createDocumentRenderer(NTxDocumentRendererFactoryContext context) {
         switch (String.valueOf(context.rendererType()).toLowerCase()) {
             case "pdf":
                 return NCallableSupport.ofValid( () -> {
