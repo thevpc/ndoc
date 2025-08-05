@@ -1,0 +1,26 @@
+@(ndoc,"1.0")
+{
+    include("include/**"),
+    course[
+        @let title:"My Title",
+        @let column1:{
+            #   "title 1",
+            ##  "title 2",
+            ### "title 3",
+            H1{"title 1"},
+            H2{"title 2"},
+            H3{"title 3"},
+            ul{
+                "element ",
+                "un premier element",
+            }
+            eq(
+                center:(50,50),
+            ){
+                """
+                    x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+                """
+            },
+        }
+    ],
+}
