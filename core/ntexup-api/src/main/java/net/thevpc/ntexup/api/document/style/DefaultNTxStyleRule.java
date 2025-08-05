@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.api.document.style;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.*;
@@ -13,30 +13,30 @@ public class DefaultNTxStyleRule implements NTxStyleRule {
     private final NTxStyleMagnitude magnetude;
     private final NTxProperties styles;
     private final NTxStyleRuleSelector selector;
-    private final NDocResource source;
+    private final NTxSource source;
     private final NTxNode parent;
 
-    public static DefaultNTxStyleRule ofAny(NTxNode parent, NDocResource source, NTxProp... styles) {
+    public static DefaultNTxStyleRule ofAny(NTxNode parent, NTxSource source, NTxProp... styles) {
         return new DefaultNTxStyleRule(parent, source, DefaultNTxNodeSelector.ofAny(), styles);
     }
 
-    public static DefaultNTxStyleRule ofType(NTxNode parent, NDocResource source, String type, NTxProp... styles) {
+    public static DefaultNTxStyleRule ofType(NTxNode parent, NTxSource source, String type, NTxProp... styles) {
         return of(parent, source, type == null ? DefaultNTxNodeSelector.ofAny() : DefaultNTxNodeSelector.ofType(type), styles);
     }
 
-    public static DefaultNTxStyleRule ofName(NTxNode parent, NDocResource source, String name, NTxProp... styles) {
+    public static DefaultNTxStyleRule ofName(NTxNode parent, NTxSource source, String name, NTxProp... styles) {
         return of(parent, source, name == null ? DefaultNTxNodeSelector.ofAny() : DefaultNTxNodeSelector.ofName(name), styles);
     }
 
-    public static DefaultNTxStyleRule ofClass(NTxNode parent, NDocResource source, String name, NTxProp... styles) {
+    public static DefaultNTxStyleRule ofClass(NTxNode parent, NTxSource source, String name, NTxProp... styles) {
         return of(parent, source, name == null ? DefaultNTxNodeSelector.ofAny() : DefaultNTxNodeSelector.ofClasses(name), styles);
     }
 
-    public static DefaultNTxStyleRule of(NTxNode parent, NDocResource source, NTxStyleRuleSelector filter, NTxProp... styles) {
+    public static DefaultNTxStyleRule of(NTxNode parent, NTxSource source, NTxStyleRuleSelector filter, NTxProp... styles) {
         return new DefaultNTxStyleRule(parent, source, filter, styles);
     }
 
-    public DefaultNTxStyleRule(NTxNode parent, NDocResource source, NTxStyleRuleSelector selector, NTxProp... styles) {
+    public DefaultNTxStyleRule(NTxNode parent, NTxSource source, NTxStyleRuleSelector selector, NTxProp... styles) {
         this.parent = parent;
         this.styles = new NTxProperties(parent);
         this.source = source;
@@ -52,7 +52,7 @@ public class DefaultNTxStyleRule implements NTxStyleRule {
         return parent;
     }
 
-    public NDocResource source() {
+    public NTxSource source() {
         return source;
     }
 
