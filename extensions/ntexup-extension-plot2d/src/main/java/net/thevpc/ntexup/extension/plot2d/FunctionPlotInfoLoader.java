@@ -3,9 +3,9 @@ package net.thevpc.ntexup.extension.plot2d;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.eval.NDocValue;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -17,24 +17,24 @@ import java.util.List;
 
 public class FunctionPlotInfoLoader {
 
-    public GlobalPlotData loadGlobalPlotData(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext) {
+    public GlobalPlotData loadGlobalPlotData(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext) {
         GlobalPlotData d = new GlobalPlotData();
         NTxEngine engine = renderContext.engine();
         class A {
             Double asDouble(String name, Double d) {
-                return NDocValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofDouble(d)), p, renderContext.varProvider())).asDouble().orElse(d);
+                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofDouble(d)), p, renderContext.varProvider())).asDouble().orElse(d);
             }
 
             Boolean asBoolean(String name, Boolean d) {
-                return NDocValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofBoolean(d)), p, renderContext.varProvider())).asBoolean().orElse(d);
+                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofBoolean(d)), p, renderContext.varProvider())).asBoolean().orElse(d);
             }
 
             Color asColor(String name, Color d) {
-                return NDocValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NDocUtils.toElement(d)), p, renderContext.varProvider())).asColor().orElse(d);
+                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, renderContext.varProvider())).asColor().orElse(d);
             }
 
             Stroke asStroke(String name, Stroke d) {
-                NElement ev = engine.evalExpression(p.getPropertyValue(name).orElse(NDocUtils.toElement(d)), p, renderContext.varProvider());
+                NElement ev = engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, renderContext.varProvider());
                 if (ev != null && !ev.isNull()) {
                     Stroke stroke = renderContext.graphics().createStroke(ev);
                     if (stroke != null) {
@@ -72,7 +72,7 @@ public class FunctionPlotInfoLoader {
                         all.add(a);
                     }
                 }else{
-                    buildContext.engine().log().log(NMsg.ofC("unexpected plot child %s", NDocUtils.snippet(child)));
+                    buildContext.engine().log().log(NMsg.ofC("unexpected plot child %s", NTxUtils.snippet(child)));
                 }
             }
         }
@@ -115,7 +115,7 @@ public class FunctionPlotInfoLoader {
                         break;
                     }
                     default: {
-                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(e)));
+                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NTxUtils.snippet(e)));
                     }
                 }
             } else if (e.isPair()) {
@@ -146,10 +146,10 @@ public class FunctionPlotInfoLoader {
                         i.var4 = fk.params().get(3).asNameValue().get();
                         i.args = 4;
                     } else {
-                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(k)));
+                        buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NTxUtils.snippet(k)));
                     }
                 } else {
-                    buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NDocUtils.snippet(k)));
+                    buildContext.engine().log().log(NMsg.ofC("unexpected function declaration %s", NTxUtils.snippet(k)));
                 }
             }
         }
