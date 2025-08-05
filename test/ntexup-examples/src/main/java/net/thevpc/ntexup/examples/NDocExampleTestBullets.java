@@ -5,11 +5,11 @@
 package net.thevpc.ntexup.examples;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
-import  net.thevpc.ntexup.api.document.style.NDocProps;
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
-import net.thevpc.ntexup.engine.DefaultNDocEngine;
-import net.thevpc.ntexup.api.renderer.NDocDocumentRenderer;
+import net.thevpc.ntexup.api.document.style.NTxProps;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
+import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.api.renderer.NTxDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 
 import java.awt.*;
@@ -21,15 +21,15 @@ public class NDocExampleTestBullets {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        NDocEngine e = new DefaultNDocEngine();
+        NTxEngine e = new DefaultNTxEngine();
         NTxDocumentFactory f = e.documentFactory();
-        NDocument d = f.ofDocument(null)
+        NTxDocument d = f.ofDocument(null)
                 .add(f.ofPage()
                         .addChild(
 //                                f.text("Example 1").set(HStyles.fontSize(12))
                                 f.ofUnorderedList()
-                                        .setProperty(NDocProps.gridColor(Color.GRAY))
-                                        .addChild(f.ofPlain("Example 1").setProperty(NDocProps.backgroundColor(Color.CYAN)))
+                                        .setProperty(NTxProps.gridColor(Color.GRAY))
+                                        .addChild(f.ofPlain("Example 1").setProperty(NTxProps.backgroundColor(Color.CYAN)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.YELLOW)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.RED)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
 //                                        .add(f.square(80).set(HStyles.backgroundColor(Color.BLUE)).set(HStyles.position(HAlign.LEFT)).set(HStyles.origin(HAlign.LEFT)))
@@ -45,7 +45,7 @@ public class NDocExampleTestBullets {
                         ));
 
 
-        NDocDocumentRenderer renderer = e.newScreenRenderer().get();
+        NTxDocumentRenderer renderer = e.newScreenRenderer().get();
         renderer.render(d);
     }
 
