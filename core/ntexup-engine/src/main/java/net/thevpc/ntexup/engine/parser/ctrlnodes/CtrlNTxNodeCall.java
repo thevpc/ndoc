@@ -2,8 +2,8 @@ package net.thevpc.ntexup.engine.parser.ctrlnodes;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class CtrlNTxNodeCall extends CtrlNTxNodeBase {
     private List<NElement> __callBody = new ArrayList<>();
     private Map<String,NElement> __bodyVars = new HashMap<>();
 
-    public CtrlNTxNodeCall(NDocResource source) {
+    public CtrlNTxNodeCall(NTxSource source) {
         super(NTxNodeType.CTRL_CALL,source);
     }
 
@@ -97,6 +97,6 @@ public class CtrlNTxNodeCall extends CtrlNTxNodeBase {
         List<NElement> a = new ArrayList<>();
         a.addAll(__args);
         a.addAll(__bodyVars.keySet().stream().map(x -> NElement.ofName(x)).collect(Collectors.toList()));
-        return "call::" + callName + "("+a.stream().map(x -> NDocUtils.snippet(x)).collect(Collectors.joining(","))+")";
+        return "call::" + callName + "("+a.stream().map(x -> NTxUtils.snippet(x)).collect(Collectors.joining(","))+")";
     }
 }
