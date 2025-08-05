@@ -3,7 +3,7 @@ package net.thevpc.ntexup.engine.document;
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProps;
@@ -21,9 +21,9 @@ public class NTxDocumentFactoryImpl implements NTxDocumentFactory {
     }
 
     @Override
-    public NTxDocument ofDocument(NDocResource source) {
+    public NTxDocument ofDocument(NTxSource source) {
         DefaultNTxDocument d = new DefaultNTxDocument(source);
-        d.root().addRules(NDocDocumentRootRules.DEFAULT);
+        d.root().addRules(NTxDocumentRootRules.DEFAULT);
         return d;
     }
 
@@ -250,7 +250,7 @@ public class NTxDocumentFactoryImpl implements NTxDocumentFactory {
         return of(NTxNodeType.POLYGON);
     }
 //    @Override
-//    public NDocNode ofPolygon(int edges) {
+//    public NTxNode ofPolygon(int edges) {
 //        if(edges<=2){
 //            throw new IllegalArgumentException("invalid edges "+edges+". must be >2");
 //        }
