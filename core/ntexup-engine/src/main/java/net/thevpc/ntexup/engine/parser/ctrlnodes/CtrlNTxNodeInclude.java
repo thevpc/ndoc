@@ -2,7 +2,7 @@ package net.thevpc.ntexup.engine.parser.ctrlnodes;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class CtrlNTxNodeInclude extends CtrlNTxNodeBase {
     private List<NElement> __args = new ArrayList<>();
 
-    public CtrlNTxNodeInclude(NDocResource source, List<NElement> __args) {
+    public CtrlNTxNodeInclude(NTxSource source, List<NElement> __args) {
         super(NTxNodeType.CTRL_INCLUDE,source);
         this.__args.addAll(__args);
     }
