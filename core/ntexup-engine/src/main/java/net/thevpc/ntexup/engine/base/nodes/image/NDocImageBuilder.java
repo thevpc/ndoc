@@ -4,15 +4,15 @@
  */
 package net.thevpc.ntexup.engine.base.nodes.image;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocImageOptions;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxImageOptions;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValueByType;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.source.NDocResource;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -29,30 +29,30 @@ import java.awt.*;
  * @author vpc
  */
 public class NDocImageBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.IMAGE)
-                .parseParam().named(NDocPropName.TRANSPARENT_COLOR).then()
-                .parseParam().named(NDocPropName.VALUE, NDocPropName.FILE, "content", "src").store(NDocPropName.VALUE).then()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).ignoreDuplicates(true).then()
+                .id(NTxNodeType.IMAGE)
+                .parseParam().named(NTxPropName.TRANSPARENT_COLOR).then()
+                .parseParam().named(NTxPropName.VALUE, NTxPropName.FILE, "content", "src").store(NTxPropName.VALUE).then()
+                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).ignoreDuplicates(true).then()
                 .renderComponent(this::renderMain)
         ;
     }
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
         rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 b = rendererContext.selfBounds(p);
+        NTxBounds2 b = rendererContext.selfBounds(p);
         int w = NDocUtils.intOf(b.getWidth());
         int h = NDocUtils.intOf(b.getHeight());
         if (w <= 0 || h <= 0) {
             return;
         }
 
-        Color transparentColor = NDocValueByType.getColor(p, rendererContext, NDocPropName.TRANSPARENT_COLOR).orNull();
-        NDocImageOptions options = new NDocImageOptions();
+        Color transparentColor = NDocValueByType.getColor(p, rendererContext, NTxPropName.TRANSPARENT_COLOR).orNull();
+        NTxImageOptions options = new NTxImageOptions();
         options.setTransparentColor(transparentColor);
         options.setDisableAnimation(!rendererContext.isAnimate());
         NDocNodeRendererContext finalCtx = rendererContext;
@@ -60,7 +60,7 @@ public class NDocImageBuilder implements NDocNodeBuilder {
         options.setImageObserver(rendererContext.imageObserver());
         options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
 
-        NElement eimg = p.getPropertyValue(NDocPropName.VALUE).orNull();
+        NElement eimg = p.getPropertyValue(NTxPropName.VALUE).orNull();
         NElement eimg2 = rendererContext.engine().evalExpression(eimg, p, rendererContext.varProvider());
         NPath img = rendererContext.engine().resolvePath(eimg2, p);
 
