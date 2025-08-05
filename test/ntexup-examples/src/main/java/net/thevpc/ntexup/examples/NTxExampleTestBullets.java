@@ -49,8 +49,8 @@ public class NTxExampleTestBullets {
         renderer.render(d);
     }
 
-//    private static HGridContainer cc(NDocDocumentFactory f){
-//        List<NDocNode> all = new ArrayList<>();
+//    private static HGridContainer cc(NtxDocumentFactory f){
+//        List<NtxNode> all = new ArrayList<>();
 //        int nb=6;
 //        for (int i = 0; i < nb; i++) {
 //            all.add(f.circle(50)
@@ -65,7 +65,7 @@ public class NTxExampleTestBullets {
 //                all.add(f.rectangle().set(HStyles.backgroundColor(Color.RED)).set(HStyles.anchor(HAnchor.LEFT)));
 //            }
 //        }
-//        return f.grid(2, nb, all.toArray(new NDocNode[0]))
+//        return f.grid(2, nb, all.toArray(new NtxNode[0]))
 //                .set(HStyles.columnsWeight(1, 20))
 //                ;
 //    }
