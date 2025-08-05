@@ -2,7 +2,7 @@ package net.thevpc.ntexup.engine.parser.nodeparsers;
 
 import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.CtrlNTxNodeInclude;
@@ -13,7 +13,7 @@ import net.thevpc.nuts.elem.NElement;
 
 public class IncludeSpecialParser extends NDocNodeParserBase {
     public IncludeSpecialParser() {
-        super(true, NDocNodeType.CTRL_INCLUDE);
+        super(true, NTxNodeType.CTRL_INCLUDE);
     }
 
 
