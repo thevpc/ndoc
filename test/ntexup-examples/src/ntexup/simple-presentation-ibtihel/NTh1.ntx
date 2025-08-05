@@ -1,0 +1,43 @@
+{styles{.H2:{
+                          font-size:12%P,
+                          color:"#FFC55A",
+                          font-bold
+                      }
+           }
+page{
+
+            polygon(points:[(0,0),(0,100),(100,100),(100,0)],background-color:white)
+
+            image("images/hasht.gif", position:(65,15),size:(50,70),preserve-aspect-ratio)
+            polygon(points:[(0,0),(50,0),(70,100),(0,100)],background-color:"#00215E")
+            polygon(points:[(50,5),(53,5),(70,95),(67,95)],stroke:5,color:gray)
+            polygon(points:[(50,0),(53,0),(70,90),(67,90)],background-color:"#FC4100")
+
+            @(H2)text("
+                    Simulation graphique du fonctionnement de
+                    la structure de données Hashtable:
+                    "
+                    at:(6,10)
+            )
+            text(
+                    "
+                    La table de hachage est une structure de données qui permet
+                    une recherche rapide grâce à une fonction de hachage,
+                    offrant un temps d'accès constant O(1).
+                    Cela la rend très efficace pour les opérations de recherche,
+                    d'insertion et de suppression.
+                    "
+                    ,font-size:9%P,position:(5,45),color:white
+            )
+//            text(
+//                    "
+//                    Cependant, elle est coûteuse en termes de mémoire,
+//                    car elle nécessite souvent plus d'espace que les autres
+//                    structures de données pour minimiser les collisions
+//                    et garantir des performances optimales.
+//                    "
+//                    ,font-size:8%P,position:(5,70),color:white
+//            )
+}
+
+}
