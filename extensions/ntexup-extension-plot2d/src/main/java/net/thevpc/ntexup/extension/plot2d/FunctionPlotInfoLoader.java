@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.extension.plot2d;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
@@ -17,9 +17,9 @@ import java.util.List;
 
 public class FunctionPlotInfoLoader {
 
-    public GlobalPlotData loadGlobalPlotData(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext buildContext) {
+    public GlobalPlotData loadGlobalPlotData(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext) {
         GlobalPlotData d = new GlobalPlotData();
-        NDocEngine engine = renderContext.engine();
+        NTxEngine engine = renderContext.engine();
         class A {
             Double asDouble(String name, Double d) {
                 return NDocValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofDouble(d)), p, renderContext.varProvider())).asDouble().orElse(d);
@@ -60,7 +60,7 @@ public class FunctionPlotInfoLoader {
         return d;
     }
 
-    public java.util.List<FunctionPlotInfo> loadBody(NElement element, NDocNodeCustomBuilderContext buildContext) {
+    public java.util.List<FunctionPlotInfo> loadBody(NElement element, NTxNodeCustomBuilderContext buildContext) {
         NListContainerElement nListContainerElement = element.asListContainer().orNull();
         java.util.List<FunctionPlotInfo> all = new ArrayList<>();
         if (nListContainerElement != null && !nListContainerElement.isAnyUplet()) {
@@ -87,7 +87,7 @@ public class FunctionPlotInfoLoader {
         return all;
     }
 
-    private FunctionPlotInfo load(NObjectElement child, NDocNodeCustomBuilderContext buildContext) {
+    private FunctionPlotInfo load(NObjectElement child, NTxNodeCustomBuilderContext buildContext) {
         FunctionPlotInfo i = new FunctionPlotInfo();
         switch (NNameFormat.VAR_NAME.format(NStringUtils.firstNonNull(child.name().orNull(),"").trim())) {
             case "curve": {
