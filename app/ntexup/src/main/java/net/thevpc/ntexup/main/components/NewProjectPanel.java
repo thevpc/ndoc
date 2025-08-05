@@ -3,7 +3,7 @@ package net.thevpc.ntexup.main.components;
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
 import net.thevpc.ntexup.config.UserConfig;
 import net.thevpc.ntexup.main.NTxUIHelper;
-import net.thevpc.ntexup.main.ServiceHelper;
+import net.thevpc.ntexup.main.NTxServiceHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +12,11 @@ import java.util.Map;
 public class NewProjectPanel extends JPanel {
     JTextField projectName;
     PathField rootFolder;
-    ServiceHelper serviceHelper;
+    NTxServiceHelper serviceHelper;
     NewProjectPropsPanel props;
     UserConfigPanel userConfPanel;
 
-    public NewProjectPanel(ServiceHelper serviceHelper) {
+    public NewProjectPanel(NTxServiceHelper serviceHelper) {
         super(new GridBagLayout());
         this.serviceHelper = serviceHelper;
 
