@@ -1,7 +1,7 @@
-@(ndoc,"1.0")
+@(ntexup,"1.0")
 {
-    include("sty/*.ndoc"),
-    include("lib/*.ndoc"),
+    include("sty/*.ntx"),
+    include("lib/*.ntx"),
     cover{
         text("Cours Micro-Ondes"),
         title:"Thank you!",
@@ -10,8 +10,8 @@
         image:"2024-01-03",
     },
 
-    include("src/ch01/*.ndoc"),
-    include("src/ch02/*.ndoc"),
+    include("src/ch01/*.ntx"),
+    include("src/ch02/*.ntx"),
 
     conclusion(msg:"Thank you!"){
         text("Merci"),
