@@ -1,11 +1,11 @@
 package net.thevpc.ntexup.engine.renderer;
 
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NDocValueByName;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
 import net.thevpc.ntexup.api.log.NDocLogger;
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NDocNodeRenderer;
 import net.thevpc.ntexup.api.renderer.text.NDocTextRendererBuilder;
@@ -31,21 +31,21 @@ import java.util.Map;
 public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContextBaseBase {
 
     private NDocGraphics g3;
-    private NDocEngine engine;
-    private NDocBounds2 globalBound;
-    private NDocBounds2 bound;
+    private NTxEngine engine;
+    private NTxBounds2 globalBound;
+    private NTxBounds2 bound;
     private Map<String, Object> capabilities = new HashMap<>();
     private long pageStartTime;
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound) {
+    public NDocNodeRendererContextBase(NTxEngine engine, NDocGraphics g, Dimension bound, NTxBounds2 globalBound) {
         this.engine = engine;
-        this.bound = new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight());
+        this.bound = new NTxBounds2(0, 0, bound.getWidth(), bound.getHeight());
         this.globalBound = globalBound;
         this.g3 = g;
     }
 
-    public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound) {
-        this(engine, g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()));
+    public NDocNodeRendererContextBase(NTxEngine engine, NDocGraphics g, Dimension bound) {
+        this(engine, g, bound, new NTxBounds2(0, 0, bound.getWidth(), bound.getHeight()));
     }
 
     public long getPageStartTime() {
@@ -68,7 +68,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     }
 
     @Override
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
@@ -124,11 +124,11 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
         return g3;
     }
 
-    public NDocBounds2 getGlobalBounds() {
+    public NTxBounds2 getGlobalBounds() {
         return globalBound;
     }
 
-    public NDocBounds2 getBounds() {
+    public NTxBounds2 getBounds() {
         return bound;
     }
 
