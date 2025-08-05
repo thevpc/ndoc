@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.*;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
@@ -28,10 +28,10 @@ import net.thevpc.nuts.util.NOptional;
 public class NDocNodeEvalNDoc implements NDocObjectEvalContext {
 
     //    private NDocNode node;
-    private NDocEngine engine;
+    private NTxEngine engine;
     private NDocVarProvider varProvider;
 
-    public NDocNodeEvalNDoc(NDocEngine engine,NDocVarProvider varProvider) {
+    public NDocNodeEvalNDoc(NTxEngine engine, NDocVarProvider varProvider) {
         this.engine = engine;
         this.varProvider = varProvider;
     }
