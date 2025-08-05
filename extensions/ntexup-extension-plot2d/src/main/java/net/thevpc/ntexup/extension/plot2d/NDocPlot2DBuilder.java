@@ -2,14 +2,14 @@ package net.thevpc.ntexup.extension.plot2d;
 
 import net.thevpc.ntexup.api.document.NDocArrow;
 import net.thevpc.ntexup.api.document.NDocArrowType;
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocPoint2D;
-import net.thevpc.ntexup.api.document.elem2d.Vector2D;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
+import net.thevpc.ntexup.api.document.elem2d.NTxVector2D;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.parser.NDocAllArgumentReader;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -28,8 +28,8 @@ import java.util.List;
 public class NDocPlot2DBuilder implements NDocNodeBuilder {
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.PLOT2D)
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.PLOT2D)
                 .parseParam()
                 .named(
                         "xmin",
@@ -50,7 +50,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
         ;
     }
 
-    public void processChildren(NDocAllArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
+    public void processChildren(NDocAllArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
         List<FunctionPlotInfo> all = new FunctionPlotInfoLoader().loadBody(info.element(), buildContext);
         info.node().setUserObject("def", all);
     }
@@ -59,8 +59,8 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
 
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
-        NDocBounds2 selfBounds = renderContext.selfBounds(p, null, null);
+    public void renderMain(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
+        NTxBounds2 selfBounds = renderContext.selfBounds(p, null, null);
         double minX = NDocValue.of(renderContext.engine().evalExpression(p.getPropertyValue("xmin").orElse(NElement.ofDouble(-100)), p, renderContext.varProvider())).asDouble().orElse(-100.0);
         double maxX = NDocValue.of(renderContext.engine().evalExpression(p.getPropertyValue("xmax").orElse(NElement.ofDouble(+100)), p, renderContext.varProvider())).asDouble().orElse(+100.0);
         double minY = -100;
@@ -76,7 +76,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
 
             g.setPaint(color);
 
-            NDocBounds2 bounds = renderContext.getBounds();
+            NTxBounds2 bounds = renderContext.getBounds();
             int steps = (int) (bounds.getHeight() * 2);
 
             List<Plot2DData> allData = new ArrayList<>();
@@ -116,7 +116,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
         }
     }
 
-    private void drawFunction(Plot2DData pd, DrawContext drawContext, NDocGraphics g, NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
+    private void drawFunction(Plot2DData pd, DrawContext drawContext, NDocGraphics g, NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
         //draw function
         Stroke ostroke = g.getStroke();
         g.setColor(pd.color);
@@ -158,7 +158,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
         g.setStroke(ostroke);
     }
 
-    private void drawAxises(DrawContext drawContext, NDocGraphics g, NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
+    private void drawAxises(DrawContext drawContext, NDocGraphics g, NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
         Stroke mainStroke = new BasicStroke(1.0f);
         Stroke stepStroke = new BasicStroke(1.0f, // Line width of 2 pixels
                 BasicStroke.CAP_BUTT, // No added decoration at line ends
@@ -209,7 +209,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
                     g.setColor(mainColor);
                     g.setStroke(mainStroke);
                     g.drawLine(pxi, drawContext.componentMinY, pxi, drawContext.componentMinY + drawContext.componentHeight);
-                    g.drawArrayHead(new NDocPoint2D(0, 0), new Vector2D(0, 1), new NDocArrow(NDocArrowType.TRIANGLE_FULL));
+                    g.drawArrayHead(new NTxPoint2D(0, 0), new NTxVector2D(0, 1), new NDocArrow(NDocArrowType.TRIANGLE_FULL));
                     g.setStroke(stepStroke);
                     g.setColor(stepColor);
                 } else {
@@ -229,7 +229,7 @@ public class NDocPlot2DBuilder implements NDocNodeBuilder {
                     g.setColor(mainColor);
                     g.setStroke(mainStroke);
                     g.drawLine(drawContext.componentMinX, pyi, drawContext.componentMinX + drawContext.componentWidth, pyi);
-                    g.drawArrayHead(new NDocPoint2D(0, 0), new Vector2D(1, 0), new NDocArrow(NDocArrowType.TRIANGLE_FULL));
+                    g.drawArrayHead(new NTxPoint2D(0, 0), new NTxVector2D(1, 0), new NDocArrow(NDocArrowType.TRIANGLE_FULL));
                     g.setStroke(stepStroke);
                     g.setColor(stepColor);
                 } else {
