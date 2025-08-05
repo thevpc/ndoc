@@ -47,6 +47,10 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
 
+    @Override
+    public long getPageStartTime() {
+        return base.getPageStartTime();
+    }
 
     @Override
     public void highlightNutsText(String lang, String rawText, NText parsedText, NDocNode p, NDocTextRendererBuilder result) {
