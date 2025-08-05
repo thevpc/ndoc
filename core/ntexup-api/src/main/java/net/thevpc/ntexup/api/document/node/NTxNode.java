@@ -5,7 +5,7 @@ import net.thevpc.ntexup.api.document.elem2d.NTxAlign;
 import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.extension.NTxFunction;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NOptional;
@@ -27,9 +27,9 @@ public interface NTxNode extends NTxItem {
 
     boolean append(NTxItem a);
 
-    NDocResource source();
+    NTxSource source();
 
-    NTxNode setSource(NDocResource source);
+    NTxNode setSource(NTxSource source);
 
     boolean isDisabled();
 
@@ -126,7 +126,7 @@ public interface NTxNode extends NTxItem {
 
     NTxNode setBackgroundColor(String w);
 
-//    NDocNode setLineColor(String w);
+//    NTxNode setLineColor(String w);
 
     NTxNode setGridColor(String w);
 
