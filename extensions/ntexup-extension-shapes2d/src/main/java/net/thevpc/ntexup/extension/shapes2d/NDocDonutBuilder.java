@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.extension.shapes2d;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 
@@ -22,32 +22,32 @@ import java.util.Arrays;
  *
  */
 public class NDocDonutBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.DONUT)
-                .parseParam().named(NDocPropName.INNER_RADIUS,NDocPropName.START_ANGLE,NDocPropName.EXTENT_ANGLE,NDocPropName.DASH).then()
-                .parseParam().named(NDocPropName.SLICE_COUNT).then()
-                .parseParam().named(NDocPropName.SLICES).then()
-                .parseParam().named(NDocPropName.COLORS).then()
+                .id(NTxNodeType.DONUT)
+                .parseParam().named(NTxPropName.INNER_RADIUS, NTxPropName.START_ANGLE, NTxPropName.EXTENT_ANGLE, NTxPropName.DASH).then()
+                .parseParam().named(NTxPropName.SLICE_COUNT).then()
+                .parseParam().named(NTxPropName.SLICES).then()
+                .parseParam().named(NTxPropName.COLORS).then()
                 .renderComponent(this::render)
                 ;
     }
 
 
-    private void render(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
+    private void render(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
         renderDonutOrPie(p, renderContext, builderContext, defaultStyles, true);
     }
 
     public static void renderDonutOrPie(NTxNode p, NDocNodeRendererContext renderContext,
-                                        NDocNodeCustomBuilderContext builderContext, NDocProperties defaultStyles,
+                                        NTxNodeCustomBuilderContext builderContext, NTxProperties defaultStyles,
                                         boolean isDonut
                                   ) {
         renderContext = renderContext.withDefaultStyles(p, defaultStyles);
 
-        NDocBounds2 b = renderContext.selfBounds(p, null, null);
+        NTxBounds2 b = renderContext.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -56,7 +56,7 @@ public class NDocDonutBuilder implements NDocNodeBuilder {
         double outerRadius = Math.min(width, height) / 2;
         double innerRadius=0;
         if(isDonut) {
-            innerRadius = NDocValue.of(p.getPropertyValue(NDocPropName.INNER_RADIUS)).asDouble().orElse(0.0);
+            innerRadius = NDocValue.of(p.getPropertyValue(NTxPropName.INNER_RADIUS)).asDouble().orElse(0.0);
             if (innerRadius <= 0) {
                 innerRadius = 50;
             } else if (innerRadius >= 100) {
@@ -65,17 +65,17 @@ public class NDocDonutBuilder implements NDocNodeBuilder {
             innerRadius = innerRadius / 100 * outerRadius;
         }
 
-        double startAngle = NDocValue.of(p.getPropertyValue(NDocPropName.START_ANGLE)).asDouble().orElse(0.0);
-        double extentAngle = NDocValue.of(p.getPropertyValue(NDocPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
-        double dash = NDocValue.of(p.getPropertyValue(NDocPropName.DASH)).asDouble().orElse(0.0);
+        double startAngle = NDocValue.of(p.getPropertyValue(NTxPropName.START_ANGLE)).asDouble().orElse(0.0);
+        double extentAngle = NDocValue.of(p.getPropertyValue(NTxPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
+        double dash = NDocValue.of(p.getPropertyValue(NTxPropName.DASH)).asDouble().orElse(0.0);
         NDocGraphics g = renderContext.graphics();
 
-        String[] colors = NDocValue.of(p.getPropertyValue(NDocPropName.COLORS)).asStringArray().orElse(null);
+        String[] colors = NDocValue.of(p.getPropertyValue(NTxPropName.COLORS)).asStringArray().orElse(null);
         g.setColor(Color.black);
         if (!renderContext.isDry()) {
             double finalInnerRadius = innerRadius;
             renderContext.withStroke(p, () -> {
-                int sliceCount = NDocValue.of(p.getPropertyValue(NDocPropName.SLICE_COUNT)).asInt().orElse(-1);
+                int sliceCount = NDocValue.of(p.getPropertyValue(NTxPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
                     double sliceAngle = (extentAngle - sliceCount * dash) / sliceCount;
@@ -99,7 +99,7 @@ public class NDocDonutBuilder implements NDocNodeBuilder {
                 //diff sizes
                 else {
 
-                    double[] slicePercentage = NDocValue.of(p.getPropertyValue(NDocPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
+                    double[] slicePercentage = NDocValue.of(p.getPropertyValue(NTxPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
                     slicePercentage = Arrays.stream(slicePercentage).filter(xx -> xx <= 0 || Double.isInfinite(xx) || Double.isNaN(xx)).toArray();
                     if (slicePercentage.length == 0) {
                         slicePercentage = new double[]{1, 1, 1};
