@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.source.NDocResource;
@@ -10,7 +10,7 @@ import net.thevpc.ntexup.engine.parser.resources.NDocResourceNew;
 import net.thevpc.ntexup.api.renderer.*;
 
 
-import net.thevpc.ntexup.engine.util.NDocUtilsImages;
+import net.thevpc.ntexup.engine.util.NTxUtilsImages;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -24,9 +24,9 @@ import net.thevpc.nuts.util.NOptional;
 
 public class DocumentView {
 
-    NDocument document;
-    private NDocDocumentRendererSupplier documentSupplier;
-    NDocEngine engine;
+    NTxDocument document;
+    private NTxDocumentRendererSupplier documentSupplier;
+    NTxEngine engine;
     private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
     JFrame frame;
@@ -39,12 +39,12 @@ public class DocumentView {
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
     Throwable currentThrowable;
-    NDocDocumentRendererListener listener;
-    private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
+    NTxDocumentRendererListener listener;
+    private NTxDocumentRendererContext rendererContext = new NTxDocumentRendererContextImpl();
     private boolean isShown;
 
-    public DocumentView(NDocDocumentRendererSupplier documentSupplier,
-                        NDocEngine engine, NDocDocumentRendererListener listener) {
+    public DocumentView(NTxDocumentRendererSupplier documentSupplier,
+                        NTxEngine engine, NTxDocumentRendererListener listener) {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.engine = engine;
@@ -53,7 +53,7 @@ public class DocumentView {
         frame = new JFrame();
         frame.setTitle("NDoc Viewer");
         frame.setIconImage(
-                NDocUtilsImages.resizeImage(
+                NTxUtilsImages.resizeImage(
                         new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ndoc.png")).getImage(),
                         16, 16)
         );
@@ -238,7 +238,7 @@ public class DocumentView {
             this.currentShowingPage = null;
             this.currentThrowable = null;
             try {
-                NDocument rawDocument = documentSupplier.get(rendererContext);
+                NTxDocument rawDocument = documentSupplier.get(rendererContext);
                 NDocResource source = rawDocument.root().source();
                 SwingUtilities.invokeLater(() -> {
                     if (source == null) {
@@ -248,7 +248,7 @@ public class DocumentView {
                     }
                 });
                 listener.onChangedRawDocument(rawDocument);
-                NDocument compiledDocument = engine.compileDocument(rawDocument.copy()).get();
+                NTxDocument compiledDocument = engine.compileDocument(rawDocument.copy()).get();
                 listener.onChangedCompiledDocument(compiledDocument);
                 document = compiledDocument;
             } catch (Exception ex) {
@@ -270,7 +270,7 @@ public class DocumentView {
             }
             if (pageViews.isEmpty()) {
                 NTxNode node = engine.documentFactory().ofPage();
-                node.setSource(NOptional.of(document).then(NDocument::source).orElseGet(NDocResourceNew::new));
+                node.setSource(NOptional.of(document).then(NTxDocument::source).orElseGet(NDocResourceNew::new));
                 pageViews.add(createPageView(
                         node,
                         0
@@ -356,7 +356,7 @@ public class DocumentView {
         this.showPage(pageView);
     }
 
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
