@@ -2,12 +2,12 @@ package net.thevpc.ntexup.engine.eval;
 
 import net.thevpc.ntexup.api.document.node.*;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.log.NDocLogger;
 import net.thevpc.ntexup.api.eval.*;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.*;
 import net.thevpc.ntexup.api.parser.NDocNodeParser;
 import net.thevpc.ntexup.api.source.NDocResource;
@@ -16,9 +16,9 @@ import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.NDocEngineUtils;
 import net.thevpc.ntexup.engine.log.SilentNDocLogger;
 import net.thevpc.ntexup.engine.parser.DefaultNDocNodeFactoryParseContext;
-import net.thevpc.ntexup.engine.parser.NDocDocumentLoadingResultImpl;
+import net.thevpc.ntexup.engine.parser.NTxDocumentLoadingResultImpl;
 import net.thevpc.ntexup.engine.parser.NTxNodeDefImpl;
-import net.thevpc.ntexup.engine.parser.NDocNodeDefParamImpl;
+import net.thevpc.ntexup.engine.parser.NTxNodeDefParamImpl;
 import net.thevpc.ntexup.engine.document.DefaultNTxNode;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.*;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -33,14 +33,14 @@ import java.util.stream.Collectors;
 
 public class NDocCompiler {
     NDocVarProvider varProvider=null;
-    private NDocEngine engine;
+    private NTxEngine engine;
 
-    public NDocCompiler(NDocEngine engine) {
+    public NDocCompiler(NTxEngine engine) {
         this.engine = engine;
     }
 
-    public NDocDocumentLoadingResult compile(NDocument document0) {
-        NDocument documentCopy = document0.copy();
+    public NTxDocumentLoadingResult compile(NTxDocument document0) {
+        NTxDocument documentCopy = document0.copy();
         NDocResource source = documentCopy.root().source();
         SilentNDocLogger slog = new SilentNDocLogger();
         try {
@@ -55,7 +55,7 @@ public class NDocCompiler {
                 documentCopy.root().reset();
                 documentCopy.root().copyFrom(root);
             }
-            return new NDocDocumentLoadingResultImpl(documentCopy, source, slog.getErrorCount() == 0);
+            return new NTxDocumentLoadingResultImpl(documentCopy, source, slog.getErrorCount() == 0);
         } finally {
             engine.removeLog(slog);
         }
@@ -63,7 +63,7 @@ public class NDocCompiler {
 
     public boolean processRootPages(NTxNode node) {
         switch (node.type()) {
-            case NDocNodeType.PAGE_GROUP: {
+            case NTxNodeType.PAGE_GROUP: {
                 boolean someChanges = false;
 //                for (NDocNode child : node.children()) {
 //                    NDocUtils.checkNode(child);
@@ -76,13 +76,13 @@ public class NDocCompiler {
                         someChanges = true;
                     } else {
                         someChanges |= processRootPages(c);
-                        if (Objects.equals(c.type(), NDocNodeType.PAGE_GROUP)
-                                || Objects.equals(c.type(), NDocNodeType.PAGE)
+                        if (Objects.equals(c.type(), NTxNodeType.PAGE_GROUP)
+                                || Objects.equals(c.type(), NTxNodeType.PAGE)
                                 //assign are retained in the same level!
-                                || Objects.equals(c.type(), NDocNodeType.CTRL_ASSIGN)
+                                || Objects.equals(c.type(), NTxNodeType.CTRL_ASSIGN)
                         ) {
                             if (pending != null && !pending.isEmpty()) {
-                                NTxNode newPage = engine.documentFactory().of(NDocNodeType.PAGE);
+                                NTxNode newPage = engine.documentFactory().of(NTxNodeType.PAGE);
                                 newPage.setSource(node.source());
                                 newChildren.add(newPage);
                                 newPage.addChildren(pending.toArray(new NTxNode[0]));
@@ -99,7 +99,7 @@ public class NDocCompiler {
                     }
                 }
                 if (pending != null && pending.size() > 0) {
-                    NTxNode newPage = engine.documentFactory().of(NDocNodeType.PAGE);
+                    NTxNode newPage = engine.documentFactory().of(NTxNodeType.PAGE);
                     newPage.setSource(node.source());
                     newPage.addChildren(pending.toArray(new NTxNode[0]));
                     newChildren.add(newPage);
@@ -168,13 +168,13 @@ public class NDocCompiler {
             this.processPages = processPages;
             this.context = context;
         }
-        public NDocument document(){
+        public NTxDocument document(){
             return context.document();
         }
         NDocLogger messages(){
             return context.messages();
         }
-        NDocEngine engine(){
+        NTxEngine engine(){
             return context.engine();
         }
 
@@ -217,7 +217,7 @@ public class NDocCompiler {
         if (item instanceof NTxNode) {
             NTxNode node = (NTxNode) item;
             NTxItem tparent = node.parent();
-            if (!h.isInPage && NDocNodeType.PAGE.equals(node.type())) {
+            if (!h.isInPage && NTxNodeType.PAGE.equals(node.type())) {
                 h=h.withInPage(true);
             }
             if (!h.processPages && h.isInPage) {
@@ -244,19 +244,19 @@ public class NDocCompiler {
             node.addDefinitions(defs);
             NDocUtils.setNodeParent(node, h.parent);
             switch (node.type()) {
-                case NDocNodeType.CTRL_IF:
+                case NTxNodeType.CTRL_IF:
                     return compileNodeTree_if(node, h.withParentOnly());
-                case NDocNodeType.CTRL_NAME:
+                case NTxNodeType.CTRL_NAME:
                     return compileNodeTree_name(node, h.withParentOnly());
-                case NDocNodeType.CTRL_INCLUDE:
+                case NTxNodeType.CTRL_INCLUDE:
                     return compileNodeTree_include(node, h.withParentOnly());
-                case NDocNodeType.CTRL_FOR:
+                case NTxNodeType.CTRL_FOR:
                     return compileNodeTree_for(node, h.withParentOnly());
-                case NDocNodeType.CTRL_ASSIGN:
+                case NTxNodeType.CTRL_ASSIGN:
                     return compileNodeTree_assign(node, h.withParentOnly());
-                case NDocNodeType.CTRL_EXPR:
+                case NTxNodeType.CTRL_EXPR:
                     return compileNodeTree_expr(node, h.withParentOnly());
-                case NDocNodeType.CTRL_CALL:
+                case NTxNodeType.CTRL_CALL:
                     return compileNodeTree_call(node, h.withParentOnly());
             }
             return compileNodeTree_default(node, h);
@@ -294,7 +294,7 @@ public class NDocCompiler {
     }
 
     private List<NTxItem> compileNodeTree_expr(NTxNode node, NodeHierarchy h) {
-        NElement varExpr = node.getProperty(NDocPropName.VALUE).get().getValue();
+        NElement varExpr = node.getProperty(NTxPropName.VALUE).get().getValue();
         NElement element = engine.evalExpression(varExpr, node, varProvider);
         NTxItem h2 = engine.newNode(element, createParseContext(
                 varExpr,
@@ -307,8 +307,8 @@ public class NDocCompiler {
     private List<NTxItem> compileNodeTree_assign(NTxNode node, NodeHierarchy h) {
         NTxItem p = node.parent();
         NTxNode n = (NTxNode) p;
-        String varName = node.getProperty(NDocPropName.NAME).get().getValue().asStringValue().get();
-        NElement varExpr = node.getProperty(NDocPropName.VALUE).get().getValue();
+        String varName = node.getProperty(NTxPropName.NAME).get().getValue().asStringValue().get();
+        NElement varExpr = node.getProperty(NTxPropName.VALUE).get().getValue();
         boolean ifempty = NDocValue.of(node.getProperty("ifempty").map(x->x.getValue()).orNull()).asBoolean().orElse(false);
         if(ifempty) {
             NElement old = n.getVar(varName).orNull();
@@ -357,10 +357,10 @@ public class NDocCompiler {
     private List<NTxItem> _process_call_node(NTxNodeDef d, CtrlNTxNodeCall c, NodeHierarchy h) {
         String uid = c.getCallName();
         NElement callDeclaration = c.getCallExpr();
-        NDocNodeDefParam[] expectedParams = d.params();
-        NDocNodeDefParam[] allExpectedParams = Arrays.copyOf(expectedParams, expectedParams.length + 1);
-        allExpectedParams[expectedParams.length] = new NDocNodeDefParamImpl(NDocUtils.COMPONENT_BODY_VAR_NAME, NElement.ofArray(c.getCallBody().toArray(new NElement[0])));
-        NDocNodeDefParam[] effectiveParams = new NDocNodeDefParam[allExpectedParams.length];
+        NTxNodeDefParam[] expectedParams = d.params();
+        NTxNodeDefParam[] allExpectedParams = Arrays.copyOf(expectedParams, expectedParams.length + 1);
+        allExpectedParams[expectedParams.length] = new NTxNodeDefParamImpl(NDocUtils.COMPONENT_BODY_VAR_NAME, NElement.ofArray(c.getCallBody().toArray(new NElement[0])));
+        NTxNodeDefParam[] effectiveParams = new NTxNodeDefParam[allExpectedParams.length];
         List<NElement> callArgs = c.getCallArgs();
         List<NTxProp> extraParams = new ArrayList<>();
 
@@ -371,7 +371,7 @@ public class NDocCompiler {
                 int pos = NArrays.indexOfByMatcher(allExpectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
                 NElement newValue = NDocUtils.addCompilerDeclarationPath(p.value(), c.source());
                 if (pos >= 0) {
-                    effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), newValue);
+                    effectiveParams[pos] = new NTxNodeDefParamImpl(allExpectedParams[pos].name(), newValue);
                 } else {
                     extraParams.add(new NTxProp(n, newValue, c));
                 }
@@ -380,7 +380,7 @@ public class NDocCompiler {
                 String n = e.getKey();
                 int pos = NArrays.indexOfByMatcher(allExpectedParams, a -> NNameFormat.equalsIgnoreFormat(a.name(), n));
                 if (pos >= 0) {
-                    effectiveParams[pos] = new NDocNodeDefParamImpl(allExpectedParams[pos].name(), e.getValue());
+                    effectiveParams[pos] = new NTxNodeDefParamImpl(allExpectedParams[pos].name(), e.getValue());
                 } else {
                     NMsg errMsg = NMsg.ofC("undefined param %s for %s in %s. ignored", n, uid, NDocUtils.snippet(callDeclaration));
                     engine.log().log(errMsg, c.source());
@@ -401,7 +401,7 @@ public class NDocCompiler {
         } else if (callArgs.stream().noneMatch(x -> x.isNamedPair())) {
             if (expectedParams.length == callArgs.size()) {
                 for (int i = 0; i < expectedParams.length; i++) {
-                    effectiveParams[i] = new NDocNodeDefParamImpl(allExpectedParams[i].name(), callArgs.get(i));
+                    effectiveParams[i] = new NTxNodeDefParamImpl(allExpectedParams[i].name(), callArgs.get(i));
                 }
             }
         } else {
@@ -435,7 +435,7 @@ public class NDocCompiler {
     }
 
     private List<NTxItem> compileNodeTree_call(NTxNode node, NodeHierarchy h) {
-        if (NDocNodeType.CTRL_CALL.equals(node.type())) {
+        if (NTxNodeType.CTRL_CALL.equals(node.type())) {
             CtrlNTxNodeCall c = (CtrlNTxNodeCall) node;
             if (!h.isInPage || (h.isInPage && h.processPages)) {
                 String uid = c.getCallName();
@@ -460,7 +460,7 @@ public class NDocCompiler {
     }
 
     private List<NTxItem> compileNodeTree_include(NTxNode node, NodeHierarchy h) {
-        if (NDocNodeType.CTRL_INCLUDE.equals(node.type())) {
+        if (NTxNodeType.CTRL_INCLUDE.equals(node.type())) {
             CtrlNTxNodeInclude c = (CtrlNTxNodeInclude) node;
             List<NTxItem> loaded = new ArrayList<>();
             for (NElement callArg : c.getCallArgs()) {
@@ -498,7 +498,7 @@ public class NDocCompiler {
     }
 
     private List<NTxItem> compileNodeTree_if(NTxNode node, NodeHierarchy h) {
-        if (NDocNodeType.CTRL_IF.equals(node.type())) {
+        if (NTxNodeType.CTRL_IF.equals(node.type())) {
             CtrlNTxNodeIf c = (CtrlNTxNodeIf) node;
             if (!h.isInPage || (h.isInPage && h.processPages)) {
                 NElement cond = c.getCond();
@@ -534,7 +534,7 @@ public class NDocCompiler {
     }
 
     private List<NTxItem> compileNodeTree_for(NTxNode node, NodeHierarchy h) {
-        if (NDocNodeType.CTRL_FOR.equals(node.type())) {
+        if (NTxNodeType.CTRL_FOR.equals(node.type())) {
             CtrlNTxNodeFor c = (CtrlNTxNodeFor) node;
             if (!h.isInPage || (h.isInPage && h.processPages)) {
                 NElement varName = c.getVarName();
