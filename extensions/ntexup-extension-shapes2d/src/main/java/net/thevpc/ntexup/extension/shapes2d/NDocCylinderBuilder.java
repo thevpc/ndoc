@@ -1,15 +1,15 @@
 package net.thevpc.ntexup.extension.shapes2d;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocPoint2D;
-import net.thevpc.ntexup.api.document.elem2d.Shadow;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
+import net.thevpc.ntexup.api.document.elem2d.NTxShadow;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
@@ -22,60 +22,60 @@ import java.awt.geom.Area;
 
 
 public class NDocCylinderBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
     private static final Color DEFAULT_SIDE_COLOR = new Color(0x00215E);
     //private static final Color DEFAULT_TOP_COLOR = new Color(0xD1D8C5);
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.CYLINDER)
-                .parseParam().named(NDocPropName.ELLIPSE_H,NDocPropName.TOP_COLOR,NDocPropName.SEGMENT_COUNT).end()
+                .id(NTxNodeType.CYLINDER)
+                .parseParam().named(NTxPropName.ELLIPSE_H, NTxPropName.TOP_COLOR, NTxPropName.SEGMENT_COUNT).end()
                 .renderComponent(this::render);
     }
 
 
 
 
-    public void render(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
+    public void render(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
         renderContext = renderContext.withDefaultStyles(p, defaultStyles);
-        NOptional<Shadow> shadowOptional = renderContext.readStyleAsShadow(p, NDocPropName.SHADOW);
+        NOptional<NTxShadow> shadowOptional = renderContext.readStyleAsShadow(p, NTxPropName.SHADOW);
 
 
-        NDocBounds2 b = renderContext.selfBounds(p, null, null);
+        NTxBounds2 b = renderContext.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
         double height = b.getHeight();
 
-        double arcStroke = NDocValue.of(p.getPropertyValue(NDocPropName.STROKE)).asDouble().orElse(5.0);
-        double ellipse_height = NDocValue.of(p.getPropertyValue(NDocPropName.ELLIPSE_H)).asDouble().orElse(50.0);
+        double arcStroke = NDocValue.of(p.getPropertyValue(NTxPropName.STROKE)).asDouble().orElse(5.0);
+        double ellipse_height = NDocValue.of(p.getPropertyValue(NTxPropName.ELLIPSE_H)).asDouble().orElse(50.0);
         ellipse_height = ellipse_height / 100 * height;
         double arcY = y + height - ellipse_height / 2;
 
 
-        Color sideColor = NDocValue.of(p.getPropertyValue(NDocPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
-        Color topColor = NDocValue.of(p.getPropertyValue(NDocPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
+        Color sideColor = NDocValue.of(p.getPropertyValue(NTxPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
+        Color topColor = NDocValue.of(p.getPropertyValue(NTxPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
 
-        int segmentCount = NDocValue.of(p.getPropertyValue(NDocPropName.SEGMENT_COUNT)).asInt().orElse(0);
+        int segmentCount = NDocValue.of(p.getPropertyValue(NTxPropName.SEGMENT_COUNT)).asInt().orElse(0);
 
         boolean someBG = false;
         NDocGraphics g = renderContext.graphics();
 
         if (!renderContext.isDry()) {
             if (shadowOptional.isPresent()) {
-                Shadow shadow = shadowOptional.get();
-                NDocPoint2D translation = shadow.getTranslation();
+                NTxShadow shadow = shadowOptional.get();
+                NTxPoint2D translation = shadow.getTranslation();
                 if (translation == null) {
-                    translation = new NDocPoint2D(0, 0);
+                    translation = new NTxPoint2D(0, 0);
                 }
                 Paint shadowColor = shadow.getColor();
                 if (shadowColor == null) {
                     shadowColor = sideColor.darker();
                 }
-                NDocPoint2D shear = shadow.getShear();
+                NTxPoint2D shear = shadow.getShear();
                 if (shear == null) {
-                    shear = new NDocPoint2D(0, 0);
+                    shear = new NTxPoint2D(0, 0);
                 }
 
                 g.setColor((Color) shadowColor);
