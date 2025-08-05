@@ -4,14 +4,14 @@
  */
 package net.thevpc.ntexup.engine.base.nodes.container;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
 
@@ -19,17 +19,17 @@ import net.thevpc.nuts.elem.NElement;
  * @author vpc
  */
 public class NDocRowBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.ROW)
-                .parseParam().named(NDocPropName.COLUMNS).then()
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.ROW)
+                .parseParam().named(NTxPropName.COLUMNS).then()
                 .parseParam((info, buildContext) -> {
                     NElement p = info.peek();
                     if(p.isInt()) {
                         info.read();
-                        info.node().setProperty(NTxProp.of(NDocPropName.COLUMNS,p));
+                        info.node().setProperty(NTxProp.of(NTxPropName.COLUMNS,p));
                         return true;
                     }else{
                         return false;
@@ -41,9 +41,9 @@ public class NDocRowBuilder implements NDocNodeBuilder {
     }
 
 
-    public NDocBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public NTxBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.defaultSelfBounds(p);
+        NTxBounds2 expectedBounds = ctx.defaultSelfBounds(p);
 //        HGraphics g = ctx.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
@@ -51,9 +51,9 @@ public class NDocRowBuilder implements NDocNodeBuilder {
         return h.computeBound(p, ctx, expectedBounds);
     }
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.selfBounds(p);
+        NTxBounds2 expectedBounds = ctx.selfBounds(p);
         NDocGridRendererHelper h = new NDocGridRendererHelper(p.children());
         h.render(p, ctx, expectedBounds);
     }
