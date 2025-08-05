@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.engine.parser;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.log.NDocLogger;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
@@ -14,16 +14,16 @@ import net.thevpc.nuts.io.NPath;
 import java.util.*;
 
 public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseContext {
-    private final NDocument document;
+    private final NTxDocument document;
     private final NElement element;
-    private final NDocEngine engine;
+    private final NTxEngine engine;
     private final List<NTxNode> nodePath = new ArrayList<>();
     private final NDocResource source;
 
     public DefaultNDocNodeFactoryParseContext(
-            NDocument document
+            NTxDocument document
             , NElement element
-            , NDocEngine engine
+            , NTxEngine engine
             ,
             List<NTxNode> nodePath
             , NDocResource source
@@ -68,7 +68,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
         return engine().log();
     }
 
-    public NDocument document() {
+    public NTxDocument document() {
         return document;
     }
 
@@ -106,7 +106,7 @@ public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseC
     }
 
     @Override
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
