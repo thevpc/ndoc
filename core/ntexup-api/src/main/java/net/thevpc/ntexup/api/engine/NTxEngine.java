@@ -13,18 +13,18 @@ import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.NTxDocumentLoadingResult;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.eval.NDocCompilePageContext;
-import net.thevpc.ntexup.api.eval.NDocVarProvider;
+import net.thevpc.ntexup.api.eval.NTxCompilePageContext;
+import net.thevpc.ntexup.api.eval.NTxVarProvider;
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.eval.NDocVar;
-import net.thevpc.ntexup.api.log.NDocLogger;
-import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ntexup.api.parser.NDocNodeParser;
+import net.thevpc.ntexup.api.eval.NTxVar;
+import net.thevpc.ntexup.api.log.NTxLogger;
+import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
+import net.thevpc.ntexup.api.parser.NTxNodeParser;
 import net.thevpc.ntexup.api.renderer.*;
-import net.thevpc.ntexup.api.renderer.text.NDocTextRendererFlavor;
+import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NOptional;
@@ -35,24 +35,24 @@ import net.thevpc.nuts.util.NOptional;
 public interface NTxEngine {
     String FILE_EXT="ntx";
     String FILE_DOT_EXT=".ntx";
-    NDocLogger log();
+    NTxLogger log();
     NTxEngineTools tools();
 
-    NDocLogger addLog(NDocLogger messages);
+    NTxLogger addLog(NTxLogger messages);
 
-    NDocLogger removeLog(NDocLogger messages);
+    NTxLogger removeLog(NTxLogger messages);
 
-    List<NDocNodeParser> nodeTypeFactories();
+    List<NTxNodeParser> nodeTypeFactories();
 
     NOptional<NTxFunction> findFunction(NTxItem node, String name, NTxFunctionArg... args);
 
     NTxNode newDefaultNode(String id);
 
-    NOptional<NDocNodeParser> nodeTypeParser(String id);
+    NOptional<NTxNodeParser> nodeTypeParser(String id);
 
     NTxDocumentFactory documentFactory();
 
-    NOptional<NTxItem> newNode(NElement element, NDocNodeFactoryParseContext ctx);
+    NOptional<NTxItem> newNode(NElement element, NTxNodeFactoryParseContext ctx);
 
     NOptional<NTxDocumentStreamRenderer> newStreamRenderer(String type);
 
@@ -68,9 +68,9 @@ public interface NTxEngine {
 
     List<NTxNode> compilePageNode(NTxNode node, NTxDocument document);
 
-    List<NTxNode> compilePageNode(NTxNode node, NDocCompilePageContext context);
+    List<NTxNode> compilePageNode(NTxNode node, NTxCompilePageContext context);
 
-    List<NTxNode> compileItem(NTxItem node, NDocCompilePageContext context);
+    List<NTxNode> compileItem(NTxItem node, NTxCompilePageContext context);
 
     boolean validateNode(NTxNode node);
 
@@ -92,23 +92,23 @@ public interface NTxEngine {
 
     <T> NOptional<T> computePropertyValue(NTxNode node, String... propertyNames);
 
-    NDocNodeRendererManager renderManager();
+    NTxNodeRendererManager renderManager();
 
-    NDocGraphics createGraphics(Graphics2D g2d);
+    NTxGraphics createGraphics(Graphics2D g2d);
 
     void createProject(NPath path, NPath projectUrl, Function<String, String> vars);
 
     NTxTemplateInfo[] getTemplates();
 
-    NElement evalExpression(NElement expression, NTxNode node, NDocVarProvider varProvider);
+    NElement evalExpression(NElement expression, NTxNode node, NTxVarProvider varProvider);
 
-    NElement resolveVarValue(String varName, NTxNode node, NDocVarProvider varProvider);
+    NElement resolveVarValue(String varName, NTxNode node, NTxVarProvider varProvider);
 
-    NOptional<NDocVar> findVar(String varName, NTxNode node, NDocVarProvider varProvider);
+    NOptional<NTxVar> findVar(String varName, NTxNode node, NTxVarProvider varProvider);
 
     NPath resolvePath(NElement path, NTxNode node);
 
-    NOptional<NDocTextRendererFlavor> textRendererFlavor(String id);
+    NOptional<NTxTextRendererFlavor> textRendererFlavor(String id);
 
-    List<NDocTextRendererFlavor> textRendererFlavors();
+    List<NTxTextRendererFlavor> textRendererFlavors();
 }
