@@ -2,8 +2,8 @@ package net.thevpc.ntexup.api.parser;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.log.NDocLogger;
 import net.thevpc.ntexup.api.source.NDocResource;
 import net.thevpc.nuts.elem.NElement;
@@ -12,13 +12,13 @@ public interface NDocNodeFactoryParseContext {
 
     NDocLogger messages();
 
-    NDocEngine engine();
+    NTxEngine engine();
 
     NDocNodeFactoryParseContext push(NTxNode node);
 
     NTxNode node();
 
-    NDocument document();
+    NTxDocument document();
 
     NTxNode[] nodePath();
 
