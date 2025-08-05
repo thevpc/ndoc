@@ -1,9 +1,9 @@
 package net.thevpc.ntexup.engine.util;
 
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.util.NDocUtils;
@@ -22,16 +22,16 @@ public class ToElementHelper {
     private NTxNode node;
     private Predicate<String> exclude;
     private Set<String> excludeSet = new HashSet<>();
-    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(NDocPropName.CLASS));
-    private NDocEngine engine;
+    private Set<String> defaultExcludeSet = new HashSet<>(Arrays.asList(NTxPropName.CLASS));
+    private NTxEngine engine;
 
-    public static ToElementHelper of(NTxNode node, NDocEngine engine) {
+    public static ToElementHelper of(NTxNode node, NTxEngine engine) {
         return new ToElementHelper(
                 NDocUtils.uid(node.type())
                 , node, engine);
     }
 
-    public ToElementHelper(String name, NTxNode node, NDocEngine engine) {
+    public ToElementHelper(String name, NTxNode node, NTxEngine engine) {
         this.name = name;
         this.node = node;
         this.engine = engine;
@@ -79,7 +79,7 @@ public class ToElementHelper {
     }
 
     private void applyAnnotations(NElementBuilder u) {
-        NOptional<String[]> sa = NDocValue.of(node.getPropertyValue(NDocPropName.CLASS).orNull()).asStringArrayOrString();
+        NOptional<String[]> sa = NDocValue.of(node.getPropertyValue(NTxPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
                     Arrays.stream(sa.get()).map(x -> NElement.ofString(x)).toArray(NElement[]::new)
