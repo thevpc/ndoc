@@ -3,7 +3,7 @@ package net.thevpc.ntexup.main.components;
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
 import net.thevpc.ntexup.engine.templates.NTxTemplateInfoImpl;
 import net.thevpc.ntexup.main.NTxUIHelper;
-import net.thevpc.ntexup.main.ServiceHelper;
+import net.thevpc.ntexup.main.NTxServiceHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ public class NewProjectPropsPanel extends JPanel {
     Map<String, PropInfo> props = new LinkedHashMap<>();
     JComboBox template;
 
-    public NewProjectPropsPanel(ServiceHelper serviceHelper) {
+    public NewProjectPropsPanel(NTxServiceHelper serviceHelper) {
         super(new GridBagLayout());
         PropInfo[] propInfos={
                 new NewProjectPropsPanel.PropInfo("template.title", "Title", "New Document")
