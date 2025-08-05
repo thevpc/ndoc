@@ -48,7 +48,7 @@ page{
 
     }
 
-    include("angular.ndoc")
+    include("angular.ntx")
 
 
 }
