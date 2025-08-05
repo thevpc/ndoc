@@ -4,7 +4,7 @@ import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.CtrlNTxNodeIf;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class IfSpecialParser extends NDocNodeParserBase {
     public IfSpecialParser() {
-        super(true, NDocNodeType.CTRL_IF);
+        super(true, NTxNodeType.CTRL_IF);
     }
 
     @Override
