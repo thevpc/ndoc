@@ -1,9 +1,9 @@
 package net.thevpc.ntexup.engine.render.server;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.engine.DefaultNDocEngine;
+import net.thevpc.ntexup.engine.DefaultNTxEngine;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class DocumentController {
 
-    private final NDocEngine engine;
+    private final NTxEngine engine;
 
     @Autowired
-    public DocumentController(NDocEngine engine) {
+    public DocumentController(NTxEngine engine) {
         this.engine = engine;
     }
 
@@ -39,8 +39,8 @@ public class DocumentController {
 
             int sizeWidth = 1200;
             int sizeHeight = 1000;
-            NDocEngine e = new DefaultNDocEngine();
-            NDocument doc = e.loadDocument(file).get();
+            NTxEngine e = new DefaultNTxEngine();
+            NTxDocument doc = e.loadDocument(file).get();
 
             List<NTxNode> pages = doc.pages();
 
