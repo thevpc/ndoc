@@ -14,7 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class NTxDebugFrame extends JFrame {
-    private NDocDebugPanel debugPanel;
+    private NTxDebugPanel debugPanel;
     private Runnable onClose;
     NTxDocumentRendererListener hDocumentRendererListener = new NTxDocumentRendererListener() {
         @Override
@@ -61,11 +61,11 @@ public class NTxDebugFrame extends JFrame {
     public NTxDebugFrame(NTxEngine engine) {
 
         setTitle("DebugFrame");
-        setContentPane(debugPanel = new NDocDebugPanel(engine));
+        setContentPane(debugPanel = new NTxDebugPanel(engine));
         setMinimumSize(new Dimension(400, 600));
         this.setIconImage(
                 NTxUtilsImages.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ndoc.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup-logo.png")).getImage(),
                         16, 16)
         );
         addWindowListener(new WindowListener() {
@@ -118,7 +118,7 @@ public class NTxDebugFrame extends JFrame {
         return hDocumentRendererListener;
     }
 
-    public NDocDebugModel model() {
+    public NTxDebugModel model() {
         return debugPanel.model();
     }
 
