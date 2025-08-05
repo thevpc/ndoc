@@ -2,7 +2,7 @@ package net.thevpc.ntexup.api.eval;
 
 import net.thevpc.ntexup.api.document.NDocArrow;
 import net.thevpc.ntexup.api.document.NDocArrowType;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.elem2d.*;
 import net.thevpc.ntexup.api.document.node.*;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -51,7 +51,7 @@ public class NDocValueByType {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asDouble();
     }
 
-    public static NOptional<NDocDouble2> getDouble2(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxDouble2> getDouble2(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asDouble2();
     }
 
@@ -59,15 +59,15 @@ public class NDocValueByType {
         return ctx.computePropertyValue(t, s);
     }
 
-    public static NOptional<NDocDouble2> getDouble2OrHAlign(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxDouble2> getDouble2OrHAlign(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asDouble2OrHAlign();
     }
 
-    public static NOptional<NDocElemNumber2> getNNumberElement2Or1OrHAlign(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxElemNumber2> getNNumberElement2Or1OrHAlign(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asNNumberElement2Or1OrHAlign();
     }
 
-    public static NOptional<NDocDouble4> getDouble4(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxDouble4> getDouble4(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asDouble4();
     }
 
@@ -75,11 +75,11 @@ public class NDocValueByType {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asDoubleArray();
     }
 
-    public static NOptional<Padding> getPadding(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxPadding> getPadding(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asPadding();
     }
 
-    public static NOptional<Rotation> getRotation(NTxNode t, NDocNodeRendererContext ctx, String s) {
+    public static NOptional<NTxRotation> getRotation(NTxNode t, NDocNodeRendererContext ctx, String s) {
         return NDocValue.of(ctx.computePropertyValue(t, s).orNull()).asRotation();
     }
 }
