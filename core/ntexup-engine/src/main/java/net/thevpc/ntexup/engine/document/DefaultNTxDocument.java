@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.thevpc.ntexup.api.document.NDocDocumentClass;
+import net.thevpc.ntexup.api.document.NTxDocumentClass;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.source.NDocResourceMonitor;
-import net.thevpc.ntexup.engine.util.NDocUtilsPages;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.source.NTxSourceMonitor;
+import net.thevpc.ntexup.engine.util.NTxUtilsPages;
 import net.thevpc.nuts.util.NOptional;
 
 /**
@@ -22,34 +22,34 @@ import net.thevpc.nuts.util.NOptional;
  */
 public class DefaultNTxDocument implements NTxDocument, Cloneable {
 
-    private NDocDocumentClass documentClass;
+    private NTxDocumentClass documentClass;
     private Properties properties = new Properties();
     private DefaultNTxNode root;
-    private NDocResourceMonitor resources = new NDocResourceMonitored();
-    private NDocResource source;
+    private NTxSourceMonitor resources = new NTxSourceMonitored();
+    private NTxSource source;
 
-    public DefaultNTxDocument(NDocResource source) {
+    public DefaultNTxDocument(NTxSource source) {
         this.source = source;
         root = new DefaultNTxNode(NTxNodeType.PAGE_GROUP, source);
     }
 
     @Override
-    public NDocResource source() {
+    public NTxSource source() {
         return source;
     }
 
     @Override
-    public NDocResourceMonitor resources() {
+    public NTxSourceMonitor resources() {
         return resources;
     }
 
     @Override
-    public NDocDocumentClass documentClass() {
+    public NTxDocumentClass documentClass() {
         return documentClass;
     }
 
     @Override
-    public void setDocumentClass(NDocDocumentClass documentClass) {
+    public void setDocumentClass(NTxDocumentClass documentClass) {
         this.documentClass = documentClass;
     }
 
@@ -128,6 +128,6 @@ public class DefaultNTxDocument implements NTxDocument, Cloneable {
 
     @Override
     public List<NTxNode> pages() {
-        return NDocUtilsPages.resolvePages(this);
+        return NTxUtilsPages.resolvePages(this);
     }
 }
