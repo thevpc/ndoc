@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer.text;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.eval.NDocValueByName;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -28,7 +28,7 @@ public class NDocTextRendererBase extends NDocTextBaseRenderer {
         }
         ctx = ctx.withDefaultStyles(p, defaultStyles);
 //        List<NDocNode> all=new ArrayList<>();
-        String text = NDocValue.of(p.getPropertyValue(NDocPropName.VALUE).orNull()).asStringOrName().orElse("");
+        String text = NDocValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orElse("");
         Paint fg = NDocValueByName.getForegroundColor(p, ctx,true);
         NDocTextRendererBuilderImpl builder = new NDocTextRendererBuilderImpl(ctx.engine(),fg);
         f.buildText(text, new NDocTextOptions(), p, ctx, builder);
