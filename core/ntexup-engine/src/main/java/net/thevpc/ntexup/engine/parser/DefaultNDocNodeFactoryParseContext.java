@@ -1,0 +1,162 @@
+package net.thevpc.ntexup.engine.parser;
+
+import net.thevpc.ntexup.api.document.NTxDocumentFactory;
+import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.log.NDocLogger;
+import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
+import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.io.NPath;
+
+import java.util.*;
+
+public class DefaultNDocNodeFactoryParseContext implements NDocNodeFactoryParseContext {
+    private final NDocument document;
+    private final NElement element;
+    private final NDocEngine engine;
+    private final List<NTxNode> nodePath = new ArrayList<>();
+    private final NDocResource source;
+
+    public DefaultNDocNodeFactoryParseContext(
+            NDocument document
+            , NElement element
+            , NDocEngine engine
+            ,
+            List<NTxNode> nodePath
+            , NDocResource source
+    ) {
+        this.document = document;
+        this.element = element==null?null:NDocUtils.addCompilerDeclarationPath(element,source);
+        this.engine = engine;
+        this.source = source;
+        this.nodePath.addAll(nodePath);
+    }
+
+    private boolean isVarName(String name) {
+        return name.matches("[a-zA-Z][a-zA-Z0-9_-]*]]");
+    }
+
+    @Override
+    public NElement asPathRef(NElement element) {
+        if (element.isAnyString()) {
+            String pathString = element.asStringValue().get();
+            if (isVarName(pathString)) {
+                return element;
+            }
+            if(!pathString.trim().isEmpty()) {
+                for (int i = nodePath.size() - 1; i >= 0; i--) {
+                    NDocResource resource = NDocUtils.sourceOf(nodePath.get(i));
+                    if (resource!=null) {
+                        if(resource.path().isPresent()) {
+                            NPath nPath = NDocUtils.resolvePath(element, resource);
+                            if(nPath!=null) {
+                                return NElement.ofString(nPath.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return element;
+    }
+
+    @Override
+    public NDocLogger messages() {
+        return engine().log();
+    }
+
+    public NDocument document() {
+        return document;
+    }
+
+    @Override
+    public NDocNodeFactoryParseContext push(NTxNode node) {
+        if (node == null) {
+            return this;
+        }
+        List<NTxNode> nodePath2 = new ArrayList<>();
+        nodePath2.addAll(Arrays.asList(nodePath()));
+        nodePath2.add(node);
+        return new DefaultNDocNodeFactoryParseContext(document(), element, engine(), nodePath2, source);
+    }
+
+    @Override
+    public NTxDocumentFactory documentFactory() {
+        return engine().documentFactory();
+    }
+
+    public NDocResource source() {
+        return source;
+    }
+
+    @Override
+    public NTxNode node() {
+        if (nodePath.isEmpty()) {
+            return null;
+        }
+        return nodePath.get(nodePath.size() - 1);
+    }
+
+    @Override
+    public NTxNode[] nodePath() {
+        return nodePath.toArray(new NTxNode[0]);
+    }
+
+    @Override
+    public NDocEngine engine() {
+        return engine;
+    }
+
+    @Override
+    public NElement element() {
+        return element;
+    }
+
+//    @Override
+//    public NPath resolvePath(NPath path) {
+//        if (path.isAbsolute()) {
+//            return path;
+//        }
+//        return resolvePath(path.toString());
+//    }
+
+//    @Override
+//    public NPath resolvePath(NStringElement path) {
+//        if(path==null){
+//            return null;
+//        }
+//        String s = path.asStringValue().get();
+//        if (NBlankable.isBlank(s)) {
+//            return null;
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public NPath resolvePath(String path) {
+//        if (NBlankable.isBlank(path)) {
+//            return null;
+//        }
+//        if (GitHelper.isGithubFolder(path)) {
+//            return resolvePath(GitHelper.resolveGithubPath(path, messages()));
+//        }
+//        NDocResource src = source;
+//        if (src == null) {
+//            if (nodePath != null) {
+//                for (int i = nodePath.size() - 1; i >= 0; i--) {
+//                    if (nodePath.get(i) != null) {
+//                        NDocResource ss = NDocUtils.sourceOf(nodePath.get(i));
+//                        if (ss != null) {
+//                            src = ss;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return NDocUtils.resolvePath(NElement.ofString(path),src);
+//    }
+}
