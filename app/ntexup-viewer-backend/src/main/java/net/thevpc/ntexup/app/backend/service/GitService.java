@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.app.backend.service;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
@@ -19,10 +19,10 @@ import java.nio.file.Files;
 @Service
 public class GitService {
 
-    private final NDocEngine engine;
+    private final NTxEngine engine;
 
     @Autowired
-    public GitService(NDocEngine engine) {
+    public GitService(NTxEngine engine) {
         this.engine = engine;
     }
 
