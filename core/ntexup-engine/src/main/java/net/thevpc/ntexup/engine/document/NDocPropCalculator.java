@@ -12,7 +12,7 @@ public class NDocPropCalculator {
 
 
     public NOptional<NTxProp> computeProperty(NTxNode node, String[] propertyNames) {
-        return computePropertyMagnetude(node, propertyNames).map(HStyleAndMagnitude::getStyle);
+        return computePropertyMagnetude(node, propertyNames).map(NTxStyleAndMagnitude::getStyle);
     }
 
     private static class HStyleRuleResult2 {
@@ -72,26 +72,26 @@ public class NDocPropCalculator {
         return rr.toArray(new HStyleRuleResult2[0]);
     }
 
-    public NOptional<HStyleAndMagnitude> computePropertyMagnetude(NTxNode node, String[] propertyNames) {
+    public NOptional<NTxStyleAndMagnitude> computePropertyMagnetude(NTxNode node, String[] propertyNames) {
         propertyNames = NDocUtils.uids(propertyNames);
         NOptional<NTxProp> u = node.getProperty(propertyNames);
         if (u.isPresent()) {
             return NOptional.of(
-                    new HStyleAndMagnitude(
+                    new NTxStyleAndMagnitude(
                             u.get(),
-                            new HStyleMagnitude(0, DefaultNDocNodeSelector.ofImportant())
+                            new NTxStyleMagnitude(0, DefaultNTxNodeSelector.ofImportant())
                     )
             );
         }
         NTxNode p = NDocUtils.firstNodeUp(node.parent());
         int distance = 1;
         NTxProp bestStyle = null;
-        HStyleMagnitude bestMag = null;
+        NTxStyleMagnitude bestMag = null;
         List<HStyleRuleResult2> acceptable=new ArrayList<>();
         while (p != null) {
             HStyleRuleResult2[] validRules = _HStyleRuleResult2(node, p, propertyNames);
             for (HStyleRuleResult2 rule : validRules) {
-                HStyleMagnitude m2 = new HStyleMagnitude(distance, rule.rule.selector());
+                NTxStyleMagnitude m2 = new NTxStyleMagnitude(distance, rule.rule.selector());
                 acceptable.add(new HStyleRuleResult2(rule,distance));
                 if (bestMag == null || m2.compareTo(bestMag) < 0) {
                     bestMag = m2;
@@ -113,22 +113,22 @@ public class NDocPropCalculator {
         }
         if (bestMag != null) {
             return NOptional.of(
-                    new HStyleAndMagnitude(
+                    new NTxStyleAndMagnitude(
                             bestStyle,
-                            new HStyleMagnitude(distance, bestMag.getSelector())
+                            new NTxStyleMagnitude(distance, bestMag.getSelector())
                     )
             );
         }
         return NOptional.ofNamedEmpty("no style : " + Arrays.asList(propertyNames));
     }
 
-    public List<HStyleAndMagnitude> computePropertiesMagnetude(NTxNode node) {
-        Map<String, HStyleAndMagnitude> found = new LinkedHashMap<>();
+    public List<NTxStyleAndMagnitude> computePropertiesMagnetude(NTxNode node) {
+        Map<String, NTxStyleAndMagnitude> found = new LinkedHashMap<>();
         for (NTxProp property : node.getProperties()) {
             found.put(property.getName(),
-                    new HStyleAndMagnitude(
+                    new NTxStyleAndMagnitude(
                             property,
-                            new HStyleMagnitude(0, DefaultNDocNodeSelector.ofImportant())
+                            new NTxStyleMagnitude(0, DefaultNTxNodeSelector.ofImportant())
                     )
             );
         }
@@ -137,8 +137,8 @@ public class NDocPropCalculator {
         while (p != null) {
             HStyleRuleResult2[] validRules = _HStyleRuleResult2s(node, p);
             for (HStyleRuleResult2 rule : validRules) {
-                HStyleAndMagnitude m2 = new HStyleAndMagnitude(rule.property, new HStyleMagnitude(distance, rule.rule.selector()));
-                HStyleAndMagnitude hStyleAndMagnitude = found.get(rule.property.getName());
+                NTxStyleAndMagnitude m2 = new NTxStyleAndMagnitude(rule.property, new NTxStyleMagnitude(distance, rule.rule.selector()));
+                NTxStyleAndMagnitude hStyleAndMagnitude = found.get(rule.property.getName());
                 if (hStyleAndMagnitude == null || m2.getMagnetude().compareTo(hStyleAndMagnitude.getMagnetude()) <= 0) {
                     found.put(rule.property.getName(), m2);
                 }
