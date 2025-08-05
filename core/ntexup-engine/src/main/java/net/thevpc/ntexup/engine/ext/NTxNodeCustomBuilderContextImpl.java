@@ -1,16 +1,16 @@
 package net.thevpc.ntexup.engine.ext;
 
 import net.thevpc.ntexup.api.parser.*;
-import net.thevpc.ntexup.api.renderer.text.NDocTextRendererFlavor;
-import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
+import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
+import net.thevpc.ntexup.engine.parser.NTxNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
+import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.*;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.util.ToElementHelper;
 import net.thevpc.nuts.NConstants;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -23,16 +23,16 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderContext {
-    NDocNodeBuilder builder;
+    NTxNodeBuilder builder;
     RenderAction renderMainAction;
     SizeRequirementsAction sizeRequirementsAction;
     SelfBoundsAction selfBoundsAction;
     String id;
     String[] aliases;
     ToElemAction toElem;
-    NDocNodeRenderer createdRenderer;
-    NDocNodeParserBase createdParser;
-    NDocTextRendererFlavor createdTextFlavor;
+    NTxNodeRenderer createdRenderer;
+    NTxNodeParserBase createdParser;
+    NTxTextRendererFlavor createdTextFlavor;
     List<ProcessParamAction> processSingleArgumentList;
     List<ProcessNodeAction> afterProcessAllArgumentsList;
     boolean compiled;
@@ -47,7 +47,7 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     RenderEmbeddedTextAction renderEmbeddedTextAction;
     ProcessNodeAction processChildren;
 
-    public NTxNodeCustomBuilderContextImpl(NDocNodeBuilder builder, NTxEngine engine) {
+    public NTxNodeCustomBuilderContextImpl(NTxNodeBuilder builder, NTxEngine engine) {
         this.builder = builder;
         this.engine = engine;
     }
@@ -176,7 +176,7 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     @Override
     public NTxNodeCustomBuilderContext addParamName(String name) {
         if (!NBlankable.isBlank(name)) {
-            knownArgNames.add(NDocUtils.uid(name));
+            knownArgNames.add(NTxUtils.uid(name));
         }
         return this;
     }
@@ -184,7 +184,7 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     public NTxNodeCustomBuilderContext parseDefaultParams() {
         return parseParam(new ProcessParamAction() {
             @Override
-            public boolean processParam(NDocArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+            public boolean processParam(NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
                 createParser();
                 return createdParser.defaultProcessArgument(info);
             }
@@ -261,30 +261,30 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         }
     }
 
-    public NDocNodeParser createParser() {
+    public NTxNodeParser createParser() {
         requireCompiled();
         if (createdParser == null) {
-            createdParser = new CustomNDocNodeParserFromBuilder(this);
+            createdParser = new CustomNTxNodeParserFromBuilder(this);
         }
         return createdParser;
     }
 
-    public NDocTextRendererFlavor createTextFlavor() {
+    public NTxTextRendererFlavor createTextFlavor() {
         if (renderTextAction != null && createdTextFlavor == null) {
-            createdTextFlavor = new CustomNDocTextRendererFlavorFromBuilder(this);
+            createdTextFlavor = new CustomNTxTextRendererFlavorFromBuilder(this);
         }
         return createdTextFlavor;
     }
 
-    public NDocNodeRenderer createRenderer() {
+    public NTxNodeRenderer createRenderer() {
         requireCompiled();
         if (createdRenderer == null) {
             if (renderConvertAction != null) {
-                createdRenderer = new NDocNodeRendererAsConverter(this);
+                createdRenderer = new NTxNodeRendererAsConverter(this);
             } else if (renderTextAction != null) {
-                createdRenderer = new NDocNodeRendererAsText(this);
+                createdRenderer = new NTxNodeRendererAsText(this);
             } else {
-                createdRenderer = new NDocNodeRendererAsDefault(this);
+                createdRenderer = new NTxNodeRendererAsDefault(this);
             }
         }
         return createdRenderer;
@@ -292,7 +292,7 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
 
     @Override
     public String toString() {
-        return "NDocNodeCustomBuilderContextImpl{" +
+        return getClass().getSimpleName()+"{" +
                 "id='" + id + '\'' +
                 ", aliases=" + Arrays.toString(aliases) +
                 '}';
