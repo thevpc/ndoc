@@ -18,7 +18,7 @@ public class NTxExampleFromFile2 {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NTxEngine e = new DefaultNTxEngine();
-        NPath file = NPath.of("src/ndoc/test1.ndoc").toAbsolute().normalize();
+        NPath file = NPath.of("src/ntexup/test1.ndoc").toAbsolute().normalize();
         NTxDocument doc = e.loadDocument(file).get();
 
         System.out.println(e.toElement(doc));
