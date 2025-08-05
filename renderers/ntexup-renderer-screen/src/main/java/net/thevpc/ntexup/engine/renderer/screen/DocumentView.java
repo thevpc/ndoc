@@ -4,9 +4,9 @@ import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.source.NDocResourceMonitor;
-import net.thevpc.ntexup.engine.parser.resources.NDocResourceNew;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.source.NTxSourceMonitor;
+import net.thevpc.ntexup.engine.parser.resources.NTxSourceNew;
 import net.thevpc.ntexup.api.renderer.*;
 
 
@@ -34,7 +34,7 @@ public class DocumentView {
     PageView currentShowingPage;
     private Map<String, PageView> pagesMapById = new HashMap<>();
     private Map<Integer, PageView> pagesMapByIndex = new HashMap<>();
-    private NDocNodeRendererManager rendererManager;
+    private NTxNodeRendererManager rendererManager;
     private Timer timer;
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
@@ -51,10 +51,10 @@ public class DocumentView {
         this.rendererManager = engine.renderManager();
 
         frame = new JFrame();
-        frame.setTitle("NDoc Viewer");
+        frame.setTitle("NTexup Viewer");
         frame.setIconImage(
                 NTxUtilsImages.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ndoc.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup.png")).getImage(),
                         16, 16)
         );
         contentPane = new DocumentViewContentPanel(this);
@@ -97,7 +97,7 @@ public class DocumentView {
                 return;
             }
             if (document != null) {
-                NDocResourceMonitor r = document.resources();
+                NTxSourceMonitor r = document.resources();
                 if (r.changed()) {
                     reloadDocumentAsync();
                 }
@@ -116,15 +116,15 @@ public class DocumentView {
         return inLoadDocument;
     }
 
-    public NDocNodeRendererManager rendererManager() {
+    public NTxNodeRendererManager rendererManager() {
         return rendererManager;
     }
 
     public String getPageSourceName() {
         Object s = getPageSource();
         if (s != null) {
-            if (s instanceof NDocResource) {
-                NPath path = ((NDocResource) s).path().orNull();
+            if (s instanceof NTxSource) {
+                NPath path = ((NTxSource) s).path().orNull();
                 if (path != null) {
                     return path.getName();
                 }
@@ -239,7 +239,7 @@ public class DocumentView {
             this.currentThrowable = null;
             try {
                 NTxDocument rawDocument = documentSupplier.get(rendererContext);
-                NDocResource source = rawDocument.root().source();
+                NTxSource source = rawDocument.root().source();
                 SwingUtilities.invokeLater(() -> {
                     if (source == null) {
                         frame.setTitle("New Document");
@@ -270,7 +270,7 @@ public class DocumentView {
             }
             if (pageViews.isEmpty()) {
                 NTxNode node = engine.documentFactory().ofPage();
-                node.setSource(NOptional.of(document).then(NTxDocument::source).orElseGet(NDocResourceNew::new));
+                node.setSource(NOptional.of(document).then(NTxDocument::source).orElseGet(NTxSourceNew::new));
                 pageViews.add(createPageView(
                         node,
                         0
