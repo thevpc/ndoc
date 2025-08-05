@@ -3,12 +3,12 @@ package net.thevpc.ntexup.extension.simple3d.surface;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3DPrimitive;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3D;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
-import net.thevpc.ntexup.api.document.elem3d.RenderState3D;
+import net.thevpc.ntexup.api.document.elem3d.NTxRenderState3D;
 import net.thevpc.ntexup.api.document.elem3d.composite.NtxElement3DSurface;
 import net.thevpc.ntexup.api.document.elem3d.primitives.NtxElement3DTriangle;
-import net.thevpc.ntexup.api.util.NDocUtils;
-import net.thevpc.ntexup.api.util.MinMax;
-import net.thevpc.ntexup.api.renderer.NDocElement3DRenderer;
+import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.api.util.NTxMinMax;
+import net.thevpc.ntexup.api.renderer.NTxElement3DRenderer;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Element3DSurfacePrimitiveBuilder implements NDocElement3DRenderer {
+public class Element3DSurfacePrimitiveBuilder implements NTxElement3DRenderer {
     @Override
     public Class<? extends NtxElement3D> forType() {
         return NtxElement3DSurface.class;
     }
 
     @Override
-    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, RenderState3D renderState) {
+    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, NTxRenderState3D renderState) {
         NtxElement3DSurface ee = (NtxElement3DSurface) e;
         NTxPoint3D[] points = ee.getPoints();
         // Perform Delaunay triangulation
         DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
         builder.setSites(Arrays.asList(points).stream().map(x -> new Coordinate(x.x, x.y, x.z)).collect(Collectors.toList()));
-        MinMax m = NDocUtils.minMaxZ(points);
+        NTxMinMax m = NTxUtils.minMaxZ(points);
         QuadEdgeSubdivision subdivision = builder.getSubdivision();
         // Get the triangles as JTS Geometry objects
         GeometryCollection triangles = (GeometryCollection) subdivision.getTriangles(new GeometryFactory());
