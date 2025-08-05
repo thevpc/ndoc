@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.api.document.elem2d;
 
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NMsg;
@@ -61,6 +61,6 @@ public enum NTxAlign implements NToElement {
 
     @Override
     public NElement toElement() {
-        return NElement.ofName(NDocUtils.uid(name()));
+        return NElement.ofName(NTxUtils.uid(name()));
     }
 }
