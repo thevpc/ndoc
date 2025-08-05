@@ -2,9 +2,9 @@ package net.thevpc.ntexup.engine.base.functions.general;
 
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
-import net.thevpc.ntexup.api.eval.NDocFunctionArgs;
-import net.thevpc.ntexup.api.eval.NDocFunctionContext;
-import net.thevpc.ntexup.engine.eval.GitHelper;
+import net.thevpc.ntexup.api.eval.NTxFunctionArgs;
+import net.thevpc.ntexup.api.eval.NTxFunctionContext;
+import net.thevpc.ntexup.engine.eval.NTxGitHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
@@ -19,7 +19,7 @@ public class NTxFunctionEitherPath implements NTxFunction {
     }
 
     @Override
-    public NElement invoke(NDocFunctionArgs args, NDocFunctionContext context) {
+    public NElement invoke(NTxFunctionArgs args, NTxFunctionContext context) {
         List<NElement> possibilities = new ArrayList<>();
         for (NTxFunctionArg arg : args.args()) {
             NElement u = arg.eval();
@@ -27,9 +27,9 @@ public class NTxFunctionEitherPath implements NTxFunction {
             if (!NBlankable.isBlank(u)) {
                 String sp = u.asStringValue().orNull();
                 if (!NBlankable.isBlank(u)) {
-                    if (GitHelper.isGithubFolder(sp)) {
+                    if (NTxGitHelper.isGithubFolder(sp)) {
                         try {
-                            NPath pp = GitHelper.resolveGithubPath(sp, context.messages());
+                            NPath pp = NTxGitHelper.resolveGithubPath(sp, context.messages());
                             return NElement.ofString(pp.toString());
                         } catch (Exception ex) {
                             //just ignore
