@@ -3,7 +3,7 @@ package net.thevpc.ntexup.api.renderer;
 import java.io.Serializable;
 
 public class NTxDocumentStreamRendererConfig implements Serializable, Cloneable {
-    private NDocPageOrientation orientation;
+    private NTxPageOrientation orientation;
     private int gridX;
     private int gridY;
     private int pageWidth;
@@ -16,11 +16,11 @@ public class NTxDocumentStreamRendererConfig implements Serializable, Cloneable 
     private float marginLeft;
     private float marginRight;
 
-    public NDocPageOrientation getOrientation() {
+    public NTxPageOrientation getOrientation() {
         return orientation;
     }
 
-    public NTxDocumentStreamRendererConfig setOrientation(NDocPageOrientation orientation) {
+    public NTxDocumentStreamRendererConfig setOrientation(NTxPageOrientation orientation) {
         this.orientation = orientation;
         return this;
     }
