@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer.text;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.*;
 import net.thevpc.ntexup.api.document.style.*;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
 
 
-    protected NDocProperties defaultStyles = new NDocProperties(null);
+    protected NTxProperties defaultStyles = new NTxProperties(null);
 
     public NDocTextBaseRenderer(String... types) {
         super(types);
@@ -27,8 +27,8 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
 
     @Override
     public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext ctx) {
-        NDocBounds2 s = selfBounds(p, ctx);
-        NDocBounds2 bb = ctx.getBounds();
+        NTxBounds2 s = selfBounds(p, ctx);
+        NTxBounds2 bb = ctx.getBounds();
         return new NDocSizeRequirements(
                 s.getWidth(),
                 Math.max(bb.getWidth(), s.getWidth()),
@@ -39,20 +39,20 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
         );
     }
 
-    public NDocBounds2 bgBounds(NTxNode p, NDocNodeRendererContext ctx) {
+    public NTxBounds2 bgBounds(NTxNode p, NDocNodeRendererContext ctx) {
         return ctx.selfBounds(p, null, null);
     }
 
-    public NDocBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx) {
+    public NTxBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx) {
         NDocTextRendererBuilder helper = createRichTextHelper(p, ctx);
-        NDocBounds2 bounds2 = helper.computeBound(ctx);
-        return NDocValueByName.selfBounds(p, new NDocDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+        NTxBounds2 bounds2 = helper.computeBound(ctx);
+        return NDocValueByName.selfBounds(p, new NTxDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
     }
 
-    public NDocBounds2 defaultSelfBounds(NTxNode p, NDocNodeRendererContext ctx) {
+    public NTxBounds2 defaultSelfBounds(NTxNode p, NDocNodeRendererContext ctx) {
         NDocTextRendererBuilder helper = createRichTextHelper(p, ctx);
-        NDocBounds2 bounds2 = helper.computeBound(ctx);
-        return NDocValueByName.selfBounds(p, new NDocDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+        NTxBounds2 bounds2 = helper.computeBound(ctx);
+        return NDocValueByName.selfBounds(p, new NTxDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
     }
 
     protected abstract NDocTextRendererBuilder createRichTextHelper(NTxNode p, NDocNodeRendererContext ctx);
@@ -65,9 +65,9 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
 
         NDocTextRendererBuilder helper = createRichTextHelper(p, ctx);
 
-        NDocBounds2 bgBounds0 = bgBounds(p, ctx);
-        NDocBounds2 bgBounds = bgBounds0;
-        NDocBounds2 selfBounds = selfBounds(p, ctx);
+        NTxBounds2 bgBounds0 = bgBounds(p, ctx);
+        NTxBounds2 bgBounds = bgBounds0;
+        NTxBounds2 selfBounds = selfBounds(p, ctx);
         bgBounds = bgBounds.expand(selfBounds);
 
         NDocNodeRendererContext finalCtx = ctx;
@@ -79,9 +79,9 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
                             + "newExpectedBounds=" + bgBounds + "\n"
                             + "curr: "
                             + Arrays.asList(
-                                    NDocPropName.SIZE,
-                                    NDocPropName.ORIGIN,
-                                    NDocPropName.POSITION
+                                    NTxPropName.SIZE,
+                                    NTxPropName.ORIGIN,
+                                    NTxPropName.POSITION
                             )
                             .stream().map(x
                                     -> p.getProperty(x).orNull()
@@ -89,9 +89,9 @@ public abstract class NDocTextBaseRenderer extends NDocNodeRendererBase {
                             + "\n"
                             + "eff: "
                             + Arrays.asList(
-                                    NDocPropName.SIZE,
-                                    NDocPropName.ORIGIN,
-                                    NDocPropName.POSITION
+                                    NTxPropName.SIZE,
+                                    NTxPropName.ORIGIN,
+                                    NTxPropName.POSITION
                             )
                             .stream().map(x
                                             -> {
