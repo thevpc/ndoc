@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.base.functions.colors;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.eval.*;
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.engine.util.NDocColorUtils;
@@ -23,9 +23,9 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
     @Override
     public NElement invoke(NDocFunctionArgs args, NDocFunctionContext context) {
         boolean cyclic = false;
-        NDocDouble2 start = null;
-        NDocDouble2 end = null;
-        NDocBounds2 selfBounds = NDocValue.of(context.findVar("selfBounds").map(x->x.get()).orNull()).asBounds2().orNull();
+        NTxDouble2 start = null;
+        NTxDouble2 end = null;
+        NTxBounds2 selfBounds = NDocValue.of(context.findVar("selfBounds").map(x->x.get()).orNull()).asBounds2().orNull();
         java.util.List<Color> colors = new ArrayList<>();
         for (NTxFunctionArg arg : args.args()) {
             NElement v = arg.eval();
@@ -59,10 +59,10 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
             return NDocElementUtils.toElement(colors.get(0));
         }
         if (start == null) {
-            start = new NDocDouble2(0, 50);
+            start = new NTxDouble2(0, 50);
         }
         if (end == null) {
-            end = new NDocDouble2(100 - start.getX(), 100 - start.getY());
+            end = new NTxDouble2(100 - start.getX(), 100 - start.getY());
         }
         // should consider node size!!
         Point2D start2;
