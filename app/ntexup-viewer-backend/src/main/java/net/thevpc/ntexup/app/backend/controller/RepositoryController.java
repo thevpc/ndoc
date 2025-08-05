@@ -1,10 +1,10 @@
 package net.thevpc.ntexup.app.backend.controller;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.app.backend.service.GitService;
-import net.thevpc.ntexup.engine.DefaultNDocEngine;
+import net.thevpc.ntexup.engine.DefaultNTxEngine;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import java.util.List;
 //@RequestMapping("/api/document")
 public class RepositoryController {
 
-    private final NDocEngine engine;
+    private final NTxEngine engine;
     private final GitService gitService;
 
     @Autowired
-    public RepositoryController(NDocEngine engine, GitService gitService) {
+    public RepositoryController(NTxEngine engine, GitService gitService) {
         this.engine = engine;
         this.gitService = gitService;
     }
@@ -115,8 +115,8 @@ public class RepositoryController {
                     .toAbsolute()
                     .normalize();
 
-            NDocEngine e = new DefaultNDocEngine();
-            NDocument doc = e.loadDocument(file).get();
+            NTxEngine e = new DefaultNTxEngine();
+            NTxDocument doc = e.loadDocument(file).get();
             List<NTxNode> pages = doc.pages();
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 GitService gitService = new GitService(engine);
