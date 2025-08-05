@@ -3,10 +3,10 @@ package net.thevpc.ntexup.engine.renderer.screen;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.renderer.NDocNodeRenderer;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererManager;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.renderer.NTxNodeRenderer;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererManager;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
@@ -23,7 +23,7 @@ public class PageView extends JComponent {
     private long pageStartTime;
     private int index;
     private String uuid;
-    private NDocNodeRendererManager rendererManager;
+    private NTxNodeRendererManager rendererManager;
     private NTxEngine engine;
     private NTxDocument document;
 
@@ -31,7 +31,7 @@ public class PageView extends JComponent {
             NTxDocument document,
             NTxNode page, int index,
             NTxEngine engine,
-            NDocNodeRendererManager rendererManager
+            NTxNodeRendererManager rendererManager
     ) {
         this.document = document;
         this.page0 = page;
@@ -68,7 +68,7 @@ public class PageView extends JComponent {
             List<NTxNode> all = engine().compilePageNode(this.page0, document);
             this.page = NOptional.ofSingleton(all).get();
             c.stop();
-            engine.log().log(NMsg.ofC("page %s compiled in %s", (index + 1), c), NDocUtils.sourceOf(this.page0));
+            engine.log().log(NMsg.ofC("page %s compiled in %s", (index + 1), c), NTxUtils.sourceOf(this.page0));
         }
         this.pageStartTime = System.currentTimeMillis();
     }
@@ -91,7 +91,7 @@ public class PageView extends JComponent {
         g2d.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        NDocNodeRendererContext ctx = new ScreenNDocPartRendererContext(this,
+        NTxNodeRendererContext ctx = new ScreenNTxPartRendererContext(this,
                 engine.createGraphics(g2d)
                 , size, pageStartTime);
         if (page != null) {
@@ -102,12 +102,12 @@ public class PageView extends JComponent {
     }
 
 
-    public void render(NTxNode p, NDocNodeRendererContext ctx) {
-        NDocNodeRenderer r = rendererManager.getRenderer(p.type()).get();
+    public void render(NTxNode p, NTxNodeRendererContext ctx) {
+        NTxNodeRenderer r = rendererManager.getRenderer(p.type()).get();
         r.render(p, ctx);
     }
 
-    public NDocNodeRendererManager rendererManager() {
+    public NTxNodeRendererManager rendererManager() {
         return rendererManager;
     }
 
