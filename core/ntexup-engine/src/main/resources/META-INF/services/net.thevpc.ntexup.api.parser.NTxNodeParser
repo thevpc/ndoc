@@ -1,0 +1,7 @@
+net.thevpc.ntexup.engine.parser.nodeparsers.NTxScene3DParser
+net.thevpc.ntexup.engine.parser.nodeparsers.NTxPageGroupParser
+net.thevpc.ntexup.engine.parser.nodeparsers.NTxPageParser
+net.thevpc.ntexup.engine.parser.nodeparsers.ForSpecialParser
+net.thevpc.ntexup.engine.parser.nodeparsers.IfSpecialParser
+net.thevpc.ntexup.engine.parser.nodeparsers.IncludeSpecialParser
+net.thevpc.ntexup.engine.parser.nodeparsers.StylesSpecialParser
