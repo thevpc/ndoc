@@ -5,9 +5,9 @@ import net.thevpc.ntexup.api.document.style.*;
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.elem2d.NTxAlign;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.util.NDocUtils;
-import net.thevpc.ntexup.api.eval.NDocValue;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.nuts.NIllegalArgumentException;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.*;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class DefaultNTxNode implements NTxNode {
     private String uuid;
     private String nodeType;
-    private NDocResource source;
+    private NTxSource source;
     protected NTxItem parent;
     private NTxProperties properties;
     private Map<String, NElement> vars = new LinkedHashMap<>();
@@ -37,24 +37,24 @@ public class DefaultNTxNode implements NTxNode {
         return t;
     }
 
-    public static DefaultNTxNode ofAssign(String name, NElement value, NDocResource source) {
+    public static DefaultNTxNode ofAssign(String name, NElement value, NTxSource source) {
         DefaultNTxNode n = new DefaultNTxNode(NTxNodeType.CTRL_ASSIGN, source);
-        n.setProperty(NTxPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(name), source));
-        n.setProperty(NTxPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value, source));
+        n.setProperty(NTxPropName.NAME, NTxUtils.addCompilerDeclarationPath(NElement.ofString(name), source));
+        n.setProperty(NTxPropName.VALUE, NTxUtils.addCompilerDeclarationPath(value, source));
         return n;
     }
 
-    public static DefaultNTxNode ofAssignIfEmpty(String name, NElement value, NDocResource source) {
+    public static DefaultNTxNode ofAssignIfEmpty(String name, NElement value, NTxSource source) {
         DefaultNTxNode n = new DefaultNTxNode(NTxNodeType.CTRL_ASSIGN, source);
-        n.setProperty(NTxPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(name), source));
-        n.setProperty(NTxPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value, source));
+        n.setProperty(NTxPropName.NAME, NTxUtils.addCompilerDeclarationPath(NElement.ofString(name), source));
+        n.setProperty(NTxPropName.VALUE, NTxUtils.addCompilerDeclarationPath(value, source));
         n.setProperty("ifempty", NElement.ofBoolean(true));
         return n;
     }
 
-    public static DefaultNTxNode ofExpr(NElement value, NDocResource source) {
+    public static DefaultNTxNode ofExpr(NElement value, NTxSource source) {
         DefaultNTxNode n = new DefaultNTxNode(NTxNodeType.CTRL_EXPR, source);
-        n.setProperty(NTxPropName.VALUE, NDocUtils.addCompilerDeclarationPath(value, source));
+        n.setProperty(NTxPropName.VALUE, NTxUtils.addCompilerDeclarationPath(value, source));
         return n;
     }
 
@@ -62,7 +62,7 @@ public class DefaultNTxNode implements NTxNode {
         this(nodeType, null);
     }
 
-    public DefaultNTxNode(String nodeType, NDocResource source) {
+    public DefaultNTxNode(String nodeType, NTxSource source) {
         this.nodeType = nodeType;
         this.uuid = UUID.randomUUID().toString();
         this.source = source;
@@ -91,18 +91,18 @@ public class DefaultNTxNode implements NTxNode {
         if (style.isEmpty()) {
             return new String[0];
         }
-        String[] v = NDocValue.of(style.get()).asStringArrayOrString().orNull();
+        String[] v = NTxValue.of(style.get()).asStringArrayOrString().orNull();
         if (v == null) {
             return new String[0];
         }
         return Arrays.stream(v).filter(x -> !NBlankable.isBlank(x))
-                .map(NDocUtils::uid)
+                .map(NTxUtils::uid)
                 .distinct()
                 .toArray(String[]::new)
                 ;
     }
 
-    public NDocResource source() {
+    public NTxSource source() {
         return source;
     }
 
@@ -112,7 +112,7 @@ public class DefaultNTxNode implements NTxNode {
         return new ArrayList<>(properties.toSet());
     }
 
-    public NTxNode setSource(NDocResource source) {
+    public NTxNode setSource(NTxSource source) {
         this.source = source;
         return this;
     }
@@ -163,9 +163,9 @@ public class DefaultNTxNode implements NTxNode {
     public NOptional<NElement> getVar(String property) {
         NElement u = vars.get(property);
         if (u != null) {
-            NDocResource source = NDocUtils.sourceOf(this);
+            NTxSource source = NTxUtils.sourceOf(this);
             if (source != null) {
-                u = NDocUtils.addCompilerDeclarationPath(u, source);
+                u = NTxUtils.addCompilerDeclarationPath(u, source);
             }
         }
         return NOptional.ofNamed(u, property);
@@ -209,7 +209,7 @@ public class DefaultNTxNode implements NTxNode {
 
     public NTxNode setProperty(NTxProp prop) {
         if (false) {
-            String s = NDocUtils.findCompilerDeclarationPath(prop.getValue()).orNull();
+            String s = NTxUtils.findCompilerDeclarationPath(prop.getValue()).orNull();
             if (s == null) {
                 throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", prop.getName(), prop.getValue()));
             }
@@ -250,7 +250,7 @@ public class DefaultNTxNode implements NTxNode {
             vars.remove(name);
         } else {
             if (false) {
-                String s = NDocUtils.findCompilerDeclarationPath(value).orNull();
+                String s = NTxUtils.findCompilerDeclarationPath(value).orNull();
                 if (s == null) {
                     throw new NIllegalArgumentException(NMsg.ofC("var value %s=%s is missing CompilerDeclarationPath", name, value));
                 }
@@ -270,7 +270,7 @@ public class DefaultNTxNode implements NTxNode {
     private Set<String> _oldClassNames() {
         NOptional<NTxProp> y = properties.get(NTxPropName.CLASS);
         if (y.isPresent()) {
-            return new LinkedHashSet<>(Arrays.asList(NDocValue.of(y.get().getValue()).asStringArray().orElse(new String[0])).stream()
+            return new LinkedHashSet<>(Arrays.asList(NTxValue.of(y.get().getValue()).asStringArray().orElse(new String[0])).stream()
                     .filter(x -> x != null && x.trim().length() > 0)
                     .map(String::trim)
                     .collect(Collectors.toList()));
@@ -515,7 +515,7 @@ public class DefaultNTxNode implements NTxNode {
     @Override
     public NTxNode setSize(NTxDouble2 size) {
         NElement old = getPropertyValue(NTxPropName.SIZE).orNull();
-        NTxDouble2 oo = old == null ? null : NDocValue.of(old).asDouble2().orNull();
+        NTxDouble2 oo = old == null ? null : NTxValue.of(old).asDouble2().orNull();
         if (oo == null) {
             oo = new NTxDouble2(null, null);
         }
@@ -583,8 +583,8 @@ public class DefaultNTxNode implements NTxNode {
     }
 
 //    @Override
-//    public NDocNode setLineColor(String w) {
-//        setProperty(NDocPropName.LINE_COLOR, w);
+//    public NTxNode setLineColor(String w) {
+//        setProperty(NTxPropName.LINE_COLOR, w);
 //        return this;
 //    }
 
@@ -631,7 +631,7 @@ public class DefaultNTxNode implements NTxNode {
         if (a != null) {
             children.add(a);
             a.setParent(this);
-            NDocUtils.checkNode(a, true);
+            NTxUtils.checkNode(a, true);
         }
         return this;
     }
@@ -786,9 +786,9 @@ public class DefaultNTxNode implements NTxNode {
     }
 
     //    @Override
-//    public NDocNode addRule(HProp... s) {
+//    public NTxNode addRule(HProp... s) {
 //        if (s != null) {
-//            Set<NDocProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
+//            Set<NTxProp> ss = Arrays.stream(s).filter(x -> x != null).collect(Collectors.toSet());
 //            if (!ss.isEmpty()) {
 //                addRule(DefaultHStyleRule.ofAny(s));
 //            }
@@ -859,7 +859,7 @@ public class DefaultNTxNode implements NTxNode {
 
     @Override
     public String getName() {
-        String n = NDocValue.of(getPropertyValue(NTxPropName.NAME).orNull()).asStringOrName().orNull();
+        String n = NTxValue.of(getPropertyValue(NTxPropName.NAME).orNull()).asStringOrName().orNull();
         if (n != null) {
             return n;
         }
