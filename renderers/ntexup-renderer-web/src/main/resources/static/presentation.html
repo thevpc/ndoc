@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>HDocument Presentation</title>
+</head>
+<body>
+<h2>HDocument Presentation</h2>
+<!-- Display the presentation of the uploaded HDocument -->
+<div th:each="node : ${document.root().children()}">
+    <!-- Example: Render each node as a paragraph -->
+    <p th:text="${node.toString()}"></p>
+</div>
+</body>
+</html>
