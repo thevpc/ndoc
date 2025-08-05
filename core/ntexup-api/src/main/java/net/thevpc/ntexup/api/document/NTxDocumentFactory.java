@@ -6,7 +6,7 @@ import net.thevpc.nuts.elem.NElement;
 
 public interface NTxDocumentFactory {
 
-    NDocument ofDocument(NDocResource source);
+    NTxDocument ofDocument(NDocResource source);
 
     NTxNode ofPage();
 
