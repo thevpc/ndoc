@@ -3,15 +3,15 @@ package net.thevpc.ntexup.extension.plantuml;
 import net.sourceforge.plantuml.SourceStringReader;
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
-import net.thevpc.ntexup.api.eval.NDocValue;
-import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
+import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.renderer.NDocGraphics;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.renderer.NTxGraphics;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 
-public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
+public abstract class PlantUmlBuilderBase implements NTxNodeBuilder {
     private String id;
     private String mode;
     private String[] aliases;
@@ -54,14 +54,14 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String txt = NDocValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orNull();
+        String txt = NTxValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orNull();
         if (NBlankable.isBlank(txt)) {
             return;
         }
-        String mode = NDocUtils.uid(this.mode);
-        NDocGraphics g = ctx.graphics();
+        String mode = NTxUtils.uid(this.mode);
+        NTxGraphics g = ctx.graphics();
         NTxBounds2 b = ctx.selfBounds(p);
         double x = b.getX();
         double y = b.getY();
@@ -113,7 +113,7 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
                 reader.outputImage(bos);
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
-                NDocResource src = NDocUtils.sourceOf(p);
+                NTxSource src = NTxUtils.sourceOf(p);
                 ctx.log().log(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src);
             }
         }
@@ -121,14 +121,14 @@ public abstract class PlantUmlBuilderBase implements NDocNodeBuilder {
 
             if (!ctx.isDry()) {
                 if (ctx.applyBackgroundColor(p)) {
-                    g.fillRect((int) x, (int) y, NDocUtils.intOf(b.getWidth()), NDocUtils.intOf(b.getHeight()));
+                    g.fillRect((int) x, (int) y, NTxUtils.intOf(b.getWidth()), NTxUtils.intOf(b.getHeight()));
                 }
 
                 ctx.applyForeground(p, false);
                 if (image != null) {
                     // would resize?
-                    int w = NDocUtils.intOf(b.getWidth());
-                    int h = NDocUtils.intOf(b.getHeight());
+                    int w = NTxUtils.intOf(b.getWidth());
+                    int h = NTxUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
                         BufferedImage resized = ctx.engine().tools().resizeBufferedImage(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);
