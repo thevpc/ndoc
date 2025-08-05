@@ -1,0 +1,81 @@
+normal(title:"Wireframe Diagrams"){
+    body{
+        grid((4,1),columns-weight:[2,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row 1
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                wireframe(size:(90,30),at:center
+                    """
+                        {+
+                          Login    | "MyName   "
+                          Password | "****     "
+                          [Cancel] | [  OK   ]
+                        }
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 wireframe(
+                     """
+                        Login    | "MyName   "
+                        Password | "****     "
+                        [Cancel] | [  OK   ]
+                     """
+                 )
+
+             ```
+             )
+
+            // Row 2
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                wireframe(size:(90,30),at:center
+                    """
+                        {+
+                        {/ <b>General | Fullscreen | Behavior | Saving }
+                        {
+                        { Open image in: | ^Smart Mode^ }
+                        [X] Smooth images when zoomed
+                        [X] Confirm image deletion
+                        [ ] Show hidden images
+                        }
+                        [Close]
+                        }
+                    """
+                )
+            }
+
+            source(at:left
+            tson,
+            ```
+                 wireframe(
+                     """
+                        {+
+                        {/ <b>General | Fullscreen | Behavior | Saving }
+                        {
+                        { Open image in: | ^Smart Mode^ }
+                        [X] Smooth images when zoomed
+                        [X] Confirm image deletion
+                        [ ] Show hidden images
+                        }
+                        [Close]
+                        }
+                     """
+                 )
+
+             ```
+             )
+        }
+    }
+
+}
