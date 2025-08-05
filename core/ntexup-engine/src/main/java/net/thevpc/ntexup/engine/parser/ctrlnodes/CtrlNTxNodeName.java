@@ -2,17 +2,17 @@ package net.thevpc.ntexup.engine.parser.ctrlnodes;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.NElement;
 
 public class CtrlNTxNodeName extends CtrlNTxNodeBase {
     private NElement __varName;
 
-    private CtrlNTxNodeName(NDocResource source) {
+    private CtrlNTxNodeName(NTxSource source) {
         super(NTxNodeType.CTRL_NAME,source);
     }
 
-    public CtrlNTxNodeName(NDocResource source, NElement __varName) {
+    public CtrlNTxNodeName(NTxSource source, NElement __varName) {
         super(NTxNodeType.CTRL_NAME,source);
         this.__varName=__varName;
     }
