@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.main.components;
 
 import net.thevpc.ntexup.config.NTxProject;
-import net.thevpc.ntexup.main.ServiceHelper;
+import net.thevpc.ntexup.main.NTxServiceHelper;
 import net.thevpc.nuts.io.NPath;
 
 import javax.swing.*;
@@ -12,8 +12,8 @@ import java.awt.event.MouseEvent;
 public class EntryComponent extends JPanel {
     private JList recentFilesComponent;
     private DefaultListModel recentFilesComponentModel;
-    private ServiceHelper serviceHelper;
-    public EntryComponent(ServiceHelper serviceHelper) {
+    private NTxServiceHelper serviceHelper;
+    public EntryComponent(NTxServiceHelper serviceHelper) {
         super(new GridBagLayout());
         this.serviceHelper=serviceHelper;
         recentFilesComponentModel = new DefaultListModel();
