@@ -13,7 +13,7 @@ page{
 
 }
 
-include ("fichier2.ndoc")
+include ("fichier2.ntx")
 
 
 page{
