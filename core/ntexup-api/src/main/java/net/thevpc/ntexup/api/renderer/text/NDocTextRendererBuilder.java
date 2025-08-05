@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.api.renderer.text;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -20,7 +20,7 @@ public interface NDocTextRendererBuilder {
 
     NDocRichTextRow currRow();
 
-    NDocBounds2 computeBound(NDocNodeRendererContext ctx);
+    NTxBounds2 computeBound(NDocNodeRendererContext ctx);
 
     public void setLang(String lang);
 
@@ -29,10 +29,10 @@ public interface NDocTextRendererBuilder {
     interface ImagePainter {
         void paint(NDocGraphics g, double x, double y);
 
-        NDocDouble2 size();
+        NTxDouble2 size();
     }
 
-    public void render(NTxNode p, NDocNodeRendererContext ctx, NDocBounds2 bgBounds, NDocBounds2 selfBounds);
+    public void render(NTxNode p, NDocNodeRendererContext ctx, NTxBounds2 bgBounds, NTxBounds2 selfBounds);
 
     boolean isEmpty();
 
