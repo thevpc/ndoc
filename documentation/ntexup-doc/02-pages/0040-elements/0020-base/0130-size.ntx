@@ -1,0 +1,53 @@
+normal(title:"Sizes"){
+    body{
+        grid((6,3),columns-weight:[1,3]){
+            styles:{
+                "*": {margin:2}
+            }
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, , background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle() """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:(100,100), background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:(100,100)) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:100, background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:100) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:80, background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:80) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:50, background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:50) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:(40,80), background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:(40,80)) """)
+
+            // Row
+            group(background:white,draw-contour){
+                rectangle(at:center, size:15%P, background:themeColors[4], color:themeColors[2])
+            }
+            source(tson, """ rectangle(size:15%P) """)
+
+        }
+    }
+
+}
