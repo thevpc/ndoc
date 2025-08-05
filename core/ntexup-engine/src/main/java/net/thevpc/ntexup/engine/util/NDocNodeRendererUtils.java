@@ -1,10 +1,10 @@
 package net.thevpc.ntexup.engine.util;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
-import net.thevpc.ntexup.api.document.elem2d.SizeD;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxSizeD;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.eval.NDocValueByName;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -17,8 +17,8 @@ import java.awt.*;
 
 public class NDocNodeRendererUtils {
 
-    public static SizeD mapDim(SizeD d, SizeD base) {
-        return new SizeD(
+    public static NTxSizeD mapDim(NTxSizeD d, NTxSizeD base) {
+        return new NTxSizeD(
                 d.getWidth() / 100 * base.getWidth(),
                 d.getHeight() / 100 * base.getHeight()
         );
@@ -59,27 +59,27 @@ public class NDocNodeRendererUtils {
         g.setFont(NDocValueByName.getFont(t, ctx));
     }
 
-    public static SizeD mapDim(double w, double h, NDocNodeRendererContext ctx) {
-        NDocBounds2 size = ctx.getBounds();
-        return new SizeD(w / 100 * size.getWidth(), w / 100 * size.getHeight());
+    public static NTxSizeD mapDim(double w, double h, NDocNodeRendererContext ctx) {
+        NTxBounds2 size = ctx.getBounds();
+        return new NTxSizeD(w / 100 * size.getWidth(), w / 100 * size.getHeight());
     }
 
-    public static NDocBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx) {
-        NDocValue oSize = NDocValue.of(ctx.computePropertyValue(t, NDocPropName.SIZE));
+    public static NTxBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx) {
+        NDocValue oSize = NDocValue.of(ctx.computePropertyValue(t, NTxPropName.SIZE));
         NOptional<NElement[]> a = oSize.asElementArray();
-        NDocDouble2 size=null;
+        NTxDouble2 size=null;
         if(a.isPresent()){
             NElement[] tt = a.get();
             switch (tt.length){
                 case 1:{
-                    size=new NDocDouble2(
+                    size=new NTxDouble2(
                             ctx.sizeRef().x(tt[0]).orElse(100.0),
                             ctx.sizeRef().y(tt[0]).orElse(100.0)
                     );
                     break;
                 }
                 case 2:{
-                    size=new NDocDouble2(
+                    size=new NTxDouble2(
                             ctx.sizeRef().x(tt[0]).orElse(100.0),
                             ctx.sizeRef().y(tt[1]).orElse(100.0)
                     );
@@ -88,9 +88,9 @@ public class NDocNodeRendererUtils {
             }
         }
         if (size == null) {
-            size = new NDocDouble2(ctx.getBounds().getWidth(), ctx.getBounds().getHeight());
+            size = new NTxDouble2(ctx.getBounds().getWidth(), ctx.getBounds().getHeight());
         }
-        return new NDocBounds2(
+        return new NTxBounds2(
                 ctx.getBounds().getX(),
                 ctx.getBounds().getY(),
                 size.getX(),
@@ -155,7 +155,7 @@ public class NDocNodeRendererUtils {
 //        return false;
 //    }
 
-    public static void paintDebugBox(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a, boolean force) {
+    public static void paintDebugBox(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NTxBounds2 a, boolean force) {
         if (ctx.isDry()) {
             return;
         }
@@ -165,7 +165,7 @@ public class NDocNodeRendererUtils {
                     NDocUtils.doubleOf(a.getMinX()), NDocUtils.doubleOf(a.getMinY()),
                     NDocUtils.doubleOf(a.getWidth()), NDocUtils.doubleOf(a.getHeight())
             );
-            NDocDouble2 origin = NDocValueByName.getOrigin(t, ctx,new NDocDouble2(a.getWidth(),a.getHeight()));
+            NTxDouble2 origin = NDocValueByName.getOrigin(t, ctx,new NTxDouble2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
             double y = origin.getY() + a.getY();
             g.setColor(NDocValueByName.getDebugColor(t, ctx));
@@ -177,7 +177,7 @@ public class NDocNodeRendererUtils {
         }
     }
 
-    public static void paintDebugBox(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
+    public static void paintDebugBox(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NTxBounds2 a) {
         paintDebugBox(t, ctx, g, a, false);
     }
 
@@ -188,7 +188,7 @@ public class NDocNodeRendererUtils {
         return NOptional.ofNamedEmpty("color");
     }
 
-    public static void paintBorderLine(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
+    public static void paintBorderLine(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NTxBounds2 a) {
         if (ctx.isDry()) {
             return;
         }
@@ -207,7 +207,7 @@ public class NDocNodeRendererUtils {
 
     }
 
-    public static void paintBackground(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NDocBounds2 a) {
+    public static void paintBackground(NTxNode t, NDocNodeRendererContext ctx, NDocGraphics g, NTxBounds2 a) {
         if (ctx.isDry()) {
             return;
         }
