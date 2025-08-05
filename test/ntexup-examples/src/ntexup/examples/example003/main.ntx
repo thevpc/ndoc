@@ -1,0 +1,47 @@
+@(ndoc,"1.0")
+{
+    styles:{
+        //include("*.tcss"),
+        "" :{
+            color:blue,
+            font-size:10,
+        }
+        title:{
+            font-size:30,
+            bold:true
+        },
+    },
+    @define course{
+        page{
+            triangle(rotate:30)
+        }
+    }
+    course(background-color:red){
+        text("My Title2"),
+        rectangle(
+            size:(50,50),
+            background:themeColors[3],
+            rotate:45,
+            color:themeColors[1],
+//            stroke:basic(dash:[30],width:5)
+            stroke:sloppy
+        )
+        equation("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:(50,50),
+            origin:center){
+
+        },
+    },
+    page{
+        text("My Title 2"),
+        equation("""
+            x=\frac{+b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:(50,50),
+            origin:center){
+
+        },
+    },
+}
