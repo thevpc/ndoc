@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
-import net.thevpc.ntexup.api.renderer.NDocPageOrientation;
+import net.thevpc.ntexup.api.renderer.NTxPageOrientation;
 import net.thevpc.nuts.util.NLiteral;
 
 import javax.swing.*;
@@ -149,7 +149,7 @@ public class PdfConfigDialog extends JDialog {
 
     public NTxDocumentStreamRendererConfig getConfig() {
         NTxDocumentStreamRendererConfig config = new NTxDocumentStreamRendererConfig();
-        config.setOrientation(portraitRadioButton.isSelected() ? NDocPageOrientation.PORTRAIT : NDocPageOrientation.LANDSCAPE);
+        config.setOrientation(portraitRadioButton.isSelected() ? NTxPageOrientation.PORTRAIT : NTxPageOrientation.LANDSCAPE);
         config.setGridX(NLiteral.of(gridXField.getText()).asInt().orElse(1));
         config.setGridY(NLiteral.of(gridYField.getText()).asInt().orElse(1));
         switch ((String) sizePageComboBox.getSelectedItem()) {
