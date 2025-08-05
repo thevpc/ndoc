@@ -1,15 +1,15 @@
 package net.thevpc.ntexup.engine.ext;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
 import net.thevpc.ntexup.engine.renderer.NDocNodeRendererBase;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 
 class NDocNodeRendererAsDefault extends NDocNodeRendererBase {
-    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
+    private final NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public NDocNodeRendererAsDefault(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+    public NDocNodeRendererAsDefault(NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         super(myNDocNodeCustomBuilderContext.id);
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
@@ -33,9 +33,9 @@ class NDocNodeRendererAsDefault extends NDocNodeRendererBase {
     }
 
     @Override
-    public NDocBounds2 selfBounds(NTxNode t, NDocNodeRendererContext ctx) {
+    public NTxBounds2 selfBounds(NTxNode t, NDocNodeRendererContext ctx) {
         if (myNDocNodeCustomBuilderContext.selfBoundsAction != null) {
-            NDocBounds2 u = myNDocNodeCustomBuilderContext.selfBoundsAction.selfBounds(t, ctx, myNDocNodeCustomBuilderContext);
+            NTxBounds2 u = myNDocNodeCustomBuilderContext.selfBoundsAction.selfBounds(t, ctx, myNDocNodeCustomBuilderContext);
             if (u != null) {
                 return u;
             }
