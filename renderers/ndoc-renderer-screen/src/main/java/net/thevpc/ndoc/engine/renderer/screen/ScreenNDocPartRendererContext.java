@@ -10,10 +10,11 @@ import java.awt.image.ImageObserver;
 class ScreenNDocPartRendererContext extends NDocNodeRendererContextBase {
     private final PageView pageView;
 
-    public ScreenNDocPartRendererContext(PageView pageView, NDocGraphics g, Dimension size) {
+    public ScreenNDocPartRendererContext(PageView pageView, NDocGraphics g, Dimension size,long pageStartTime) {
         super(pageView.engine(), g, size, new NDocBounds2(0, 0, size.getWidth(), size.getHeight()));
         this.pageView = pageView;
-        setCapability("animated",true);
+        setCapability(CAPABILITY_ANIMATE,true);
+        setPageStartTime(pageStartTime);
     }
 
     @Override
