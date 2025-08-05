@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 class CustomNDocTextRendererFlavorFromBuilder implements NDocTextRendererFlavor {
-    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
+    private final NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public CustomNDocTextRendererFlavorFromBuilder(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+    public CustomNDocTextRendererFlavorFromBuilder(NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
 
