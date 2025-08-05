@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Properties;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.source.NDocResourceMonitor;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.source.NTxSourceMonitor;
 import net.thevpc.nuts.util.NOptional;
 
 public interface NTxDocument {
-    NDocResource source();
-    NDocResourceMonitor resources();
+    NTxSource source();
+    NTxSourceMonitor resources();
 
     NTxDocument add(NTxNode part);
 
-    NDocDocumentClass documentClass();
+    NTxDocumentClass documentClass();
 
     NTxNode root();
 
@@ -24,7 +24,7 @@ public interface NTxDocument {
 
     NOptional<String> getProperty(String name);
 
-    void setDocumentClass(NDocDocumentClass documentClass);
+    void setDocumentClass(NTxDocumentClass documentClass);
 
     NTxDocument setProperty(String name, String value);
 
