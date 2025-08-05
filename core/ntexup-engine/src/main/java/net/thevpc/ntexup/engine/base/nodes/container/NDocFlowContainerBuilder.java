@@ -4,13 +4,13 @@
  */
 package net.thevpc.ntexup.engine.base.nodes.container;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
  * @author vpc
  */
 public class NDocFlowContainerBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.FLOW)
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.FLOW)
                 .renderComponent(this::renderMain)
                 .sizeRequirements(this::sizeRequirements);
     }
@@ -34,17 +34,17 @@ public class NDocFlowContainerBuilder implements NDocNodeBuilder {
 
     private static class Elems {
         Elem[] elems;
-        NDocDouble2 size;
-        NDocDouble2 fullSize;
+        NTxDouble2 size;
+        NTxDouble2 fullSize;
     }
 
     private static class Elem {
         NTxNode node;
         NDocSizeRequirements sizeRequirements;
-        NDocBounds2 bounds;
+        NTxBounds2 bounds;
     }
 
-    private Elems compute(NTxNode p, NDocBounds2 expectedBounds, NDocNodeRendererContext ctx) {
+    private Elems compute(NTxNode p, NTxBounds2 expectedBounds, NDocNodeRendererContext ctx) {
         List<NTxNode> texts = p.children()
                 .stream().filter(x -> ctx.isVisible(x)).collect(Collectors.toList());
         Elems e = new Elems();
@@ -56,7 +56,7 @@ public class NDocFlowContainerBuilder implements NDocNodeBuilder {
         Double expectedHeight = expectedBounds.getHeight();
         double xRef = expectedBounds.getX();
         double yRef = expectedBounds.getY();
-        NDocNodeRendererContext ctx2 = ctx.withBounds(p, new NDocBounds2(0, 0, expectedWidth, expectedHeight));
+        NDocNodeRendererContext ctx2 = ctx.withBounds(p, new NTxBounds2(0, 0, expectedWidth, expectedHeight));
         for (int i = 0; i < texts.size(); i++) {
             NTxNode text = texts.get(i);
             NDocSizeRequirements ee = ctx2.sizeRequirementsOf(text);
@@ -71,26 +71,26 @@ public class NDocFlowContainerBuilder implements NDocNodeBuilder {
             Elem zz = new Elem();
             e.elems[i] = zz;
             zz.node = text;
-            zz.bounds = new NDocBounds2(xRef, yRef, w, h);
+            zz.bounds = new NTxBounds2(xRef, yRef, w, h);
             if (e.size == null) {
                 allWidth = zz.bounds.getWidth();
                 allHeight = zz.bounds.getHeight();
-                e.size = new NDocDouble2(allWidth, allHeight);
+                e.size = new NTxDouble2(allWidth, allHeight);
             } else {
                 allWidth += zz.bounds.getWidth();
                 allHeight = Math.max(zz.bounds.getHeight(), allHeight);
-                e.size = new NDocDouble2(allWidth, allHeight);
+                e.size = new NTxDouble2(allWidth, allHeight);
             }
             xRef += w;
         }
         double w = Math.max(expectedWidth, e.size == null ? 0 : e.size.getX());
         double h = Math.max(expectedHeight, e.size == null ? 0 : e.size.getY());
-        e.fullSize = new NDocDouble2(w, h);
+        e.fullSize = new NTxDouble2(w, h);
         return e;
     }
 
-    public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
-        NDocBounds2 bg = ctx.selfBounds(p);
+    public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
+        NTxBounds2 bg = ctx.selfBounds(p);
         Elems ee = compute(p, bg, ctx);
         return new NDocSizeRequirements(
                 ee.size.getX(),
@@ -102,13 +102,13 @@ public class NDocFlowContainerBuilder implements NDocNodeBuilder {
         );
     }
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
         NDocGraphics g = ctx.graphics();
 
-        NDocBounds2 bg = ctx.selfBounds(p);
+        NTxBounds2 bg = ctx.selfBounds(p);
         Elems ee = compute(p, bg, ctx);
-        NDocBounds2 newExpectedBounds = ctx.selfBounds(p, ee.size, null);
+        NTxBounds2 newExpectedBounds = ctx.selfBounds(p, ee.size, null);
 
 //        g.setColor(Color.BLUE);
 //        g.drawRect(newExpectedBounds);
