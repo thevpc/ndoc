@@ -2,7 +2,7 @@ package net.thevpc.ntexup.api.renderer;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.elem2d.*;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
 import net.thevpc.ntexup.api.log.NDocLogger;
 import net.thevpc.ntexup.api.document.node.*;
@@ -27,9 +27,9 @@ public interface NDocNodeRendererContext {
         return manager().getRenderer(p.type()).get().sizeRequirements(p, this);
     }
 
-    NDocBounds2 selfBounds(NTxNode e);
+    NTxBounds2 selfBounds(NTxNode e);
 
-    NDocBounds2 defaultSelfBounds(NTxNode e);
+    NTxBounds2 defaultSelfBounds(NTxNode e);
 
     NDocNodeRendererManager manager();
 
@@ -45,18 +45,18 @@ public interface NDocNodeRendererContext {
 
     boolean isDry();
 
-    NDocBounds2 getGlobalBounds();
+    NTxBounds2 getGlobalBounds();
 
     NDocGraphics graphics();
 
-    NDocBounds2 getBounds();
+    NTxBounds2 getBounds();
 
 
     void render(NTxNode p);
 
     void render(NTxNode p, NDocNodeRendererContext ctx);
 
-    NDocEngine engine();
+    NTxEngine engine();
 
     NTxDocumentFactory documentFactory();
 
@@ -66,9 +66,9 @@ public interface NDocNodeRendererContext {
 
     List<NTxProp> computeProperties(NTxNode t);
 
-    NDocNodeRendererContext withDefaultStyles(NTxNode node, NDocProperties defaultStyles);
+    NDocNodeRendererContext withDefaultStyles(NTxNode node, NTxProperties defaultStyles);
 
-    NDocNodeRendererContext withBounds(NTxNode t, NDocBounds2 bounds2);
+    NDocNodeRendererContext withBounds(NTxNode t, NTxBounds2 bounds2);
 
     NDocNodeRendererContext withGraphics(NDocGraphics graphics);
 
@@ -90,13 +90,13 @@ public interface NDocNodeRendererContext {
 
     NOptional<Paint> getColorProperty(String propName, NTxNode t);
 
-    NDocDouble2 getOrigin(NTxNode t, NDocDouble2 a);
+    NTxDouble2 getOrigin(NTxNode t, NTxDouble2 a);
 
-    NDocDouble2 getPosition(NTxNode t, NDocDouble2 a);
+    NTxDouble2 getPosition(NTxNode t, NTxDouble2 a);
 
     NElement getStroke(NTxNode t);
 
-    NDocBounds2 selfBounds(NTxNode t, NDocDouble2 selfSize, NDocDouble2 minSize);
+    NTxBounds2 selfBounds(NTxNode t, NTxDouble2 selfSize, NTxDouble2 minSize);
 
     boolean isVisible(NTxNode t);
 
@@ -114,7 +114,7 @@ public interface NDocNodeRendererContext {
 
     Font getFont(NTxNode t);
 
-    NDocDouble2 getRoundCornerArcs(NTxNode t);
+    NTxDouble2 getRoundCornerArcs(NTxNode t);
 
     int getColSpan(NTxNode t);
 
@@ -124,7 +124,7 @@ public interface NDocNodeRendererContext {
 
     Boolean getRaised(NTxNode t);
 
-    NOptional<Shadow> readStyleAsShadow(NTxNode p, String s);
+    NOptional<NTxShadow> readStyleAsShadow(NTxNode p, String s);
 
     Paint getForegroundColor(NTxNode p, boolean force);
 
@@ -148,9 +148,9 @@ public interface NDocNodeRendererContext {
 
     Color getDebugColor(NTxNode p);
 
-    NOptional<NDocPoint2D> getStyleAsShadowDistance(Object sv);
+    NOptional<NTxPoint2D> getStyleAsShadowDistance(Object sv);
 
-    SizeD mapDim(SizeD d, SizeD base);
+    NTxSizeD mapDim(NTxSizeD d, NTxSizeD base);
 
     Stroke resolveStroke(NTxNode t);
 
@@ -160,9 +160,9 @@ public interface NDocNodeRendererContext {
 
     void applyFont(NTxNode t);
 
-    SizeD mapDim(double w, double h);
+    NTxSizeD mapDim(double w, double h);
 
-    NDocBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx);
+    NTxBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx);
 
     boolean applyForeground(NTxNode t, boolean force);
 
@@ -170,13 +170,13 @@ public interface NDocNodeRendererContext {
 
     boolean applyGridColor(NTxNode t, boolean force);
 
-    void paintDebugBox(NTxNode t, NDocBounds2 a, boolean force);
+    void paintDebugBox(NTxNode t, NTxBounds2 a, boolean force);
 
-    void paintDebugBox(NTxNode t, NDocBounds2 a);
+    void paintDebugBox(NTxNode t, NTxBounds2 a);
 
     NOptional<Color> colorFromPaint(Paint p);
 
-    void paintBorderLine(NTxNode t, NDocBounds2 a);
+    void paintBorderLine(NTxNode t, NTxBounds2 a);
 
-    void paintBackground(NTxNode t, NDocBounds2 a);
+    void paintBackground(NTxNode t, NTxBounds2 a);
 }
