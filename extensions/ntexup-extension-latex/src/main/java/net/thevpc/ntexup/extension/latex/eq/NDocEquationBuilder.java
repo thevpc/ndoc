@@ -4,15 +4,15 @@
  */
 package net.thevpc.ntexup.extension.latex.eq;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValue;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -30,22 +30,22 @@ import java.awt.*;
  */
 public class NDocEquationBuilder implements NDocNodeBuilder {
 
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.EQUATION)
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.EQUATION)
                 .alias("eq")
-                .parseParam().named(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderComponent(this::renderMain)
                 .sizeRequirements(this::sizeRequirements)
                 .selfBounds(this::selfBounds);
     }
 
 
-    public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext rendererContext, NDocNodeCustomBuilderContext builderContext) {
-        NDocBounds2 s = rendererContext.selfBounds(p);
-        NDocBounds2 bb = rendererContext.getBounds();
+    public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
+        NTxBounds2 s = rendererContext.selfBounds(p);
+        NTxBounds2 bb = rendererContext.getBounds();
         return new NDocSizeRequirements(
                 s.getWidth(),
                 Math.max(bb.getWidth(), s.getWidth()),
@@ -56,15 +56,15 @@ public class NDocEquationBuilder implements NDocNodeBuilder {
         );
     }
 
-    public NDocBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
-        String message = NDocValue.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
+    public NTxBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
+        String message = NDocValue.ofProp(p, NTxPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
         NDocGraphics g = ctx.graphics();
         String tex = NStringUtils.trim(message);
         if (tex.isEmpty()) {
-            return new NDocBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
+            return new NTxBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
         } else {
             TeXFormula formula;
             try {
@@ -78,13 +78,13 @@ public class NDocEquationBuilder implements NDocNodeBuilder {
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
-            return new NDocBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
+            return new NTxBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
         }
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext renderContext, NDocNodeCustomBuilderContext builderContext) {
-        String message = NDocValue.ofProp(p, NDocPropName.VALUE).asStringOrName().orNull();
+    public void renderMain(NTxNode p, NDocNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
+        String message = NDocValue.ofProp(p, NTxPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
@@ -93,7 +93,7 @@ public class NDocEquationBuilder implements NDocNodeBuilder {
 
         String tex = NStringUtils.trim(message);
         if (tex.isEmpty()) {
-            NDocBounds2 selfBounds = renderContext.selfBounds(p);
+            NTxBounds2 selfBounds = renderContext.selfBounds(p);
             double x = selfBounds.getX();
             double y = selfBounds.getY();
             if (!renderContext.isDry()) {
@@ -117,8 +117,8 @@ public class NDocEquationBuilder implements NDocNodeBuilder {
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            NDocBounds2 selfBounds = renderContext.selfBounds((NTxNode) p
-                    , new NDocDouble2(icon.getIconWidth(), icon.getIconHeight())
+            NTxBounds2 selfBounds = renderContext.selfBounds((NTxNode) p
+                    , new NTxDouble2(icon.getIconWidth(), icon.getIconHeight())
                     , null
                     );
             double x = selfBounds.getX();
