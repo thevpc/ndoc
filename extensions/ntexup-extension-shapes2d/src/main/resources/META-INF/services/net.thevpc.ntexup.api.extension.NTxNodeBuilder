@@ -1,0 +1,5 @@
+net.thevpc.ntexup.extension.shapes2d.NTxArrowBuilder
+net.thevpc.ntexup.extension.shapes2d.NTxCylinderBuilder
+net.thevpc.ntexup.extension.shapes2d.NTxDonutBuilder
+net.thevpc.ntexup.extension.shapes2d.NTxPieBuilder
+
