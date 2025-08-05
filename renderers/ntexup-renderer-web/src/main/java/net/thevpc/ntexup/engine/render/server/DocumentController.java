@@ -4,7 +4,7 @@ import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.engine.DefaultNTxEngine;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererConfig;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,8 @@ public class DocumentController {
     @GetMapping(value = "/images", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getDocumentImages(@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
         try {
-            NPath file = NPath.of("/home/mohamed/Desktop/stage/ndoc/documentation/tson-doc/main.ndoc")
+            //TODO FIX ME
+            NPath file = NPath.of("/home/mohamed/Desktop/stage/ntexup/documentation/tson-doc/main.ntx")
                     .toAbsolute()
                     .normalize();
 
@@ -47,7 +48,7 @@ public class DocumentController {
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 byte[] imageData = engine.renderManager().renderImageBytes(
                         pages.get(pageNumber),
-                        new NDocNodeRendererConfig(sizeWidth, sizeHeight)
+                        new NTxNodeRendererConfig(sizeWidth, sizeHeight)
                                 .withAnimate(false)
                 );
                 return ResponseEntity
