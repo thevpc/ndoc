@@ -1,29 +1,29 @@
 package net.thevpc.ntexup.engine.base.nodes.shape;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
 
 public class NDocCircleBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.CIRCLE)
+                .id(NTxNodeType.CIRCLE)
                 .renderComponent(this::renderMain)
                 ;
     }
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 b = ctx.selfBounds(p, null, null);
+        NTxBounds2 b = ctx.selfBounds(p, null, null);
         double x = b.getX();
         double y = b.getY();
         NDocGraphics g = ctx.graphics();
