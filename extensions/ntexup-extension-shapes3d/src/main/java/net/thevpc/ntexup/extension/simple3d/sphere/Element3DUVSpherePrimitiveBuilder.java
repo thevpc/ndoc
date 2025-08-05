@@ -3,24 +3,24 @@ package net.thevpc.ntexup.extension.simple3d.sphere;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3DPrimitive;
 import net.thevpc.ntexup.api.document.elem3d.NtxElement3D;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
-import net.thevpc.ntexup.api.document.elem3d.RenderState3D;
+import net.thevpc.ntexup.api.document.elem3d.NTxRenderState3D;
 import net.thevpc.ntexup.api.document.elem3d.composite.NtxElement3DUVSphere;
 import net.thevpc.ntexup.api.document.elem3d.composite.NTxMesh3D;
 import net.thevpc.ntexup.api.document.elem3d.primitives.NtxElement3DTriangle;
-import net.thevpc.ntexup.api.renderer.NDocElement3DRenderer;
+import net.thevpc.ntexup.api.renderer.NTxElement3DRenderer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class Element3DUVSpherePrimitiveBuilder implements NDocElement3DRenderer {
+public class Element3DUVSpherePrimitiveBuilder implements NTxElement3DRenderer {
     @Override
     public Class<? extends NtxElement3D> forType() {
         return NtxElement3DUVSphere.class;
     }
 
     @Override
-    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, RenderState3D renderState) {
+    public NtxElement3DPrimitive[] toPrimitives(NtxElement3D e, NTxRenderState3D renderState) {
         NtxElement3DUVSphere ee = (NtxElement3DUVSphere) e;
         NTxPoint3D origin = ee.getOrigin();
         double radiusX = ee.getRadiusX();
