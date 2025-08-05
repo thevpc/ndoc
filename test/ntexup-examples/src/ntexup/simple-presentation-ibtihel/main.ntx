@@ -46,16 +46,16 @@ page{
 
 
 }
-include("plan.ndoc")
-include("taches.ndoc")
+include("plan.ntx")
+include("taches.ntx")
 
-include("NTh1.ndoc")
-include("realisationHashtable.ndoc")
-include("realisationAVL.ndoc")
-include("realisationForme.ndoc")
-include("conclusion.ndoc")
-include("DonutChart.ndoc")
-include("fichier1.ndoc")
+include("NTh1.ntx")
+include("realisationHashtable.ntx")
+include("realisationAVL.ntx")
+include("realisationForme.ntx")
+include("conclusion.ntx")
+include("DonutChart.ntx")
+include("fichier1.ntx")
 
 page{
                       polygon(points:[(0,15),(100,15),(100,85),(0,85)],background-color:"#00215E")
