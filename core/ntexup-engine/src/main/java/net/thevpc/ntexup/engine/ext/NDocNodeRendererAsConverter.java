@@ -5,9 +5,9 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 
 class NDocNodeRendererAsConverter extends ConvertedNDocNodeRenderer {
-    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
+    private final NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public NDocNodeRendererAsConverter(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+    public NDocNodeRendererAsConverter(NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         super(myNDocNodeCustomBuilderContext.id());
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
