@@ -1,14 +1,14 @@
 package net.thevpc.ntexup.engine.renderer.screen.components;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxAlign;
-import net.thevpc.ntexup.api.renderer.NDocGraphics;
+import net.thevpc.ntexup.api.renderer.NTxGraphics;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public abstract class SimpleLayer implements NDocDocumentLayer {
+public abstract class SimpleLayer implements NTxDocumentLayer {
 
-    protected void drawStr(String str, NTxAlign a, Dimension size, NDocGraphics g2d) {
+    protected void drawStr(String str, NTxAlign a, Dimension size, NTxGraphics g2d) {
 
         Rectangle2D b = g2d.getStringBounds(str);
 
