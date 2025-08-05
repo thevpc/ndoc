@@ -12,36 +12,36 @@ import net.thevpc.ntexup.api.document.node.*;
 import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
-import net.thevpc.ntexup.api.eval.NDocVarProvider;
-import net.thevpc.ntexup.api.renderer.text.NDocTextRendererFlavor;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.eval.NTxVarProvider;
+import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.engine.eval.*;
-import net.thevpc.ntexup.engine.log.DefaultNDocLogger;
+import net.thevpc.ntexup.engine.log.DefaultNTxLogger;
 import net.thevpc.ntexup.api.engine.NTxEngineTools;
-import net.thevpc.ntexup.api.log.NDocLogger;
-import net.thevpc.ntexup.api.eval.NDocCompilePageContext;
+import net.thevpc.ntexup.api.log.NTxLogger;
+import net.thevpc.ntexup.api.eval.NTxCompilePageContext;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.*;
 import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
-import net.thevpc.ntexup.api.eval.NDocVar;
-import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
+import net.thevpc.ntexup.api.eval.NTxVar;
+import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.parser.*;
 import net.thevpc.ntexup.api.renderer.*;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.templates.NTxTemplateInfoImpl;
-import net.thevpc.ntexup.engine.util.NDocElementUtils;
+import net.thevpc.ntexup.engine.util.NTxElementUtils;
 import net.thevpc.ntexup.engine.document.DefaultNTxNode;
 import net.thevpc.ntexup.engine.ext.NTxNodeCustomBuilderContextImpl;
-import net.thevpc.ntexup.engine.log.NDocMessageList;
-import net.thevpc.ntexup.engine.log.SilentNDocLogger;
+import net.thevpc.ntexup.engine.log.NTxMessageList;
+import net.thevpc.ntexup.engine.log.SilentNTxLogger;
 import net.thevpc.ntexup.engine.parser.*;
-import net.thevpc.ntexup.engine.parser.resources.NDocResourceFactory;
-import net.thevpc.ntexup.engine.renderer.NDocDocumentRendererFactoryContextImpl;
-import net.thevpc.ntexup.engine.document.NDocPropCalculator;
+import net.thevpc.ntexup.engine.parser.resources.NTxSourceFactory;
+import net.thevpc.ntexup.engine.renderer.NTxDocumentRendererFactoryContextImpl;
+import net.thevpc.ntexup.engine.document.NTxPropCalculator;
 import net.thevpc.ntexup.engine.document.NTxDocumentFactoryImpl;
-import net.thevpc.ntexup.engine.renderer.NDocGraphicsImpl;
-import net.thevpc.ntexup.engine.renderer.NDocNodeRendererManagerImpl;
+import net.thevpc.ntexup.engine.renderer.NTxGraphicsImpl;
+import net.thevpc.ntexup.engine.renderer.NTxNodeRendererManagerImpl;
 import net.thevpc.ntexup.engine.tools.MyNTxEngineTools;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.*;
@@ -54,29 +54,29 @@ import net.thevpc.nuts.util.*;
  */
 public class DefaultNTxEngine implements NTxEngine {
 
-    private List<NDocDocumentRendererFactory> documentRendererFactories;
-    private List<NDocNodeParserFactory> nodeParserFactories;
+    private List<NTxDocumentRendererFactory> documentRendererFactories;
+    private List<NTxNodeParserFactory> nodeParserFactories;
 
-    private Map<String, NDocNodeParser> nodeTypeFactories;
+    private Map<String, NTxNodeParser> nodeTypeFactories;
     private NTxEngineTools tools;
     private List<NTxNodeCustomBuilderContextImpl> customBuilderContexts;
     private Map<String, String> nodeTypeAliases;
     private NTxDocumentFactory factory;
-    private NDocPropCalculator propCalculator = new NDocPropCalculator();
-    private NDocNodeRendererManager rendererManager;
+    private NTxPropCalculator propCalculator = new NTxPropCalculator();
+    private NTxNodeRendererManager rendererManager;
     private List<NTxFunction> functions = new ArrayList<>();
-    private NDocMessageList log = new NDocMessageList();
-    private DefaultNDocDocumentItemParserFactory documentItemParserFactory;
-    private Map<String, NDocTextRendererFlavor> flavorsMap;
+    private NTxMessageList log = new NTxMessageList();
+    private DefaultNTxDocumentItemParserFactory documentItemParserFactory;
+    private Map<String, NTxTextRendererFlavor> flavorsMap;
 
     public DefaultNTxEngine() {
         tools = new MyNTxEngineTools(this);
-        documentItemParserFactory = new DefaultNDocDocumentItemParserFactory();
+        documentItemParserFactory = new DefaultNTxDocumentItemParserFactory();
         ServiceLoader<NTxFunction> all = ServiceLoader.load(NTxFunction.class);
         for (NTxFunction h : all) {
             functions.add(h);
         }
-        addLog(new DefaultNDocLogger());
+        addLog(new DefaultNTxLogger());
     }
 
     @Override
@@ -84,27 +84,27 @@ public class DefaultNTxEngine implements NTxEngine {
         return tools;
     }
 
-    public NOptional<NDocTextRendererFlavor> textRendererFlavor(String id) {
-        return NOptional.ofNamed(flavorsMap().get(NDocUtils.uid(id)), id);
+    public NOptional<NTxTextRendererFlavor> textRendererFlavor(String id) {
+        return NOptional.ofNamed(flavorsMap().get(NTxUtils.uid(id)), id);
     }
 
-    public List<NDocTextRendererFlavor> textRendererFlavors() {
+    public List<NTxTextRendererFlavor> textRendererFlavors() {
         return new ArrayList<>(flavorsMap().values());
     }
 
-    protected Map<String, NDocTextRendererFlavor> flavorsMap() {
+    protected Map<String, NTxTextRendererFlavor> flavorsMap() {
         if (flavorsMap == null) {
-            Map<String, NDocTextRendererFlavor> flavors2 = new HashMap<>();
-            ServiceLoader<NDocTextRendererFlavor> all = ServiceLoader.load(NDocTextRendererFlavor.class);
-            for (NDocTextRendererFlavor h : all) {
-                String t = NDocUtils.uid(h.type());
+            Map<String, NTxTextRendererFlavor> flavors2 = new HashMap<>();
+            ServiceLoader<NTxTextRendererFlavor> all = ServiceLoader.load(NTxTextRendererFlavor.class);
+            for (NTxTextRendererFlavor h : all) {
+                String t = NTxUtils.uid(h.type());
                 if (flavors2.containsKey(t)) {
                     throw new IllegalArgumentException("already registered text flavor " + t);
                 }
                 flavors2.put(t, h);
             }
             for (NTxNodeCustomBuilderContextImpl cb : customBuilderContexts()) {
-                NDocTextRendererFlavor f = cb.createTextFlavor();
+                NTxTextRendererFlavor f = cb.createTextFlavor();
                 if (f != null) {
                     flavors2.put(cb.id(), f);
                 }
@@ -114,23 +114,23 @@ public class DefaultNTxEngine implements NTxEngine {
         return flavorsMap;
     }
 
-    public DefaultNDocDocumentItemParserFactory getDocumentItemParserFactory() {
+    public DefaultNTxDocumentItemParserFactory getDocumentItemParserFactory() {
         return documentItemParserFactory;
     }
 
     @Override
-    public NDocLogger log() {
+    public NTxLogger log() {
         return log;
     }
 
     @Override
-    public NDocLogger addLog(NDocLogger messages) {
+    public NTxLogger addLog(NTxLogger messages) {
         log.add(messages);
         return log;
     }
 
     @Override
-    public NDocLogger removeLog(NDocLogger messages) {
+    public NTxLogger removeLog(NTxLogger messages) {
         log.remove(messages);
         return log;
     }
@@ -166,13 +166,13 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     @Override
-    public NOptional<NTxItem> newNode(NElement element, NDocNodeFactoryParseContext ctx) {
+    public NOptional<NTxItem> newNode(NElement element, NTxNodeFactoryParseContext ctx) {
         NAssert.requireNonNull(ctx, "context");
         NAssert.requireNonNull(element, "element");
         if (ctx.source() == null) {
             throw new IllegalArgumentException("unexpected source null");
         }
-        NDocNodeFactoryParseContext newContext = new DefaultNDocNodeFactoryParseContext(
+        NTxNodeFactoryParseContext newContext = new DefaultNTxNodeFactoryParseContext(
                 ctx.document()
                 , element
                 , this
@@ -183,12 +183,12 @@ public class DefaultNTxEngine implements NTxEngine {
         NOptional<NTxItem> optional = NCallableSupport.resolve(
                         nodeParserFactories().stream()
                                 .map(x -> x.parseNode(newContext)),
-                        () -> NMsg.ofC("missing support for node from type '%s' value '%s'", element.type().id(), NDocUtils.snippet(element)))
+                        () -> NMsg.ofC("missing support for node from type '%s' value '%s'", element.type().id(), NTxUtils.snippet(element)))
                 .toOptional();
         if (optional.isPresent()) {
             NTxItem nTxItem = optional.get();
             if (nTxItem instanceof NTxNode) {
-                NDocResource s = nTxItem.source();
+                NTxSource s = nTxItem.source();
                 if (s == null) {
                     throw new IllegalArgumentException("unexpected source null");
                 }
@@ -234,7 +234,7 @@ public class DefaultNTxEngine implements NTxEngine {
 
     @Override
     public NOptional<NTxDocumentRenderer> newRenderer(String type) {
-        NDocDocumentRendererFactoryContext ctx = new NDocDocumentRendererFactoryContextImpl(this, type);
+        NTxDocumentRendererFactoryContext ctx = new NTxDocumentRendererFactoryContextImpl(this, type);
         return NCallableSupport.resolve(
                         documentRendererFactories().stream()
                                 .map(x -> x.<NTxDocumentStreamRenderer>createDocumentRenderer(ctx)),
@@ -242,11 +242,11 @@ public class DefaultNTxEngine implements NTxEngine {
                 .toOptional();
     }
 
-    private List<NDocDocumentRendererFactory> documentRendererFactories() {
+    private List<NTxDocumentRendererFactory> documentRendererFactories() {
         if (documentRendererFactories == null) {
-            ServiceLoader<NDocDocumentRendererFactory> renderers = ServiceLoader.load(NDocDocumentRendererFactory.class);
-            List<NDocDocumentRendererFactory> loaded = new ArrayList<>();
-            for (NDocDocumentRendererFactory renderer : renderers) {
+            ServiceLoader<NTxDocumentRendererFactory> renderers = ServiceLoader.load(NTxDocumentRendererFactory.class);
+            List<NTxDocumentRendererFactory> loaded = new ArrayList<>();
+            for (NTxDocumentRendererFactory renderer : renderers) {
                 loaded.add(renderer);
             }
             this.documentRendererFactories = loaded;
@@ -255,15 +255,15 @@ public class DefaultNTxEngine implements NTxEngine {
     }
 
     @Override
-    public List<NDocNodeParser> nodeTypeFactories() {
+    public List<NTxNodeParser> nodeTypeFactories() {
         return new ArrayList<>(nodeTypeFactories0().values());
     }
 
     public List<NTxNodeCustomBuilderContextImpl> customBuilderContexts() {
         if (customBuilderContexts == null) {
-            ServiceLoader<NDocNodeBuilder> customBuilders = ServiceLoader.load(NDocNodeBuilder.class);
+            ServiceLoader<NTxNodeBuilder> customBuilders = ServiceLoader.load(NTxNodeBuilder.class);
             List<NTxNodeCustomBuilderContextImpl> builderContexts = new ArrayList<>();
-            for (NDocNodeBuilder customBuilder : customBuilders) {
+            for (NTxNodeBuilder customBuilder : customBuilders) {
                 NTxNodeCustomBuilderContextImpl b = new NTxNodeCustomBuilderContextImpl(customBuilder, this);
                 customBuilder.build(b);
                 b.compile();
@@ -274,12 +274,12 @@ public class DefaultNTxEngine implements NTxEngine {
         return customBuilderContexts;
     }
 
-    private Map<String, NDocNodeParser> nodeTypeFactories0() {
+    private Map<String, NTxNodeParser> nodeTypeFactories0() {
         if (nodeTypeFactories == null) {
             nodeTypeFactories = new HashMap<>();
             nodeTypeAliases = new HashMap<>();
-            ServiceLoader<NDocNodeParser> renderers = ServiceLoader.load(NDocNodeParser.class);
-            for (NDocNodeParser renderer : renderers) {
+            ServiceLoader<NTxNodeParser> renderers = ServiceLoader.load(NTxNodeParser.class);
+            for (NTxNodeParser renderer : renderers) {
                 addNodeTypeFactory(renderer);
             }
             for (NTxNodeCustomBuilderContextImpl cb : customBuilderContexts()) {
@@ -294,11 +294,11 @@ public class DefaultNTxEngine implements NTxEngine {
         return new DefaultNTxNode(id);
     }
 
-    public NOptional<NDocNodeParser> nodeTypeParser(String id) {
+    public NOptional<NTxNodeParser> nodeTypeParser(String id) {
         id = NStringUtils.trim(id);
         if (!id.isEmpty()) {
             id = NNameFormat.LOWER_KEBAB_CASE.format(id);
-            NDocNodeParser o = nodeTypeFactories0().get(id);
+            NTxNodeParser o = nodeTypeFactories0().get(id);
             if (o != null) {
                 return NOptional.of(o);
             }
@@ -309,25 +309,25 @@ public class DefaultNTxEngine implements NTxEngine {
             switch (id) {
                 case NTxNodeType.CTRL_CALL:
                     return NOptional.of(
-                            new NDocNodeParserBase(true, NTxNodeType.CTRL_CALL) {
+                            new NTxNodeParserBase(true, NTxNodeType.CTRL_CALL) {
 
                             }
                     );
                 case NTxNodeType.CTRL_ASSIGN:
                     return NOptional.of(
-                            new NDocNodeParserBase(true, NTxNodeType.CTRL_ASSIGN) {
+                            new NTxNodeParserBase(true, NTxNodeType.CTRL_ASSIGN) {
 
                             }
                     );
                 case NTxNodeType.CTRL_EXPR:
                     return NOptional.of(
-                            new NDocNodeParserBase(false, NTxNodeType.CTRL_EXPR) {
+                            new NTxNodeParserBase(false, NTxNodeType.CTRL_EXPR) {
 
                             }
                     );
                 case NTxNodeType.CTRL_NAME:
                     return NOptional.of(
-                            new NDocNodeParserBase(false, NTxNodeType.CTRL_NAME) {
+                            new NTxNodeParserBase(false, NTxNodeType.CTRL_NAME) {
 
                             }
                     );
@@ -336,7 +336,7 @@ public class DefaultNTxEngine implements NTxEngine {
         return NOptional.ofNamedEmpty("node type parser for NodeType " + id);
     }
 
-    public void addNodeTypeFactory(NDocNodeParser renderer) {
+    public void addNodeTypeFactory(NTxNodeParser renderer) {
         String id = NStringUtils.trim(renderer.id());
         if (id.isEmpty()) {
             throw new IllegalArgumentException("invalid id in " + renderer.getClass().getName());
@@ -352,9 +352,9 @@ public class DefaultNTxEngine implements NTxEngine {
             }
         }
         for (String i : allIds) {
-            NOptional<NDocNodeParser> o = nodeTypeParser(i);
+            NOptional<NTxNodeParser> o = nodeTypeParser(i);
             if (o.isPresent()) {
-                NDocNodeParser oo = o.get();
+                NTxNodeParser oo = o.get();
                 String oid = NNameFormat.LOWER_KEBAB_CASE.format(oo.id());
                 throw new IllegalArgumentException("already registered " + i + "@" + renderer.getClass().getName() + " as " + oid + "@" + oo.getClass().getName());
             }
@@ -366,12 +366,12 @@ public class DefaultNTxEngine implements NTxEngine {
         renderer.init(this);
     }
 
-    private List<NDocNodeParserFactory> nodeParserFactories() {
+    private List<NTxNodeParserFactory> nodeParserFactories() {
         if (nodeParserFactories == null) {
-            ServiceLoader<NDocNodeParserFactory> renderers = ServiceLoader.load(NDocNodeParserFactory.class);
-            List<NDocNodeParserFactory> loaded = new ArrayList<>();
+            ServiceLoader<NTxNodeParserFactory> renderers = ServiceLoader.load(NTxNodeParserFactory.class);
+            List<NTxNodeParserFactory> loaded = new ArrayList<>();
             loaded.add(documentItemParserFactory);
-            for (NDocNodeParserFactory renderer : renderers) {
+            for (NTxNodeParserFactory renderer : renderers) {
                 loaded.add(renderer);
             }
             this.nodeParserFactories = loaded;
@@ -381,21 +381,21 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     public NTxDocumentLoadingResult compileDocument(NTxDocument document) {
-        return new NDocCompiler(this).compile(document);
+        return new NTxCompiler(this).compile(document);
     }
 
     @Override
     public List<NTxNode> compilePageNode(NTxNode node, NTxDocument document) {
-        return compilePageNode(node, new NDocCompilePageContextImpl(this, document));
+        return compilePageNode(node, new NTxCompilePageContextImpl(this, document));
     }
 
     @Override
-    public List<NTxNode> compilePageNode(NTxNode node, NDocCompilePageContext context) {
-        return new NDocCompiler(this).compilePageNode(node, context);
+    public List<NTxNode> compilePageNode(NTxNode node, NTxCompilePageContext context) {
+        return new NTxCompiler(this).compilePageNode(node, context);
     }
 
     @Override
-    public List<NTxNode> compileItem(NTxItem node, NDocCompilePageContext context) {
+    public List<NTxNode> compileItem(NTxItem node, NTxCompilePageContext context) {
         List<NTxNode> all = new ArrayList<>();
         if (node instanceof NTxNode) {
             all.addAll(compilePageNode((NTxNode) node, context));
@@ -421,26 +421,23 @@ public class DefaultNTxEngine implements NTxEngine {
     public NTxDocumentLoadingResult loadDocument(NPath path) {
         NAssert.requireNonNull(path, "path");
         synchronized (this) {
-            if (GitHelper.isGithubFolder(path.toString())) {
-                path = GitHelper.resolveGithubPath(path.toString(), log());
+            if (NTxGitHelper.isGithubFolder(path.toString())) {
+                path = NTxGitHelper.resolveGithubPath(path.toString(), log());
             }
-            NDocResource source = NDocResourceFactory.of(path);
+            NTxSource source = NTxSourceFactory.of(path);
             if (path.exists()) {
                 if (path.isRegularFile()) {
-                    NDocResource nPathResource = NDocResourceFactory.of(path);
-                    NOptional<NElement> f = new NDocStreamParser(this).parsePath(path, nPathResource);
+                    NTxSource nPathResource = NTxSourceFactory.of(path);
+                    NOptional<NElement> f = new NTxDocStreamParser(this).parsePath(path, nPathResource);
                     if (!f.isPresent()) {
                         log().log(f.getMessage().get().asSevere(), nPathResource);
                     }
                     NElement d = f.get();
-                    SilentNDocLogger slog = new SilentNDocLogger();
+                    SilentNTxLogger slog = new SilentNTxLogger();
                     try {
                         this.addLog(slog);
                         NOptional<NTxDocument> dd = convertDocument(d, source);
                         if (dd.isPresent()) {
-//                            if (r.get().root().source() == null) {
-//                                r.get().root().setSource(NDocResourceFactory.of(path));
-//                            }
                             return new NTxDocumentLoadingResultImpl(dd.get(), nPathResource, slog.isSuccessful());
                         } else {
                             log().log(dd.getMessage().get().asSevere(), nPathResource);
@@ -451,8 +448,8 @@ public class DefaultNTxEngine implements NTxEngine {
 
                 } else if (path.isDirectory()) {
                     NTxDocument document = documentFactory().ofDocument(source);
-                    document.resources().add(path.resolve(NDocEngineUtils.NDOC_EXT_STAR));
-                    List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x)).toList();
+                    document.resources().add(path.resolve(NTxEngineUtils.NTEXUP_EXT_STAR));
+                    List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NTxEngineUtils.isNTexupFile(x)).toList();
                     if (all.isEmpty()) {
                         log().log(
                                 NMsg.ofC("invalid folder (no valid enclosed files) %s", path).asSevere()
@@ -461,7 +458,7 @@ public class DefaultNTxEngine implements NTxEngine {
                     }
                     NPath main = null;
                     for (String mainFiled : new String[]{
-                            "main.ndoc",
+                            "main."+FILE_EXT,
                     }) {
                         NPath m = all.stream().filter(x -> mainFiled.equals(x.getName())).findFirst().orElse(null);
                         if (m != null) {
@@ -477,7 +474,7 @@ public class DefaultNTxEngine implements NTxEngine {
                     for (NPath nPath : all) {
                         // document.resources().add(nPath);
                         NOptional<NTxItem> d = null;
-                        NDocResource nPathResource = NDocResourceFactory.of(nPath);
+                        NTxSource nPathResource = NTxSourceFactory.of(nPath);
                         try {
                             d = loadNode(document.root(), nPath, document);
                         } catch (Exception ex) {
@@ -492,7 +489,7 @@ public class DefaultNTxEngine implements NTxEngine {
                         }
                     }
                     if (document.root().source() == null) {
-                        document.root().setSource(NDocResourceFactory.of(path));
+                        document.root().setSource(NTxSourceFactory.of(path));
                     }
                     return new NTxDocumentLoadingResultImpl(document, source, true);
                 } else {
@@ -505,7 +502,7 @@ public class DefaultNTxEngine implements NTxEngine {
         }
     }
 
-    private void updateSource(NTxItem item, NDocResource source) {
+    private void updateSource(NTxItem item, NTxSource source) {
         if (item != null) {
             if (item instanceof NTxItemList) {
                 for (NTxItem hItem : ((NTxItemList) item).getItems()) {
@@ -524,15 +521,15 @@ public class DefaultNTxEngine implements NTxEngine {
     public NOptional<NTxItem> loadNode(NTxNode into, NPath path, NTxDocument document) {
         if (path.exists()) {
             if (path.isRegularFile()) {
-                NDocResource source = NDocResourceFactory.of(path);
+                NTxSource source = NTxSourceFactory.of(path);
                 NOptional<NTxItem> d = loadNode0(into, path, document);
                 if (d.isPresent()) {
                     updateSource(d.get(), source);
                 }
                 return d;
             } else if (path.isDirectory()) {
-                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NDocEngineUtils.isNDocFile(x.getName())).toList();
-                all.sort(NDocEngineUtils::comparePaths);
+                List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NTxEngineUtils.isNTexupFile(x.getName())).toList();
+                all.sort(NTxEngineUtils::comparePaths);
                 NTxItem node = null;
                 for (NPath nPath : all) {
                     NOptional<NTxItem> d = loadNode0((node instanceof NTxNode) ? (NTxNode) node : null, nPath, document);
@@ -540,7 +537,7 @@ public class DefaultNTxEngine implements NTxEngine {
                         log().log(NMsg.ofC("invalid file %s", nPath));
                         return NOptional.ofError(() -> NMsg.ofC("invalid file %s", nPath));
                     }
-                    updateSource(d.get(), NDocResourceFactory.of(path));
+                    updateSource(d.get(), NTxSourceFactory.of(path));
                     if (node == null) {
                         node = d.get();
                     } else {
@@ -564,13 +561,13 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     public NTxDocumentLoadingResult loadDocument(InputStream is) {
-        NDocResource source = NDocResourceFactory.of(is);
+        NTxSource source = NTxSourceFactory.of(is);
 
-        SilentNDocLogger slog = new SilentNDocLogger();
+        SilentNTxLogger slog = new SilentNTxLogger();
         try {
             this.addLog(slog);
 
-            NOptional<NElement> f = new NDocStreamParser(this).parseInputStream(is, source);
+            NOptional<NElement> f = new NTxDocStreamParser(this).parseInputStream(is, source);
             if (!f.isPresent()) {
                 log().log(f.getMessage().get().asSevere());
             }
@@ -588,7 +585,7 @@ public class DefaultNTxEngine implements NTxEngine {
     }
 
 
-    private NOptional<NTxDocument> convertDocument(NElement doc, NDocResource source) {
+    private NOptional<NTxDocument> convertDocument(NElement doc, NTxSource source) {
         if (doc == null) {
             log().log(NMsg.ofPlain("missing document").asError());
             return NOptional.ofNamedEmpty("document");
@@ -596,7 +593,7 @@ public class DefaultNTxEngine implements NTxEngine {
         NTxDocument docd = documentFactory().ofDocument(source);
         docd.resources().add(source);
         docd.root().setSource(source);
-        NDocNodeFactoryParseContext newContext = new DefaultNDocNodeFactoryParseContext(
+        NTxNodeFactoryParseContext newContext = new DefaultNTxNodeFactoryParseContext(
                 docd,
                 doc, this,
                 new ArrayList<>(),
@@ -614,9 +611,9 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     private NOptional<NTxItem> loadNode0(NTxNode into, NPath path, NTxDocument document) {
-        NDocResource source = NDocResourceFactory.of(path);
+        NTxSource source = NTxSourceFactory.of(path);
         document.resources().add(source);
-        NOptional<NElement> u = new NDocStreamParser(this).parsePath(path, source);
+        NOptional<NElement> u = new NTxDocStreamParser(this).parsePath(path, source);
         if(!u.isPresent()) {
             return NOptional.ofEmpty(u.getMessage());
         }
@@ -625,7 +622,7 @@ public class DefaultNTxEngine implements NTxEngine {
         if (into != null) {
             parents.add(into);
         }
-        return newNode(c, new DefaultNDocNodeFactoryParseContext(
+        return newNode(c, new DefaultNTxNodeFactoryParseContext(
                 document,
                 null,
                 this,
@@ -669,24 +666,24 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     @Override
-    public NDocNodeRendererManager renderManager() {
+    public NTxNodeRendererManager renderManager() {
         if (rendererManager == null) {
-            rendererManager = new NDocNodeRendererManagerImpl(this);
+            rendererManager = new NTxNodeRendererManagerImpl(this);
         }
         return rendererManager;
     }
 
     @Override
-    public NDocGraphics createGraphics(Graphics2D g2d) {
-        return new NDocGraphicsImpl(g2d, this);
+    public NTxGraphics createGraphics(Graphics2D g2d) {
+        return new NTxGraphicsImpl(g2d, this);
     }
 
     @Override
     public void createProject(NPath path, NPath projectUrl, Function<String, String> vars) {
         NAssert.requireNonNull(path, "path");
         NAssert.requireNonNull(projectUrl, "projectUrl");
-        if (GitHelper.isGithubFolder(projectUrl.toString())) {
-            projectUrl = GitHelper.resolveGithubPath(path.toString(), null);
+        if (NTxGitHelper.isGithubFolder(projectUrl.toString())) {
+            projectUrl = NTxGitHelper.resolveGithubPath(path.toString(), null);
         }
         if (!projectUrl.exists()) {
             throw new IllegalArgumentException("invalid project " + projectUrl);
@@ -735,13 +732,6 @@ public class DefaultNTxEngine implements NTxEngine {
         copyTemplate(projectUrl, path, vars2);
     }
 
-    private String baseNDocTemplatesUrl() {
-        if (false) {
-            return "/home/vpc/xprojects/productivity/ndoc-templates";
-        }
-        return "github://thevpc/ndoc-templates";
-    }
-
     @Override
     public NTxTemplateInfo[] getTemplates() {
         List<NTxTemplateInfo> allTemplates = new ArrayList<>();
@@ -755,18 +745,18 @@ public class DefaultNTxEngine implements NTxEngine {
             }
         }
         for (Repo repo : new Repo[]{
-                new Repo("dev", NPath.ofUserHome().resolve("xprojects/nuts-world/nuts-productivity/ndoc-templates/main")),
+                new Repo("dev", NPath.ofUserHome().resolve("xprojects/nuts-world/nuts-productivity/ntexup-templates/main")),
                 new Repo("local", NApp.of().getSharedConfFolder().resolve("templates")),
-                new Repo("user", NPath.ofUserStore(NStoreType.CONF).resolve("ndoc/templates")),
-                new Repo("user", NPath.ofSystemStore(NStoreType.CONF).resolve("ndoc/templates")),
-                new Repo("central-github", NPath.of("github://thevpc/ndoc-templates/main"))
+                new Repo("user", NPath.ofUserStore(NStoreType.CONF).resolve("ntexup/templates")),
+                new Repo("user", NPath.ofSystemStore(NStoreType.CONF).resolve("ntexup/templates")),
+                new Repo("central-github", NPath.of("github://thevpc/ntexup-templates/main"))
         }) {
             try {
-                if (GitHelper.isGithubFolder(repo.path.toString())) {
-                    NPath nPath1 = GitHelper.resolveGithubPath(repo.path.toString(), log());
-                    if (nPath1.resolve("ndoc-repository.tson").isRegularFile()) {
+                if (NTxGitHelper.isGithubFolder(repo.path.toString())) {
+                    NPath nPath1 = NTxGitHelper.resolveGithubPath(repo.path.toString(), log());
+                    if (nPath1.resolve("ntexup-repository.tson").isRegularFile()) {
                         try {
-                            loadNDocTemplateInfo(NElementParser.ofTson().parse(nPath1.resolve("ndoc-repository.tson")), repo.name, repo.path, allTemplates);
+                            loadTemplateInfo(NElementParser.ofTson().parse(nPath1.resolve("ntexup-repository.tson")), repo.name, repo.path, allTemplates);
                         } catch (Exception e) {
                             log().log(NMsg.ofC("unable to parse repository templates '%s' at '%s' : %s", repo.name, repo.path, e).asError());
                         }
@@ -774,9 +764,9 @@ public class DefaultNTxEngine implements NTxEngine {
                         log().log(NMsg.ofC("repository template not found '%s' at '%s'", repo.name, repo.path).asWarning());
                     }
                 }else if (repo.path.isLocal()) {
-                    if (repo.path.resolve("ndoc-repository.tson").isRegularFile()) {
+                    if (repo.path.resolve("ntexup-repository.tson").isRegularFile()) {
                         try {
-                            loadNDocTemplateInfo(NElementParser.ofTson().parse(repo.path.resolve("ndoc-repository.tson")), repo.name, repo.path, allTemplates);
+                            loadTemplateInfo(NElementParser.ofTson().parse(repo.path.resolve("ntexup-repository.tson")), repo.name, repo.path, allTemplates);
                         } catch (Exception e) {
                             log().log(NMsg.ofC("unable to parse repository templates '%s' at '%s' : %s", repo.name, repo.path, e).asError());
                         }
@@ -793,10 +783,10 @@ public class DefaultNTxEngine implements NTxEngine {
         return allTemplates.toArray(new NTxTemplateInfo[0]);
     }
 
-    private void loadNDocTemplateInfo(NElement elem, String repoName, NPath repoPath, List<NTxTemplateInfo> allTemplates) {
+    private void loadTemplateInfo(NElement elem, String repoName, NPath repoPath, List<NTxTemplateInfo> allTemplates) {
         if (elem.isObject()) {
             for (NElement o : elem.asObject().get().children()) {
-                loadNDocTemplateInfo(o, repoName, repoPath, allTemplates);
+                loadTemplateInfo(o, repoName, repoPath, allTemplates);
             }
         } else if (elem.isString()) {
             String name = null;
@@ -835,7 +825,7 @@ public class DefaultNTxEngine implements NTxEngine {
                 copyTemplate(nPath, to.resolve(nPath.getName()), vars);
             }
         } else if (from.isRegularFile()) {
-            if (NDocEngineUtils.isNDocFile(from)) {
+            if (NTxEngineUtils.isNTexupFile(from)) {
                 String code = from.readString();
                 to.writeString(NMsg.ofV(code, vars).toString());
             } else {
@@ -847,32 +837,32 @@ public class DefaultNTxEngine implements NTxEngine {
     }
 
     @Override
-    public NElement evalExpression(NElement expression, NTxNode node, NDocVarProvider varProvider) {
-        String baseSrc = NDocUtils.findCompilerDeclarationPath(expression).orNull();
-        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this,varProvider);
-        NElement u = ne.eval(NDocElementUtils.toElement(expression), node);
+    public NElement evalExpression(NElement expression, NTxNode node, NTxVarProvider varProvider) {
+        String baseSrc = NTxUtils.findCompilerDeclarationPath(expression).orNull();
+        NTxNodeEval ne = new NTxNodeEval(this,varProvider);
+        NElement u = ne.eval(NTxElementUtils.toElement(expression), node);
         if (u == null) {
             u = NElement.ofNull();
         }
         if (baseSrc != null) {
-            u = NDocUtils.addCompilerDeclarationPath(u, baseSrc);
+            u = NTxUtils.addCompilerDeclarationPath(u, baseSrc);
         }
         return u;
     }
 
     @Override
-    public NElement resolveVarValue(String varName, NTxNode node, NDocVarProvider varProvider) {
-        NOptional<NDocVar> v = findVar(varName, node, varProvider);
+    public NElement resolveVarValue(String varName, NTxNode node, NTxVarProvider varProvider) {
+        NOptional<NTxVar> v = findVar(varName, node, varProvider);
         if (!v.isPresent()) {
-            log().log(NMsg.ofC("var not found %s", varName).asWarning(), NDocUtils.sourceOf(node));
+            log().log(NMsg.ofC("var not found %s", varName).asWarning(), NTxUtils.sourceOf(node));
             return null;
         }
         NElement ee = v.get().get();
         return evalExpression(ee, node, varProvider);
     }
 
-    public NOptional<NDocVar> findVar(String varName, NTxNode node, NDocVarProvider varProvider) {
-        NDocNodeEvalNDoc ne = new NDocNodeEvalNDoc(this,varProvider);
+    public NOptional<NTxVar> findVar(String varName, NTxNode node, NTxVarProvider varProvider) {
+        NTxNodeEval ne = new NTxNodeEval(this,varProvider);
         return ne.findVar(varName, node);
     }
 
@@ -883,11 +873,11 @@ public class DefaultNTxEngine implements NTxEngine {
         }
         if (path.isAnyString()) {
             String pathStr = path.asStringValue().get();
-            if (GitHelper.isGithubFolder(pathStr)) {
-                return GitHelper.resolveGithubPath(pathStr, log());
+            if (NTxGitHelper.isGithubFolder(pathStr)) {
+                return NTxGitHelper.resolveGithubPath(pathStr, log());
             }
-            NDocResource source = NDocUtils.sourceOf(node);
-            return NDocUtils.resolvePath(path, source);
+            NTxSource source = NTxUtils.sourceOf(node);
+            return NTxUtils.resolvePath(path, source);
         }
         throw new NIllegalArgumentException(NMsg.ofC("unsupported path type", path));
     }
