@@ -17,7 +17,7 @@ public class NTxExampleFromFolder {
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
         NTxEngine e = new DefaultNTxEngine();
-        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\ndoc\\test\\ndoc-examples\\src\\ndoc\\ibtihel").toAbsolute().normalize();
+        NPath file = NPath.of("C:\\Users\\ibtih\\IdeaProjects\\ntexup\\test\\ndoc-examples\\src\\ndoc\\ibtihel").toAbsolute().normalize();
         e.newScreenRenderer().get().renderPath(file);
     }
 }
