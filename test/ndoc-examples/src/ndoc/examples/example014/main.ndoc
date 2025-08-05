@@ -2,12 +2,12 @@ page{
     grid(3,3){
         void() void() void()
         void() plot2d(xmin:-5 , xmax: 5){
-            {
+            curve{
                 f(x):sin(x)
                 title:'sin'
                 color:red
             }
-            {
+            curve{
                 f(x):cos(x)
                 title:'cos'
                 color:blue
