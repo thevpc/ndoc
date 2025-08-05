@@ -1,4 +1,0 @@
-conclusion{
-    @(title)    text("Thank you!"),
-    @(author)     text("taha.bensalah@gmail.com"),
-}
