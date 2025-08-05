@@ -1,11 +1,11 @@
 package net.thevpc.ntexup.engine.renderer;
 
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
 import net.thevpc.ntexup.api.log.NDocLogger;
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.text.NDocTextRendererBuilder;
 import net.thevpc.ntexup.api.util.NDocUtils;
@@ -25,16 +25,16 @@ import java.util.List;
 public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBaseBase {
 
     private NDocNodeRendererContext base;
-    private NDocBounds2 bounds;
+    private NTxBounds2 bounds;
     private NTxNode basePart;
-    private NDocProperties defaultStyles;
+    private NTxProperties defaultStyles;
     private NDocGraphics graphics;
     private boolean dry;
 
     public NDocNodeRendererContextDelegate(NTxNode basePart,
                                            NDocNodeRendererContext base,
-                                           NDocBounds2 bounds,
-                                           NDocProperties defaultStyles,
+                                           NTxBounds2 bounds,
+                                           NTxProperties defaultStyles,
                                            boolean dry,
                                            NDocGraphics graphics
     ) {
@@ -73,12 +73,12 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NDocNodeRendererContext withDefaultStyles(NTxNode node, NDocProperties defaultStyles) {
+    public NDocNodeRendererContext withDefaultStyles(NTxNode node, NTxProperties defaultStyles) {
         return new NDocNodeRendererContextDelegate(node, base, bounds, defaultStyles == null ? this.defaultStyles : defaultStyles, dry, graphics);
     }
 
     @Override
-    public NDocNodeRendererContext withBounds(NTxNode t, NDocBounds2 bounds2) {
+    public NDocNodeRendererContext withBounds(NTxNode t, NTxBounds2 bounds2) {
         return new NDocNodeRendererContextDelegate(t, base, bounds2, defaultStyles, dry, graphics);
     }
 
@@ -106,11 +106,11 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NDocBounds2 getGlobalBounds() {
+    public NTxBounds2 getGlobalBounds() {
         return base.getGlobalBounds();
     }
 
-    public NDocBounds2 getBounds() {
+    public NTxBounds2 getBounds() {
         if (bounds != null) {
             return bounds;
         }
@@ -123,14 +123,14 @@ public class NDocNodeRendererContextDelegate extends NDocNodeRendererContextBase
     }
 
     @Override
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return base.engine();
     }
 
     @Override
     public List<NTxProp> computeProperties(NTxNode t) {
         List<NTxProp> inherited = engine().computeInheritedProperties(t);
-        NDocProperties hp = new NDocProperties(t);
+        NTxProperties hp = new NTxProperties(t);
         if (this.defaultStyles != null) {
             hp.set(this.defaultStyles.toArray());
         }
