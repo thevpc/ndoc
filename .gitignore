@@ -15,8 +15,8 @@
 /extensions/ndoc-extension-svg/target
 /extensions/ndoc-extension-simple3d/target
 /extensions/ndoc-extension-animated-gif/target
-/documentation/ndoc-doc/02-pages/0001-cover/output.pdf
-/documentation/ndoc-doc/output.pdf
+/documentation/ntexup-doc/02-pages/0001-cover/output.pdf
+/documentation/ntexup-doc/output.pdf
 /test/ndoc-examples/src/ndoc/examples/example001/output.pdf
 /output.pdf
 /extensions/ndoc-extension-latex/target
@@ -25,7 +25,7 @@
 /extensions/ndoc-extension-shapes2d/target
 /app/ndoc-viewer/target
 /app/ndoc-viewer-backend/target
-/app/ndoc-viewer-frontend-ng/.vscode/
+/app/ntexup-viewer-frontend-ng/.vscode/
 /app/ndoc-viewer/new-project*
 /extensions/ndoc-extension-plot2d/target
 /core/ndoc-controls/target/
