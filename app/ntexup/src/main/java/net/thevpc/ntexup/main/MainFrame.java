@@ -12,15 +12,15 @@ import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
 
-    private ServiceHelper serviceHelper;
+    private NTxServiceHelper serviceHelper;
     private EntryComponent entryComponent;
 
     public MainFrame() {
-        serviceHelper = new ServiceHelper(this);
+        serviceHelper = new NTxServiceHelper(this);
         setTitle("Ntexup Viewer");
         this.setIconImage(
                 NTxUtilsImages.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup-logo.png")).getImage(),
                         16, 16)
         );
         setContentPane(createCenter());
@@ -123,7 +123,7 @@ public class MainFrame extends JFrame {
         serviceHelper.showNewProject();
     }
 
-    public ServiceHelper getService() {
+    public NTxServiceHelper getService() {
         return serviceHelper;
     }
 
