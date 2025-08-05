@@ -1,0 +1,139 @@
+normal(title:"Network Diagrams"){
+    body{
+        grid((4,1),columns-weight:[2,3]){
+            styles:{
+                "*": {margin:2}
+                source:{
+                    at:left
+                }
+            }
+
+            // Row 1
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                nwdiag(size:(100,50), at:center
+                    """
+                          // define group outside of network definitions
+                          group {
+                            color = "#FFAAAA";
+
+                            web01;
+                            web02;
+                            db01;
+                          }
+
+                          network dmz {
+                            web01;
+                            web02;
+                          }
+                          network internal {
+                            web01;
+                            web02;
+                            db01;
+                            db02;
+                          }
+                    """
+                )
+            }
+
+            source(at:left, font-size:5.5%P
+            tson,
+            ```
+                 nwdiag(
+                     """
+                          // define group outside of network definitions
+                          group {
+                            color = "#FFAAAA";
+
+                            web01;
+                            web02;
+                            db01;
+                          }
+
+                          network dmz {
+                            web01;
+                            web02;
+                          }
+                          network internal {
+                            web01;
+                            web02;
+                            db01;
+                            db02;
+                          }
+                     """
+                 )
+
+             ```
+             )
+
+            // Row 2
+            // ---------------------------------------------
+            group(background:white,draw-contour){
+                nwdiag(size:(100,50), at:center
+                    """
+                        network Sample_front {
+                            address = "192.168.10.0/24"
+                            color = "red"
+
+                            // define group
+                            group web {
+                              web01 [address = ".1, .2", shape = "node"]
+                              web02 [address = ".2, .3"]
+                            }
+                          }
+                          network Sample_back {
+                            address = "192.168.20.0/24"
+                            color = "palegreen"
+                            web01 [address = ".1"]
+                            web02 [address = ".2"]
+                            db01 [address = ".101", shape = database ]
+                            db02 [address = ".102"]
+
+                            // define network using defined nodes
+                            group db {
+                              db01;
+                              db02;
+                            }
+                          }
+                    """
+                )
+            }
+
+            source(at:left, font-size:5.5%P
+            tson,
+            ```
+                 nwdiag(
+                     """
+                        network Sample_front {
+                            address = "192.168.10.0/24"
+                            color = "red"
+
+                            // define group
+                            group web {
+                              web01 [address = ".1, .2", shape = "node"]
+                              web02 [address = ".2, .3"]
+                            }
+                          }
+                          network Sample_back {
+                            address = "192.168.20.0/24"
+                            color = "palegreen"
+                            web01 [address = ".1"]
+                            web02 [address = ".2"]
+                            db01 [address = ".101", shape = database ]
+                            db02 [address = ".102"]
+
+                            // define network using defined nodes
+                            group db {
+                              db01;
+                              db02;
+                            }
+                          }
+                     """
+                 )
+
+             ```
+             )
+        }
+    }
+
+}
