@@ -1,22 +1,22 @@
 package net.thevpc.ntexup.debug;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.log.NDocLogger;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 
 public class NDocDebugModel {
-    private NDocEngine engine;
-    private NDocument rawDocument;
+    private NTxEngine engine;
+    private NTxDocument rawDocument;
     private NTxNode currentPage;
-    private NDocument compiledDocument;
+    private NTxDocument compiledDocument;
     private NDocLogger messageList;
 
-    public NDocEngine getEngine() {
+    public NTxEngine getEngine() {
         return engine;
     }
 
-    public NDocDebugModel setEngine(NDocEngine engine) {
+    public NDocDebugModel setEngine(NTxEngine engine) {
         this.engine = engine;
         return this;
     }
@@ -30,21 +30,21 @@ public class NDocDebugModel {
         return this;
     }
 
-    public NDocDebugModel setRawDocument(NDocument rawDocument) {
+    public NDocDebugModel setRawDocument(NTxDocument rawDocument) {
         this.rawDocument = rawDocument;
         return this;
     }
 
-    public NDocDebugModel setCompiledDocument(NDocument compiledDocument) {
+    public NDocDebugModel setCompiledDocument(NTxDocument compiledDocument) {
         this.compiledDocument = compiledDocument;
         return this;
     }
 
-    public NDocument getRawDocument() {
+    public NTxDocument getRawDocument() {
         return rawDocument;
     }
 
-    public NDocument getCompiledDocument() {
+    public NTxDocument getCompiledDocument() {
         return compiledDocument;
     }
 
