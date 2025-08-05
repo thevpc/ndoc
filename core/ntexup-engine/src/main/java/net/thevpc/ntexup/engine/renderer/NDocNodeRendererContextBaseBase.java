@@ -3,7 +3,7 @@ package net.thevpc.ntexup.engine.renderer;
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.elem2d.*;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValueByName;
 import net.thevpc.ntexup.api.eval.NDocVar;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
@@ -27,8 +27,8 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
                     return NOptional.of(new NDocVar() {
                         @Override
                         public NElement get() {
-                            NDocBounds2 nDocBounds2 = NDocNodeRendererContextBaseBase.this.selfBounds(node);
-                            return NDocUtils.toElement(nDocBounds2);
+                            NTxBounds2 nTxBounds2 = NDocNodeRendererContextBaseBase.this.selfBounds(node);
+                            return NDocUtils.toElement(nTxBounds2);
                         }
                     });
                 }
@@ -46,22 +46,22 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NDocBounds2 selfBounds(NTxNode e) {
+    public NTxBounds2 selfBounds(NTxNode e) {
         return engine().renderManager().getRenderer(e.type()).get().selfBounds(e, this);
     }
 
     @Override
-    public NDocBounds2 defaultSelfBounds(NTxNode e) {
+    public NTxBounds2 defaultSelfBounds(NTxNode e) {
         return NDocValueByName.selfBounds(e, null, null, this);
     }
 
     @Override
-    public NDocNodeRendererContext withDefaultStyles(NTxNode node, NDocProperties defaultStyles) {
+    public NDocNodeRendererContext withDefaultStyles(NTxNode node, NTxProperties defaultStyles) {
         return new NDocNodeRendererContextDelegate(node, this, null, defaultStyles, isDry(), null);
     }
 
     @Override
-    public NDocNodeRendererContext withBounds(NTxNode t, NDocBounds2 bounds2) {
+    public NDocNodeRendererContext withBounds(NTxNode t, NTxBounds2 bounds2) {
         return new NDocNodeRendererContextDelegate(t, this, bounds2, null, isDry(), null);
     }
 
@@ -82,8 +82,8 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
 
     @Override
     public NDocSizeRef sizeRef() {
-        NDocBounds2 b = getBounds();
-        NDocBounds2 gb = getGlobalBounds();
+        NTxBounds2 b = getBounds();
+        NTxBounds2 gb = getGlobalBounds();
         return new NDocSizeRef(
                 b.getWidth(), b.getHeight(),
                 gb.getWidth(), gb.getHeight()
@@ -97,12 +97,12 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NDocDouble2 getOrigin(NTxNode t, NDocDouble2 a) {
+    public NTxDouble2 getOrigin(NTxNode t, NTxDouble2 a) {
         return NDocValueByName.getOrigin(t, this, a);
     }
 
     @Override
-    public NDocDouble2 getPosition(NTxNode t, NDocDouble2 a) {
+    public NTxDouble2 getPosition(NTxNode t, NTxDouble2 a) {
         return NDocValueByName.getPosition(t, this, a);
     }
 
@@ -112,7 +112,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NDocBounds2 selfBounds(NTxNode t, NDocDouble2 selfSize, NDocDouble2 minSize) {
+    public NTxBounds2 selfBounds(NTxNode t, NTxDouble2 selfSize, NTxDouble2 minSize) {
         return NDocValueByName.selfBounds(t, selfSize, minSize, this);
     }
 
@@ -157,7 +157,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NDocDouble2 getRoundCornerArcs(NTxNode t) {
+    public NTxDouble2 getRoundCornerArcs(NTxNode t) {
         return NDocValueByName.getRoundCornerArcs(t, this);
     }
 
@@ -182,7 +182,7 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NOptional<Shadow> readStyleAsShadow(NTxNode p, String s) {
+    public NOptional<NTxShadow> readStyleAsShadow(NTxNode p, String s) {
         return NDocValueByName.readStyleAsShadow(p, s, this);
     }
 
@@ -242,13 +242,13 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public NOptional<NDocPoint2D> getStyleAsShadowDistance(Object sv) {
+    public NOptional<NTxPoint2D> getStyleAsShadowDistance(Object sv) {
         return NDocValueByName.getStyleAsShadowDistance(sv, this);
     }
 
 
     @Override
-    public SizeD mapDim(SizeD d, SizeD base) {
+    public NTxSizeD mapDim(NTxSizeD d, NTxSizeD base) {
         return NDocNodeRendererUtils.mapDim(d, base);
 
     }
@@ -278,13 +278,13 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public SizeD mapDim(double w, double h) {
+    public NTxSizeD mapDim(double w, double h) {
         return NDocNodeRendererUtils.mapDim(w,h, this);
 
     }
 
     @Override
-    public NDocBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx) {
+    public NTxBounds2 bounds(NTxNode t, NDocNodeRendererContext ctx) {
         return NDocNodeRendererUtils.bounds(t, this);
 
     }
@@ -309,13 +309,13 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
 
 
     @Override
-    public void paintDebugBox(NTxNode t, NDocBounds2 a, boolean force) {
+    public void paintDebugBox(NTxNode t, NTxBounds2 a, boolean force) {
         NDocNodeRendererUtils.paintDebugBox(t, this,graphics(), a,force);
 
     }
 
     @Override
-    public void paintDebugBox(NTxNode t, NDocBounds2 a) {
+    public void paintDebugBox(NTxNode t, NTxBounds2 a) {
         NDocNodeRendererUtils.paintDebugBox(t, this,graphics(), a);
     }
 
@@ -325,12 +325,12 @@ public abstract class NDocNodeRendererContextBaseBase implements NDocNodeRendere
     }
 
     @Override
-    public void paintBorderLine(NTxNode t, NDocBounds2 a) {
+    public void paintBorderLine(NTxNode t, NTxBounds2 a) {
         NDocNodeRendererUtils.paintBorderLine(t, this,graphics(), a);
     }
 
     @Override
-    public void paintBackground(NTxNode t, NDocBounds2 a) {
+    public void paintBackground(NTxNode t, NTxBounds2 a) {
         NDocNodeRendererUtils.paintBackground(t, this,graphics(), a);
     }
 }
