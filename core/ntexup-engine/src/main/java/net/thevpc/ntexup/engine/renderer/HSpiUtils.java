@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer;
 
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
-import net.thevpc.ntexup.api.renderer.NDocPageOrientation;
+import net.thevpc.ntexup.api.renderer.NTxPageOrientation;
 
 public class HSpiUtils {
     public static NTxDocumentStreamRendererConfig validateDocumentStreamRendererConfig(NTxDocumentStreamRendererConfig config0) {
@@ -17,7 +17,7 @@ public class HSpiUtils {
         config.setGridX(imagesPerRow);
         config.setGridY(imagesPerColumn);
         if (config.getOrientation() == null) {
-            config.setOrientation(NDocPageOrientation.LANDSCAPE);
+            config.setOrientation(NTxPageOrientation.LANDSCAPE);
         }
         return config;
     }
