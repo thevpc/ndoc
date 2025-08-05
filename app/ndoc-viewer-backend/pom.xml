@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.thevpc.ndoc</groupId>
-	<artifactId>ndoc-viewer-backend</artifactId>
+	<artifactId>ntexup-viewer-backend</artifactId>
 	<version>0.8.6.0</version>
 	<packaging>jar</packaging>
 
@@ -20,12 +20,12 @@
 	</properties>
 
 	<dependencies>
-		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-api</artifactId><version>0.8.6</version></dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ntexup-api</artifactId><version>0.8.6</version></dependency>
 		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-spring-boot</artifactId><version>0.8.6.0</version></dependency>
-		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-engine</artifactId><version>0.8.6.0</version></dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ntexup-engine</artifactId><version>0.8.6.0</version></dependency>
 		<dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-runtime</artifactId><version>0.8.6.0</version></dependency>
 
-		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ndoc-renderer-html</artifactId><version>0.8.6.0</version></dependency>
+		<dependency><groupId>net.thevpc.ndoc</groupId><artifactId>ntexup-renderer-html</artifactId><version>0.8.6.0</version></dependency>
 		<!-- Spring Boot dependencies -->
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
 		<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-thymeleaf</artifactId></dependency>
