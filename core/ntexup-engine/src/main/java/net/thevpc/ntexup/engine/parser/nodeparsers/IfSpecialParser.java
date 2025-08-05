@@ -1,12 +1,12 @@
 package net.thevpc.ntexup.engine.parser.nodeparsers;
 
-import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
+import net.thevpc.ntexup.engine.parser.NTxNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.CtrlNTxNodeIf;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
@@ -17,13 +17,13 @@ import net.thevpc.nuts.util.NMsg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IfSpecialParser extends NDocNodeParserBase {
+public class IfSpecialParser extends NTxNodeParserBase {
     public IfSpecialParser() {
         super(true, NTxNodeType.CTRL_IF);
     }
 
     @Override
-    public NCallableSupport<NTxItem> parseNode(NDocNodeFactoryParseContext context) {
+    public NCallableSupport<NTxItem> parseNode(NTxNodeFactoryParseContext context) {
         NElement tsonElement = context.element();
         switch (tsonElement.type()) {
             case NAMED_PARAMETRIZED_OBJECT: {
@@ -39,7 +39,7 @@ public class IfSpecialParser extends NDocNodeParserBase {
                         for (NElement e : obj.params().get()) {
                             if (e.isNamedPair("$condition")) {
                                 if (__cond != null) {
-                                    _logError(NMsg.ofC("unexpected %s", NDocUtils.snippet(tsonElement)),context);
+                                    _logError(NMsg.ofC("unexpected %s", NTxUtils.snippet(tsonElement)),context);
                                     return new NTxItemList();
                                 }
                                 __cond = e.asPair().get().value();
@@ -52,7 +52,7 @@ public class IfSpecialParser extends NDocNodeParserBase {
                                 }
                             } else {
                                 if (__cond != null) {
-                                    _logError(NMsg.ofC("unexpected %s", NDocUtils.snippet(tsonElement)),context);
+                                    _logError(NMsg.ofC("unexpected %s", NTxUtils.snippet(tsonElement)),context);
                                 }else {
                                     __cond = e;
                                 }
@@ -69,7 +69,7 @@ public class IfSpecialParser extends NDocNodeParserBase {
                 NObjectElement obj = tsonElement.asObject().get();
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid( () -> {
-                        _logError(NMsg.ofC("missing if condition from %s", NDocUtils.snippet(tsonElement)), context);
+                        _logError(NMsg.ofC("missing if condition from %s", NTxUtils.snippet(tsonElement)), context);
                         return new NTxItemList();
                     });
                 }
@@ -79,13 +79,13 @@ public class IfSpecialParser extends NDocNodeParserBase {
                 NUpletElement obj = tsonElement.asUplet().get();
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid( () -> {
-                        _logError(NMsg.ofC("missing if body from %s", NDocUtils.snippet(tsonElement)), context);
+                        _logError(NMsg.ofC("missing if body from %s", NTxUtils.snippet(tsonElement)), context);
                         return new NTxItemList();
                     });
                 }
             }
         }
-        return NCallableSupport.ofInvalid(NMsg.ofC("missing if construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing if construct from %s", NTxUtils.snippet(tsonElement)).asError());
     }
 
 }
