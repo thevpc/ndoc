@@ -37,7 +37,7 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
     private NDocBounds2 globalBound;
     private NDocBounds2 bound;
     private Map<String, Object> capabilities = new HashMap<>();
-    private NDocVarProvider varProvider;
+    private long pageStartTime;
 
     public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound, NDocBounds2 globalBound) {
         this.engine = engine;
@@ -48,6 +48,15 @@ public abstract class NDocNodeRendererContextBase extends NDocNodeRendererContex
 
     public NDocNodeRendererContextBase(NDocEngine engine, NDocGraphics g, Dimension bound) {
         this(engine, g, bound, new NDocBounds2(0, 0, bound.getWidth(), bound.getHeight()));
+    }
+
+    public long getPageStartTime() {
+        return pageStartTime;
+    }
+
+    public NDocNodeRendererContextBase setPageStartTime(long pageStartTime) {
+        this.pageStartTime = pageStartTime;
+        return this;
     }
 
     @Override
