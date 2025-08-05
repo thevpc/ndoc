@@ -8,8 +8,8 @@ import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
 import net.thevpc.ntexup.api.document.node.NTxItem;
-import net.thevpc.ntexup.api.source.NDocResource;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.source.NTxSource;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.util.NNameFormat;
@@ -107,11 +107,11 @@ public class NTxProp implements NTxItem, NToElement {
     }
 
     public static NTxProp of(String name, NToElement v) {
-        return new NTxProp(name,(v==null?null:NDocUtils.addCompilerDeclarationPathDummy(v.toElement())), null);
+        return new NTxProp(name,(v==null?null: NTxUtils.addCompilerDeclarationPathDummy(v.toElement())), null);
     }
 
     @Override
-    public NDocResource source() {
+    public NTxSource source() {
         return null;
     }
 
@@ -198,6 +198,6 @@ public class NTxProp implements NTxItem, NToElement {
     }
 
     public NElement toElement() {
-        return NElement.ofPair(NDocUtils.toElement(name), NDocUtils.toElement(value));
+        return NElement.ofPair(NTxUtils.toElement(name), NTxUtils.toElement(value));
     }
 }
