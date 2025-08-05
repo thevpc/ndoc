@@ -54,7 +54,7 @@ public class DocumentView {
         frame.setTitle("NTexup Viewer");
         frame.setIconImage(
                 NTxUtilsImages.resizeImage(
-                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup.png")).getImage(),
+                        new ImageIcon(getClass().getResource("/net/thevpc/ntexup/ntexup-logo.png")).getImage(),
                         16, 16)
         );
         contentPane = new DocumentViewContentPanel(this);
