@@ -20,42 +20,42 @@ public class HStyleParser {
     static Set<String> COMMON_STYLE_PROPS = new HashSet<>();
 
     static {
-        COMMON_STYLE_PROPS.addAll(Arrays.asList(NDocPropName.STROKE,
-                NDocPropName.SHADOW,
-                NDocPropName.POSITION,
-                NDocPropName.ORIGIN,
-                NDocPropName.SIZE,
-                NDocPropName.NAME,
-                NDocPropName.COLUMNS,
-                NDocPropName.ROWS,
-                NDocPropName.COLSPAN,
-                NDocPropName.ROWSPAN,
-                NDocPropName.GRID_COLOR,
+        COMMON_STYLE_PROPS.addAll(Arrays.asList(NTxPropName.STROKE,
+                NTxPropName.SHADOW,
+                NTxPropName.POSITION,
+                NTxPropName.ORIGIN,
+                NTxPropName.SIZE,
+                NTxPropName.NAME,
+                NTxPropName.COLUMNS,
+                NTxPropName.ROWS,
+                NTxPropName.COLSPAN,
+                NTxPropName.ROWSPAN,
+                NTxPropName.GRID_COLOR,
 //                HPropName.LINE_COLOR,
-                NDocPropName.ROTATE,
-                NDocPropName.PADDING,
-                NDocPropName.MARGIN,
-                NDocPropName.FONT_SIZE,
-                NDocPropName.DEBUG,
-                NDocPropName.DEBUG_COLOR,
-                NDocPropName.FONT_FAMILY,
-                NDocPropName.RAISED,
-                NDocPropName.FONT_BOLD,
-                NDocPropName.FONT_ITALIC,
-                NDocPropName.FONT_UNDERLINED,
-                NDocPropName.FONT_STRIKE,
-                NDocPropName.BACKGROUND_COLOR,
-                NDocPropName.FOREGROUND_COLOR,
-                NDocPropName.FILL_BACKGROUND,
-                NDocPropName.HIDE,
-                NDocPropName.DRAW_GRID,
-                NDocPropName.COLUMNS_WEIGHT,
-                NDocPropName.ROWS_WEIGHT,
-                NDocPropName.PRESERVE_ASPECT_RATIO,
-                NDocPropName.THEED,
-                NDocPropName.DRAW_CONTOUR,
-                NDocPropName.CLASS,
-                NDocPropName.AT
+                NTxPropName.ROTATE,
+                NTxPropName.PADDING,
+                NTxPropName.MARGIN,
+                NTxPropName.FONT_SIZE,
+                NTxPropName.DEBUG,
+                NTxPropName.DEBUG_COLOR,
+                NTxPropName.FONT_FAMILY,
+                NTxPropName.RAISED,
+                NTxPropName.FONT_BOLD,
+                NTxPropName.FONT_ITALIC,
+                NTxPropName.FONT_UNDERLINED,
+                NTxPropName.FONT_STRIKE,
+                NTxPropName.BACKGROUND_COLOR,
+                NTxPropName.FOREGROUND_COLOR,
+                NTxPropName.FILL_BACKGROUND,
+                NTxPropName.HIDE,
+                NTxPropName.DRAW_GRID,
+                NTxPropName.COLUMNS_WEIGHT,
+                NTxPropName.ROWS_WEIGHT,
+                NTxPropName.PRESERVE_ASPECT_RATIO,
+                NTxPropName.THEED,
+                NTxPropName.DRAW_CONTOUR,
+                NTxPropName.CLASS,
+                NTxPropName.AT
         ));
 
         for (NTextStyleType z : NTextStyleType.values()) {
@@ -86,7 +86,7 @@ public class HStyleParser {
     }
 
 
-    public static NOptional<NDocStyleRuleSelector> parseStyleRuleSelector(NElement e, NTxDocumentFactory f, NDocNodeFactoryParseContext context) {
+    public static NOptional<NTxStyleRuleSelector> parseStyleRuleSelector(NElement e, NTxDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -98,19 +98,19 @@ public class HStyleParser {
             {
                 String s = e.asStringValue().get();
                 if (s.isEmpty() || s.equals("*")) {
-                    return NOptional.of(DefaultNDocNodeSelector.ofAny());
+                    return NOptional.of(DefaultNTxNodeSelector.ofAny());
                 }
                 if (s.startsWith(".")) {
-                    return NOptional.of(DefaultNDocNodeSelector.ofClasses(s.substring(1)));
+                    return NOptional.of(DefaultNTxNodeSelector.ofClasses(s.substring(1)));
                 }
-                return NOptional.of(DefaultNDocNodeSelector.ofName(s));
+                return NOptional.of(DefaultNTxNodeSelector.ofName(s));
             }
             case NAME: {
                 String n = e.asStringValue().get();
                 if (n.startsWith(".")) {
-                    return NOptional.of(DefaultNDocNodeSelector.ofClasses(n.substring(1)));
+                    return NOptional.of(DefaultNTxNodeSelector.ofClasses(n.substring(1)));
                 }
-                return NOptional.of(DefaultNDocNodeSelector.ofType(n));
+                return NOptional.of(DefaultNTxNodeSelector.ofType(n));
             }
             case UPLET:
             case NAMED_UPLET:
@@ -203,7 +203,7 @@ public class HStyleParser {
                     }
 
                 }
-                return NOptional.of(DefaultNDocNodeSelector.of(
+                return NOptional.of(DefaultNTxNodeSelector.of(
                         names.toArray(new String[0]),
                         types.toArray(new String[0]),
                         classes.toArray(new String[0])
@@ -219,7 +219,7 @@ public class HStyleParser {
     public static NOptional<NTxStyleRule[]> parseStyleRule(NElement e, NTxDocumentFactory f, NDocNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<NDocStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
+                NOptional<NTxStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
