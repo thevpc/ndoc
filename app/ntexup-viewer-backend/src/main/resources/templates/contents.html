@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Repository Contents</title>
+</head>
+<body>
+<h1>Repository Contents</h1>
+<div th:if="${error}">
+  <p th:text="${error}"></p>
+</div>
+<div th:unless="${error}">
+  <ul>
+    <li th:each="content : ${contents}">
+      <a th:href="@{/repo/content(localPath=${localPath}, path=${content})}" th:text="${content}"></a>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
