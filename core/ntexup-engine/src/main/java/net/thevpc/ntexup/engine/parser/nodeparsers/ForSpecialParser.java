@@ -1,11 +1,11 @@
 package net.thevpc.ntexup.engine.parser.nodeparsers;
 
-import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
+import net.thevpc.ntexup.engine.parser.NTxNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxItem;
 import net.thevpc.ntexup.api.document.node.NTxItemList;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.parser.ctrlnodes.CtrlNTxNodeFor;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
@@ -16,13 +16,13 @@ import net.thevpc.nuts.util.NMsg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForSpecialParser extends NDocNodeParserBase {
+public class ForSpecialParser extends NTxNodeParserBase {
     public ForSpecialParser() {
         super(true, NTxNodeType.CTRL_FOR);
     }
 
     @Override
-    public NCallableSupport<NTxItem> parseNode(NDocNodeFactoryParseContext context) {
+    public NCallableSupport<NTxItem> parseNode(NTxNodeFactoryParseContext context) {
         NElement tsonElement = context.element();
         switch (tsonElement.type()) {
             case NAMED_PARAMETRIZED_OBJECT: {
@@ -40,7 +40,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
                                 __varName = e.asPair().get().key();
                                 __varDomain = e.asPair().get().value();
                             } else {
-                                _logError(NMsg.ofC("unexpected %s", NDocUtils.snippet(tsonElement)),context);
+                                _logError(NMsg.ofC("unexpected %s", NTxUtils.snippet(tsonElement)),context);
                             }
                         }
                         CtrlNTxNodeFor cc = new CtrlNTxNodeFor(context.source(), __varName, __varDomain, block);
@@ -54,7 +54,7 @@ public class ForSpecialParser extends NDocNodeParserBase {
                 NObjectElement obj = tsonElement.asObject().get();
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid( () -> {
-                        _logError(NMsg.ofC("missing for condition from %s", NDocUtils.snippet(tsonElement)), context);
+                        _logError(NMsg.ofC("missing for condition from %s", NTxUtils.snippet(tsonElement)), context);
                         return new NTxItemList();
                     });
                 }
@@ -64,14 +64,14 @@ public class ForSpecialParser extends NDocNodeParserBase {
                 NUpletElement obj = tsonElement.asUplet().get();
                 if (obj.isNamed(id())) {
                     return NCallableSupport.ofValid( () -> {
-                        _logError(NMsg.ofC("missing for body from %s", NDocUtils.snippet(tsonElement)), context);
+                        _logError(NMsg.ofC("missing for body from %s", NTxUtils.snippet(tsonElement)), context);
                         return new NTxItemList();
                     });
                 }
                 break;
             }
         }
-        return NCallableSupport.ofInvalid(NMsg.ofC("missing for construct from %s", NDocUtils.snippet(tsonElement)).asError());
+        return NCallableSupport.ofInvalid(NMsg.ofC("missing for construct from %s", NTxUtils.snippet(tsonElement)).asError());
     }
 
 
