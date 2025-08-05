@@ -1,16 +1,16 @@
 package net.thevpc.ntexup.engine.base.nodes.line;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocElement2DFactory;
-import net.thevpc.ntexup.api.document.elem2d.NDocPoint;
-import net.thevpc.ntexup.api.document.elem2d.NDocPoint2D;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxElement2DFactory;
+import net.thevpc.ntexup.api.document.elem2d.NTxPoint;
+import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NDocValueByType;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.eval.NDocValue;
@@ -18,34 +18,34 @@ import net.thevpc.ntexup.api.eval.NDocValue;
 import java.awt.*;
 
 public class NDocQuadCurveBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.QUAD_CURVE)
-                .parseParam().named(NDocPropName.FROM, NDocPropName.TO, NDocPropName.START_ARROW, NDocPropName.END_ARROW, NDocPropName.CTRL).then()
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.QUAD_CURVE)
+                .parseParam().named(NTxPropName.FROM, NTxPropName.TO, NTxPropName.START_ARROW, NTxPropName.END_ARROW, NTxPropName.CTRL).then()
                 .renderComponent(this::renderMain)
         ;
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
         rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 b = rendererContext.selfBounds(p);
-        NDocPoint2D translation = new NDocPoint2D(b.getX(), b.getY());
-        NDocPoint2D from = NDocPoint.ofParent(NDocValue.ofProp(p, NDocPropName.FROM).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxBounds2 b = rendererContext.selfBounds(p);
+        NTxPoint2D translation = new NTxPoint2D(b.getX(), b.getY());
+        NTxPoint2D from = NTxPoint.ofParent(NDocValue.ofProp(p, NTxPropName.FROM).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
-        NDocPoint2D to = NDocPoint.ofParent(NDocValue.ofProp(p, NDocPropName.TO).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D to = NTxPoint.ofParent(NDocValue.ofProp(p, NTxPropName.TO).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
-        NDocPoint2D ctrl = NDocPoint.ofParent(NDocValue.ofProp(p, NDocPropName.CTRL).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D ctrl = NTxPoint.ofParent(NDocValue.ofProp(p, NTxPropName.CTRL).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
         NDocGraphics g = rendererContext.graphics();
         if (!rendererContext.isDry()) {
             Paint fc = rendererContext.getForegroundColor(p, true);
-            g.draw2D(NDocElement2DFactory.quad(from, ctrl, to)
-                    .setStartArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.START_ARROW).orNull())
-                    .setEndArrow(NDocValueByType.getArrow(p, rendererContext, NDocPropName.END_ARROW).orNull())
+            g.draw2D(NTxElement2DFactory.quad(from, ctrl, to)
+                    .setStartArrow(NDocValueByType.getArrow(p, rendererContext, NTxPropName.START_ARROW).orNull())
+                    .setEndArrow(NDocValueByType.getArrow(p, rendererContext, NTxPropName.END_ARROW).orNull())
                     .setLineStroke(g.createStroke(rendererContext.getStroke(p)))
                     .setLinePaint(fc)
             );
@@ -54,7 +54,7 @@ public class NDocQuadCurveBuilder implements NDocNodeBuilder {
         double miny = Math.min(from.getY(), to.getY());
         double maxX = Math.max(from.getX(), to.getX());
         double maxY = Math.max(from.getY(), to.getY());
-        NDocBounds2 b2 = new NDocBounds2(minx, miny, maxX, maxY);
+        NTxBounds2 b2 = new NTxBounds2(minx, miny, maxX, maxY);
         rendererContext.paintDebugBox(p, b2);
     }
 
