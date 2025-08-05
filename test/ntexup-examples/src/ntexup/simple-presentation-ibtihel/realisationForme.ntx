@@ -102,31 +102,31 @@ page{
                 group(size:(70,70), at:center){
                         uml(
                             """
-                                NDocNodeRendererBase <|-- NDocCylinderRenderer
-                                NDocNodeParserBase <|-- NDocCylinderImpl
-                                NDocNodeParser <|.. NDocNodeParserBase
-                                NDocNodeRenderer <|.. NDocNodeRendererBase
-                                NDocNodeRendererManager o-- NDocNodeRenderer
-                                NDocEngine *-- NDocNodeRendererManager
-                                NDocNodeParserManager o-- NDocNodeParser
-                                NDocEngine *-- NDocNodeParserManager
+                                NTxNodeRendererBase <|-- NTxCylinderRenderer
+                                NTxNodeParserBase <|-- NTxCylinderImpl
+                                NTxNodeParser <|.. NTxNodeParserBase
+                                NTxNodeRenderer <|.. NTxNodeRendererBase
+                                NTxNodeRendererManager o-- NTxNodeRenderer
+                                NTxEngine *-- NTxNodeRendererManager
+                                NTxNodeParserManager o-- NTxNodeParser
+                                NTxEngine *-- NTxNodeParserManager
 
 
-                                abstract class NDocNodeParserBase
-                                abstract class NDocNodeRendererBase
-                                interface NDocNodeParser
-                                interface NDocNodeRenderer
-                                interface NDocNodeRendererManager
-                                interface NDocNodeParserManager
-                                interface NDocEngine
+                                abstract class NTxNodeParserBase
+                                abstract class NTxNodeRendererBase
+                                interface NTxNodeParser
+                                interface NTxNodeRenderer
+                                interface NTxNodeRendererManager
+                                interface NTxNodeParserManager
+                                interface NTxEngine
 
-                                NDocCylinderImpl : NDocCylinderImpl()
-                                NDocCylinderImpl : processArg() : boolean
-                                NDocCylinderImpl : toTson(NDocNode) : NElement
+                                NTxCylinderImpl : NTxCylinderImpl()
+                                NTxCylinderImpl : processArg() : boolean
+                                NTxCylinderImpl : toTson(NTxNode) : NElement
 
-                                NDocCylinderRenderer : defaultStyles
-                                NDocCylinderRenderer : renderMain(NDocNode,RendererContext) : void
-                                NDocCylinderRenderer : renderShadow(NDocNode,RendererContext) : void
+                                NTxCylinderRenderer : defaultStyles
+                                NTxCylinderRenderer : renderMain(NTxNode,RendererContext) : void
+                                NTxCylinderRenderer : renderShadow(NTxNode,RendererContext) : void
                             """
                         )
                     }
