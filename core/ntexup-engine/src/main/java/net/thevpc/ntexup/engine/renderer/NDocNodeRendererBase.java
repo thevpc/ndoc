@@ -2,7 +2,7 @@ package net.thevpc.ntexup.engine.renderer;
 
 import net.thevpc.ntexup.api.document.elem2d.*;
 import net.thevpc.ntexup.api.document.node.*;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.eval.NDocValueByName;
 import net.thevpc.ntexup.api.eval.NDocValueByType;
 import net.thevpc.ntexup.api.document.NDocSizeRequirements;
@@ -21,7 +21,7 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
 
     @Override
     public NDocSizeRequirements sizeRequirements(NTxNode p, NDocNodeRendererContext ctx) {
-        NDocBounds2 bounds = ctx.getBounds();
+        NTxBounds2 bounds = ctx.getBounds();
         return new NDocSizeRequirements(
                 0,
                 bounds.getWidth(),
@@ -42,12 +42,12 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
         if (!v) {
             return;
         }
-        NDocBounds2 selfBounds = selfBounds(p, ctx);
+        NTxBounds2 selfBounds = selfBounds(p, ctx);
         NDocGraphics nv = null;
         try {
             if (!ctx.isDry()) {
             //if (!ctx.isDry()) {
-                Rotation rotation = NDocValueByType.getRotation(p, ctx, NDocPropName.ROTATE).orNull();
+                NTxRotation rotation = NDocValueByType.getRotation(p, ctx, NTxPropName.ROTATE).orNull();
                 if (rotation != null) {
                     double angle = NDocValue.of(rotation.getAngle()).asDouble().orElse(0.0);
                     if (angle != 0) {
@@ -85,15 +85,15 @@ public abstract class NDocNodeRendererBase implements NDocNodeRenderer {
 
     public abstract void renderMain(NTxNode p, NDocNodeRendererContext ctx);
 
-    public NDocBounds2 bgBounds(NTxNode p, NDocNodeRendererContext ctx) {
+    public NTxBounds2 bgBounds(NTxNode p, NDocNodeRendererContext ctx) {
         return ctx.selfBounds(p, null, null);
     }
 
-    public NDocBounds2 selfBounds(NTxNode t, NDocNodeRendererContext ctx) {
+    public NTxBounds2 selfBounds(NTxNode t, NDocNodeRendererContext ctx) {
         return NDocValueByName.selfBounds(t, null, null, ctx);
     }
 
-    public NDocBounds2 defaultSelfBounds(NTxNode t, NDocNodeRendererContext ctx) {
+    public NTxBounds2 defaultSelfBounds(NTxNode t, NDocNodeRendererContext ctx) {
         return NDocValueByName.selfBounds(t, null, null, ctx);
     }
 
