@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.engine.renderer.page;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.engine.renderer.NDocNodeRendererBase;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
@@ -14,12 +14,12 @@ import java.awt.*;
 
 public class NDocPageRenderer extends NDocNodeRendererBase {
     public NDocPageRenderer() {
-        super(NDocNodeType.PAGE);
+        super(NTxNodeType.PAGE);
     }
 
     @Override
     public void renderMain(NTxNode p, NDocNodeRendererContext ctx) {
-        NDocBounds2 b = ctx.selfBounds(p, null, null);
+        NTxBounds2 b = ctx.selfBounds(p, null, null);
 
          drawBackground(ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
@@ -30,7 +30,7 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
         //perhaps add page sum ??
     }
 
-    private void drawGrid(NDocGraphics g, NDocBounds2 b) {
+    private void drawGrid(NDocGraphics g, NTxBounds2 b) {
         int width = b.getWidth().intValue();
         int height = b.getHeight().intValue();
         Color color = Color.gray;
@@ -64,7 +64,7 @@ public class NDocPageRenderer extends NDocNodeRendererBase {
         g.setStroke(os);
     }
 
-    private void drawBackground(NDocGraphics g, NDocNodeRendererContext ctx, NDocBounds2 b) {
+    private void drawBackground(NDocGraphics g, NDocNodeRendererContext ctx, NTxBounds2 b) {
 
 //        g2d.setBackground(Color.white);
 //        g2d.clearRect(0, 0, size.width, size.height);
