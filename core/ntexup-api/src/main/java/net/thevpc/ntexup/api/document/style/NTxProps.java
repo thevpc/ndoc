@@ -1,0 +1,192 @@
+package net.thevpc.ntexup.api.document.style;
+
+import java.awt.*;
+
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxAlign;
+import net.thevpc.ntexup.api.document.elem2d.NTxSize;
+import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.nuts.elem.NElement;
+
+/**
+ * @author vpc
+ */
+public class NTxProps {
+
+    public static NTxProp fontSize(Number value) {
+        return NTxProp.of(NTxPropName.FONT_SIZE, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofNumber(value == null ? null : value.doubleValue())));
+    }
+
+    public static NTxProp fontFamily(String value) {
+        return NTxProp.of(NTxPropName.FONT_FAMILY, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofString(value)));
+    }
+
+    public static NTxProp width(NTxSize size) {
+        return NTxProp.of(NTxPropName.WIDTH, size);
+    }
+
+    public static NTxProp height(NTxSize size) {
+        return NTxProp.of(NTxPropName.HEIGHT, size);
+    }
+
+//    public static HProp foregroundColor(Paint color) {
+//        return new HProp(HPropName.FOREGROUND_COLOR, color);
+//    }
+
+    public static NTxProp foregroundColor(int color) {
+        return NTxProp.of(NTxPropName.FOREGROUND_COLOR, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(color)));
+    }
+
+    public static NTxProp backgroundColor(int rgb) {
+        return NTxProp.of(NTxPropName.BACKGROUND_COLOR, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(rgb)));
+    }
+
+    public static NTxProp backgroundColor(Color color) {
+        return NTxProp.of(NTxPropName.BACKGROUND_COLOR, color == null ? null : NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(color.getRGB())));
+    }
+
+//    public static HProp lineColor(Paint color) {
+//        return new HProp(HPropName.LINE_COLOR, color);
+//    }
+
+    public static NTxProp gridColor(Color color) {
+        return NTxProp.of(NTxPropName.GRID_COLOR, color == null ? null : NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(color.getRGB())));
+    }
+
+//    public static HProp lineColor(int color) {
+//        return new HProp(HPropName.LINE_COLOR, new Color(color));
+//    }
+
+    public static NTxProp fontBold() {
+        return fontBold(true);
+    }
+
+    public static NTxProp preserveShapeRatio() {
+        return preserveShapeRatio(true);
+    }
+
+    public static NTxProp preserveShapeRatio(boolean value) {
+        return NTxProp.of(NTxPropName.PRESERVE_ASPECT_RATIO, NDocUtils.addCompilerDeclarationPathDummy((NElement.ofBoolean(value))));
+    }
+
+    public static NTxProp drawContour(boolean value) {
+        return NTxProp.of(NTxPropName.DRAW_CONTOUR, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp drawGrid(boolean value) {
+        return NTxProp.of(NTxPropName.DRAW_GRID, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp fillBackground(boolean value) {
+        return NTxProp.of(NTxPropName.FILL_BACKGROUND, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp fontBold(boolean value) {
+        return NTxProp.of(NTxPropName.FONT_BOLD, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp fontItalic(boolean value) {
+        return NTxProp.of(NTxPropName.FONT_ITALIC, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp fontUnderlined(boolean value) {
+        return NTxProp.of(NTxPropName.FONT_UNDERLINED, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp fontStrike(boolean value) {
+        return NTxProp.of(NTxPropName.FONT_STRIKE, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(value)));
+    }
+
+    public static NTxProp position(NTxDouble2 p) {
+        return NTxProp.of(NTxPropName.POSITION, p);
+    }
+
+    public static NTxProp center() {
+        return origin(NTxAlign.CENTER);
+    }
+
+    public static NTxProp origin(NTxAlign p) {
+        return NTxProp.of(NTxPropName.ORIGIN, p);
+    }
+
+    public static NTxProp origin(double x, double y) {
+        return NTxProp.of(NTxPropName.ORIGIN, new NTxDouble2(x, y));
+    }
+
+    public static NTxProp position(double x, double y) {
+        return NTxProp.of(NTxPropName.POSITION, new NTxDouble2(x, y));
+    }
+
+    public static NTxProp position(NTxAlign p) {
+        return NTxProp.of(NTxPropName.POSITION, p);
+    }
+
+    public static NTxProp size(double x, double y) {
+        return NTxProp.of(NTxPropName.SIZE, new NTxDouble2(x, y));
+    }
+
+    public static NTxProp size(double x) {
+        return NTxProp.of(NTxPropName.SIZE, new NTxDouble2(x, x));
+    }
+
+    public static NTxProp size(NTxDouble2 size) {
+        return NTxProp.of(NTxPropName.SIZE, size);
+    }
+
+    public static NTxProp roundCorner(NTxDouble2 o) {
+        return NTxProp.of(NTxPropName.ROUND_CORNER, o);
+    }
+
+    public static NTxProp roundCorner(double x, double y) {
+        return NTxProp.of(NTxPropName.ROUND_CORNER, NDocUtils.addCompilerDeclarationPathDummy(new NTxDouble2(x, y).toElement()));
+    }
+
+    public static NTxProp threeD(Boolean b) {
+        return NTxProp.of(NTxPropName.THEED, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(b)));
+    }
+
+    public static NTxProp raised(Boolean b) {
+        return NTxProp.of(NTxPropName.RAISED, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(b)));
+    }
+
+    public static NTxProp columns(int o) {
+        return NTxProp.of(NTxPropName.COLUMNS, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(o)));
+    }
+
+    public static NTxProp rows(int o) {
+        return NTxProp.of(NTxPropName.ROWS, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(o)));
+    }
+
+    public static NTxProp rowsWeight(double... w) {
+        return NTxProp.of(NTxPropName.ROWS_WEIGHT, NElement.ofDoubleArray(w));
+    }
+
+    public static NTxProp colspan(int c) {
+        return NTxProp.of(NTxPropName.COLSPAN, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(c)));
+    }
+
+    public static NTxProp rowspan(int r) {
+        return NTxProp.of(NTxPropName.ROWSPAN, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofInt(r)));
+    }
+
+    public static NTxProp styleClasses(String... array) {
+        return NTxProp.of(NTxPropName.CLASS, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofStringArray(array)));
+    }
+
+    public static NTxProp disabled(boolean b) {
+        return NTxProp.of(NTxPropName.HIDE, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofBoolean(b)));
+    }
+
+    public static NTxProp name(String name) {
+        return NTxProp.of(NTxPropName.NAME, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofString(name)));
+    }
+
+    public static NTxProp maxX(double x) {
+        return NTxProp.of(NTxPropName.MAX_X, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofDouble(x)));
+    }
+
+    public static NTxProp maxY(double x) {
+        return NTxProp.of(NTxPropName.MAX_Y, NDocUtils.addCompilerDeclarationPathDummy(NElement.ofDouble(x)));
+    }
+
+}
