@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.extension.plot2d;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
-import net.thevpc.ntexup.api.util.MinMax;
+import net.thevpc.ntexup.api.util.NTxMinMax;
 
 class DrawContext {
 
@@ -24,7 +24,7 @@ class DrawContext {
     double componentMinX;
     double componentMinY;
 
-    public DrawContext(NTxBounds2 bounds, double minX, double maxX, double minY, double maxY, boolean zoomY, MinMax minMaxY) {
+    public DrawContext(NTxBounds2 bounds, double minX, double maxX, double minY, double maxY, boolean zoomY, NTxMinMax minMaxY) {
         this.componentWidth = bounds.getWidth();
         this.componentHeight = bounds.getHeight();
         this.componentMinX = bounds.getX();
