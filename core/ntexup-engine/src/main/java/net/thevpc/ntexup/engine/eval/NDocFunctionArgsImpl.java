@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.eval;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.eval.NDocFunctionArgs;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
@@ -13,10 +13,10 @@ import java.util.List;
 public class NDocFunctionArgsImpl implements NDocFunctionArgs {
     private NTxFunctionArg[] args;
 
-    public NDocFunctionArgsImpl(NElement[] callArgs, NTxNode node, NDocEngine engine, NDocVarProvider varProvider) {
+    public NDocFunctionArgsImpl(NElement[] callArgs, NTxNode node, NTxEngine engine, NDocVarProvider varProvider) {
         this(Arrays.stream(callArgs).map(x -> new NTxFunctionArgImpl(x, node,engine,varProvider)).toArray(NTxFunctionArg[]::new));
     }
-    public NDocFunctionArgsImpl(List<NElement> callArgs, NTxNode node, NDocEngine engine, NDocVarProvider varProvider) {
+    public NDocFunctionArgsImpl(List<NElement> callArgs, NTxNode node, NTxEngine engine, NDocVarProvider varProvider) {
         this(callArgs.stream().map(x -> new NTxFunctionArgImpl(x, node,engine,varProvider)).toArray(NTxFunctionArg[]::new));
     }
 
