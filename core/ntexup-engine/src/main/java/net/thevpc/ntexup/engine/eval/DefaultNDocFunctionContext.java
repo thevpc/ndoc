@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.eval;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NDocVar;
 import net.thevpc.ntexup.api.eval.NDocVarProvider;
 import net.thevpc.ntexup.api.log.NDocLogger;
@@ -10,11 +10,11 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
 public class DefaultNDocFunctionContext implements NDocFunctionContext {
-    private NDocEngine engine;
+    private NTxEngine engine;
     private NTxNode node;
     private NDocVarProvider varProvider;
 
-    public DefaultNDocFunctionContext(NDocEngine engine, NTxNode node, NDocVarProvider varProvider) {
+    public DefaultNDocFunctionContext(NTxEngine engine, NTxNode node, NDocVarProvider varProvider) {
         this.engine = engine;
         this.node = node;
         this.varProvider = varProvider;
@@ -34,7 +34,7 @@ public class DefaultNDocFunctionContext implements NDocFunctionContext {
         return node;
     }
 
-    public NDocEngine engine() {
+    public NTxEngine engine() {
         return engine;
     }
 
