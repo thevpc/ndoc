@@ -1,34 +1,34 @@
 package net.thevpc.ntexup.engine.base.nodes.shape;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
-import net.thevpc.ntexup.api.document.elem2d.NDocDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.util.NDocUtils;
 
 public class NDocRectangleBuilder implements NDocNodeBuilder {
-    private NDocProperties defaultStyles = new NDocProperties();
+    private NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext
-                .id(NDocNodeType.RECTANGLE)
-                .parseParam().named(NDocPropName.ROUND_CORNER, NDocPropName.THEED, NDocPropName.RAISED).asFlags().then()
+                .id(NTxNodeType.RECTANGLE)
+                .parseParam().named(NTxPropName.ROUND_CORNER, NTxPropName.THEED, NTxPropName.RAISED).asFlags().then()
                 .renderComponent(this::renderMain)
         ;
     }
 
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
         rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
 
-        NDocBounds2 b = rendererContext.selfBounds(p);
+        NTxBounds2 b = rendererContext.selfBounds(p);
         double x = b.getX();
         double y = b.getY();
         NDocGraphics g = rendererContext.graphics();
@@ -39,7 +39,7 @@ public class NDocRectangleBuilder implements NDocNodeBuilder {
                 threeD = true;
             }
         }
-        NDocDouble2 roundCorners = rendererContext.getRoundCornerArcs(p);
+        NTxDouble2 roundCorners = rendererContext.getRoundCornerArcs(p);
         boolean round = roundCorners != null;
         boolean d3 = threeD == null ? false : threeD;
         if (!rendererContext.isDry()) {
