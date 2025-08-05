@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.main.components;
 
-import net.thevpc.ntexup.main.ServiceHelper;
+import net.thevpc.ntexup.main.NTxServiceHelper;
 import net.thevpc.nuts.util.NBlankable;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class PathField extends JPanel {
     private void onSelectPath() {
         String oldPath = path.getText();
         JFileChooser f = new JFileChooser();
-        f.setFileFilter(ServiceHelper.NTEXUP_FILTER);
+        f.setFileFilter(NTxServiceHelper.NTEXUP_FILTER);
         f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         if (!NBlankable.isBlank(oldPath)) {
             f.setCurrentDirectory(new File(oldPath));
