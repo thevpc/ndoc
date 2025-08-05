@@ -4,14 +4,14 @@
  */
 package net.thevpc.ntexup.engine.base.nodes.container;
 
-import net.thevpc.ntexup.api.document.elem2d.NDocBounds2;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.document.style.NDocProperties;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.parser.NDocAllArgumentReader;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
@@ -20,21 +20,21 @@ import net.thevpc.nuts.elem.NElement;
  * @author vpc
  */
 public class NDocGridBuilder implements NDocNodeBuilder {
-    NDocProperties defaultStyles = new NDocProperties();
+    NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.GRID)
-                .parseParam().named(NDocPropName.COLUMNS, NDocPropName.ROWS).then()
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.GRID)
+                .parseParam().named(NTxPropName.COLUMNS, NTxPropName.ROWS).then()
                 .parseParam((info, buildContext) -> {
                     NElement p = info.peek();
                     if (p.isInt()) {
-                        if (info.node().getPropertyValue(NDocPropName.COLUMNS).isEmpty()) {
+                        if (info.node().getPropertyValue(NTxPropName.COLUMNS).isEmpty()) {
                             info.read();
-                            info.node().setProperty(NTxProp.of(NDocPropName.COLUMNS, p));
-                        } else if (info.node().getPropertyValue(NDocPropName.ROWS).isEmpty()) {
+                            info.node().setProperty(NTxProp.of(NTxPropName.COLUMNS, p));
+                        } else if (info.node().getPropertyValue(NTxPropName.ROWS).isEmpty()) {
                             info.read();
-                            info.node().setProperty(NTxProp.of(NDocPropName.ROWS, p));
+                            info.node().setProperty(NTxProp.of(NTxPropName.ROWS, p));
                         } else {
                             info.read();
                             //just ignore
@@ -42,27 +42,27 @@ public class NDocGridBuilder implements NDocNodeBuilder {
                         return true;
                     } else if (p.isUplet() && p.asUplet().get().size() == 2 && p.asUplet().get().get(0).get().isInt() && p.asUplet().get().get(1).get().isInt()) {
                         info.read();
-                        if (info.node().getPropertyValue(NDocPropName.COLUMNS).isEmpty()) {
-                            info.node().setProperty(NTxProp.of(NDocPropName.COLUMNS, p.asUplet().get().get(0).get()));
+                        if (info.node().getPropertyValue(NTxPropName.COLUMNS).isEmpty()) {
+                            info.node().setProperty(NTxProp.of(NTxPropName.COLUMNS, p.asUplet().get().get(0).get()));
                         }
-                        if (info.node().getPropertyValue(NDocPropName.ROWS).isEmpty()) {
-                            info.node().setProperty(NTxProp.of(NDocPropName.ROWS, p.asUplet().get().get(1).get()));
+                        if (info.node().getPropertyValue(NTxPropName.ROWS).isEmpty()) {
+                            info.node().setProperty(NTxProp.of(NTxPropName.ROWS, p.asUplet().get().get(1).get()));
                         }
                         return true;
                     } else {
                         return false;
                     }
                 })
-                .afterParsingAllParams(new NDocNodeCustomBuilderContext.ProcessNodeAction() {
+                .afterParsingAllParams(new NTxNodeCustomBuilderContext.ProcessNodeAction() {
                     @Override
-                    public void processNode(NDocAllArgumentReader info, NDocNodeCustomBuilderContext buildContext) {
-                        if (info.node().getPropertyValue(NDocPropName.COLUMNS).isEmpty() && info.node().getPropertyValue(NDocPropName.ROWS).isEmpty()) {
-                            info.node().setProperty(NTxProp.ofInt(NDocPropName.COLUMNS, 2));
-                            info.node().setProperty(NTxProp.ofInt(NDocPropName.ROWS, 2));
-                        } else if (info.node().getPropertyValue(NDocPropName.COLUMNS).isEmpty()) {
-                            info.node().setProperty(NTxProp.of(NDocPropName.COLUMNS, info.node().getPropertyValue(NDocPropName.ROWS).get()));
-                        } else if (info.node().getPropertyValue(NDocPropName.ROWS).isEmpty()) {
-                            info.node().setProperty(NTxProp.of(NDocPropName.ROWS, info.node().getPropertyValue(NDocPropName.COLUMNS).get()));
+                    public void processNode(NDocAllArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+                        if (info.node().getPropertyValue(NTxPropName.COLUMNS).isEmpty() && info.node().getPropertyValue(NTxPropName.ROWS).isEmpty()) {
+                            info.node().setProperty(NTxProp.ofInt(NTxPropName.COLUMNS, 2));
+                            info.node().setProperty(NTxProp.ofInt(NTxPropName.ROWS, 2));
+                        } else if (info.node().getPropertyValue(NTxPropName.COLUMNS).isEmpty()) {
+                            info.node().setProperty(NTxProp.of(NTxPropName.COLUMNS, info.node().getPropertyValue(NTxPropName.ROWS).get()));
+                        } else if (info.node().getPropertyValue(NTxPropName.ROWS).isEmpty()) {
+                            info.node().setProperty(NTxProp.of(NTxPropName.ROWS, info.node().getPropertyValue(NTxPropName.COLUMNS).get()));
                         }
                     }
                 })
@@ -72,9 +72,9 @@ public class NDocGridBuilder implements NDocNodeBuilder {
     }
 
 
-    public NDocBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public NTxBounds2 selfBounds(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.defaultSelfBounds(p);
+        NTxBounds2 expectedBounds = ctx.defaultSelfBounds(p);
 //        HGraphics g = ctx.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
@@ -82,9 +82,9 @@ public class NDocGridBuilder implements NDocNodeBuilder {
         return h.computeBound(p, ctx, expectedBounds);
     }
 
-    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NDocNodeCustomBuilderContext builderContext) {
+    public void renderMain(NTxNode p, NDocNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NDocBounds2 expectedBounds = ctx.selfBounds(p);
+        NTxBounds2 expectedBounds = ctx.selfBounds(p);
         NDocGridRendererHelper h = new NDocGridRendererHelper(p.children());
         h.render(p, ctx, expectedBounds);
     }
