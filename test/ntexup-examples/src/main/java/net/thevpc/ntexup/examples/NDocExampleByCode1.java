@@ -5,12 +5,12 @@
 package net.thevpc.ntexup.examples;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
-import  net.thevpc.ntexup.api.document.style.NDocProps;
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
-import net.thevpc.ntexup.api.document.elem2d.NDocAlign;
-import net.thevpc.ntexup.engine.DefaultNDocEngine;
-import net.thevpc.ntexup.api.renderer.NDocDocumentRenderer;
+import net.thevpc.ntexup.api.document.style.NTxProps;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
+import net.thevpc.ntexup.api.document.elem2d.NTxAlign;
+import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.api.renderer.NTxDocumentRenderer;
 import net.thevpc.nuts.Nuts;
 
 /**
@@ -20,9 +20,9 @@ public class NDocExampleByCode1 {
 
     public static void main(String[] args) {
         Nuts.openWorkspace().share();
-        NDocEngine e = new DefaultNDocEngine();
+        NTxEngine e = new DefaultNTxEngine();
         NTxDocumentFactory f = e.documentFactory();
-        NDocument d = f.ofDocument(null)
+        NTxDocument d = f.ofDocument(null)
                 .add(f.ofPage()
                         .addChild(
                                 f.ofGroup()
@@ -45,7 +45,7 @@ public class NDocExampleByCode1 {
                                                         .setPosition(50, 3)
                                                         .setForegroundColor("white")
                                                         .setFontSize(40)
-                                                        .setOrigin(NDocAlign.TOP)
+                                                        .setOrigin(NTxAlign.TOP)
                                         )
                                         .addChild(
                                                 f.ofCircle()
@@ -53,20 +53,20 @@ public class NDocExampleByCode1 {
                                                         .setSize(20)
                                                         .setForegroundColor("yellow")
                                                         .setBackgroundColor("#ffaa00")
-                                                        .setOrigin(NDocAlign.CENTER)
+                                                        .setOrigin(NTxAlign.CENTER)
                                         )
                                         .addChild(
                                                 f.ofRectangle()
                                                         .setPosition(80, 70)
                                                         .setSize(20, 20)
-                                                        .setProperty(NDocProps.preserveShapeRatio())
+                                                        .setProperty(NTxProps.preserveShapeRatio())
                                                         .setForegroundColor("green")
                                                         .setBackgroundColor("#555500")
-                                                        .setOrigin(NDocAlign.CENTER)
+                                                        .setOrigin(NTxAlign.CENTER)
                                         )
                                         .addChild(
                                                 f.ofGrid(2, 2)
-                                                        .setProperty(NDocProps.rowsWeight(1, 3))
+                                                        .setProperty(NTxProps.rowsWeight(1, 3))
                                                         .addChild(f.ofGlue())
                                                         .addChild(f.ofGlue())
                                                         .addChild(
@@ -82,11 +82,11 @@ public class NDocExampleByCode1 {
                                         .addChild(
                                                 f.ofEquation("x=\\frac{-b \\pm \\sqrt {b^2-4ac}}{2a}")
                                                         .setPosition(10, 80)
-                                                        .setOrigin(NDocAlign.LEFT)
+                                                        .setOrigin(NTxAlign.LEFT)
                                         )
                         )
                 );
-        NDocDocumentRenderer renderer = e.newScreenRenderer().get();
+        NTxDocumentRenderer renderer = e.newScreenRenderer().get();
         renderer.render(d);
     }
 }
