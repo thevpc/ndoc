@@ -2,7 +2,7 @@ package net.thevpc.ntexup.debug;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.log.NDocLogger;
+import net.thevpc.ntexup.api.log.NTxLogger;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.engine.util.NTxUtilsImages;
 import net.thevpc.ntexup.api.renderer.NTxDocumentRendererListener;
@@ -110,7 +110,7 @@ public class NTxDebugFrame extends JFrame {
         });
     }
 
-    public NDocLogger messages() {
+    public NTxLogger messages() {
         return model().messages();
     }
 
