@@ -7,7 +7,7 @@ import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.engine.parser.NDocArgumentReaderImpl;
 import net.thevpc.ntexup.engine.parser.NDocNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.engine.util.ToElementHelper;
 import net.thevpc.ntexup.engine.parser.NDocParseHelper;
 import net.thevpc.nuts.NCallableSupport;
@@ -16,9 +16,9 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
-    private final NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
+    private final NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext;
 
-    public CustomNDocNodeParserFromBuilder(NDocNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
+    public CustomNDocNodeParserFromBuilder(NTxNodeCustomBuilderContextImpl myNDocNodeCustomBuilderContext) {
         super(true, myNDocNodeCustomBuilderContext.id, myNDocNodeCustomBuilderContext.aliases);
         this.myNDocNodeCustomBuilderContext = myNDocNodeCustomBuilderContext;
     }
@@ -74,10 +74,10 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
                     }
             );
         }
-        NDocNodeCustomBuilderContext.NDocItemSpecialParser pp = myNDocNodeCustomBuilderContext.extraElementSupport;
+        NTxNodeCustomBuilderContext.NTxItemSpecialParser pp = myNDocNodeCustomBuilderContext.extraElementSupport;
         if (pp == null && myNDocNodeCustomBuilderContext.extraElementSupportByPredicate != null) {
             if (myNDocNodeCustomBuilderContext.extraElementSupportByPredicate.test(e)) {
-                pp = new NDocNodeCustomBuilderContext.NDocItemSpecialParser() {
+                pp = new NTxNodeCustomBuilderContext.NTxItemSpecialParser() {
                     @Override
                     public NCallableSupport<NTxItem> parseElement(String id, NElement element, NDocNodeFactoryParseContext context) {
                         NTxNode p = context.documentFactory().of(resolveEffectiveId(id));
@@ -122,7 +122,7 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
     @Override
     protected boolean processArgument(NDocArgumentReader info) {
         if (myNDocNodeCustomBuilderContext.processSingleArgumentList != null) {
-            for (NDocNodeCustomBuilderContext.ProcessParamAction a : myNDocNodeCustomBuilderContext.processSingleArgumentList) {
+            for (NTxNodeCustomBuilderContext.ProcessParamAction a : myNDocNodeCustomBuilderContext.processSingleArgumentList) {
                 if (a.processParam(info, myNDocNodeCustomBuilderContext)) {
                     return true;
                 }
@@ -139,7 +139,7 @@ class CustomNDocNodeParserFromBuilder extends NDocNodeParserBase {
     public void onFinishParsingItem(NDocAllArgumentReader info) {
         super.onFinishParsingItem(info);
         if (myNDocNodeCustomBuilderContext.afterProcessAllArgumentsList != null) {
-            for (NDocNodeCustomBuilderContext.ProcessNodeAction a : myNDocNodeCustomBuilderContext.afterProcessAllArgumentsList) {
+            for (NTxNodeCustomBuilderContext.ProcessNodeAction a : myNDocNodeCustomBuilderContext.afterProcessAllArgumentsList) {
                 a.processNode(info, myNDocNodeCustomBuilderContext);
             }
         }
