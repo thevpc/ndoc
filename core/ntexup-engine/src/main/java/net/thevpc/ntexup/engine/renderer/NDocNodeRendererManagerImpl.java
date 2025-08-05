@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.engine.renderer;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.util.NDocUtils;
 import net.thevpc.ntexup.api.parser.NDocNodeParser;
@@ -8,8 +8,8 @@ import net.thevpc.ntexup.api.renderer.NDocNodeRenderer;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererConfig;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererManager;
-import net.thevpc.ntexup.engine.DefaultNDocEngine;
-import net.thevpc.ntexup.engine.ext.NDocNodeCustomBuilderContextImpl;
+import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.ext.NTxNodeCustomBuilderContextImpl;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
 
@@ -22,9 +22,9 @@ import java.util.*;
 
 public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
     private Map<String, NDocNodeRenderer> renderers;
-    private NDocEngine engine;
+    private NTxEngine engine;
 
-    public NDocNodeRendererManagerImpl(NDocEngine engine) {
+    public NDocNodeRendererManagerImpl(NTxEngine engine) {
         this.engine = engine;
     }
 
@@ -34,7 +34,7 @@ public class NDocNodeRendererManagerImpl implements NDocNodeRendererManager {
             for (NDocNodeRenderer renderer : ServiceLoader.load(NDocNodeRenderer.class)) {
                 registerRenderer(renderer);
             }
-            for (NDocNodeCustomBuilderContextImpl cb : ((DefaultNDocEngine) engine).customBuilderContexts()) {
+            for (NTxNodeCustomBuilderContextImpl cb : ((DefaultNTxEngine) engine).customBuilderContexts()) {
                 NDocNodeRenderer renderer=cb.createRenderer();
                 registerRenderer(renderer);
             }
