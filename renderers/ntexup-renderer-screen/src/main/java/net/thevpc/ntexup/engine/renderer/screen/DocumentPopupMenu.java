@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
 import net.thevpc.ntexup.engine.renderer.screen.utils.JPopupMenuHelper;
 import net.thevpc.nuts.io.NPath;
@@ -35,7 +35,7 @@ public class DocumentPopupMenu {
             }
         });
 
-        NDocResource source = documentView.document.root().source();
+        NTxSource source = documentView.document.root().source();
         if (source != null) {
             NPath path = source.path().orNull();
             if (path != null) {
