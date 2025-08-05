@@ -3,7 +3,7 @@ package net.thevpc.ntexup.api.document.elem3d;
 import java.awt.*;
 
 public interface NtxElement3DPrimitive extends NtxElement3D {
-    NDocElement3DPrimitiveType type();
+    NTxElement3DPrimitiveType type();
 
     Paint getBackgroundPaint();
 
