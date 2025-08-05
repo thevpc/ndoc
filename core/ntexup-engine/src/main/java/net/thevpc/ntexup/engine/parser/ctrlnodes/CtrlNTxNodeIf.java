@@ -2,7 +2,7 @@ package net.thevpc.ntexup.engine.parser.ctrlnodes;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.source.NDocResource;
+import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.nuts.elem.*;
 
 import java.util.ArrayList;
@@ -13,11 +13,11 @@ public class CtrlNTxNodeIf extends CtrlNTxNodeBase {
     private List<NTxNode> __trueBloc;
     private List<NTxNode> __falseBloc;
 
-    public CtrlNTxNodeIf(NDocResource source) {
+    public CtrlNTxNodeIf(NTxSource source) {
         super(NTxNodeType.CTRL_IF,source);
     }
 
-    public CtrlNTxNodeIf(NDocResource source, NElement __cond, List<NTxNode> __trueBloc, List<NTxNode> __falseBloc) {
+    public CtrlNTxNodeIf(NTxSource source, NElement __cond, List<NTxNode> __trueBloc, List<NTxNode> __falseBloc) {
         super(NTxNodeType.CTRL_IF,source);
         this.__cond = __cond;
         this.__trueBloc = __trueBloc;
