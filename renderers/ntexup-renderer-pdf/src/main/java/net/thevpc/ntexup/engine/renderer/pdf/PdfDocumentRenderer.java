@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.thevpc.ntexup.api.engine.NDocEngine;
-import net.thevpc.ntexup.api.document.NDocument;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
+import net.thevpc.ntexup.api.engine.NTxEngine;
+import net.thevpc.ntexup.api.document.NTxDocument;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.nuts.NIllegalArgumentException;
@@ -34,21 +34,21 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 /**
  * @author vpc
  */
-public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implements NDocDocumentStreamRenderer {
+public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implements NTxDocumentStreamRenderer {
 
-    private NDocDocumentRendererContext rendererContext = new NDocDocumentRendererContextImpl();
+    private NTxDocumentRendererContext rendererContext = new NTxDocumentRendererContextImpl();
 
 
-    public PdfDocumentRenderer(NDocEngine engine, NDocDocumentStreamRendererConfig config) {
+    public PdfDocumentRenderer(NTxEngine engine, NTxDocumentStreamRendererConfig config) {
         super(engine);
         this.config = config;
 
     }
 
     @Override
-    public void renderSupplier(NDocDocumentRendererSupplier documentSupplier) {
-        NDocument document = documentSupplier.get(rendererContext);
-        NDocument compiledDocument = engine.compileDocument(document.copy()).get();
+    public void renderSupplier(NTxDocumentRendererSupplier documentSupplier) {
+        NTxDocument document = documentSupplier.get(rendererContext);
+        NTxDocument compiledDocument = engine.compileDocument(document.copy()).get();
         Object outputTarget = output;
         if (outputTarget == null) {
             outputTarget = NPath.of("document.pdf");
@@ -65,8 +65,8 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
     }
 
 
-    public void renderStream(NDocument document, OutputStream stream) {
-        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
+    public void renderStream(NTxDocument document, OutputStream stream) {
+        NTxDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         Document pdfDocument = new Document();
         try {
             PdfWriter pdfWriter = PdfWriter.getInstance(pdfDocument, stream);
@@ -194,7 +194,7 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
     }
 
     private void applyConfigSettings(Document document, PdfWriter pdfWriter) throws DocumentException {
-        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
+        NTxDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         if (config.getOrientation() == NDocPageOrientation.LANDSCAPE) {
             document.setPageSize(PageSize.A4.rotate());
         } else {
@@ -209,7 +209,7 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
 
 
     private void addContent(Document document) throws DocumentException {
-        NDocDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
+        NTxDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         if (config.isShowFileName()) {
             String fileName = "my-document.pdf";
             PdfPTable table = new PdfPTable(1);
@@ -288,9 +288,9 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
 //    }
 
     @Override
-    public NDocDocumentStreamRenderer renderNode(NTxNode part, OutputStream out) {
+    public NTxDocumentStreamRenderer renderNode(NTxNode part, OutputStream out) {
         try {
-            NDocDocumentStreamRenderer htmlRenderer = engine.newHtmlRenderer().get();
+            NTxDocumentStreamRenderer htmlRenderer = engine.newHtmlRenderer().get();
             List<Supplier<InputStream>> all = new ArrayList<>();
             for (NTxNode page : engine.tools().resolvePages(part)) {
                 Supplier<InputStream> y = renderPage(page, htmlRenderer);
@@ -305,7 +305,7 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
         return this;
     }
 
-    public Supplier<InputStream> renderPage(NTxNode part, NDocDocumentStreamRenderer htmlRenderer) {
+    public Supplier<InputStream> renderPage(NTxNode part, NTxDocumentStreamRenderer htmlRenderer) {
         try {
             ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -381,18 +381,18 @@ public class PdfDocumentRenderer extends NDocDocumentStreamRendererBase implemen
 
     public void renderPagePart(NTxNode part, PrintStream out) {
         switch (part.type()) {
-            case NDocNodeType.PAGE_GROUP:
+            case NTxNodeType.PAGE_GROUP:
                 break;
-            case NDocNodeType.PAGE:
+            case NTxNodeType.PAGE:
                 break;
             default:
                 throw new IllegalArgumentException("invalid type " + part);
         }
     }
 
-    private class NDocDocumentRendererContextImpl implements NDocDocumentRendererContext {
+    private class NTxDocumentRendererContextImpl implements NTxDocumentRendererContext {
 
-        public NDocDocumentRendererContextImpl() {
+        public NTxDocumentRendererContextImpl() {
         }
 
     }
