@@ -1,0 +1,22 @@
+@define cover {
+    page{
+        text("$title BBBB", at:top, class:title),
+        grid(columns:2, at:(0,20), size:(45,60)){
+            /* first row */
+            rectangle(color:red), square(color:blue), text("something",font-size:24), void
+            /* second row */
+            void                , square(color:blue), void                              , void
+        },
+        grid((2,2), at:(55,20), size:(45,60)){
+            /* first row */
+            rectangle(color:red), square(color:blue), text("something",font-size:24), void
+            /* second row */
+            void                , square(color:blue), void                              , void
+        },
+        eq("""
+            x=\frac{-b \pm \sqrt {b^2-4ac}}{2a}
+            """,
+            at:center
+        ),
+    }
+}
