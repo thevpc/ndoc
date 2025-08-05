@@ -5,8 +5,8 @@ import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.eval.NDocValue;
-import net.thevpc.ntexup.api.util.NDocUtils;
+import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
@@ -27,7 +27,7 @@ public class ToElementHelper {
 
     public static ToElementHelper of(NTxNode node, NTxEngine engine) {
         return new ToElementHelper(
-                NDocUtils.uid(node.type())
+                NTxUtils.uid(node.type())
                 , node, engine);
     }
 
@@ -79,7 +79,7 @@ public class ToElementHelper {
     }
 
     private void applyAnnotations(NElementBuilder u) {
-        NOptional<String[]> sa = NDocValue.of(node.getPropertyValue(NTxPropName.CLASS).orNull()).asStringArrayOrString();
+        NOptional<String[]> sa = NTxValue.of(node.getPropertyValue(NTxPropName.CLASS).orNull()).asStringArrayOrString();
         if (sa.isPresent()) {
             u.addAnnotation(null,
                     Arrays.stream(sa.get()).map(x -> NElement.ofString(x)).toArray(NElement[]::new)
@@ -105,7 +105,7 @@ public class ToElementHelper {
 
     public ToElementHelper addNonNullPairChild(String name, Object value) {
         if (value != null) {
-            addChild(NElement.ofPair(name, NDocUtils.toElement(name)));
+            addChild(NElement.ofPair(name, NTxUtils.toElement(name)));
         }
         return this;
     }
@@ -151,7 +151,7 @@ public class ToElementHelper {
     }
 
     public ToElementHelper inlineStringProp(String name) {
-        String value = NDocValue.ofProp(node, name).asStringOrName().orNull();
+        String value = NTxValue.ofProp(node, name).asStringOrName().orNull();
         if (value != null) {
             boolean multiLine =
                     value.indexOf('\n') >= 0
@@ -168,7 +168,7 @@ public class ToElementHelper {
 
     public ToElementHelper excludeProps(String prop) {
         if (!NBlankable.isBlank(prop)) {
-            excludeSet.add(NDocUtils.uid(prop));
+            excludeSet.add(NTxUtils.uid(prop));
         }
         return this;
     }
