@@ -2,7 +2,7 @@ package net.thevpc.ntexup.debug;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.log.NDocLogger;
+import net.thevpc.ntexup.api.log.NTxLogger;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 
 public class NDocDebugModel {
@@ -10,7 +10,7 @@ public class NDocDebugModel {
     private NTxDocument rawDocument;
     private NTxNode currentPage;
     private NTxDocument compiledDocument;
-    private NDocLogger messageList;
+    private NTxLogger messageList;
 
     public NTxEngine getEngine() {
         return engine;
@@ -48,11 +48,11 @@ public class NDocDebugModel {
         return compiledDocument;
     }
 
-    public NDocLogger messages() {
+    public NTxLogger messages() {
         return messageList;
     }
 
-    public NDocDebugModel setMessageList(NDocLogger messageList) {
+    public NDocDebugModel setMessageList(NTxLogger messageList) {
         this.messageList = messageList;
         return this;
     }
