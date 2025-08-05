@@ -2,7 +2,7 @@ package net.thevpc.ntexup.app.backend.service;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.renderer.NDocNodeRendererConfig;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
 import net.thevpc.nuts.NExecCmd;
 import net.thevpc.nuts.io.NPath;
 import org.eclipse.jgit.api.Git;
@@ -92,7 +92,7 @@ public class GitService {
     public byte[] createPageImage(NTxNode page, int width, int height) throws IOException {
         return engine.renderManager().renderImageBytes(
                 page,
-                new NDocNodeRendererConfig((int) width, (int) height)
+                new NTxNodeRendererConfig((int) width, (int) height)
                         .withAnimate(false)
         );
     }
