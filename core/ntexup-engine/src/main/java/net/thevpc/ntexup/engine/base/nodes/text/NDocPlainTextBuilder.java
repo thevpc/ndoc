@@ -5,10 +5,10 @@
 package net.thevpc.ntexup.engine.base.nodes.text;
 
 import net.thevpc.ntexup.api.extension.NDocNodeBuilder;
-import net.thevpc.ntexup.api.engine.NDocNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.document.node.NDocNodeType;
-import  net.thevpc.ntexup.api.document.style.NDocPropName;
+import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.renderer.NDocGraphics;
 import net.thevpc.ntexup.api.renderer.NDocNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.NDocRichTextToken;
@@ -24,19 +24,19 @@ import net.thevpc.nuts.util.NStringUtils;
 public class NDocPlainTextBuilder implements NDocNodeBuilder {
 
     @Override
-    public void build(NDocNodeCustomBuilderContext builderContext) {
-        builderContext.id(NDocNodeType.PLAIN)
-                .parseParam().named(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().named(NDocPropName.FILE).store(NDocPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
+    public void build(NTxNodeCustomBuilderContext builderContext) {
+        builderContext.id(NTxNodeType.PLAIN)
+                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
                 .parseDefaultParams()
-                .parseParam().matchesStringOrName().store(NDocPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderText(this::renderTextBuildText)
         ;
     }
 
-    private void renderTextBuildText(String text, NDocTextOptions options, NTxNode p, NDocNodeRendererContext renderContext, NDocTextRendererBuilder builder, NDocNodeCustomBuilderContext buildContext) {
+    private void renderTextBuildText(String text, NDocTextOptions options, NTxNode p, NDocNodeRendererContext renderContext, NDocTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext) {
 //        Paint fg = rendererContext.getForegroundColor(p,true);
-        NElement d = p.getPropertyValue(NDocPropName.VALUE).orElse(NElement.ofString(""));
+        NElement d = p.getPropertyValue(NTxPropName.VALUE).orElse(NElement.ofString(""));
 
         String message = NStringUtils.trim(d.asStringValue().get());
         String[] allLines = message.trim().split("[\n]");
