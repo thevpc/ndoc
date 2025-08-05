@@ -2,8 +2,8 @@ package net.thevpc.ntexup.engine.parser;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.node.*;
-import net.thevpc.ntexup.api.document.style.NDocPropName;
-import net.thevpc.ntexup.api.engine.NDocEngine;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
+import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.parser.NDocNodeFactoryParseContext;
 import net.thevpc.ntexup.api.parser.NDocNodeParserFactory;
 import net.thevpc.ntexup.api.source.NDocResource;
@@ -36,25 +36,25 @@ public class DefaultNDocDocumentItemParserFactory
     @Override
     public NCallableSupport<NTxItem> parseNode(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
-        NDocEngine engine = context.engine();
-        if (c.annotations().stream().anyMatch(x -> NDocNodeType.CTRL_DEFINE.equals(x.name()))) {
+        NTxEngine engine = context.engine();
+        if (c.annotations().stream().anyMatch(x -> NTxNodeType.CTRL_DEFINE.equals(x.name()))) {
             //this is a node definition
             if (c.isAnyObject() || c.isNamed()) {
                 return NCallableSupport.ofValid(() -> {
                     NObjectElement object = c.asObject().get();
                     String templateName = object.name().get();
-                    List<NDocNodeDefParam> params;
+                    List<NTxNodeDefParam> params;
                     if (object.isParametrized()) {
                         params = object.asParametrizedContainer().get().params().get()
                                 .stream().map(x -> {
                                     if (x.isNamedPair()) {
                                         NPairElement p = x.asPair().get();
-                                        return new NDocNodeDefParamImpl(
+                                        return new NTxNodeDefParamImpl(
                                                 p.key().asStringValue().get(),
                                                 p.value()
                                         );
                                     } else if (x.isName()) {
-                                        return new NDocNodeDefParamImpl(
+                                        return new NTxNodeDefParamImpl(
                                                 x.asStringValue().get(),
                                                 null
                                         );
@@ -80,7 +80,7 @@ public class DefaultNDocDocumentItemParserFactory
                     return new NTxNodeDefImpl(
                             context.node(),
                             templateName,
-                            params.toArray(new NDocNodeDefParam[0]),
+                            params.toArray(new NTxNodeDefParam[0]),
                             defBody.toArray(new NTxNode[0]),
                             source
                     );
@@ -145,7 +145,7 @@ public class DefaultNDocDocumentItemParserFactory
                         return parseNoNameBloc(context);
                     }
                     case UPLET: {
-                        NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
+                        NDocNodeParser p = engine.nodeTypeParser(NTxNodeType.TEXT).orNull();
                         return p.parseNode(context);
                     }
                     case NAMED_PARAMETRIZED_OBJECT:
@@ -189,7 +189,7 @@ public class DefaultNDocDocumentItemParserFactory
             case REGEX:
             case NULL:
             case BOOLEAN: {
-                NDocNodeParser p = engine.nodeTypeParser(NDocNodeType.TEXT).orNull();
+                NDocNodeParser p = engine.nodeTypeParser(NTxNodeType.TEXT).orNull();
                 if (p != null) {
                     return p.parseNode(context);
                 }
@@ -213,7 +213,7 @@ public class DefaultNDocDocumentItemParserFactory
         CtrlNTxNodeCall cc = new CtrlNTxNodeCall(context.source());
         NDocResource source = context.source();
         String __name = c.asNamed().get().name().get();
-        cc.setProperty(NDocPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(NDocUtils.uid(__name)), context.source()));
+        cc.setProperty(NTxPropName.NAME, NDocUtils.addCompilerDeclarationPath(NElement.ofString(NDocUtils.uid(__name)), context.source()));
         List<NElement> __callBody = new ArrayList<>();
         List<NElement> __args = new ArrayList<>();
         Map<String, NElement> __bodyVars = new HashMap<>();
@@ -281,7 +281,7 @@ public class DefaultNDocDocumentItemParserFactory
         cc.setArgs(__args);
         cc.setCallExpr(c);
         cc.setBodyVars(__bodyVars);
-        cc.setProperty(NDocPropName.VALUE, c);
+        cc.setProperty(NTxPropName.VALUE, c);
         cc.setSource(context.source());
         cc.setParent(context.node());
         return cc;
@@ -296,7 +296,7 @@ public class DefaultNDocDocumentItemParserFactory
             return false;
         }
         if (nodes.length == 1) {
-            if (!Objects.equals(nodes[0].type(), NDocNodeType.PAGE_GROUP)) {
+            if (!Objects.equals(nodes[0].type(), NTxNodeType.PAGE_GROUP)) {
                 return false;
             }
         }
@@ -362,7 +362,7 @@ public class DefaultNDocDocumentItemParserFactory
 
     private NCallableSupport<NTxItem> parseNoNameBloc(NDocNodeFactoryParseContext context) {
         NElement c = context.element();
-        NDocEngine engine = context.engine();
+        NTxEngine engine = context.engine();
         NTxDocumentFactory f = engine.documentFactory();
         HashSet<String> allAncestors = null;
         HashSet<String> allStyles = null;
