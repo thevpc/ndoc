@@ -11,7 +11,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 pentagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 pentagon()
                 """)
 
@@ -19,7 +19,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 hexagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 hexagon()
                 """)
 
@@ -27,7 +27,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 heptagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 heptagon()
                 """)
 
@@ -36,7 +36,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 octagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 octagon()
                 """)
 
@@ -44,7 +44,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 nonagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 nonagon()
                 """)
 
@@ -52,7 +52,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 decagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 decagon()
                 """)
 
@@ -60,7 +60,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 polygon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 polygon()
                 """)
 
@@ -68,7 +68,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 polygon(at:center, size:50, count:8, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 polygon(count:8)
                 """)
 
@@ -76,7 +76,7 @@ normal(title:"Polygons"){
             group(background:white,draw-contour){
                 polygon(at:center, size:50, points:[(0,0),(50,0),(100,20),(80,80)], background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 polygon(points:[
                 (0,0),(50,0),
                 (100,80),(50,50)
