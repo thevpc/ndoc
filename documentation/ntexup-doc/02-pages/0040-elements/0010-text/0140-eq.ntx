@@ -15,7 +15,7 @@ normal(title:"Latex Equations"){
                 }
                 "[[eq: X^2=\sin(x) ]]"
             }
-            source(tson,
+            source(ntexup,
                 """
                 "[[eq: X^2=\sin(x) ]]"
                 """)
@@ -27,7 +27,7 @@ normal(title:"Latex Equations"){
                 }
                 eq("X²²=\sin(πx)",draw-contour:false)
             }
-            source(tson,
+            source(ntexup,
                 """
                 eq("X²²=\sin(πx)")
                 """)
@@ -48,7 +48,7 @@ normal(title:"Latex Equations"){
             }
 //            text("hello" draw-contour:true)
             column{
-                source(tson,
+                source(ntexup,
                     """
                         ##Equation 1 (with superscript)## =
                         [[eq: X²=\sin(πx) ]]
