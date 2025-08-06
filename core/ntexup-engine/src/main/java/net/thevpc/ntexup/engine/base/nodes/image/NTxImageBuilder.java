@@ -6,6 +6,7 @@ package net.thevpc.ntexup.engine.base.nodes.image;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.elem2d.NTxImageOptions;
+import net.thevpc.ntexup.api.document.elem2d.NTxSize;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
@@ -17,6 +18,7 @@ import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
+import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
@@ -90,7 +92,9 @@ public class NTxImageBuilder implements NTxNodeBuilder {
                     }
                 } else {
                     int descent = g.getFontMetrics().getAscent();
-                    g.drawString("Image not found "+imgPath, x, y+descent,new NTxTextOptions().setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(8.0f));
+                    NTxTextOptions nTxTextOptions = new NTxTextOptions();
+                    nTxTextOptions.sr=rendererContext.sizeRef();
+                    g.drawString("Image not found "+imgPath, x, y+descent, nTxTextOptions.setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(NTxSize.ofPx(8.0f)));
                     NTxSource src = NTxUtils.sourceOf(p);
                     rendererContext.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
                             src == null ? null : src.shortName(),
