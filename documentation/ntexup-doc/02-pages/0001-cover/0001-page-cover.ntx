@@ -1,7 +1,7 @@
 cover{
-    @(title)       text("ntexup")
+    @(title)       text("ntexup",font-size:15%P)
     @(subtitle)    text("A declarative, text-based document
-    & presentation generator",font-size:15%P)
+    & presentation generator",font-size:7%P)
     @(subsubtitle) text("Open Source")
     @(author)      text("thevpc")
     @(email)       text("https://github.com/thevpc/ntexup")
