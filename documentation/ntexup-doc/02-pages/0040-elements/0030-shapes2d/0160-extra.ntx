@@ -11,7 +11,7 @@ normal(title:"Other Shapes"){
             group(background:white,draw-contour){
                     arrow(at: center,color:themeColors[2],rotate:-45)
             }
-            source(tson,
+            source(ntexup,
                 """
                     arrow(at: center,rotate:-45)
                 """
@@ -23,7 +23,7 @@ normal(title:"Other Shapes"){
               cylinder(origin:center,position:(50,50) ,size:(30,25),stroke:5,ellipse-height:20,segment-count:3,background-color:"#F86F03")
               cylinder(origin:center,position:(50,80) ,size:(30,25),stroke:5,ellipse-height:20)
             }
-            source(tson,
+            source(ntexup,
                 """
               cylinder(ellipse-height:20,
                 segment-count:5)
@@ -39,7 +39,7 @@ normal(title:"Other Shapes"){
               donut (origin:center,position:(50,45),size:40,stroke:5,background-color:"#FC4100",inner-radius:30)
               donut (origin:center,position:(50,75),size:40,stroke:5,inner-radius:80)
             }
-            source(tson,
+            source(ntexup,
                 """
               donut (inner-radius:50,
                 start-angle:0,extent-angle:270)
@@ -53,7 +53,7 @@ normal(title:"Other Shapes"){
               pie (origin:center,position:(50,15),size:40,stroke:5,background-color:"#00215E",start-angle:0,extent-angle:270)
               pie (origin:center,position:(50,75),size:40,stroke:5)
             }
-            source(tson,
+            source(ntexup,
                 """
               pie()
               pie(start-angle:0,extent-angle:270)
