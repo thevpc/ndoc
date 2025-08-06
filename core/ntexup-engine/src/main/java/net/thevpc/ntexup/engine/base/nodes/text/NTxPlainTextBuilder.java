@@ -44,7 +44,7 @@ public class NTxPlainTextBuilder implements NTxNodeBuilder {
             allLines[i] = allLines[i].trim();
             NTxRichTextToken c = new NTxRichTextToken(NTxRichTextTokenType.PLAIN, allLines[i]);
             NTxGraphics g = renderContext.graphics();
-            g.setFont(c.textOptions.font);
+            g.setFont(c.textOptions.baseFont);
             c.bounds = g.getStringBounds(c.text);
             builder.nextLine().addToken(c);
         }
