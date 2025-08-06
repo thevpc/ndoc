@@ -23,8 +23,7 @@ normal(title:"UML Classes"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(ntexup
             ```
                  uml(
                      """
@@ -38,6 +37,7 @@ normal(title:"UML Classes"){
                  )
 
              ```
+             at:left
              )
 
             // Row 2
@@ -61,8 +61,7 @@ normal(title:"UML Classes"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(ntexup
             ```
                  uml(
                      """
@@ -82,6 +81,7 @@ normal(title:"UML Classes"){
                  )
 
              ```
+             at:left
              )
         }
     }
