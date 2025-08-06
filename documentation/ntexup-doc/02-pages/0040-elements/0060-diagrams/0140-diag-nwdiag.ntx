@@ -64,7 +64,7 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
-             at:left, font-size:5.5%P
+             at:left, font-size:3%P
              )
 
             // Row 2
@@ -133,7 +133,7 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
-             at:left, font-size:5.5%P
+             at:left, font-size:3%P
              )
         }
     }
