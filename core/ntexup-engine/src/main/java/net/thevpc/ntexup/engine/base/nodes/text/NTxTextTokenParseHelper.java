@@ -2,10 +2,7 @@ package net.thevpc.ntexup.engine.base.nodes.text;
 
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
-import net.thevpc.ntexup.api.renderer.text.NTxTextToken;
-import net.thevpc.ntexup.api.renderer.text.NTxTextTokenText;
-import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
+import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import net.thevpc.nuts.util.NStringUtils;
 
@@ -13,22 +10,45 @@ import java.util.*;
 import java.util.function.Consumer;
 
 class NTxTextTokenParseHelper {
-    private NTxNodeRendererContext ctx;
-    private NReservedSimpleCharQueue cq;
     private List<NTxTextRendererFlavor> flavors;
     private NTxNodeCustomBuilderContext builderContext;
+    private NTxTextRendererFlavorParseContext parseContext;
+    private Set<String> parsePrefixes;
+    private int parsePrefixesMaxLength;
 
-    public NTxTextTokenParseHelper(NTxNodeRendererContext ctx, NReservedSimpleCharQueue cq, NTxNodeCustomBuilderContext builderContext) {
-        this.ctx = ctx;
-        this.cq = cq;
-        this.flavors = ctx.engine().textRendererFlavors();
+    public NTxTextTokenParseHelper(NTxNodeRendererContext rendererContext, NReservedSimpleCharQueue cq, NTxNodeCustomBuilderContext builderContext) {
+        this.flavors = rendererContext.engine().textRendererFlavors();
         this.builderContext = builderContext;
+        this.parseContext = new MyNTxTextRendererFlavorParseContext(rendererContext, cq);
+        init();
+    }
+
+    public NTxTextTokenParseHelper(NTxTextRendererFlavorParseContext parseContext, NTxNodeCustomBuilderContext builderContext) {
+        this.flavors = parseContext.rendererContext().engine().textRendererFlavors();
+        this.builderContext = builderContext;
+        this.parseContext = parseContext;
+        init();
+    }
+
+    private void init() {
+        parsePrefixes = new HashSet<>();
+        for (NTxTextRendererFlavor flavor : flavors) {
+            for (String p : flavor.getParsePrefixes()) {
+                int ln = p.length();
+                if (ln > 0) {
+                    parsePrefixes.add(p);
+                    if (ln > parsePrefixesMaxLength) {
+                        parsePrefixesMaxLength = ln;
+                    }
+                }
+            }
+        }
     }
 
     List<NTxTextToken> readSpecial() {
         for (NTxTextRendererFlavor flavor : flavors) {
             if (!Objects.equals(flavor.type(), builderContext.id())) {
-                List<NTxTextToken> image = flavor.parseImmediate(cq, ctx);
+                List<NTxTextToken> image = flavor.parseTokens(parseContext);
                 if (image != null) {
                     return image;
                 }
@@ -38,45 +58,54 @@ class NTxTextTokenParseHelper {
     }
 
     private List<NTxTextToken> readAny() {
-        if (cq.hasNext()) {
+        if (parseContext.hasNext()) {
             List<NTxTextToken> s = readSpecial();
             if (s != null) {
                 return s;
             }
-            String p2 = cq.peek(2);
+
             //this is not special now
-            if (p2.equals("[[") || p2.equals("\\(")) {
-                cq.read(2);
-                return readPlain(cq, p2);
+            // so skip flavor prefixes
+            if (parsePrefixesMaxLength > 0) {
+                String p2 = parseContext.peek(parsePrefixesMaxLength);
+                if (p2 != null) {
+                    for (String p : parsePrefixes) {
+                        if (p2.startsWith(p)) {
+                            parseContext.read(p.length());
+                            return readPlain(p);
+                        }
+                    }
+                }
             }
-            switch (cq.peek()) {
+
+            switch (parseContext.peek()) {
                 case '*': {
-                    if (cq.peek(3).equals("***")) {
+                    if (parseContext.peek(3).equals("***")) {
                         return readBoldItalic();
-                    } else if (cq.peek(2).equals("**")) {
+                    } else if (parseContext.peek(2).equals("**")) {
                         return readBold();
                     } else {
-                        return readPlain(cq,"");
+                        return readPlain("");
                     }
                 }
                 case '#': {
                     for (int i = 10; i >= 1; i--) {
                         String r = NStringUtils.repeat('#', i);
-                        if (cq.peek(i).equals(r)) {
+                        if (parseContext.peek(i).equals(r)) {
                             return readColor(i);
                         }
                     }
                     break;
                 }
                 case '_': {
-                    if (cq.peek(2).equals("__")) {
+                    if (parseContext.peek(2).equals("__")) {
                         return readItalic();
                     } else {
-                        return readPlain(cq,"");
+                        return readPlain("");
                     }
                 }
                 default: {
-                    return readPlain(cq,"");
+                    return readPlain("");
                 }
             }
         }
@@ -129,14 +158,14 @@ class NTxTextTokenParseHelper {
     }
 
     private List<NTxTextToken> readBounded(String bounds, String[] subs, Consumer<NTxTextToken> a) {
-        if (!cq.read(bounds.length()).equals(bounds)) {
+        if (!parseContext.read(bounds.length()).equals(bounds)) {
             throw new IllegalArgumentException("expected " + bounds.length());
         }
         List<NTxTextToken> sbs = new ArrayList<>();
-        while (cq.hasNext()) {
+        while (parseContext.hasNext()) {
             boolean subbed = false;
             for (String sb : subs) {
-                if (cq.peek(sb.length()).equals(sb)) {
+                if (parseContext.peek(sb.length()).equals(sb)) {
                     List<NTxTextToken> u = readAny();
                     for (NTxTextToken tt : u) {
                         a.accept(tt);
@@ -147,8 +176,8 @@ class NTxTextTokenParseHelper {
                 }
             }
             if (!subbed) {
-                if (cq.peek(bounds.length()).equals(bounds)) {
-                    cq.skip(bounds.length());
+                if (parseContext.peek(bounds.length()).equals(bounds)) {
+                    parseContext.skip(bounds.length());
                     break;
                 } else {
                     List<NTxTextToken> u = readAny();
@@ -163,20 +192,20 @@ class NTxTextTokenParseHelper {
     }
 
 
-    private List<NTxTextToken> readPlain(NReservedSimpleCharQueue cq, String prefix) {
+    private List<NTxTextToken> readPlain(String prefix) {
         StringBuilder sb = new StringBuilder(prefix);
         boolean stop = false;
-        while (!stop && cq.hasNext()) {
-            String p3 = cq.peek(2);
+        while (!stop && parseContext.hasNext()) {
+            String p3 = parseContext.peek(2);
             if (p3.equals("\\[[") || p3.equals("\\\\(") || p3.equals("\\##") || p3.equals("\\**") || p3.equals("\\__")) {
                 sb.append(p3.substring(1));
-                cq.read(3);
+                parseContext.read(3);
             } else {
-                String p2 = cq.peek(2);
+                String p2 = parseContext.peek(2);
                 if (p2.equals("[[") || p2.equals("\\(") || p2.equals("##") || p2.equals("**") || p2.equals("__")) {
                     stop = true;
                 } else {
-                    sb.append(cq.read());
+                    sb.append(parseContext.read());
                 }
             }
         }
@@ -189,10 +218,11 @@ class NTxTextTokenParseHelper {
 
     public List<NTxTextToken> parse() {
         List<NTxTextToken> all = new ArrayList<>();
-        while (cq.hasNext()) {
+        while (parseContext.hasNext()) {
             List<NTxTextToken> a = readAny();
             all.addAll(a);
         }
         return all;
     }
+
 }
