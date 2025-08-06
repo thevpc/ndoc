@@ -9,43 +9,43 @@ normal(title:"Sizes"){
             group(background:white,draw-contour){
                 rectangle(at:center, , background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle() """)
+            source(ntexup, """ rectangle() """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:(100,100), background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:(100,100)) """)
+            source(ntexup, """ rectangle(size:(100,100)) """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:100, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:100) """)
+            source(ntexup, """ rectangle(size:100) """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:80, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:80) """)
+            source(ntexup, """ rectangle(size:80) """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:50) """)
+            source(ntexup, """ rectangle(size:50) """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:(40,80), background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:(40,80)) """)
+            source(ntexup, """ rectangle(size:(40,80)) """)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:center, size:15%P, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle(size:15%P) """)
+            source(ntexup, """ rectangle(size:15%P) """)
 
         }
     }
