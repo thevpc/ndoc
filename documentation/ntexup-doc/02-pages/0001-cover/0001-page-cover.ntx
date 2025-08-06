@@ -5,6 +5,6 @@ cover{
     @(subsubtitle) text("Open Source")
     @(author)      text("thevpc")
     @(email)       text("https://github.com/thevpc/ntexup")
-    @(date)        text("2024-06-15")
-    @(version)     text("v1.0")
+    @(date)        text("2025-08-06")
+    @(version)     text("v0.8.6.0")
 }
