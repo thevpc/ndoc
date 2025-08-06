@@ -1,5 +1,6 @@
 package net.thevpc.ntexup.engine.renderer.text;
 
+import net.thevpc.ntexup.api.document.elem2d.NTxSize;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.ntexup.api.util.NTxColors;
@@ -129,8 +130,8 @@ public class NutsHighlighterMapper {
                 if (ss.italic) {
                     to.setItalic(true);
                 }
-                if (ss.fontSize >= 1) {
-                    to.setFontSize(ss.fontSize <= 0 ? null : (float) ss.fontSize);
+                if (ss.fontSize!=null) {
+                    to.setFontSize(ss.fontSize);
                 }
                 to.setFontFamily(ss.fontFamily);
                 break;
@@ -231,16 +232,15 @@ public class NutsHighlighterMapper {
             }
         }
         {
-            NTxValue e = NTxValue.of(
+            NTxSize e = NTxSize.ofElement(
                     ctx.computePropertyValue(node, prefix + "font-family-size")
                             .orElseUse(() -> ctx.computePropertyValue(node, "font-family-size"))
                             .orNull()
             );
-            Double value = e.asDouble().orNull();
-            if (value == null) {
+            if (e == null) {
                 // od nothing
             } else {
-                ss.fontSize = value;
+                ss.fontSize = e;
             }
         }
         {
