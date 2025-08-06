@@ -19,7 +19,7 @@ normal(title:"NTF format"){
                 """
                 )
             }
-            source(tson,
+            source(ntexup,
                 ```
                     ntf(
                     """
@@ -41,7 +41,7 @@ normal(title:"NTF format"){
                 """
                 )
             }
-            source(tson,
+            source(ntexup,
                 ```
                     ntf(
                     """
