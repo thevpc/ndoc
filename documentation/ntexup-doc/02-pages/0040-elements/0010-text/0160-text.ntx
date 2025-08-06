@@ -18,7 +18,7 @@ normal(title:"Rich Text"){
                 text("Hello World",font-italic)
                 text("Hello World",font-bold)
             }
-            source(tson,
+            source(ntexup,
                 """
                 "Hello World"
                 text("Hello World")
@@ -40,7 +40,7 @@ normal(title:"Rich Text"){
                     ###Title 3###
                 """
             }
-            source(tson,
+            source(ntexup,
                 ```
                 """
                     **Bold X**
@@ -62,7 +62,7 @@ normal(title:"Rich Text"){
                         [[ntf: ##:p1: hello##]] world
                     """
             }
-            source(tson,
+            source(ntexup,
                 ```
                     """
                         [[ntf: ##:p1: hello##]] world
@@ -84,7 +84,7 @@ normal(title:"Rich Text"){
                     [[eq: X^2=\sin(x) ]]
                 """
             }
-            source(tson,
+            source(ntexup,
                 ```
                 """
                     #Equation 1# =
