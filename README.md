@@ -60,8 +60,9 @@ As a teacher and researcher, I struggled with existing tools:
   ```
 - **Multi-file support** with `include`, even from GitHub.
 - **Shapes**: rectangles, circles, polygons, arrows, pies, donuts, cylinders, etc.
-- **Responsive layouts**: grid, stack, relative positioning.
+- **Responsive layouts**: grid, group, relative positioning.
 - **Diagrams**: UML, network diagrams, Gantt charts, wireframes.
+- **Plots**: plot2d with curves, etc.
 - **Multiple text formats**:
     - LaTeX-style math equations.
     - Markdown.
