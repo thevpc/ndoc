@@ -25,7 +25,7 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(tson,
+            source(ntexup,
                 ```
                     source(
                     java
@@ -57,7 +57,7 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(tson,
+            source(ntexup,
                 ```
                     source(
                     sql
@@ -85,7 +85,7 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(tson,
+            source(ntexup,
                 ```
                     source(
                     xml
@@ -110,7 +110,7 @@ normal(title:"Source Code"){
                         bash,fish,cmd
                         sql,
                         hd, ntf,hadra,
-                        tson
+                        tson,ntexup
                     """
                     font-size:5%P,
                     font-family:Monospaced
