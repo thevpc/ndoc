@@ -22,8 +22,7 @@ normal(title:"Wireframe Diagrams"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(ntexup
             ```
                  wireframe(
                      """
@@ -34,6 +33,7 @@ normal(title:"Wireframe Diagrams"){
                  )
 
              ```
+             at:left
              )
 
             // Row 2
@@ -55,8 +55,7 @@ normal(title:"Wireframe Diagrams"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(ntexup
             ```
                  wireframe(
                      """
@@ -74,6 +73,7 @@ normal(title:"Wireframe Diagrams"){
                  )
 
              ```
+             at:left
              )
         }
     }
