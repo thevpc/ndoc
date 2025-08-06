@@ -6,7 +6,6 @@ import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.ntexup.api.util.NTxColors;
 import net.thevpc.ntexup.api.util.NTxUtils;
-import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 import net.thevpc.nuts.util.NMsg;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -16,6 +15,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor {
     @Override
@@ -40,37 +40,29 @@ public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor
     }
 
     @Override
-    public List<NTxTextToken> parseImmediate(NReservedSimpleCharQueue queue, NTxNodeRendererContext ctx) {
-        String end;
-        if (queue.peek(2).equals("\\(")) {
-            end = "\\)";
-            queue.read(2);
-        } else if (queue.peek(5).equals("[[eq:")) {
-            end = "]]";
-            queue.read(5);
-        } else {
-            return null;
-        }
-        NExtendedLatexMathBuilder sb = new NExtendedLatexMathBuilder();
-        while (queue.hasNext()) {
-            String u = queue.peek(3);
-            if (u.equals("\\" + end)) {
-                sb.append(queue.read(3));
-            } else if (queue.peek(2).equals(end)) {
-                queue.read(2);
-                sb.flush();
-                return Arrays.asList(
-                        new NTxTextTokenFlavored(type(), sb.toString().trim())
-                );
-            } else {
-                char c = queue.read();
-                sb.append(c);
-            }
-        }
-        sb.flush();
+    public List<String> getParsePrefixes() {
         return Arrays.asList(
-                new NTxTextTokenFlavored(type(), sb.toString().trim())
+                "[[eq:",
+                "[[equation:",
+                "[[latex-equation:",
+                "\\("
         );
+    }
+
+    @Override
+    public List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext ctx) {
+        return ctx.parseDefault(new String[]{
+                "eq",
+                "equation",
+                "latex-equation"
+        }, new String[]{
+                "\\(", "\\)"
+        }, s -> {
+            NExtendedLatexMathBuilder eb = new NExtendedLatexMathBuilder();
+            eb.append(s);
+            eb.flush();
+            return eb.toString();
+        });
     }
 
 
