@@ -13,7 +13,7 @@ normal(title:"Arrows"){
                 end-arrow:simple()
                 color:red,stroke:3)
             }
-            source(tson,
+            source(ntexup,
                 """
                     line(
                         from:(10,10), to:(80,90)
@@ -29,7 +29,7 @@ normal(title:"Arrows"){
                 end-arrow:triangle-full()
                 )
             }
-            source(tson,
+            source(ntexup,
                 """
                     line(
                         from:(10,10), to:(80,90)
@@ -47,7 +47,7 @@ normal(title:"Arrows"){
                 end-arrow:oval-full()
                 )
             }
-            source(tson,
+            source(ntexup,
                 """
                     line(
                         from:(10,10), to:(80,90)
@@ -66,7 +66,7 @@ normal(title:"Arrows"){
                 end-arrow:diamond-full()
                 )
             }
-            source(tson,
+            source(ntexup,
                 """
                     line(
                         from:(10,10), to:(80,90)
@@ -84,7 +84,7 @@ normal(title:"Arrows"){
                 end-arrow:rectangle-full()
                 )
             }
-            source(tson,
+            source(ntexup,
                 """
                     line(
                         from:(10,10), to:(80,90)
