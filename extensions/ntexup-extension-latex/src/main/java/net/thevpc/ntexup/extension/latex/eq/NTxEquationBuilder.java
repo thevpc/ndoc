@@ -16,6 +16,8 @@ import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.NTxSizeRequirements;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.renderer.text.*;
+import net.thevpc.ntexup.api.util.NTxColors;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
@@ -24,6 +26,8 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 /**
  * @author vpc
@@ -31,13 +35,19 @@ import java.awt.*;
 public class NTxEquationBuilder implements NTxNodeBuilder {
 
     NTxProperties defaultStyles = new NTxProperties();
+
     @Override
     public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext.id(NTxNodeType.EQUATION)
-                .alias("eq")
+                .alias("equation")
                 .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .renderComponent(this::renderMain)
+                //.renderComponent(this::renderMain)
+                .renderText()
+                .buildText(this::buildText)
+                .parseTokens(this::parseTokens)
+                .startSeparators("\\(")
+                .end()
                 .sizeRequirements(this::sizeRequirements)
                 .selfBounds(this::selfBounds);
     }
@@ -120,7 +130,7 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
             NTxBounds2 selfBounds = renderContext.selfBounds((NTxNode) p
                     , new NTxDouble2(icon.getIconWidth(), icon.getIconHeight())
                     , null
-                    );
+            );
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
@@ -130,7 +140,7 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
                     g.setColor(Color.RED);
                     g.fillRect(selfBounds);
                 }
-                Paint fg = renderContext.getForegroundColor(p,true);
+                Paint fg = renderContext.getForegroundColor(p, true);
                 icon.setForeground(renderContext.colorFromPaint(fg).orElse(Color.BLACK));
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
 
@@ -139,4 +149,79 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
         }
     }
 
+    private void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext renderContext, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext) {
+        if (!text.isEmpty()) {
+            NTxRichTextToken r = new NTxRichTextToken(
+                    NTxRichTextTokenType.IMAGE_PAINTER,
+                    text
+            );
+            double fontSize = renderContext.getFontSize(p);
+            r.imagePainter = this.createLatex(text, fontSize, options, p, renderContext);
+            NTxDouble2 size = r.imagePainter.size();
+            r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
+            builder.currRow().addToken(r);
+        }
+    }
+
+    private List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext renderContext, NTxNodeCustomBuilderContext buildContext) {
+        return renderContext.parseDefault(buildContext.idAndAliases(), new String[]{
+                "\\(", "\\)"
+        }, s -> {
+            NExtendedLatexMathBuilder sb = new NExtendedLatexMathBuilder();
+            sb.append(s);
+            sb.flush();
+            return sb.toString();
+        });
+    }
+
+    public NTxTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx) {
+        TeXFormula formula;
+        boolean error = false;
+        try {
+            formula = new TeXFormula(tex);
+        } catch (Exception ex) {
+            error = true;
+            formula = new TeXFormula("?error?");
+            ctx.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(p));
+        }
+        float size = (float) (fontSize / 2.0);
+        TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+
+        // insert a border
+        icon.setInsets(new Insets(0, 0, 0, 0));
+//        if (error) {
+//            return null;
+//        }
+        Color foregroundColor = null;
+        if (options.foregroundColorIndex != null) {
+            foregroundColor = NTxColors.resolveDefaultColorByIndex(options.foregroundColorIndex, null);
+        } else if (options.foregroundColor instanceof Color) {
+            foregroundColor = (Color) options.foregroundColor;
+        }
+        Color fg = NTxUtils.paintAsColor(NTxUtils.resolveForegroundColor(options));
+        if (fg == null) {
+            fg = NTxUtils.paintAsColor(ctx.getForegroundColor(p, true));
+        }
+        if (fg == null) {
+            fg = Color.BLACK;
+        }
+        Color finalForegroundColor = fg;
+        return new NTxTextRendererBuilder.ImagePainter() {
+            @Override
+            public void paint(NTxGraphics g, double x, double y) {
+                Font plainFont = g.getFont().deriveFont(g.getFont().getSize() / 2f);
+                g.setFont(plainFont);
+                FontMetrics fontMetrics = g.getFontMetrics(plainFont);
+                double xx = x;
+                double yy = y;//+ascent-descent;
+                icon.setForeground(finalForegroundColor);
+                icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
+                //g.drawRect(xx, yy, icon.getIconWidth(), icon.getIconHeight());
+            }
+
+            public NTxDouble2 size() {
+                return new NTxDouble2(icon.getIconWidth(), icon.getIconHeight());
+            }
+        };
+    }
 }
