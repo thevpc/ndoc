@@ -26,8 +26,8 @@ normal(title:"Gantt Diagrams"){
                 )
             }
 
-            source(at:left, font-size:7%P
-            tson,
+            source(
+            ntexup,
             ```
                  gantt(
                      """
@@ -45,6 +45,7 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
+             at:left, font-size:7%P
              )
 
             // Row 2
@@ -61,8 +62,8 @@ normal(title:"Gantt Diagrams"){
                 )
             }
 
-            source(at:left, font-size:7%P
-            tson,
+            source(
+            ntexup,
             ```
                  gantt(
                      """
@@ -75,6 +76,7 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
+             at:left, font-size:7%P
              )
         }
     }
