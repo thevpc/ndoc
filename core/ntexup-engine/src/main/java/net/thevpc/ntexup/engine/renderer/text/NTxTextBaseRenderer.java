@@ -44,9 +44,7 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
     }
 
     public NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxTextRendererBuilder helper = createRichTextHelper(p, ctx);
-        NTxBounds2 bounds2 = helper.computeBound(ctx);
-        return NTxValueByName.selfBounds(p, new NTxDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+        return defaultSelfBounds(p, ctx);
     }
 
     public NTxBounds2 defaultSelfBounds(NTxNode p, NTxNodeRendererContext ctx) {
