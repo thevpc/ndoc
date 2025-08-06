@@ -24,18 +24,18 @@ public class NTxTextBuilder implements NTxNodeBuilder {
     @Override
     public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext.id(NTxNodeType.TEXT)
-                .parseAny(x->true)
+                .parseAny(x -> true)
                 .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
                 .parseDefaultParams()
                 .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .renderText(this::buildText,this::parseImmediate)
+                .renderText().buildText(this::buildText).parseTokens(this::parseTokens)
         ;
     }
 
     public void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext builderContext) {
-        NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(ctx.engine().tools().trimBloc(text).toCharArray()),builderContext);
-        List<NTxTextToken> all=aa.parse();
+        NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(ctx.engine().tools().trimBloc(text).toCharArray()), builderContext);
+        List<NTxTextToken> all = aa.parse();
         for (NTxTextToken a : all) {
             consumeSpecialTokenType(a, p, ctx, builder);
         }
@@ -46,19 +46,19 @@ public class NTxTextBuilder implements NTxNodeBuilder {
             return;
         }
         if (a instanceof NTxTextTokenFlavored) {
-            NTxTextTokenFlavored b=(NTxTextTokenFlavored)a;
+            NTxTextTokenFlavored b = (NTxTextTokenFlavored) a;
             // interpolation is the to be done by the flavor implementation
             builder.appendCustom(b.flavor(), b.value(), b.options(), node, ctx);
-        }else{
-            NTxTextTokenText b=(NTxTextTokenText)a;
+        } else {
+            NTxTextTokenText b = (NTxTextTokenText) a;
             // apply interpolation
             String txt2 = ctx.engine().evalExpression(NElement.ofString(b.value()), node, ctx.varProvider()).asStringValue().get();
             builder.appendText(txt2, b.options(), node, ctx);
         }
     }
 
-    public List<NTxTextToken> parseImmediate(NReservedSimpleCharQueue queue, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, queue,builderContext);
+    public List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext ctx, NTxNodeCustomBuilderContext builderContext) {
+        NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, builderContext);
         return aa.parse();
     }
 
