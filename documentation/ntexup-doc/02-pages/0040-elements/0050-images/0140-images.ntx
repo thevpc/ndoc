@@ -3,60 +3,66 @@ normal(title:"Images"){
         grid((4,4),columns-weight:[1,3]){
             // Row 2
             image("../../../images/image.png",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.png")
             """
+            at:left
             )
 
             // Row 2
             image("../../../images/image.jpg",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.jpg")
             """
+            at:left
             )
 
             // Row 3
 
             image("../../../images/image.gif",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.gif")
             """
+            at:left
             )
 
             // Row 4
 
             image("../../../images/image.svg",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.svg")
             """
+            at:left
             )
 
             // Row 4
 
             image("../../../images/image.avif",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.avif")
             """
+            at:left
             )
 
             // Row 4
 
             image("../../../images/image.webp",size:(50,50),at:center)
-            source(at:left
-            tson,
+            source(
+            ntexup,
             """
                 image("../../../images/image.webp")
             """
+            at:left
             )
 
         }
