@@ -11,7 +11,7 @@ normal(title:"Rich Text"){
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:5%P}
+                    "*":{font-size:3%P}
                 }
                 "Hello World"
                 text("Hello World")
@@ -30,7 +30,7 @@ normal(title:"Rich Text"){
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:4%P}
+                    "*":{font-size:3%P}
                 }
                 """
                     **Bold X**
@@ -56,7 +56,7 @@ normal(title:"Rich Text"){
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:4%P}
+                    "*":{font-size:3%P}
                 }
                     """
                         [[ntf: ##:p1: hello##]] world
@@ -73,7 +73,7 @@ normal(title:"Rich Text"){
             // Row
             grid((1,2),background:white,draw-contour){
                 styles:{
-                    "*":{font-size:4%P}
+                    "*":{font-size:3%P}
                 }
                 """
                     #Equation 1 (with superscript) =
