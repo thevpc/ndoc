@@ -8,61 +8,69 @@ normal(title:"Positions"){
             group(background:white,draw-contour){
                 rectangle(at:center, size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """ rectangle(at:center) """)
+            source(ntexup """ rectangle(at:center) """ ,at:left )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:top, size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """ rectangle(at:top) """)
+            source(ntexup  """ rectangle(at:top) """ , at:left)
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:top-left, size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """ rectangle(at:top-left) """)
+            source(ntexup """ rectangle(at:top-left) """,at:left )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(at:bottom-right, size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """ rectangle(at:bottom-right) """)
+            source(ntexup """ rectangle(at:bottom-right) """,at:left )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(origin:(50,50), position:(50,50), size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """
+            source(ntexup """
                 rectangle(origin:(50,50)
                     position:(50,50))
-                """)
+                """
+                ,at:left
+                )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(origin:(60,60), position:(100,100), size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """
+            source(ntexup """
                 rectangle(origin:(60,60)
                     position:(100,100))
-                """)
+                """
+                ,at:left
+                )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(origin:(100,100), position:(100,100), size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """
+            source(ntexup """
                 rectangle(origin:(100,100)
                     position:(100,100))
-                """)
+                """
+                ,at:left
+                )
 
             // Row
             group(background:white,draw-contour){
                 rectangle(origin:(100,100), position:(50,50), size:(30,30), background:themeColors[4], color:themeColors[2])
             }
-            source(at:left tson, """
+            source(ntexup """
                 rectangle(origin:(100,100)
                     position:(50,50))
-                """)
+                """
+                ,at:left
+                )
         }
     }
 
