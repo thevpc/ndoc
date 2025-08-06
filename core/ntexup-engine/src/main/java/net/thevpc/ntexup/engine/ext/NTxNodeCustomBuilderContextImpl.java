@@ -42,9 +42,8 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     Predicate<NElement> extraElementSupportByPredicate;
     int extraElementSupportByPredicateSupport;
     CustomNamedParamAction customNamedParamAction;
-    RenderTextAction renderTextAction;
+    MyRenderTextAction renderTextAction;
     RenderConvertAction renderConvertAction;
-    RenderEmbeddedTextAction renderEmbeddedTextAction;
     ProcessNodeAction processChildren;
 
     public NTxNodeCustomBuilderContextImpl(NTxNodeBuilder builder, NTxEngine engine) {
@@ -107,6 +106,22 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     }
 
     @Override
+    public String[] idAndAliases() {
+        LinkedHashSet<String> s = new LinkedHashSet<>();
+        if (!NBlankable.isBlank(id)) {
+            s.add(id);
+        }
+        if (aliases != null) {
+            for (String a : aliases) {
+                if (!NBlankable.isBlank(a)) {
+                    s.add(a);
+                }
+            }
+        }
+        return s.toArray(new String[0]);
+    }
+
+    @Override
     public NTxNodeCustomBuilderContext alias(String... aliases) {
         requireNonCompiled();
         this.aliases = aliases;
@@ -133,19 +148,20 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     @Override
     public NTxNodeCustomBuilderContext renderComponent(RenderAction e) {
         requireNonCompiled();
-        NAssert.requireNull(renderTextAction, "renderText");
         this.renderMainAction = e;
         if (renderMainAction != null) {
             this.renderTextAction = null;
-            this.renderEmbeddedTextAction = null;
             this.renderConvertAction = null;
         }
         return this;
     }
 
     @Override
-    public NTxNodeCustomBuilderContext renderText(RenderTextAction renderTextAction) {
-        return renderText(renderTextAction, null);
+    public RenderTextAction renderText() {
+        this.renderTextAction = new MyRenderTextAction(this);
+        this.renderConvertAction = null;
+        this.renderMainAction = null;
+        return this.renderTextAction;
     }
 
     @Override
@@ -153,23 +169,8 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         this.renderConvertAction = renderTextAction;
         if (this.renderConvertAction != null) {
             this.renderTextAction = null;
-            this.renderEmbeddedTextAction = null;
             this.renderMainAction = null;
         }
-        return this;
-    }
-
-    public NTxNodeCustomBuilderContext renderText(RenderTextAction renderTextAction, RenderEmbeddedTextAction embeddedTextAction) {
-        requireNonCompiled();
-        if (embeddedTextAction != null) {
-            NAssert.requireNonNull(renderTextAction, "renderTextAction");
-        }
-        if (renderTextAction != null) {
-            this.renderMainAction = null;
-            this.renderConvertAction = null;
-        }
-        this.renderTextAction = renderTextAction;
-        this.renderEmbeddedTextAction = embeddedTextAction;
         return this;
     }
 
@@ -227,7 +228,7 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
 
     @Override
     public NTxNodeCustomBuilderContext processChildren(ProcessNodeAction processChildren) {
-        this.processChildren=processChildren;
+        this.processChildren = processChildren;
         return this;
     }
 
@@ -292,9 +293,10 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
 
     @Override
     public String toString() {
-        return getClass().getSimpleName()+"{" +
+        return getClass().getSimpleName() + "{" +
                 "id='" + id + '\'' +
                 ", aliases=" + Arrays.toString(aliases) +
                 '}';
     }
+
 }
