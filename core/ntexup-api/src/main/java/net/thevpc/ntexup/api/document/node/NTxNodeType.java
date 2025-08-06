@@ -23,7 +23,7 @@ public class NTxNodeType {
     public static final String CUBIC_CURVE="cubic-curve";
     public static final String ARC="arc";
     public static final String IMAGE="image";
-    public static final String EQUATION="equation";
+    public static final String EQUATION="eq";
     public static final String TEXT ="text";
     public static final String ELLIPSE="ellipse";
     public static final String CIRCLE="circle";
