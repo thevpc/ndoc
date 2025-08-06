@@ -21,7 +21,7 @@ normal(title:"Source Code"){
                             }
                         }
                     """
-                    font-size:4%P,
+                    font-size:2%P,
                     font-family:Monospaced
                 )
             }
@@ -39,7 +39,9 @@ normal(title:"Source Code"){
                         }
                     """
                     )
-                ```)
+                ```
+                    font-size:3%P,
+                )
 
             // Row
             grid((1,2),background:white,draw-contour){
@@ -53,7 +55,7 @@ normal(title:"Source Code"){
                         From Tab
                         Where 1=1
                     """
-                    font-size:4%P,
+                    font-size:2%P,
                     font-family:Monospaced
                 )
             }
@@ -67,7 +69,9 @@ normal(title:"Source Code"){
                         Where 1=1
                     """
                     )
-                ```)
+                ```
+                    font-size:3%P,
+                )
 
             // Row
             grid((1,2),background:white,draw-contour){
@@ -81,7 +85,7 @@ normal(title:"Source Code"){
                           <b value="text"></b>
                         </a>
                     """
-                    font-size:4%P,
+                    font-size:2%P,
                     font-family:Monospaced
                 )
             }
@@ -95,7 +99,9 @@ normal(title:"Source Code"){
                         </a>
                     """
                     )
-                ```)
+                ```
+                    font-size:3%P,
+                )
 
             grid((1,2),background:white,draw-contour){
                 styles:{
@@ -112,7 +118,7 @@ normal(title:"Source Code"){
                         hd, ntf,hadra,
                         tson,ntexup
                     """
-                    font-size:5%P,
+                    font-size:2%P,
                     font-family:Monospaced
                 )
             }
