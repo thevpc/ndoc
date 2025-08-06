@@ -15,7 +15,7 @@ body{
                         }
                 }
             }
-            source(tson,
+            source(ntexup,
                 """
                     plot2d(xmin:-5 , xmax: 5){
                         curve {
@@ -39,7 +39,7 @@ body{
                     }
                 }
             }
-            source(tson,
+            source(ntexup,
                 """
                 plot2d(xmin:-5 , xmax: 5){
                     curve{
