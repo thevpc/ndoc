@@ -12,6 +12,11 @@ normal(title:"Bullets"){
             // Row
             group(background:white,draw-contour){
                 //rectangle(at:center, color:themeColors[2])
+                styles:{
+                    "*" : {
+                        font-size:3%P
+                    }
+                }
                 ul{
                     ¶ Hello ##World##
                     ¶ Hello ###World###
@@ -28,6 +33,12 @@ normal(title:"Bullets"){
 
             // Row
             group(background:white,draw-contour){
+
+                styles:{
+                    "*" : {
+                        font-size:3%P
+                    }
+                }
                 //rectangle(at:center, color:themeColors[2])
                 ul{
                     col{
