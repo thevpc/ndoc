@@ -2,22 +2,26 @@ package net.thevpc.ntexup.engine.ext;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
-import net.thevpc.ntexup.api.renderer.text.NTxTextToken;
-import net.thevpc.ntexup.api.renderer.text.NTxTextTokenFlavored;
-import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
-import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
-import net.thevpc.ntexup.api.util.NTxUtils;
-import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
+import net.thevpc.ntexup.api.renderer.text.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 class CustomNTxTextRendererFlavorFromBuilder implements NTxTextRendererFlavor {
     private final NTxNodeCustomBuilderContextImpl ctx;
+    private final List<String> parsePrefixes;
 
     public CustomNTxTextRendererFlavorFromBuilder(NTxNodeCustomBuilderContextImpl ctx) {
         this.ctx = ctx;
+        LinkedHashSet<String> a = new LinkedHashSet<>();
+        for (String s : ctx.idAndAliases()) {
+            a.add("[[" + s + ":");
+        }
+        if (this.ctx.renderTextAction.renderEmbeddedTextStartSeparators != null) {
+            for (String s : this.ctx.renderTextAction.renderEmbeddedTextStartSeparators) {
+                a.add(s);
+            }
+        }
+        parsePrefixes = Collections.unmodifiableList(new ArrayList<>(a));
     }
 
     @Override
@@ -27,44 +31,26 @@ class CustomNTxTextRendererFlavorFromBuilder implements NTxTextRendererFlavor {
 
     @Override
     public void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder) {
-        this.ctx.renderTextAction.buildText(text, options, p, ctx, builder, this.ctx);
+        if (this.ctx.renderTextAction.buildAction != null) {
+            this.ctx.renderTextAction.buildAction.buildText(text, options, p, ctx, builder, this.ctx);
+        }
+    }
+
+
+    @Override
+    public List<String> getParsePrefixes() {
+        return parsePrefixes;
     }
 
     @Override
-    public List<NTxTextToken> parseImmediate(NReservedSimpleCharQueue queue, NTxNodeRendererContext ctx) {
-        if (this.ctx.renderEmbeddedTextAction != null) {
-            List<NTxTextToken> u = this.ctx.renderEmbeddedTextAction.parseImmediate(queue, ctx, this.ctx);
+    public List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext ctx) {
+        if (this.ctx.renderTextAction.parseTokensAction != null) {
+            List<NTxTextToken> u = this.ctx.renderTextAction.parseTokensAction.parseTokens(ctx, this.ctx);
             if (u != null) {
                 return u;
             }
         }
-        String flavor = NTxUtils.uid(this.ctx.id);
-
-        String end;
-        if (queue.peek(3 + flavor.length()).equals("[[" + flavor + ":")) {
-            end = "]]";
-            queue.read(3 + flavor.length());
-        } else {
-            return null;
-        }
-        StringBuffer sb = new StringBuffer();
-        while (queue.hasNext()) {
-            String u = queue.peek(3);
-            if (u.equals("\\" + end)) {
-                sb.append(queue.read(3));
-            } else if (queue.peek(2).equals(end)) {
-                queue.read(2);
-                return Arrays.asList(
-                        new NTxTextTokenFlavored(type(), sb.toString().trim())
-                );
-            } else {
-                char c = queue.read();
-                sb.append(c);
-            }
-        }
-        return Arrays.asList(
-                new NTxTextTokenFlavored(type(), sb.toString().trim())
-        );
+        return ctx.parseDefault(this.ctx.idAndAliases(), new String[0], null);
     }
 
     @Override
