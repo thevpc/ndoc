@@ -140,7 +140,7 @@ mvn package
 
 ## **Usage Example**
 
-Create a file `slides.ntex`:
+Create a file `slides.ntx`:
 
 ```tson
 styles: {
