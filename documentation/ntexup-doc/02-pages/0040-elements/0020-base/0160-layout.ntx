@@ -11,7 +11,7 @@ normal(title:"Layout"){
                     triangle(at:left, size:(50,50), background:themeColors[5], color:themeColors[5], margin:10)
                 }
             }
-            source(tson, """
+            source(ntexup, """
                 group{
                     rectangle(at:top, size:(50,50),
                         background:themeColors[4])
@@ -28,7 +28,7 @@ normal(title:"Layout"){
                     "Hello"
                 }
             }
-            source(tson, """
+            source(ntexup, """
                 grid((2,2)){
                     rectangle(at:top, size:(50,50),
                         background:themeColors[4])
@@ -49,7 +49,7 @@ normal(title:"Layout"){
                     triangle(background:themeColors[5], color:themeColors[5], margin:10)
                 }
             }
-            source(tson, """
+            source(ntexup, """
                 grid((3,2),
                     columns-weight:[1,4],
                     rows-weight:[1,4]){
