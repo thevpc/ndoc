@@ -1,0 +1,10 @@
+page{
+    text(
+    "
+    a
+    W
+    "
+    ,draw-contour:true
+    font-size:100
+    )
+}
