@@ -11,25 +11,25 @@ normal(title:"Shapes"){
             group(background:white,draw-contour){
                 rectangle(at:center, size:(50,20), background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ rectangle() """)
+            source(ntexup, """ rectangle() """)
 
             // Row
             group(background:white,draw-contour){
                 triangle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ triangle() """)
+            source(ntexup, """ triangle() """)
 
             // Row
             group(background:white,draw-contour){
                 square(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """ square() """)
+            source(ntexup, """ square() """)
 
             // Row
             group(background:white,draw-contour){
                 rhombus(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 rhombus()
                 diamond()
                 """)
@@ -38,7 +38,7 @@ normal(title:"Shapes"){
             group(background:white,draw-contour){
                 parallelogram(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 parallelogram()
                 """)
 
@@ -46,7 +46,7 @@ normal(title:"Shapes"){
             group(background:white,draw-contour){
                 trapezoid(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 trapezoid()
                 """)
 
@@ -54,7 +54,7 @@ normal(title:"Shapes"){
             group(background:white,draw-contour){
                 circle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 circle()
                 """)
 
@@ -62,7 +62,7 @@ normal(title:"Shapes"){
             group(background:white,draw-contour){
                 ellipse(at:center, size:(80,30), background:themeColors[4], color:themeColors[2])
             }
-            source(tson, """
+            source(ntexup, """
                 ellipse(size:(80,30))
                 """)
 
