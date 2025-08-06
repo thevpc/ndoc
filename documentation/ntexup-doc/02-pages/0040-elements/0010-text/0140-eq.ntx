@@ -21,7 +21,7 @@ normal(title:"Latex Equations"){
                 """
                 eq("X^2=\sin(\pi x)")
                 """)
-                text("Latex math expressions are supported out of the box...", font-size:5%P,margin:[10,20],font-italic,color:themeColors[3])
+                text("Latex math expressions are supported out of the box...", font-size:2%P,margin:[10,20],font-italic,color:themeColors[3])
             }
             // Row
             grid(1,2,background:white,draw-contour){
@@ -35,7 +35,7 @@ normal(title:"Latex Equations"){
                     """
                         eq("X²=\sin(πx)")
                     """)
-                text("you can use superscripts and subscripts and custom symbols...", font-size:5%P,margin:[10,20],font-italic,color:themeColors[3])
+                text("you can use superscripts and subscripts and custom symbols...", font-size:2%P,margin:[10,20],font-italic,color:themeColors[3])
             }
 
 
@@ -54,7 +54,7 @@ normal(title:"Latex Equations"){
                     """
                     "[[eq: X^2=\sin(x) ]]"
                     """)
-                text("you can embed eq in a string...", font-size:5%P,margin:[10,20],font-italic,color:themeColors[3])
+                text("you can embed eq in a string...", font-size:2%P,margin:[10,20],font-italic,color:themeColors[3])
             }
 
 
@@ -86,7 +86,7 @@ normal(title:"Latex Equations"){
                     """
                     ```
                     )
-                text("you can embed eq in a string...", font-size:5%P,margin:[10,20],font-italic,color:themeColors[3])
+                text("you can embed eq in a string...", font-size:2%P,margin:[10,20],font-italic,color:themeColors[3])
             }
         }
     }
