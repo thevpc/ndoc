@@ -8,26 +8,36 @@ normal(title:"More Elaborate Example"){
                         margin:5
                     }
                 }
-                    rectangle(at:center,size:(50),
+                group{ // supports shapes
+                    rectangle(at:center,size:(90),
                         background:yellow,
                         color:red,
                         stroke:4
                     )
-                    ul(at:center){
+                    ul(origin:left, position:(20,50)){
                         "Item 1"
                         "Item 2"
                     }
-                    eq("f_1(x)=\int_x \sin(x^2)",font-size:5%P)
-                    uml(
-                        """
-                            left to right direction
-                            actor "Food Critic" as fc
-                            rectangle Restaurant {
-                              usecase "Eat Food" as UC1
-                            }
-                            fc --> UC1
-                        """
-                    )
+                }
+                plot2d(xmin:-5 , xmax: 5){
+                    curve{ // supports plot
+                        f(x):sin(x)
+                        title:'sin'
+                        color:red
+                    }
+                }
+                // supports LATEX
+                eq("f_1(x)=\int_x \sin(x^2)",font-size:5%P)
+                uml(// supports PLANTUML
+                    """
+                        left to right direction
+                        actor "Food Critic" as fc
+                        rectangle Restaurant {
+                          usecase "Eat Food" as UC1
+                        }
+                        fc --> UC1
+                    """
+                )
             }
         }
     }
