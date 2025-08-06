@@ -8,6 +8,7 @@ import net.thevpc.ntexup.api.document.style.*;
 
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
+import net.thevpc.ntexup.api.util.NtxFontInfo;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
@@ -168,14 +169,27 @@ public class NTxValueByName {
     }
 
     public static Font getFont(NTxNode t, NTxNodeRendererContext ctx) {
-        double fontSize = getFontSize(t, ctx);
+        NElement e = NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull();
+        NTxSizeRef sr = ctx.sizeRef();
+        NOptional<Double> srpx = sr.x(e);
+        NOptional<Double> srpy = sr.y(e);
         boolean fontItalic = isFontItalic(t, ctx);
         boolean fontBold = isFontBold(t, ctx);
         String fontFamily = getFontFamily(t, ctx);
 
-        return NTxFontBySizeResolver.INSTANCE.getFont(fontFamily, Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0), fontSize,
-                f -> ctx.graphics().getFontMetrics(f)
+        return NTxFontBySizeResolver.INSTANCE.getFont(fontFamily, Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0),
+                srpx.orElse(16.0),
+                srpy.orElse(16.0),
+                ctx.graphics()
         );
+    }
+    public static NtxFontInfo getFontInfo(NTxNode t, NTxNodeRendererContext ctx) {
+        NtxFontInfo f = new NtxFontInfo();
+        f.size = NTxSize.ofElement(NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull());
+        f.italic = NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_ITALIC).orNull();
+        f.bold = NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_BOLD).orNull();
+        f.family = NTxValueByType.getStringOrName(t, ctx, NTxPropName.FONT_FAMILY).orNull();
+        return f;
     }
 
     public static NTxDouble2 getRoundCornerArcs(NTxNode t, NTxNodeRendererContext ctx) {
