@@ -36,8 +36,8 @@ normal(title:"Network Diagrams"){
                 )
             }
 
-            source(at:left, font-size:5.5%P
-            tson,
+            source(
+            ntexup,
             ```
                  nwdiag(
                      """
@@ -64,6 +64,7 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
+             at:left, font-size:5.5%P
              )
 
             // Row 2
@@ -99,8 +100,8 @@ normal(title:"Network Diagrams"){
                 )
             }
 
-            source(at:left, font-size:5.5%P
-            tson,
+            source(
+            ntexup,
             ```
                  nwdiag(
                      """
@@ -132,6 +133,7 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
+             at:left, font-size:5.5%P
              )
         }
     }
