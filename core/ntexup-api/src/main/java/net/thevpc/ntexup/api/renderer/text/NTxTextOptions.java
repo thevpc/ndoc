@@ -1,6 +1,14 @@
 package net.thevpc.ntexup.api.renderer.text;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
+import net.thevpc.ntexup.api.document.elem2d.NTxSize;
+import net.thevpc.ntexup.api.eval.NTxFontBySizeResolver;
+import net.thevpc.ntexup.api.renderer.NTxGraphics;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.util.NTxSizeRef;
+import net.thevpc.ntexup.api.util.NtxFontInfo;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPrimitiveElement;
 import net.thevpc.nuts.util.NBlankable;
 
 import java.awt.*;
@@ -8,20 +16,23 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
 public class NTxTextOptions implements Cloneable, NBlankable {
+    public NtxFontInfo defaultFont;
     public Paint backgroundColor;
     public Integer foregroundColorIndex;
     public Integer backgroundColorIndex;
     public Paint foregroundColor;
     public Boolean bold;
     public Boolean italic;
-    public Float fontSize;
+    public NTxSize fontSize;
     public String fontFamily;
     public Boolean underlined;
     public Boolean strikeThrough;
-    public Font font;
+    public Font baseFont;
     public Paint shadowColor;
     public NTxPoint2D shadowTranslation;
     public Stroke stroke;
+    public NTxSizeRef sr;
+    public Font computedFont;
 
     @Override
     public boolean isBlank() {
@@ -52,7 +63,7 @@ public class NTxTextOptions implements Cloneable, NBlankable {
         if (strikeThrough != null) {
             return false;
         }
-        if (font != null) {
+        if (baseFont != null) {
             return false;
         }
         if (shadowColor != null) {
@@ -104,11 +115,11 @@ public class NTxTextOptions implements Cloneable, NBlankable {
         return this;
     }
 
-    public Float getFontSize() {
+    public NTxSize getFontSize() {
         return fontSize;
     }
 
-    public NTxTextOptions setFontSize(Float fontSize) {
+    public NTxTextOptions setFontSize(NTxSize fontSize) {
         this.fontSize = fontSize;
         return this;
     }
@@ -168,12 +179,16 @@ public class NTxTextOptions implements Cloneable, NBlankable {
     }
 
 
-    public Font getFont() {
-        return font;
+    public Font getBaseFont() {
+        return baseFont;
     }
 
-    public NTxTextOptions setFont(Font font) {
-        this.font = font;
+    public Font getComputedFont() {
+        return computedFont;
+    }
+
+    public NTxTextOptions setBaseFont(Font baseFont) {
+        this.baseFont = baseFont;
         return this;
     }
 
@@ -229,7 +244,7 @@ public class NTxTextOptions implements Cloneable, NBlankable {
         return false;
     }
 
-    public AttributedString createAttributedString(String text, Graphics2D g) {
+    public AttributedString createAttributedString(String text, NTxGraphics g) {
         AttributedString attributedString = new AttributedString(text);
         int strLen = text.length();
         if (underlined != null && underlined) {
@@ -248,41 +263,76 @@ public class NTxTextOptions implements Cloneable, NBlankable {
         return attributedString;
     }
 
-    private void applyFont(AttributedString attributedString, Graphics2D g) {
-        Font f = font;
-        boolean someChanges = font != null;
-        if (f == null) {
-            f = g.getFont();
-        }
-        if (fontFamily == null || fontSize != null || bold != null || italic != null) {
-            int oldStyle = f.getStyle();
-            if (bold != null) {
-                if (bold) {
-                    oldStyle |= Font.BOLD;
-                } else {
-                    oldStyle &= ~Font.BOLD;
-                }
-            }
-            if (italic != null) {
-                if (italic) {
-                    oldStyle |= Font.ITALIC;
-                } else {
-                    oldStyle &= ~Font.ITALIC;
-                }
-            }
-            if (NBlankable.isBlank(fontFamily)) {
-                f = new Font(fontFamily, oldStyle, fontSize == null ? f.getSize() : fontSize.intValue());
-            } else {
-                f = f.deriveFont(oldStyle, fontSize == null ? f.getSize() : fontSize);
-            }
-            someChanges = true;
-        }
-        if (someChanges) {
-            attributedString.addAttribute(TextAttribute.FONT, f);
-        }
+    public Font resolveFont(NTxGraphics g) {
+        return resolveFont(g, false);
     }
 
-    public AttributedString createShadowAttributedString(String text, Graphics2D g) {
+    public Font resolveFont(NTxGraphics g, boolean apply) {
+        if (computedFont != null) {
+            return computedFont;
+        }
+        if (defaultFont == null) {
+            throw new RuntimeException("missing default font");
+        }
+        Font baseFont = this.baseFont;
+        if (baseFont == null) {
+            baseFont = defaultFont.baseFont;
+        }
+
+        String fontFamily = this.fontFamily;
+        if (NBlankable.isBlank(fontFamily)) {
+            fontFamily = defaultFont.family;
+        }
+        Boolean bold = this.bold;
+        if (bold == null && defaultFont.bold != null) {
+            bold = defaultFont.bold;
+        }
+        if (bold == null) {
+            if (baseFont != null) {
+                bold = baseFont.isBold();
+            } else {
+                bold = false;
+            }
+        }
+        Boolean italic = this.italic;
+        if (italic == null && defaultFont.italic != null) {
+            italic = defaultFont.italic;
+        }
+        if (italic == null) {
+            if (baseFont != null) {
+                italic = baseFont.isItalic();
+            } else {
+                italic = false;
+            }
+        }
+        NTxSizeRef sr = this.sr;
+        if (sr == null) {
+            throw new IllegalArgumentException("sr is null");
+        }
+        NTxSize size = this.fontSize;
+        if (size == null) {
+            size = defaultFont.size;
+        }
+        double w = sr.x(size).orElse(16.0);
+        double h = sr.y(size).orElse(16.0);
+        int newStyle = Font.PLAIN | (italic ? Font.ITALIC : 0) | (bold ? Font.BOLD : 0);
+        Font newFont = NTxFontBySizeResolver.INSTANCE.getFont(fontFamily, baseFont, newStyle, w, h, g);
+        if (apply) {
+            this.italic = italic;
+            this.bold = bold;
+            this.fontFamily = fontFamily;
+            this.fontSize = size;
+            this.computedFont = newFont;
+        }
+        return newFont;
+    }
+
+    private void applyFont(AttributedString attributedString, NTxGraphics g) {
+        Font f = resolveFont(g, false);
+        attributedString.addAttribute(TextAttribute.FONT, f);
+    }
+
+    public AttributedString createShadowAttributedString(String text, NTxGraphics g) {
         AttributedString attributedString = new AttributedString(text);
         int strLen = text.length();
         if (underlined != null && underlined) {
@@ -327,8 +377,8 @@ public class NTxTextOptions implements Cloneable, NBlankable {
             if (other.strikeThrough != null) {
                 this.strikeThrough = other.strikeThrough;
             }
-            if (other.font != null) {
-                this.font = other.font;
+            if (other.baseFont != null) {
+                this.baseFont = other.baseFont;
             }
             if (other.shadowColor != null) {
                 this.shadowColor = other.shadowColor;
