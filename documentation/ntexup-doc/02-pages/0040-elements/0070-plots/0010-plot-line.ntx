@@ -10,25 +10,29 @@ body{
             // Row
             group(background:white,draw-contour){
                 plot2d(xmin:-5 , xmax: 5){
-                        f(x):sin(x)
+                        curve{
+                            f(x):sin(x)
+                        }
                 }
             }
             source(tson,
                 """
                     plot2d(xmin:-5 , xmax: 5){
-                        f(x):sin(x)
+                        curve {
+                            f(x):sin(x)
+                        }
                     }
                 """
             )
             // Row
             group(background:white,draw-contour){
                 plot2d(xmin:-5 , xmax: 5){
-                    {
+                    curve{
                         f(x):sin(x)
                         title:'sin'
                         color:red
                     }
-                    {
+                    curve{
                         f(x):cos(x)
                         title:'cos'
                         color:blue
@@ -38,12 +42,12 @@ body{
             source(tson,
                 """
                 plot2d(xmin:-5 , xmax: 5){
-                    {
+                    curve{
                         f(x):sin(x)
                         title:'sin'
                         color:red
                     }
-                    {
+                    curve{
                         f(x):cos(x)
                         title:'cos'
                         color:blue
