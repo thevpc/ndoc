@@ -111,7 +111,7 @@ for(i: [1 -> 2]) {
 
 - **Language**: Java 8+ (supports java 24).
 - **Package manager**: [Nuts](https://github.com/thevpc/nuts).
-- **Document syntax**: TSON.
+- **Document syntax**: [TSON](https://github.com/thevpc/tson).
 - **Rendering**: Swing viewer, PDF generator, and web-based image rendering.
 
 ---
