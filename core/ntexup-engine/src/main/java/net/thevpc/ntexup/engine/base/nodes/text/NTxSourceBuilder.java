@@ -24,7 +24,7 @@ public class NTxSourceBuilder implements NTxNodeBuilder {
                 .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
                 .parseDefaultParams()
                 .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .renderText(this::renderTextBuildText)
+                .renderText().buildText(this::renderTextBuildText)
         ;
     }
 
