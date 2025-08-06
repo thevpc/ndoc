@@ -1,6 +1,7 @@
 package net.thevpc.ntexup.api.util;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
+import net.thevpc.ntexup.api.document.elem2d.NTxSize;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.util.NOptional;
@@ -41,19 +42,38 @@ public class NTxSizeRef {
 
 
     public NOptional<Double> x(Object o) {
-        return xy(o, parentWidth, rootWidth);
+        return xy(o, parentWidth, rootWidth,true);
     }
 
     public NOptional<Double> y(Object o) {
-        return xy(o, parentHeight, rootHeight);
+        return xy(o, parentHeight, rootHeight,false);
     }
 
-    private NOptional<Double> xy(Object o, double pw, double rw) {
+    private NOptional<Double> xy(Object o, double pw, double rw,boolean isx) {
         if (o == null) {
             return NOptional.ofNamedEmpty("size");
         }
         if (o instanceof Number) {
             o = NElement.ofDouble(((Number) o).doubleValue());
+        }
+        if (o instanceof NTxSize) {
+            NTxSize ss = (NTxSize) o;
+            switch (ss.type()) {
+                case REM:
+                    return NOptional.of(ss.value() / 18);
+                case PX:
+                    return NOptional.of(ss.value());
+                case PAGE:
+                    return NOptional.of(ss.value() / 100 * rw);
+                case PARENT:
+                    return NOptional.of(ss.value() / 100 * pw);
+                case BOUNDS:{
+                    if(isx){
+                        return NOptional.of(ss.value());
+                    }
+                    return NOptional.of(ss.height());
+                }
+            }
         }
         if (o instanceof NElement) {
             NElement b = (NElement) o;
@@ -67,8 +87,7 @@ public class NTxSizeRef {
                 }
                 switch (u) {
                     case "%p":
-                    case "%P":
-                    {
+                    case "%P": {
                         double aDouble = n.doubleValue();
                         return NOptional.of(aDouble / 100 * rw);
                     }
