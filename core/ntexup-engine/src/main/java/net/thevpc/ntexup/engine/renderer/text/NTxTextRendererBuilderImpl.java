@@ -8,6 +8,7 @@ import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
 import net.thevpc.ntexup.api.renderer.text.*;
+import net.thevpc.ntexup.api.util.NtxFontInfo;
 import net.thevpc.ntexup.engine.util.NTxNodeRendererUtils;
 import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
@@ -32,10 +33,12 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
     public Rectangle2D.Double bounds;
     private Paint defaultColor;
     private NTxEngine engine;
+    private NtxFontInfo defaultFont;
 
-    public NTxTextRendererBuilderImpl(NTxEngine engine, Paint defaultColor) {
+    public NTxTextRendererBuilderImpl(NTxEngine engine, Paint defaultColor, NtxFontInfo defaultFont) {
         this.defaultColor = defaultColor;
         this.engine = engine;
+        this.defaultFont = defaultFont;
     }
 
     public void appendNText(String lang, String rawText, NText text, NTxNode node, NTxNodeRendererContext ctx) {
@@ -87,8 +90,8 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
             return;
         }
         NTxTextRendererFlavor hTextRendererFlavor = engine.textRendererFlavor(lang).orElse(null);
-        if(hTextRendererFlavor==null){
-            hTextRendererFlavor=engine.textRendererFlavor("").get();
+        if (hTextRendererFlavor == null) {
+            hTextRendererFlavor = engine.textRendererFlavor("").get();
         }
         hTextRendererFlavor.buildText(rawText, options, node, ctx, this);
     }
@@ -112,11 +115,11 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
                 this.nextLine();
             }
             NTxRichTextToken c = new NTxRichTextToken(NTxRichTextTokenType.PLAIN, a.get(j));
-            g.setFont(c.textOptions.font);
+            c.textOptions.defaultFont = defaultFont;
+            c.textOptions.sr = ctx.sizeRef();
+            g.setFont(c.textOptions.resolveFont(ctx.graphics()));
             c.bounds = g.getStringBounds(c.text);
-            this.currRow().addToken(
-                    c
-            );
+            this.currRow().addToken(c);
         }
         for (int i = 0; i < end; i++) {
             this.nextLine();
@@ -140,6 +143,7 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
 
     public NTxBounds2 computeBound(NTxNodeRendererContext ctx) {
         NTxGraphics g = ctx.graphics();
+        Font oldFont = g.getFont();
         bounds = new Rectangle2D.Double(0, 0, 0, 0);
         double maxxY = 0;
         for (int i = 0; i < rows.size(); i++) {
@@ -151,15 +155,6 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
             for (int j = 0; j < row.tokens.size(); j++) {
                 NTxRichTextToken c = row.tokens.get(j);
                 c.xOffset = maxX;
-                g.setFont(c.textOptions.font);
-//                if (c.attributedString == null) {
-//                    c.bounds = g.getStringBounds(c.text);
-//                } else {
-//                    c.bounds = g.getStringBounds(c.text);
-//                    //TextLayout textLayout=new TextLayout(          c.attributedString.getIterator(),g.getFontRenderContext());
-//                    //c.textBounds=textLayout.getBounds();
-//                    //c.textBounds = g.getStringBounds(c.attributedString.getIterator());
-//                }
                 maxX += c.bounds.getWidth();
                 maxY = Math.max(maxY, c.bounds.getHeight());
             }
@@ -192,19 +187,24 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
         return rows.isEmpty();
     }
 
-    public void render(NTxNode p, NTxNodeRendererContext ctx, NTxBounds2 bgBounds, NTxBounds2 selfBounds) {
-        boolean debug = ctx.isDebug(p);
+    public void render(NTxNode p, NTxNodeRendererContext rendererContext, NTxBounds2 bgBounds, NTxBounds2 selfBounds) {
+        boolean debug = rendererContext.isDebug(p);
         double x = selfBounds.getX();
         double y = selfBounds.getY();
-        NTxGraphics g = ctx.graphics();
+        NTxGraphics g = rendererContext.graphics();
+        NtxFontInfo fontInfo = NTxValueByName.getFontInfo(p, rendererContext);
+        if (fontInfo == null) {
+            fontInfo = defaultFont == null ? new NtxFontInfo() : defaultFont.copy();
+        } else {
+            fontInfo = fontInfo.copy().applyDefaults(defaultFont);
+        }
         NTxTextOptions textOptions = new NTxTextOptions()
-                .setFont(NTxValueByName.getFont(p, ctx))
-                .setForegroundColor(NTxValueByName.getForegroundColor(p, ctx, true));
+//                .setFont(NTxValueByName.getFont(p, rendererContext))
+                .setForegroundColor(NTxValueByName.getForegroundColor(p, rendererContext, true));
 
 
-        NTxNodeRendererUtils.paintBackground(p, ctx, g, bgBounds);
-        NOptional<NTxShadow> shadowOptional = NTxValueByName.readStyleAsShadow(p, NTxPropName.SHADOW, ctx);
-        int ascent = g.getFontMetrics(textOptions.getFont()).getAscent();
+        NTxNodeRendererUtils.paintBackground(p, rendererContext, g, bgBounds);
+        NOptional<NTxShadow> shadowOptional = NTxValueByName.readStyleAsShadow(p, NTxPropName.SHADOW, rendererContext);
         if (shadowOptional.isPresent()) {
             NTxShadow shadow = shadowOptional.get();
             textOptions.setShadowColor(shadow.getColor());
@@ -217,17 +217,24 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
             }
             textOptions.setShadowTranslation(shadow.getTranslation());
         }
-        Font oldFont= g.getFont();
+        textOptions.sr = rendererContext.sizeRef();
         for (NTxRichTextRow row : this.rows) {
             for (NTxRichTextToken col : row.tokens) {
                 switch (col.type) {
                     case PLAIN:
                     case STYLED: {
+                        NTxTextOptions options2 = textOptions.copy().copyNonNullFrom(col.textOptions);
+
+                        options2.defaultFont = fontInfo;
+                        options2.sr = textOptions.sr;
+                        options2.resolveFont(rendererContext.graphics(),true);
+                        options2.sr = textOptions.sr;
+                        int ascent = g.getFontMetrics(options2.getComputedFont()).getAscent();
                         g.drawString(
                                 col.text
                                 , x + col.xOffset
                                 , (y + row.yOffset) + ascent,
-                                textOptions.copy().copyNonNullFrom(col.textOptions)
+                                options2
                         );
                         break;
                     }
@@ -248,6 +255,6 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
                 }
             }
         }
-        NTxNodeRendererUtils.paintBorderLine(p, ctx, g, selfBounds);
+        NTxNodeRendererUtils.paintBorderLine(p, rendererContext, g, selfBounds);
     }
 }
