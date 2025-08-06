@@ -11,13 +11,13 @@ normal(title:"Simple Text"){
             group(background:white,draw-contour){
                 plain("Hello World")
             }
-            source(tson, """ plain("Hello World") """)
+            source(ntexup, """ plain("Hello World") """)
 
             // Row
             group(background:white,draw-contour){
                 plain("Hello World",font-italic)
             }
-            source(tson, """ plain("Hello World",font-italic) """)
+            source(ntexup, """ plain("Hello World",font-italic) """)
 
             // Row
             group(background:white,draw-contour){
@@ -28,7 +28,7 @@ normal(title:"Simple Text"){
                     "
                     ,font-bold)
             }
-            source(tson, """
+            source(ntexup, """
                             plain(
                                      "
                                          Hello
@@ -47,7 +47,7 @@ normal(title:"Simple Text"){
                        font-size:5%P
                     )
             }
-            source(tson, """
+            source(ntexup, """
                             plain(
                                      "
                                          Hello
