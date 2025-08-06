@@ -33,7 +33,7 @@ normal(title:"Wireframe Diagrams"){
                  )
 
              ```
-             at:left
+             at:left, font-size:3%P
              )
 
             // Row 2
@@ -73,7 +73,7 @@ normal(title:"Wireframe Diagrams"){
                  )
 
              ```
-             at:left
+             at:left, font-size:3%P
              )
         }
     }
