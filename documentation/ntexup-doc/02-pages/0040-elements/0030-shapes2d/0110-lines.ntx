@@ -11,19 +11,19 @@ normal(title:"Lines"){
             group(background:white,draw-contour){
                 line(from:(10,10), to:(80,90), color:red,stroke:3)
             }
-            source(tson, """ line(from:(0,0), to:(80,20)) """)
+            source(ntexup, """ line(from:(0,0), to:(80,20)) """)
 
             // Row
             group(background:white,draw-contour){
                 arc(from:30, to:180, color:red,stroke:3)
             }
-            source(tson, """ arc(from:30, to:180) """)
+            source(ntexup, """ arc(from:30, to:180) """)
 
             // Row
             group(background:white,draw-contour){
                 quad-curve(from:(10,10), to:(80,90), ctrl:(60,30), color:red,stroke:3)
             }
-            source(tson,
+            source(ntexup,
                 """
                     quad-curve(
                         from:(10,10),
@@ -40,7 +40,7 @@ normal(title:"Lines"){
                     color:red,
                     stroke:3)
             }
-            source(tson,
+            source(ntexup,
                 """
                     cubic-curve(
                     from:(10,10),
