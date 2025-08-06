@@ -9,12 +9,12 @@ import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
 import net.thevpc.ntexup.api.parser.NTxArgumentReader;
 import net.thevpc.ntexup.api.parser.NTxNodeFactoryParseContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavorParseContext;
 import net.thevpc.ntexup.api.renderer.text.NTxTextToken;
 import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
 import net.thevpc.nuts.NCallableSupport;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -44,9 +44,7 @@ public interface NTxNodeCustomBuilderContext {
 
     NTxNodeCustomBuilderContext renderComponent(RenderAction e);
 
-    NTxNodeCustomBuilderContext renderText(RenderTextAction renderTextAction, RenderEmbeddedTextAction embeddedTextAction);
-
-    NTxNodeCustomBuilderContext renderText(RenderTextAction renderTextAction);
+    RenderTextAction renderText();
 
     NTxNodeCustomBuilderContext renderConvert(RenderConvertAction renderConvertAction);
 
@@ -55,6 +53,7 @@ public interface NTxNodeCustomBuilderContext {
     NTxNodeCustomBuilderContext parseParam(ProcessParamAction e);
 
     NTxNodeCustomBuilderContext afterParsingAllParams(ProcessNodeAction e);
+
     NTxNodeCustomBuilderContext processChildren(ProcessNodeAction e);
 
     NTxEngine engine();
@@ -63,9 +62,23 @@ public interface NTxNodeCustomBuilderContext {
 
     NTxNodeCustomBuilderContext addParamName(String points);
 
+    String[] idAndAliases();
+
 
     interface NTxItemSpecialParser {
         NCallableSupport<NTxItem> parseElement(String id, NElement element, NTxNodeFactoryParseContext context);
+    }
+
+    interface RenderTextAction {
+        RenderTextAction buildText(RenderTextBuildAction a);
+
+        RenderTextAction parseTokens(RenderTextParseTokensAction embeddedTextAction);
+
+        RenderTextAction startSeparators(String... startSeparators);
+
+        NTxNodeCustomBuilderContext then();
+
+        NTxNodeCustomBuilderContext end();
     }
 
     interface NamedParamAction {
@@ -115,7 +128,7 @@ public interface NTxNodeCustomBuilderContext {
         void renderMain(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
     }
 
-    interface RenderTextAction {
+    interface RenderTextBuildAction {
         void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext renderContext, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext);
     }
 
@@ -123,8 +136,8 @@ public interface NTxNodeCustomBuilderContext {
         NTxNode convert(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext);
     }
 
-    interface RenderEmbeddedTextAction {
-        List<NTxTextToken> parseImmediate(NReservedSimpleCharQueue queue, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext);
+    interface RenderTextParseTokensAction {
+        List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext parseContext, NTxNodeCustomBuilderContext buildContext);
     }
 
     interface SizeRequirementsAction {
