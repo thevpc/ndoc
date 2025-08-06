@@ -27,8 +27,8 @@ normal(title:"UML Use Case"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(
+            ntexup,
             ```
                  uml(
                      """
@@ -46,6 +46,7 @@ normal(title:"UML Use Case"){
                  )
 
              ```
+             at:left
              )
 
             // Row 2
@@ -70,8 +71,8 @@ normal(title:"UML Use Case"){
                 )
             }
 
-            source(at:left
-            tson,
+            source(
+            ntexup,
             ```
                  uml(
                      """
@@ -92,6 +93,7 @@ normal(title:"UML Use Case"){
                  )
 
              ```
+             at:left
              )
         }
     }
