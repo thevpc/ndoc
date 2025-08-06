@@ -47,17 +47,17 @@ As a teacher and researcher, I struggled with existing tools:
       title: { font-size: 50, bold: true, color: red }
   }
   ```
-  - **Template engine** with variables, loops, and conditions:
-    ```tson
-    @define course(titleComponent, title) {
-        page {
-            text(either(title, "Title"), at: top)
-            if(showRectangle){
-              rectangle(size: (50, 50), color: red, rotate: 45)
-            }
-        }
-    }
-    ```
+- **Template engine** with variables, loops, and conditions:
+  ```tson
+  @define course(titleComponent, title) {
+      page {
+          text(either(title, "Title"), at: top)
+          if(showRectangle){
+            rectangle(size: (50, 50), color: red, rotate: 45)
+          }
+      }
+  }
+  ```
 - **Multi-file support** with `include`, even from GitHub.
 - **Shapes**: rectangles, circles, polygons, arrows, pies, donuts, cylinders, etc.
 - **Responsive layouts**: grid, stack, relative positioning.
