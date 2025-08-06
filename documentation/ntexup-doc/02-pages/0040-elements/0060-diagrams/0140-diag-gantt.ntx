@@ -45,7 +45,7 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
-             at:left, font-size:7%P
+             at:left, font-size:3%P
              )
 
             // Row 2
@@ -76,7 +76,7 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
-             at:left, font-size:7%P
+             at:left, font-size:3%P
              )
         }
     }
