@@ -7,12 +7,15 @@ package net.thevpc.ntexup.api.engine;
 import java.awt.*;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.NTxDocumentLoadingResult;
 import net.thevpc.ntexup.api.document.style.NTxProp;
+import net.thevpc.ntexup.api.document.style.NTxStyleAndMagnitude;
+import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.eval.NTxCompilePageContext;
 import net.thevpc.ntexup.api.eval.NTxVarProvider;
 import net.thevpc.ntexup.api.extension.NTxFunction;
@@ -33,9 +36,11 @@ import net.thevpc.nuts.util.NOptional;
  * @author vpc
  */
 public interface NTxEngine {
-    String FILE_EXT="ntx";
-    String FILE_DOT_EXT=".ntx";
+    String FILE_EXT = "ntx";
+    String FILE_DOT_EXT = ".ntx";
+
     NTxLogger log();
+
     NTxEngineTools tools();
 
     NTxLogger addLog(NTxLogger messages);
@@ -85,6 +90,10 @@ public interface NTxEngine {
     NElement toElement(NTxNode node);
 
     NOptional<NTxProp> computeProperty(NTxNode node, String... propertyNames);
+
+    List<NTxStyleRule> computeStyles(NTxNode node);
+    List<NTxStyleRule> computeDeclaredStyles(NTxNode node);
+    Set<String> computeDeclaredStylesClasses(NTxNode node);
 
     List<NTxProp> computeInheritedProperties(NTxNode node);
 
