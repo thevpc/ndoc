@@ -48,7 +48,7 @@ public abstract class PlantUmlBuilderBase implements NTxNodeBuilder {
                 .alias(aliases)
                 .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
-                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderComponent(this::renderMain)
         ;
     }
