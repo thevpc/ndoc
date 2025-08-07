@@ -1,4 +1,4 @@
-normal(title:"Latex Equations"){
+normal(title:"Latex Equations",variant:3){
     body{
         grid(4,2,columns-weight:[1,3]){
             styles:{
@@ -14,10 +14,10 @@ normal(title:"Latex Equations"){
                     "*":{font-size:15}
                 }
 
-                eq("X^2=\sin(\pi x)",draw-contour:false,font-size:6%P)
+                eq("X^2=\sin(\pi x)",draw-contour:false,font-size:3%P)
             }
             column{
-                source(ntexup,
+                miniCodeNTexup(
                 """
                 eq("X^2=\sin(\pi x)")
                 """)
@@ -26,12 +26,12 @@ normal(title:"Latex Equations"){
             // Row
             grid(1,2,background:white,draw-contour){
                 styles:{
-                    "*":{font-size:6%P}
+                    "*":{font-size:3%P}
                 }
-                    eq("X²=\sin(πx)", font-size:6%P)
+                    eq("X²=\sin(πx)", font-size:3%P,draw-contour:false)
             }
             column{
-                source(ntexup,
+                miniCodeNTexup(
                     """
                         eq("X²=\sin(πx)")
                     """)
@@ -50,7 +50,7 @@ normal(title:"Latex Equations"){
                     ,font-size:6%P)
             }
             column{
-                source(ntexup,
+                miniCodeNTexup(
                     """
                     "[[eq: X^2=\sin(x) ]]"
                     """)
@@ -74,7 +74,7 @@ normal(title:"Latex Equations"){
             }
 //            text("hello" draw-contour:true)
             column{
-                source(ntexup,
+                miniCodeNTexup(
                     ```
                     """
                         ##Equation 1 (superscript)## =
