@@ -142,6 +142,12 @@ public class NTxValueByName {
 
     public static double getFontSize(NTxNode t, NTxNodeRendererContext ctx) {
         NElement e = NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull();
+        if(e!=null){
+            NElement nElement = ctx.engine().evalExpression(e, t, ctx.varProvider());
+            if(nElement!=null){
+                e=nElement;
+            }
+        }
         NTxSizeRef sr = ctx.sizeRef();
         NOptional<Double> srpx = sr.x(e);
         NOptional<Double> srpy = sr.y(e);
