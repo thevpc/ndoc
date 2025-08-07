@@ -1,4 +1,4 @@
-normal(title:"Plot lines"){
+normal(title:"Plot lines",variant:8){
 body{
         grid((2,1),columns-weight:[1,3]){
             styles:{
@@ -8,14 +8,14 @@ body{
                 }
             }
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plot2d(xmin:-5 , xmax: 5){
                         curve{
                             f(x):sin(x)
                         }
                 }
             }
-            source(ntexup,
+            miniCodeNTexup(
                 """
                     plot2d(xmin:-5 , xmax: 5){
                         curve {
@@ -25,7 +25,7 @@ body{
                 """
             )
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plot2d(xmin:-5 , xmax: 5){
                     curve{
                         f(x):sin(x)
@@ -39,7 +39,7 @@ body{
                     }
                 }
             }
-            source(ntexup,
+            miniCodeNTexup(
                 """
                 plot2d(xmin:-5 , xmax: 5){
                     curve{
