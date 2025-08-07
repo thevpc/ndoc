@@ -499,4 +499,16 @@ public class NTxUtils {
     public static boolean isAnyDefVarName(String name) {
         return NNameFormat.equalsIgnoreFormat(COMPONENT_BODY_VAR_NAME, name);
     }
+
+    public static NTxNode findRootNode(NTxItem bullet) {
+        NTxItem a = bullet;
+        NTxNode r = null;
+        while (a != null) {
+            if (a instanceof NTxNode) {
+                r = (NTxNode) a;
+            }
+            a = a.parent();
+        }
+        return r;
+    }
 }
