@@ -197,10 +197,7 @@ public class NTxNodeRendererUtils {
             if (applyForeground(t, g, ctx, true)) {
                 Stroke s = g.getStroke();
                 applyStroke(t, g, ctx);
-                g.drawRect(
-                        NTxUtils.intOf(a.getMinX()), NTxUtils.intOf(a.getMinY()),
-                        NTxUtils.intOf(a.getWidth()), NTxUtils.intOf(a.getHeight())
-                );
+                g.drawRect(a);
                 g.setStroke(s);
             }
         }
