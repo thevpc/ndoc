@@ -4,7 +4,7 @@ normal(title:"Test me"){
             // write whatever you like here???
             """
             open the following file
-                ##$ntexup_gitroot/documentation/ntexup-doc/02-pages/9999-conclusion/0110-test.ntx##
+                ##<ntexup_gitroot>/documentation/ntexup-doc/02-pages/9999-conclusion/0110-test.ntx##
             and try to write some things there...
             """
         }
