@@ -1,19 +1,19 @@
-normal(title:"Hello World"){
+normal(title:"Hello World",variant:2){
     body{
-        grid((4,2),columns-weight:[1]){
+        grid(4,2,columns-weight:[1]){
             styles:{
                 "*": {margin:2}
             }
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 //rectangle(at:center, color:themeColors[2])
                 text("Hello World")
             }
-            source(ntexup, """ "Hello World" """)
+            miniCodeNTexup(""" "Hello World" """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 //rectangle(at:center, color:themeColors[2])
                 """
                     - Hello ##World##
@@ -21,15 +21,18 @@ normal(title:"Hello World"){
                     - Hello ####World####
                 """
             }
-            source(ntexup, """
+
+            miniCodeNTexup( """
                     "
                         - Hello ##World##
                         - Hello ###World###
                         - Hello ####World####
                     "
-             """)
+             """
+            )
+
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 //rectangle(at:center, color:themeColors[2])
                 ul{
                     ¶ Hello ##World##
@@ -37,14 +40,14 @@ normal(title:"Hello World"){
                     ¶ Hello ####World####
                 }
             }
-            source(ntexup, """
+            miniCodeNTexup("""
                     ul{
                         ¶ Hello ##World##
                         ¶ Hello ###World###
                         ¶ Hello ####World####
                     }
-             """)
-
+             """
+            )
         }
     }
 
