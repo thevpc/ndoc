@@ -1,4 +1,4 @@
-normal(title:"Test me"){
+normal(title:"Test me",variant:9){
     body{
         column{
             // write whatever you like here???
