@@ -18,9 +18,10 @@ import java.util.List;
 import java.util.Set;
 
 public class NTxListHelper {
-    private static NumberingStrategy resolveNumberingStrategy(NTxNode p, boolean ordered, NTxNodeRendererContext ctx){
+    private static NumberingStrategy resolveNumberingStrategy(NTxNode p, boolean ordered, NTxNodeRendererContext ctx) {
         return new NumberingStrategy();
     }
+
     public static List<NodeWithIndent> build(NTxNode p, boolean ordered, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext) {
         List<NodeWithIndent> all = new ArrayList<>();
         List<NTxNode> children = p.children();
@@ -32,10 +33,10 @@ public class NTxListHelper {
         for (int i = 0; i < children.size(); i++) {
             NTxNode child = children.get(i);
             if (isList(child)) {
-                fillAny(child, all, 0, ordered, lastParent, userIndex, f, ctx,ns);
+                fillAny(child, all, 0, ordered, lastParent, userIndex, f, ctx, ns);
             } else {
-                fillAny(child, all, 0, ordered, parentString, userIndex, f, ctx,ns);
-                lastParent = ns.eval("", userIndex, false);
+                fillAny(child, all, 0, ordered, parentString, userIndex, f, ctx, ns);
+                lastParent = ns.eval("", userIndex, false, 0);
                 userIndex++;
             }
         }
@@ -44,7 +45,7 @@ public class NTxListHelper {
         NTxBounds2 bounds = ctx.getBounds();
         double lastY = bounds.getY();
         double indentFactor = Math.min(nTxSizeRef.getParentWidth() / 10, childHeight);
-        double bulletWidthFactor=ordered?0.3:0.1;
+        double bulletWidthFactor = ordered ? 0.3 : 0.1;
         for (NodeWithIndent child : all) {
             double indentWidth = indentFactor * child.indent;
             double bulletWidth = (nTxSizeRef.getParentWidth() - indentWidth) * bulletWidthFactor;
@@ -85,22 +86,22 @@ public class NTxListHelper {
         return false;
     }
 
-    private static void fillList(List<NTxNode> children, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, NTxDocumentFactory f, NTxNodeRendererContext ctx,NumberingStrategy ns) {
+    private static void fillList(List<NTxNode> children, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, NTxDocumentFactory f, NTxNodeRendererContext ctx, NumberingStrategy ns) {
         int userIndex = 1;
         String lastParent = "";
         for (int i = 0; i < children.size(); i++) {
             NTxNode child = children.get(i);
             if (isList(child)) {
-                fillAny(child, all, indent, ordered, lastParent, userIndex, f, ctx,ns);
+                fillAny(child, all, indent, ordered, lastParent, userIndex, f, ctx, ns);
             } else {
-                fillAny(child, all, indent, ordered, parentString, userIndex, f, ctx,ns);
-                lastParent = ns.eval("", userIndex, false);
+                fillAny(child, all, indent, ordered, parentString, userIndex, f, ctx, ns);
+                lastParent = ns.eval("", userIndex, false, indent);
                 userIndex++;
             }
         }
     }
 
-    private static boolean fillNonList(NTxNode p, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, int index, NTxDocumentFactory f, NTxNodeRendererContext ctx,NumberingStrategy ns) {
+    private static boolean fillNonList(NTxNode p, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, int index, NTxDocumentFactory f, NTxNodeRendererContext ctx, NumberingStrategy ns) {
         switch (p.type()) {
             case NTxNodeType.UNORDERED_LIST:
             case NTxNodeType.ORDERED_LIST: {
@@ -127,7 +128,7 @@ public class NTxListHelper {
                         specialStyle = "ol-bullet";
                     }
 
-                    g.bullet = f.ofText(ns.eval(parentString, index, true))
+                    g.bullet = f.ofText(ns.eval(parentString, index, true, indent))
                             .addStyleClasses(specialStyle)
                             .setSource(p.source());
                 } else {
@@ -178,86 +179,105 @@ public class NTxListHelper {
         }
     }
 
-    private static void fillAny(NTxNode p, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, int index, NTxDocumentFactory f, NTxNodeRendererContext ctx,NumberingStrategy ns) {
+    private static void fillAny(NTxNode p, List<NodeWithIndent> all, int indent, boolean ordered, String parentString, int index, NTxDocumentFactory f, NTxNodeRendererContext ctx, NumberingStrategy ns) {
         switch (p.type()) {
             case NTxNodeType.UNORDERED_LIST: {
                 List<NTxNode> children = p.children();
-                fillList(children, all, indent+1, false, parentString, f, ctx,ns);
+                fillList(children, all, indent + 1, false, parentString, f, ctx, ns);
                 break;
             }
             case NTxNodeType.ORDERED_LIST: {
                 ns = resolveNumberingStrategy(p, ordered, ctx);
                 List<NTxNode> children = p.children();
-                fillList(children, all, indent+1, true, parentString, f, ctx,ns);
+                fillList(children, all, indent + 1, true, parentString, f, ctx, ns);
                 break;
             }
             default: {
-                fillNonList(p, all, indent, ordered, parentString, index, f, ctx,ns);
+                fillNonList(p, all, indent, ordered, parentString, index, f, ctx, ns);
                 break;
             }
         }
     }
 
-    public static class NumberingStrategy{
-        boolean includeParent=false;
-        char mode='V';
-        public String eval(String parentString,int index,boolean format){
+    public static class NumberingStrategy {
+        boolean includeParent = false;
+        String mode = "V1a1";
+
+        public String eval(String parentString, int index, boolean format, int depth) {
             StringBuilder sb = new StringBuilder();
-            if(includeParent){
-                if(parentString.isEmpty()) {
+            if (includeParent) {
+                if (parentString.isEmpty()) {
                     sb.append(parentString);
                     sb.append(".");
                 }
             }
-            switch (mode){
-                case '1':{
+            String mode = this.mode;
+            if (mode == null || mode.length() == 0) {
+                mode = "V1a1";
+            }
+            char m;
+            if (depth <= 0) {
+                m = mode.charAt(0);
+            } else if (depth >= mode.length()) {
+                m = mode.charAt(mode.length() - 1);
+            } else {
+                m = mode.charAt(depth);
+            }
+            sb.append(aa(m, index));
+            if (format) {
+                sb.append(".");
+            }
+            return sb.toString();
+        }
+
+        private String aa(char mode, int index) {
+            StringBuilder sb = new StringBuilder();
+            switch (mode) {
+                case '1': {
                     sb.append(index);
                     break;
                 }
-                case 'a':{
-                    StringBuilder sb2=new StringBuilder();
-                    int a=index-1;
-                    while(true){
+                case 'a': {
+                    StringBuilder sb2 = new StringBuilder();
+                    int a = index - 1;
+                    while (true) {
                         int u = a / 26;
                         int v = a % 26;
-                        sb2.insert(0,(char)(v+'a'));
-                        if(u==0){
+                        sb2.insert(0, (char) (v + 'a'));
+                        if (u == 0) {
                             break;
                         }
-                        a=u;
+                        a = u;
                     }
                     sb.append(sb2);
                     break;
                 }
-                case 'A':{
-                    StringBuilder sb2=new StringBuilder();
-                    int a=index-1;
-                    while(true){
+                case 'A': {
+                    StringBuilder sb2 = new StringBuilder();
+                    int a = index - 1;
+                    while (true) {
                         int u = a / 26;
                         int v = a % 26;
-                        sb2.insert(0,(char)(v+'A'));
-                        if(u==0){
+                        sb2.insert(0, (char) (v + 'A'));
+                        if (u == 0) {
                             break;
                         }
-                        a=u;
+                        a = u;
                     }
                     sb.append(sb2);
                     break;
                 }
-                case 'V':{
+                case 'V': {
                     if (index > 3999) {
                         sb.append(index);
-                    }else {
+                    } else {
                         sb.append(intToRoman(index));
                     }
                     break;
                 }
-                default:{
+                default: {
                     sb.append(index);
                 }
-            }
-            if(format){
-                sb.append(".");
             }
             return sb.toString();
         }
@@ -268,8 +288,8 @@ public class NTxListHelper {
             throw new IllegalArgumentException("Number out of range (must be 1..3999)");
         }
 
-        int[] values =    {1000, 900, 500, 400, 100,  90,  50, 40, 10, 9,  5, 4, 1};
-        String[] symbols ={"M",  "CM","D", "CD","C","XC","L","XL","X","IX","V","IV","I"};
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
 
         StringBuilder result = new StringBuilder();
 
@@ -282,6 +302,7 @@ public class NTxListHelper {
 
         return result.toString();
     }
+
     public static class NodeWithIndent {
         public int indent;
         public NTxNode bullet;
