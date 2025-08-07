@@ -7,7 +7,7 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.engine.NTxEngineTools;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
-import net.thevpc.ntexup.engine.renderer.HSpiUtils;
+import net.thevpc.ntexup.engine.renderer.NTxSpiUtils;
 import net.thevpc.ntexup.engine.util.NTxUtilsImages;
 import net.thevpc.ntexup.engine.util.NTxUtilsPages;
 import net.thevpc.ntexup.engine.util.NTxUtilsPoints;
@@ -46,7 +46,7 @@ public class MyNTxEngineTools implements NTxEngineTools {
 
     @Override
     public NTxDocumentStreamRendererConfig validateDocumentStreamRendererConfig(NTxDocumentStreamRendererConfig config) {
-        return HSpiUtils.validateDocumentStreamRendererConfig(config);
+        return NTxSpiUtils.validateDocumentStreamRendererConfig(config);
     }
 
     public String trimBloc(String code) {
