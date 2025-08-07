@@ -1,4 +1,4 @@
-normal(title:"Shapes"){
+normal(title:"Shapes",variant:4){
     body{
         grid((6,3),columns-weight:[1,3]){
             styles:{
@@ -8,61 +8,61 @@ normal(title:"Shapes"){
                 }
             }
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 rectangle(at:center, size:(50,20), background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """ rectangle() """)
+            miniCodeNTexup( """ rectangle() """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 triangle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """ triangle() """)
+            miniCodeNTexup( """ triangle() """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 square(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """ square() """)
+            miniCodeNTexup( """ square() """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 rhombus(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 rhombus()
                 diamond()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 parallelogram(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 parallelogram()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 trapezoid(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 trapezoid()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 circle(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 circle()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 ellipse(at:center, size:(80,30), background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 ellipse(size:(80,30))
                 """)
 
