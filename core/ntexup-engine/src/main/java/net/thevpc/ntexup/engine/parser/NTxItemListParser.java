@@ -29,7 +29,7 @@ public class NTxItemListParser {
             {
                 NTxValue ee = NTxValue.of(ff);
                 for (NElement e : ee.args()) {
-                    NOptional<NTxProp[]> u = NTxStyleParser.parseStyle(e, f, context);
+                    NOptional<NTxProp[]> u = NTxStyleParser.parseStyle(e, context);
                     if (u.isPresent()) {
                         for (NTxProp s : u.get()) {
                             pg.add(s);
