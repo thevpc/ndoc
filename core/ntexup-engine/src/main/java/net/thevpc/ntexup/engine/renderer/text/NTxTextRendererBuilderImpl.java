@@ -42,7 +42,7 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
     }
 
     public void appendNText(String lang, String rawText, NText text, NTxNode node, NTxNodeRendererContext ctx) {
-        NutsHighlighterMapper.highlightNutsText(lang, rawText, text, node, ctx, this);
+        NTxHighlighterMapper.highlightNutsText(lang, rawText, text, node, ctx, this);
     }
 
     @Override
@@ -228,7 +228,6 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
                         options2.defaultFont = fontInfo;
                         options2.sr = textOptions.sr;
                         options2.resolveFont(rendererContext.graphics(),true);
-                        options2.sr = textOptions.sr;
                         int ascent = g.getFontMetrics(options2.getComputedFont()).getAscent();
                         g.drawString(
                                 col.text
