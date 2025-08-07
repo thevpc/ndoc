@@ -38,7 +38,7 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
                 }else  if(end==null){
                     end=vv.asDouble2().get();
                 }else{
-                    context.messages().log(NMsg.ofC("%s: unexpected point arg %s", name(), v));
+                    context.log().log(NMsg.ofC("%s: unexpected point arg %s", name(), v));
                 }
             }else {
                 NOptional<Color[]> c = vv.asColorArrayOrColor();
@@ -47,12 +47,12 @@ public class NTxFunctionLinearGradientColor implements NTxFunction {
                         colors.add(color);
                     }
                 }else{
-                    context.messages().log(NMsg.ofC("%s: unexpected point arg %s", name(), v));
+                    context.log().log(NMsg.ofC("%s: unexpected point arg %s", name(), v));
                 }
             }
         }
         if (colors.isEmpty()) {
-            context.messages().log(NMsg.ofC("%s: missing colors", name()));
+            context.log().log(NMsg.ofC("%s: missing colors", name()));
             return NElement.ofNull();
         }
         if (colors.size() == 1) {
