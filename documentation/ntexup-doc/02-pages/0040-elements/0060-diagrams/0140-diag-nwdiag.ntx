@@ -1,4 +1,4 @@
-normal(title:"Network Diagrams"){
+normal(title:"Network Diagrams",variant:7){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
@@ -10,7 +10,7 @@ normal(title:"Network Diagrams"){
 
             // Row 1
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 nwdiag(size:(100,50), at:center
                     """
                           // define group outside of network definitions
@@ -36,8 +36,7 @@ normal(title:"Network Diagrams"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  nwdiag(
                      """
@@ -64,12 +63,11 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
 
             // Row 2
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 nwdiag(size:(100,50), at:center
                     """
                         network Sample_front {
@@ -100,8 +98,7 @@ normal(title:"Network Diagrams"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  nwdiag(
                      """
@@ -133,7 +130,6 @@ normal(title:"Network Diagrams"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
         }
     }
