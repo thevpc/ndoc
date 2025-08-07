@@ -1,4 +1,4 @@
-normal(title:"Rationale"){
+agenda(title:"Rationale"){
     body{
         ul{
             ¶ Text-based, declarative, and intuitive syntax
