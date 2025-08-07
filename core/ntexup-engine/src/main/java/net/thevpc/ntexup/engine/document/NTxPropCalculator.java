@@ -12,7 +12,7 @@ public class NTxPropCalculator {
 
 
     public NOptional<NTxProp> computeProperty(NTxNode node, String[] propertyNames) {
-        return computePropertyMagnetude(node, propertyNames).map(NTxStyleAndMagnitude::getStyle);
+        return computePropertyMagnitude(node, propertyNames).map(NTxStyleAndMagnitude::getStyle);
     }
 
     private static class HStyleRuleResult2 {
@@ -72,7 +72,7 @@ public class NTxPropCalculator {
         return rr.toArray(new HStyleRuleResult2[0]);
     }
 
-    public NOptional<NTxStyleAndMagnitude> computePropertyMagnetude(NTxNode node, String[] propertyNames) {
+    public NOptional<NTxStyleAndMagnitude> computePropertyMagnitude(NTxNode node, String[] propertyNames) {
         propertyNames = NTxUtils.uids(propertyNames);
         NOptional<NTxProp> u = node.getProperty(propertyNames);
         if (u.isPresent()) {
@@ -122,7 +122,34 @@ public class NTxPropCalculator {
         return NOptional.ofNamedEmpty("no style : " + Arrays.asList(propertyNames));
     }
 
-    public List<NTxStyleAndMagnitude> computePropertiesMagnetude(NTxNode node) {
+    public List<NTxStyleRule> computeStyles(NTxNode node) {
+        List<NTxStyleRule> found = new ArrayList<>();
+        NTxNode p = NTxUtils.firstNodeUp(node.parent());
+        while (p != null) {
+            NTxStyleRule[] rules = p.rules();
+            for (NTxStyleRule rule : rules) {
+                if (rule.acceptNode(node)) {
+                    found.add(rule);
+                }
+            }
+            p = NTxUtils.firstNodeUp(p.parent());
+        }
+        return found;
+    }
+
+    public List<NTxStyleRule> computeDeclaredStyles(NTxNode node) {
+        List<NTxStyleRule> found = new ArrayList<>();
+        NTxNode p = NTxUtils.firstNodeUp(node.parent());
+        while (p != null) {
+            NTxStyleRule[] rules = p.rules();
+            for (NTxStyleRule rule : rules) {
+                found.add(rule);
+            }
+            p = NTxUtils.firstNodeUp(p.parent());
+        }
+        return found;
+    }
+    public List<NTxStyleAndMagnitude> computePropertiesMagnitude(NTxNode node) {
         Map<String, NTxStyleAndMagnitude> found = new LinkedHashMap<>();
         for (NTxProp property : node.getProperties()) {
             found.put(property.getName(),
@@ -150,11 +177,11 @@ public class NTxPropCalculator {
     }
 
     public List<NTxProp> computeProperties(NTxNode node) {
-        return computePropertiesMagnetude(node).stream().map(x -> x.getStyle()).collect(Collectors.toList());
+        return computePropertiesMagnitude(node).stream().map(x -> x.getStyle()).collect(Collectors.toList());
     }
 
     public List<NTxProp> computeInheritedProperties(NTxNode node) {
-        return computePropertiesMagnetude(node).stream()
+        return computePropertiesMagnitude(node).stream()
                 .filter(x -> x.getMagnetude().getDistance() > 0)
                 .map(x -> x.getStyle()).collect(Collectors.toList());
     }
