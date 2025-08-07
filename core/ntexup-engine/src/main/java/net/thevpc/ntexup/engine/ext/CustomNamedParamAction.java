@@ -5,6 +5,7 @@ import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.parser.NTxArgumentReader;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElementTypeGroup;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
@@ -99,6 +100,37 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
     }
 
     @Override
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesAny() {
+        return matches(new Predicate<NTxArgumentReader>() {
+            @Override
+            public boolean test(NTxArgumentReader info) {
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return "any";
+            }
+        });
+    }
+
+    @Override
+    public NTxNodeCustomBuilderContext.NamedParamAction matchesAnyNonPair() {
+        return matches(new Predicate<NTxArgumentReader>() {
+            @Override
+            public boolean test(NTxArgumentReader info) {
+                NElement x = info.peek();
+                return x.type() != NElementType.PAIR;
+            }
+
+            @Override
+            public String toString() {
+                return "any";
+            }
+        });
+    }
+
+    @Override
     public NTxNodeCustomBuilderContext.NamedParamAction matchesName() {
         return matches(new Predicate<NTxArgumentReader>() {
             @Override
@@ -140,7 +172,15 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
 
     @Override
     public NTxNodeCustomBuilderContext.NamedParamAction resolvedAsTrimmedBloc() {
-        return resolvedAs((uid, value, info, buildContext) -> NTxProp.ofString(uid, buildContext.engine().tools().trimBloc(value.asStringValue().orNull())));
+        return resolvedAs((uid, value, info, buildContext) -> {
+            if (value.isName()) {
+                return NTxProp.of(uid, value);
+            } else if (value.type().typeGroup() == NElementTypeGroup.STRING) {
+                return NTxProp.ofString(uid, buildContext.engine().tools().trimBloc(value.asStringValue().orNull()));
+            } else {
+                return NTxProp.of(uid, value);
+            }
+        });
     }
 
     @Override
@@ -148,9 +188,15 @@ class CustomNamedParamAction implements NTxNodeCustomBuilderContext.NamedParamAc
         return resolvedAs(new NTxNodeCustomBuilderContext.PropResolver() {
             @Override
             public NTxProp resolve(String uid, NElement value, NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
-                NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
-                info.parseContext().document().resources().add(nPath);
-                return NTxProp.ofString(uid, nPath.readString().trim());
+                if (value.isName()) {
+                    return NTxProp.of(uid, value);
+                } else if (value.type().typeGroup() == NElementTypeGroup.STRING) {
+                    NPath nPath = buildContext.engine().resolvePath(value.asString().get(), info.node());
+                    info.parseContext().document().resources().add(nPath);
+                    return NTxProp.ofString(uid, nPath.readString().trim());
+                } else {
+                    return NTxProp.of(uid, value);
+                }
             }
         });
     }
