@@ -8,7 +8,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NOptional;
 
 public interface NTxFunctionContext {
-    NTxLogger messages();
+    NTxLogger log();
     NTxEngine engine();
     NTxNode node();
     NElement eval(NElement expr);
