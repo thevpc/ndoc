@@ -1,4 +1,4 @@
-normal(title:"Rationale"){
+agenda(title:"Rationale"){
     body{
         ul{
             ¶ Uses TSON which is a derivative of JSON format but with more readability
@@ -7,6 +7,7 @@ normal(title:"Rationale"){
             ¶ Templatable : one can define his own components
             ¶ Themable : uses a CSS like styling
             ¶ Composable : you can combine multiple components to build reusable components
+            ¶ Portable: works across platforms and environments with minimal setup
         }
     }
     
