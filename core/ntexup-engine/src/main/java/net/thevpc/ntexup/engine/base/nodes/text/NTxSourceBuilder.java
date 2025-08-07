@@ -32,6 +32,7 @@ public class NTxSourceBuilder implements NTxNodeBuilder {
         NTexts ttt = NTexts.of();
         NElement lng = p.getPropertyValue(NTxPropName.LANG).orNull();
         String lang = NTxValue.of(lng).asString().orNull();
+        text=renderContext.engine().tools().trimBloc(text);
         NTextCode ncode = ttt.ofCode(lang, text);
         renderContext.highlightNutsText(lang, text, ncode, p, builder);
     }
