@@ -11,6 +11,7 @@ import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.NTxSizeRequirements;
@@ -19,6 +20,8 @@ import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.ntexup.api.util.NTxColors;
 import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.api.util.NtxFontInfo;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -41,8 +44,8 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
         builderContext.id(NTxNodeType.EQUATION)
                 .alias("equation")
                 .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                //.renderComponent(this::renderMain)
+                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .renderComponent(this::renderMain)
                 .renderText()
                 .buildText(this::buildText)
                 .parseTokens(this::parseTokens)
@@ -94,14 +97,14 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
 
 
     public void renderMain(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
-        String message = NTxValue.ofProp(p, NTxPropName.VALUE).asStringOrName().orNull();
-        if (message == null) {
-            message = "";
-        }
+        NElement vElemExpr = p.getPropertyValue(NTxPropName.VALUE).orNull();
+        NElement vElemValue = renderContext.engine().evalExpression(vElemExpr, p, renderContext.varProvider());
+        String text = NTxValue.of(vElemValue).asStringOrName().orElse("");
+
         NTxGraphics g = renderContext.graphics();
 
 
-        String tex = NStringUtils.trim(message);
+        String tex = NStringUtils.trim(renderContext.engine().tools().trimBloc(text));
         if (tex.isEmpty()) {
             NTxBounds2 selfBounds = renderContext.selfBounds(p);
             double x = selfBounds.getX();
@@ -121,8 +124,14 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
                 formula = new TeXFormula("?error?");
                 builderContext.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(p));
             }
-            float size = (float) (renderContext.getFontSize(p) /* * 0.43 */);
-            TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+
+            NTxTextOptions oo=new NTxTextOptions();
+            oo.defaultFont=NTxValueByName.getFontInfo(p, renderContext);
+            oo.sr=renderContext.sizeRef();
+            Font font = oo.resolveFont(g);
+
+
+            TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, font.getSize());
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
@@ -155,8 +164,15 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
                     NTxRichTextTokenType.IMAGE_PAINTER,
                     text
             );
-            double fontSize = renderContext.getFontSize(p);
-            r.imagePainter = this.createLatex(text, fontSize, options, p, renderContext);
+            options=options.copy();
+            if(options.defaultFont==null){
+                options.defaultFont=NTxValueByName.getFontInfo(p, renderContext);
+            }
+            if(options.sr==null){
+                options.sr=renderContext.sizeRef();
+            }
+            Font font = options.resolveFont(renderContext.graphics());
+            r.imagePainter = this.createLatex(text, font.getSize(), options, p, renderContext);
             NTxDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
