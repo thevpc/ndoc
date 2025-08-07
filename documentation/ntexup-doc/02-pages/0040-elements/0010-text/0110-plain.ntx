@@ -1,6 +1,6 @@
-normal(title:"Simple Text"){
+normal(title:"Simple Text",variant:3){
     body{
-        grid((4,2),columns-weight:[1,3]){
+        grid(4,2,columns-weight:[1,3]){
             styles:{
                 "*": {margin:2}
                 source:{
@@ -8,19 +8,18 @@ normal(title:"Simple Text"){
                 }
             }
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plain("Hello World",font-size:10)
             }
-            source(ntexup, """ plain("Hello World") """)
-
+            miniCodeNTexup( """ plain("Hello World") """)
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plain("Hello World",font-italic,font-size:10)
             }
-            source(ntexup, """ plain("Hello World",font-italic) """)
+            miniCodeNTexup(""" plain("Hello World",font-italic) """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plain(
                     "
                         Hello
@@ -28,17 +27,17 @@ normal(title:"Simple Text"){
                     "
                     ,font-bold,font-size:10)
             }
-            source(ntexup, """
-                            plain(
-                                     "
-                                         Hello
-                                         World
-                                     "
-                                 ,font-bold)
-                         """)
-
+            miniCodeNTexup("""
+                                plain(
+                                         "
+                                             Hello
+                                             World
+                                         "
+                                     ,font-bold)
+                             """
+            )
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 plain(
                     "
                         Hello  World
@@ -47,7 +46,7 @@ normal(title:"Simple Text"){
                        font-size:5
                     )
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                             plain(
                                      "
                                          Hello
@@ -55,7 +54,8 @@ normal(title:"Simple Text"){
                                      "
                                   font-family: monospaced
                                  )
-                         """)
+                         """
+            )
         }
     }
 
