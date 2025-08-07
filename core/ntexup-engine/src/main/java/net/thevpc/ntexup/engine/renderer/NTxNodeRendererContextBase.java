@@ -13,7 +13,7 @@ import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererManager;
-import net.thevpc.ntexup.engine.renderer.text.NutsHighlighterMapper;
+import net.thevpc.ntexup.engine.renderer.text.NTxHighlighterMapper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.util.NAssert;
@@ -106,7 +106,7 @@ public abstract class NTxNodeRendererContextBase extends NTxNodeRendererContextB
 
     @Override
     public void highlightNutsText(String lang, String rawText, NText parsedText, NTxNode p, NTxTextRendererBuilder result) {
-        NutsHighlighterMapper.highlightNutsText(lang, rawText, parsedText, p, this, result);
+        NTxHighlighterMapper.highlightNutsText(lang, rawText, parsedText, p, this, result);
     }
 
     @Override
