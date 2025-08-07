@@ -4,11 +4,8 @@ import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
 import net.thevpc.ntexup.api.document.elem2d.NTxSize;
 import net.thevpc.ntexup.api.eval.NTxFontBySizeResolver;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
-import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.ntexup.api.util.NtxFontInfo;
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NPrimitiveElement;
 import net.thevpc.nuts.util.NBlankable;
 
 import java.awt.*;
