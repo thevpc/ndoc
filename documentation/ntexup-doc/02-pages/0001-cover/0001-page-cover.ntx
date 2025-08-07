@@ -1,10 +1,13 @@
-cover{
-    @(title)       text("ntexup",font-size:15%P)
-    @(subtitle)    text("A declarative, text-based document
-    & presentation generator",font-size:7%P)
-    @(subsubtitle) text("Open Source")
-    @(author)      text("thevpc")
-    @(email)       text("https://github.com/thevpc/ntexup")
-    @(date)        text("2025-08-06")
-    @(version)     text("v0.8.6.0")
-}
+cover(
+    title       : ¶ ntexup
+    subtitle    : "
+      A declarative, text-based document
+             & presentation generator
+             "
+    subsubtitle :    ¶ Open Source
+    author      :    ¶ thevpc
+    email       :    ¶ https://github.com/thevpc/ntexup
+    date        :    ¶ 2025-08-06
+    version     :    ¶ v0.8.6.0
+    affiliation :    ""
+)
