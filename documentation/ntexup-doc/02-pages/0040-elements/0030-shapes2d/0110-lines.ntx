@@ -1,6 +1,6 @@
-normal(title:"Lines"){
+normal(title:"Lines",variant:5){
     body{
-        grid((4,2),columns-weight:[1,3]){
+        grid(4,2,columns-weight:[1,3]){
             styles:{
                 "*": {margin:2}
                 source:{
@@ -8,22 +8,22 @@ normal(title:"Lines"){
                 }
             }
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 line(from:(10,10), to:(80,90), color:red,stroke:3)
             }
-            source(ntexup, """ line(from:(0,0), to:(80,20)) """)
+            miniCodeNTexup( """ line(from:(0,0), to:(80,20)) """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 arc(from:30, to:180, color:red,stroke:3)
             }
-            source(ntexup, """ arc(from:30, to:180) """)
+            miniCodeNTexup( """ arc(from:30, to:180) """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 quad-curve(from:(10,10), to:(80,90), ctrl:(60,30), color:red,stroke:3)
             }
-            source(ntexup,
+            miniCodeNTexup(
                 """
                     quad-curve(
                         from:(10,10),
@@ -34,13 +34,13 @@ normal(title:"Lines"){
 
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 cubic-curve(from:(10,10), to:(80,90),
                     ctrl1:(60,30), ctrl2:(30,60),
                     color:red,
                     stroke:3)
             }
-            source(ntexup,
+            miniCodeNTexup(
                 """
                     cubic-curve(
                     from:(10,10),
