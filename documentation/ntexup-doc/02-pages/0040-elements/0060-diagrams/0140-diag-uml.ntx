@@ -1,4 +1,4 @@
-normal(title:"UML Use Case"){
+normal(title:"UML Use Case",variant:7){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
@@ -10,7 +10,7 @@ normal(title:"UML Use Case"){
 
             // Row 1
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 uml(at:center,size:(100,50)
                     """
                         left to right direction
@@ -27,8 +27,7 @@ normal(title:"UML Use Case"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  uml(
                      """
@@ -46,12 +45,11 @@ normal(title:"UML Use Case"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
 
             // Row 2
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 uml(at:center,size:(100,50)
                     """
                         [c]
@@ -71,8 +69,7 @@ normal(title:"UML Use Case"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  uml(
                      """
@@ -93,7 +90,6 @@ normal(title:"UML Use Case"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
         }
     }
