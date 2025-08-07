@@ -1,4 +1,4 @@
-normal(title:"UML Classes"){
+normal(title:"UML Classes",variant:7){
     body{
         grid((4,1),columns-weight:[2,3]){
             styles:{
@@ -10,7 +10,7 @@ normal(title:"UML Classes"){
 
             // Row 1
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 uml(at:center,size:(100,50)
                     """
                         Object <|-- ArrayList
@@ -23,7 +23,7 @@ normal(title:"UML Classes"){
                 )
             }
 
-            source(ntexup
+            miniCodeNTexup(
             ```
                  uml(
                      """
@@ -37,12 +37,11 @@ normal(title:"UML Classes"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
 
             // Row 2
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 uml(at:center,size:(100,50)
                     """
                         actor Bob #red
@@ -61,7 +60,7 @@ normal(title:"UML Classes"){
                 )
             }
 
-            source(ntexup
+            miniCodeNTexup(
             ```
                  uml(
                      """
@@ -81,7 +80,6 @@ normal(title:"UML Classes"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
         }
     }
