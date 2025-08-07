@@ -9,6 +9,7 @@ import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
 import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
 import net.thevpc.ntexup.api.util.NtxFontInfo;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 
@@ -29,7 +30,9 @@ public class NTxTextRendererBase extends NTxTextBaseRenderer {
             f = ctx.engine().textRendererFlavor("text").get();
         }
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String text = NTxValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orElse("");
+        NElement vElemExpr = p.getPropertyValue(NTxPropName.VALUE).orNull();
+        NElement vElemValue = ctx.engine().evalExpression(vElemExpr, p, ctx.varProvider());
+        String text = NTxValue.of(vElemValue).asStringOrName().orElse("");
         Paint fg = NTxValueByName.getForegroundColor(p, ctx, true);
         NtxFontInfo font = NTxValueByName.getFontInfo(p, ctx);
         if (font.baseFont == null && NBlankable.isBlank(font.family)) {
