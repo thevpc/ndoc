@@ -140,11 +140,52 @@ public class DefaultNTxNodeSelector implements NTxStyleRuleSelector {
         Set<String> all = new HashSet<>();
         while (n != null) {
             if (n instanceof NTxNode) {
-                all.addAll(((NTxNode)n).styleClasses());
+                all.addAll(((NTxNode) n).styleClasses());
             }
             n = n.parent();
         }
         return all;
+    }
+
+    public boolean isOne() {
+        int x = 0;
+        x += hasClasses() ? 1 : 0;
+        x = hasNames() ? 1 : 0;
+        x = hasTypes() ? 1 : 0;
+        return x == 1;
+    }
+
+    public boolean isAny() {
+        return names.isEmpty() && types.isEmpty() && classes.isEmpty();
+    }
+
+    public boolean isImportant() {
+        return important;
+    }
+
+
+    public boolean hasClasses() {
+        return !classes.isEmpty();
+    }
+
+    public boolean hasNames() {
+        return !names.isEmpty();
+    }
+
+    public boolean hasTypes() {
+        return !types.isEmpty();
+    }
+
+    public Set<String> getClasses() {
+        return Collections.unmodifiableSet(classes);
+    }
+
+    public Set<String> getNames() {
+        return Collections.unmodifiableSet(names);
+    }
+
+    public Set<String> getTypes() {
+        return Collections.unmodifiableSet(types);
     }
 
     @Override
