@@ -38,7 +38,7 @@ public class DefaultNTxFunctionContext implements NTxFunctionContext {
         return engine;
     }
 
-    public NTxLogger messages() {
+    public NTxLogger log() {
         return engine.log();
     }
 }
