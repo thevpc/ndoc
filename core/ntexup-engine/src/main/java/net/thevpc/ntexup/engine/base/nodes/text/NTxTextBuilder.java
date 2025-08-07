@@ -28,7 +28,7 @@ public class NTxTextBuilder implements NTxNodeBuilder {
                 .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
                 .parseDefaultParams()
-                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
                 .renderText().buildText(this::buildText).parseTokens(this::parseTokens)
         ;
     }
