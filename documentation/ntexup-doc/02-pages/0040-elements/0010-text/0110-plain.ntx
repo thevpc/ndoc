@@ -9,13 +9,13 @@ normal(title:"Simple Text"){
             }
             // Row
             group(background:white,draw-contour){
-                plain("Hello World")
+                plain("Hello World",font-size:10)
             }
             source(ntexup, """ plain("Hello World") """)
 
             // Row
             group(background:white,draw-contour){
-                plain("Hello World",font-italic)
+                plain("Hello World",font-italic,font-size:10)
             }
             source(ntexup, """ plain("Hello World",font-italic) """)
 
@@ -26,7 +26,7 @@ normal(title:"Simple Text"){
                         Hello
                         World
                     "
-                    ,font-bold)
+                    ,font-bold,font-size:10)
             }
             source(ntexup, """
                             plain(
@@ -44,7 +44,7 @@ normal(title:"Simple Text"){
                         Hello  World
                         This    Is    Me
                     ", font-family:monospaced,
-                       font-size:5%P
+                       font-size:5
                     )
             }
             source(ntexup, """
@@ -54,7 +54,6 @@ normal(title:"Simple Text"){
                                          World
                                      "
                                   font-family: monospaced
-                                  font-size: 5%P
                                  )
                          """)
         }
