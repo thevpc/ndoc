@@ -6,10 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.node.*;
+import net.thevpc.ntexup.api.document.style.DefaultNTxNodeSelector;
 import net.thevpc.ntexup.api.document.style.NTxProp;
+import net.thevpc.ntexup.api.document.style.NTxStyleAndMagnitude;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
 import net.thevpc.ntexup.api.eval.NTxVarProvider;
@@ -657,6 +661,26 @@ public class DefaultNTxEngine implements NTxEngine {
     @Override
     public List<NTxProp> computeInheritedProperties(NTxNode node) {
         return propCalculator.computeInheritedProperties(node);
+    }
+    @Override
+    public List<NTxStyleRule> computeStyles(NTxNode node) {
+        return propCalculator.computeStyles(node);
+    }
+
+    @Override
+    public List<NTxStyleRule> computeDeclaredStyles(NTxNode node) {
+        return propCalculator.computeDeclaredStyles(node);
+    }
+
+    @Override
+    public Set<String> computeDeclaredStylesClasses(NTxNode node) {
+        return computeDeclaredStyles(node).stream().flatMap(x -> {
+            if (x instanceof DefaultNTxNodeSelector) {
+                DefaultNTxNodeSelector y = (DefaultNTxNodeSelector) x;
+                return y.getClasses().stream();
+            }
+            return Stream.empty();
+        }).collect(Collectors.toSet());
     }
 
     @Override
