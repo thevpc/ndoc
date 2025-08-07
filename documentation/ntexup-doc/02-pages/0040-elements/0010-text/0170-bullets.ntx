@@ -41,12 +41,10 @@ normal(title:"Bullets"){
                 }
                 //rectangle(at:center, color:themeColors[2])
                 ul{
-                    col{
-                        ¶ Hello ##World##
-                        ul{
-                            ¶ Sub 1
-                            ¶ Sub 2
-                        }
+                    ¶ Hello ##World##
+                    ul{
+                        ¶ Sub 1
+                        ¶ Sub 2
                     }
                     ¶ Hello ###World###
                     ¶ Hello ####World####
@@ -54,12 +52,41 @@ normal(title:"Bullets"){
             }
             source(ntexup, """
                 ul{
-                    col{
-                        ¶ Hello ##World##
-                        ul{
-                            ¶ Sub 1
-                            ¶ Sub 2
-                        }
+                    ¶ Hello ##World##
+                    ul{
+                        ¶ Sub 1
+                        ¶ Sub 2
+                    }
+                    ¶ Hello ###World###
+                    ¶ Hello ####World####
+                }
+             """)
+
+            // Row
+            group(background:white,draw-contour){
+
+                styles:{
+                    "*" : {
+                        font-size:3%P
+                    }
+                }
+                //rectangle(at:center, color:themeColors[2])
+                ol{
+                    ¶ Hello ##World##
+                    ol{
+                        ¶ Sub 1
+                        ¶ Sub 2
+                    }
+                    ¶ Hello ###World###
+                    ¶ Hello ####World####
+                }
+            }
+            source(ntexup, """
+                ol{
+                    ¶ Hello ##World##
+                    ol{
+                        ¶ Sub 1
+                        ¶ Sub 2
                     }
                     ¶ Hello ###World###
                     ¶ Hello ####World####
