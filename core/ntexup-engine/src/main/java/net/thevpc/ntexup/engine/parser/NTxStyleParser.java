@@ -86,7 +86,7 @@ public class NTxStyleParser {
     }
 
 
-    public static NOptional<NTxStyleRuleSelector> parseStyleRuleSelector(NElement e, NTxDocumentFactory f, NTxNodeFactoryParseContext context) {
+    public static NOptional<NTxStyleRuleSelector> parseStyleRuleSelector(NElement e, NTxNodeFactoryParseContext context) {
         switch (e.type()) {
             case DOUBLE_QUOTED_STRING:
             case SINGLE_QUOTED_STRING:
@@ -219,7 +219,7 @@ public class NTxStyleParser {
     public static NOptional<NTxStyleRule[]> parseStyleRule(NElement e, NTxDocumentFactory f, NTxNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
-                NOptional<NTxStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), f, context);
+                NOptional<NTxStyleRuleSelector> r = parseStyleRuleSelector(e.asPair().get().key(), context);
                 if (!r.isPresent()) {
                     return NOptional.ofEmpty(r.getMessage());
                 }
@@ -232,9 +232,9 @@ public class NTxStyleParser {
                     {
                         List<NTxProp> styles = new ArrayList<>();
                         for (NElement el : v.toObject().get().children()) {
-                            NOptional<NTxProp[]> s = parseStyle(el, f, context);
+                            NOptional<NTxProp[]> s = parseStyle(el, context);
                             if (!s.isPresent()) {
-                                s = parseStyle(el, f, context);
+                                s = parseStyle(el, context);
                                 return NOptional.ofEmpty(s.getMessage());
                             }
                             styles.addAll(Arrays.asList(s.get()));
@@ -254,7 +254,7 @@ public class NTxStyleParser {
     }
 
 
-    public static NOptional<NTxProp[]> parseStyle(NElement e, NTxDocumentFactory f, NTxNodeFactoryParseContext context) {
+    public static NOptional<NTxProp[]> parseStyle(NElement e, NTxNodeFactoryParseContext context) {
         switch (e.type()) {
             case PAIR: {
                 NTxValue h = NTxValue.of(e.asPair().get().key());
