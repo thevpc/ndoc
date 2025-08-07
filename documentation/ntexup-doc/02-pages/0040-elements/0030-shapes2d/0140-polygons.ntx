@@ -1,4 +1,4 @@
-normal(title:"Polygons"){
+normal(title:"Polygons",variant:5){
     body{
         grid((6,3),columns-weight:[1,3]){
             styles:{
@@ -8,75 +8,75 @@ normal(title:"Polygons"){
                 }
             }
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 pentagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 pentagon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 hexagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 hexagon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 heptagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 heptagon()
                 """)
 
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 octagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 octagon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 nonagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 nonagon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 decagon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 decagon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 polygon(at:center, size:50, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 polygon()
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 polygon(at:center, size:50, count:8, background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 polygon(count:8)
                 """)
 
             // Row
-            group(background:white,draw-contour){
+            miniPage{
                 polygon(at:center, size:50, points:[(0,0),(50,0),(100,20),(80,80)], background:themeColors[4], color:themeColors[2])
             }
-            source(ntexup, """
+            miniCodeNTexup( """
                 polygon(points:[
                 (0,0),(50,0),
                 (100,80),(50,50)
