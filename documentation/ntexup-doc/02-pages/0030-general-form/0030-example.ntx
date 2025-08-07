@@ -9,14 +9,16 @@ normal(title:"More Elaborate Example"){
                     }
                 }
                 group{ // supports shapes
-                    rectangle(at:center,size:(90),
+                    rectangle(at:center,size:(80),
                         background:yellow,
                         color:red,
                         stroke:4
                     )
-                    ul(origin:left, position:(20,50)){
-                        "Item 1"
-                        "Item 2"
+                    group(size:50,at:center){
+                        ul{
+                            "Item 1"
+                            "Item 2"
+                        }
                     }
                 }
                 plot2d(xmin:-5 , xmax: 5){
@@ -27,7 +29,7 @@ normal(title:"More Elaborate Example"){
                     }
                 }
                 // supports LATEX
-                eq("f_1(x)=\int_x \sin(x^2)",font-size:5%P)
+                eq("f_1(x)=\int_x \sin(x^2)",font-size:8%P)
                 uml(// supports PLANTUML
                     """
                         left to right direction
