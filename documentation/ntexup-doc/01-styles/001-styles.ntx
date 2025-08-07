@@ -1,6 +1,24 @@
 include(
     eitherPath(
-        "$HOME/xprojects/nuts-world/nuts-productivity/ntexup-templates/main/default/v1.0/dist"
-        "github://thevpc/ntexup-templates/main/default/v1.0/dist"
+        "$HOME/xprojects/nuts-world/nuts-productivity/ntexup-templates/main/${themeName}/v1.0/dist"
+        "github://thevpc/ntexup-templates/main/${themeName}/v1.0/dist"
     )
 )
+
+@define miniPage{
+    group(background:white,draw-contour){
+        componentBody
+    }
+}
+
+@define miniCode{
+    group(background:Gray89,draw-contour,margin:5){
+        componentBody
+    }
+}
+
+@define miniCodeNTexup(code){
+    group(background:Gray89,draw-contour,margin:5){
+        source(ntexup, code)
+    }
+}
