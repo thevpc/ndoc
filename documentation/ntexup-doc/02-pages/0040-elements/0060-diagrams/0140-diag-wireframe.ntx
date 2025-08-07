@@ -1,6 +1,6 @@
-normal(title:"Wireframe Diagrams"){
+normal(title:"Wireframe Diagrams",variant:7){
     body{
-        grid((4,1),columns-weight:[2,3]){
+        grid((4,2),columns-weight:[2,3]){
             styles:{
                 "*": {margin:2}
                 source:{
@@ -10,7 +10,7 @@ normal(title:"Wireframe Diagrams"){
 
             // Row 1
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 wireframe(size:(90,30),at:center
                     """
                         {+
@@ -22,8 +22,9 @@ normal(title:"Wireframe Diagrams"){
                 )
             }
 
-            source(ntexup
-            ```
+            miniCodeNTexup(
+             code:
+             ```
                  wireframe(
                      """
                         Login    | "MyName   "
@@ -33,12 +34,13 @@ normal(title:"Wireframe Diagrams"){
                  )
 
              ```
-             at:left, font-size:3%P
+              rowspan:2
+
              )
 
             // Row 2
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 wireframe(size:(90,30),at:center
                     """
                         {+
@@ -55,10 +57,11 @@ normal(title:"Wireframe Diagrams"){
                 )
             }
 
-            source(ntexup
-            ```
+            miniCodeNTexup(
+                code:
+                ```
                  wireframe(
-                     """
+                    """
                         {+
                         {/ <b>General | Fullscreen | Behavior | Saving }
                         {
@@ -72,8 +75,8 @@ normal(title:"Wireframe Diagrams"){
                      """
                  )
 
-             ```
-             at:left, font-size:3%P
+                ```
+                     rowspan:2
              )
         }
     }
