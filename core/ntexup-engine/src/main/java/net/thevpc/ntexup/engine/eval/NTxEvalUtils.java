@@ -1,0 +1,166 @@
+package net.thevpc.ntexup.engine.eval;
+
+import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.reflect.NReflectUtils;
+
+import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.List;
+
+public class NTxEvalUtils {
+
+    public static NElement simplify(NElement e) {
+        e= NTxUtils.removeCompilerDeclarationPathAnnotations(e);
+        return simplifyPars(e);
+    }
+
+    public static NElement simplifyPars(NElement e) {
+        if (e.isUplet()) {
+            NUpletElement u = e.asUplet().get();
+            if (u.params().size() == 1) {
+                return simplifyPars(u.params().get(0));
+            }
+        }
+        return e;
+    }
+
+    public static NElement substruct(NElement a, NElement b) {
+        NElement aa = simplify(a);
+        NElement bb = simplify(b);
+        if (aa.isNumber() && bb.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            Number nb = bb.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.substructNumbers(na, nb));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_MINUS, aa, bb));
+    }
+
+    public static NElement remainder(NElement a, NElement b) {
+        NElement aa = simplify(a);
+        NElement bb = simplify(b);
+        if (aa.isNumber() && bb.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            Number nb = bb.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.reminderNumbers(na, nb));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_REM, aa, bb));
+    }
+    public static NElement remainder2(NElement a, NElement b) {
+        NElement a1 = NTxEvalUtils.simplify(a);
+        NElement b1 = NTxEvalUtils.simplify(b);
+        Number n1 = NTxValue.of(a1).asNumber().orNull();
+        Number n2 = NTxValue.of(b1).asNumber().orNull();
+        if (n1 != null && n2 != null) {
+            try {
+                Number r = NReflectUtils.reminderNumbers(n1, n2);
+                return NElement.ofNumber(r);
+            } catch (Exception ex) {
+                //
+            }
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_REM, a1, b1));
+    }
+
+    public static NElement negate(NElement a) {
+        NElement aa = simplify(a);
+        if (aa.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.negateNumber(na));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_MINUS, aa));
+    }
+
+    public static NElement inv(NElement a, MathContext mc) {
+        NElement aa = simplify(a);
+        if (aa.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.invNumber(na, mc));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_DIV, aa));
+    }
+
+    public static NElement add(NElement a, NElement b) {
+        NElement aa = simplify(a);
+        NElement bb = simplify(b);
+        if (aa.isNumber() && bb.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            Number nb = bb.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.addNumbers(na, nb));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_PLUS, aa, bb));
+    }
+
+    public static NElement div(NElement a, NElement b, MathContext mc) {
+        NElement aa = simplify(a);
+        NElement bb = simplify(b);
+        if (aa.isNumber() && bb.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            Number nb = bb.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.divideNumbers(na, nb, mc));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_DIV, aa, bb));
+    }
+
+    public static NElement mul(NElement a, NElement b, MathContext mc) {
+        NElement aa = simplify(a);
+        NElement bb = simplify(b);
+        if (aa.isNumber() && bb.isNumber()) {
+            Number na = aa.asNumberValue().get();
+            Number nb = bb.asNumberValue().get();
+            return NElement.ofNumber(NReflectUtils.multiplyNumbers(na, nb, mc));
+        }
+        return NElement.ofUplet(NElement.ofOp(NElementType.OP_MUL, aa, bb));
+    }
+
+    public static int compareNumbers(Number a, Number b) {
+        return NReflectUtils.compareNumbers(a, b);
+    }
+
+    public static Number reminderNumbers(Number a, Number b) {
+        return NReflectUtils.reminderNumbers(a, b);
+    }
+    public static Number addNumbers(Number a, Number b) {
+        return NReflectUtils.addNumbers(a, b);
+    }
+
+    public static NElement[] evalInterval(NElement f, NElement s) {
+        f=simplify(f);
+        s=simplify(s);
+        if (f.isNumber() && s.isNumber()) {
+            NElementType ct = NElements.of().commonNumberType(f.type(), s.type());
+            if (ct.isAnyNumber()) {
+                Number fn = f.asNumberType(ct).get().asNumberValue().get();
+                Number sn = s.asNumberType(ct).get().asNumberValue().get();
+                int u = NTxEvalUtils.compareNumbers(fn, sn);
+                List<NElement> all = new ArrayList<>();
+                if (u == 0) {
+                    all.add(NElement.ofNumber(fn));
+                } else if (u < 0) {
+                    Number i = fn;
+                    while (NTxEvalUtils.compareNumbers(i, sn) <= 0) {
+                        all.add(NElement.ofNumber(i));
+                        i = NReflectUtils.addNumbers(i, (byte) 1);
+                    }
+                } else if (u > 0) {
+                    Number i = fn;
+                    while (NTxEvalUtils.compareNumbers(i, sn) >= 0) {
+                        all.add(NElement.ofNumber(i));
+                        i = NReflectUtils.addNumbers(i, (byte) -1);
+                    }
+                }
+                return all.toArray(new NElement[0]);
+            }
+        }
+        return null;
+    }
+
+
+    public static NElement eq(NElement a, NElement b) {
+        NElement a1 = NTxEvalUtils.simplify(a);
+        NElement b1 = NTxEvalUtils.simplify(b);
+        return NElement.ofBoolean(a1.equals(b1));
+    }
+}
