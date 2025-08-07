@@ -1,6 +1,6 @@
-normal(title:"Source Code"){
+normal(title:"Source Code",variant:3){
     body{
-        grid((4,2),columns-weight:[1,3]){
+        grid(4,2,columns-weight:[1,3]){
             styles:{
                 "*": {margin:2}
                 source:{
@@ -9,9 +9,8 @@ normal(title:"Source Code"){
             }
 
             // Row
-            grid((1,2),background:white,draw-contour){
-                source(
-                    java
+            grid(1,2,background:white,draw-contour){
+                source(java
                     """
                         public static class
                         MyClass{
@@ -25,10 +24,9 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(ntexup,
+            miniCodeNTexup(
                 ```
-                    source(
-                    java
+                    source(java
                     """
                         public static class
                         MyClass{
@@ -40,16 +38,14 @@ normal(title:"Source Code"){
                     """
                     )
                 ```
-                    font-size:3%P,
                 )
 
             // Row
-            grid((1,2),background:white,draw-contour){
+            grid(1,2,background:white,draw-contour){
                 styles:{
                     "*":{font-size:5%P}
                 }
-                source(
-                    sql
+                source(sql
                     """
                         Select *
                         From Tab
@@ -59,10 +55,9 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(ntexup,
+            miniCodeNTexup(
                 ```
-                    source(
-                    sql
+                    source(sql
                     """
                         Select *
                         From Tab
@@ -70,16 +65,14 @@ normal(title:"Source Code"){
                     """
                     )
                 ```
-                    font-size:3%P,
                 )
 
             // Row
-            grid((1,2),background:white,draw-contour){
+            grid(1,2,background:white,draw-contour){
                 styles:{
                     "*":{font-size:5%P}
                 }
-                source(
-                    xml
+                source(xml
                     """
                         <a value="text">
                           <b value="text"></b>
@@ -89,10 +82,9 @@ normal(title:"Source Code"){
                     font-family:Monospaced
                 )
             }
-            source(ntexup,
+            miniCodeNTexup(
                 ```
-                    source(
-                    xml
+                    source(xml
                     """
                         <a value="text">
                           <b value="text"></b>
@@ -100,15 +92,13 @@ normal(title:"Source Code"){
                     """
                     )
                 ```
-                    font-size:3%P,
                 )
 
-            grid((1,2),background:white,draw-contour){
+            grid(1,2,background:white,draw-contour){
                 styles:{
                     "*":{font-size:10%P}
                 }
-                source(
-                    text
+                source(text
                     """
                         text, java,
                         c#, c++
