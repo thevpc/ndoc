@@ -1,4 +1,4 @@
-normal(title:"Gantt Diagrams"){
+normal(title:"Gantt Diagrams",variant:7){
     body{
         grid((2,2),columns-weight:[2,3]){
             styles:{
@@ -9,7 +9,7 @@ normal(title:"Gantt Diagrams"){
             }
             // Row 1
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 gantt( size:(95,70), at:center
                     """
                         [Task1] requires 4 days
@@ -26,8 +26,7 @@ normal(title:"Gantt Diagrams"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  gantt(
                      """
@@ -45,12 +44,11 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
 
             // Row 2
             // ---------------------------------------------
-            group(background:white,draw-contour){
+            miniPage{
                 gantt(size:(95,40), at:center
                     """
                         [Prototype design] requires 13 days
@@ -62,8 +60,7 @@ normal(title:"Gantt Diagrams"){
                 )
             }
 
-            source(
-            ntexup,
+            miniCodeNTexup(
             ```
                  gantt(
                      """
@@ -76,7 +73,6 @@ normal(title:"Gantt Diagrams"){
                  )
 
              ```
-             at:left, font-size:3%P
              )
         }
     }
