@@ -452,8 +452,8 @@ public class NTxGraphicsImpl implements NTxGraphics {
     @Override
     public void drawRect(NTxBounds2 a) {
         drawRect(
-                NTxUtils.doubleOf(a.getMinX()), NTxUtils.intOf(a.getMinY()),
-                NTxUtils.intOf(a.getWidth()), NTxUtils.intOf(a.getHeight())
+                NTxUtils.doubleOf(a.getMinX()), NTxUtils.doubleOf(a.getMinY()),
+                NTxUtils.doubleOf(a.getWidth()), NTxUtils.doubleOf(a.getHeight())
         );
     }
 
