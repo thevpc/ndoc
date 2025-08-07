@@ -11,6 +11,7 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
@@ -20,6 +21,7 @@ import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.api.util.NtxFontInfo;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
@@ -93,6 +95,8 @@ public class NTxImageBuilder implements NTxNodeBuilder {
                 } else {
                     int descent = g.getFontMetrics().getAscent();
                     NTxTextOptions nTxTextOptions = new NTxTextOptions();
+                    NtxFontInfo fontInfo = NTxValueByName.getFontInfo(p, rendererContext);
+                    nTxTextOptions.defaultFont=fontInfo;
                     nTxTextOptions.sr=rendererContext.sizeRef();
                     g.drawString("Image not found "+imgPath, x, y+descent, nTxTextOptions.setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(NTxSize.ofPx(8.0f)));
                     NTxSource src = NTxUtils.sourceOf(p);
