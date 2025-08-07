@@ -4,13 +4,12 @@ import net.thevpc.ntexup.api.extension.NTxFunction;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.eval.NTxFunctionArgs;
 import net.thevpc.ntexup.api.eval.NTxFunctionContext;
+import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.eval.NTxGitHelper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NBlankable;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.thevpc.nuts.util.NMsg;
 
 public class NTxFunctionEitherPath implements NTxFunction {
     @Override
@@ -20,19 +19,18 @@ public class NTxFunctionEitherPath implements NTxFunction {
 
     @Override
     public NElement invoke(NTxFunctionArgs args, NTxFunctionContext context) {
-        List<NElement> possibilities = new ArrayList<>();
         for (NTxFunctionArg arg : args.args()) {
             NElement u = arg.eval();
-            possibilities.add(u);
             if (!NBlankable.isBlank(u)) {
                 String sp = u.asStringValue().orNull();
                 if (!NBlankable.isBlank(u)) {
                     if (NTxGitHelper.isGithubFolder(sp)) {
                         try {
-                            NPath pp = NTxGitHelper.resolveGithubPath(sp, context.messages());
+                            NPath pp = NTxGitHelper.resolveGithubPath(sp, context.log());
                             return NElement.ofString(pp.toString());
                         } catch (Exception ex) {
                             //just ignore
+                            context.log().log(NMsg.ofC("include git folder not found, ignored %s : %s", NMsg.ofStyledPath(sp),ex).asSevere(), NTxUtils.sourceOf(context.node()));
                         }
                     } else {
                         NPath p = NPath.of(sp);
@@ -46,18 +44,10 @@ public class NTxFunctionEitherPath implements NTxFunction {
                                 return u;
                             }
                         }
+                        context.log().log(NMsg.ofC("include folder not found, ignored %s", p).asSevere(), NTxUtils.sourceOf(context.node()));
                     }
-                    return u;
                 }
             }
-        }
-        for (NElement u : possibilities) {
-            if (!NBlankable.isBlank(u)) {
-                return u;
-            }
-        }
-        for (NElement u : possibilities) {
-            return u;
         }
         return NElement.ofNull();
     }
