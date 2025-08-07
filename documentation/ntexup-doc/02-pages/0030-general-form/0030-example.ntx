@@ -1,8 +1,10 @@
-normal(title:"More Elaborate Example"){
+normal(title:"More Elaborate Example",variant:2){
     body{
-        grid((2,1)){
-            source(ntexup,file:"0030-example.tson", position: (2,2),font-size:2%P)
-            grid((2,2),draw-contour,background:white){
+        grid(2,1){
+            miniCode{
+                source(ntexup,file:"0030-example.tson", position: (2,2),font-size:2%P)
+            }
+            grid(2,2,draw-contour,background:white){
                 styles:{
                     "*":{
                         margin:5
