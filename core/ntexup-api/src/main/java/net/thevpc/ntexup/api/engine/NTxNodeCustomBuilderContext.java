@@ -100,6 +100,9 @@ public interface NTxNodeCustomBuilderContext {
 
         NamedParamAction matchesStringOrName();
 
+        NamedParamAction matchesAny();
+        NamedParamAction matchesAnyNonPair();
+
         NamedParamAction store(String newName);
 
 
