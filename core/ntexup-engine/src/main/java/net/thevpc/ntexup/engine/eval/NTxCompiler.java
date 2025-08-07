@@ -407,7 +407,8 @@ public class NTxCompiler {
         } else {
             NMsg errMsg = NMsg.ofC("cannot mix named and non named params in %s", callArgs.stream().map(x-> NTxUtils.snippet(x)).collect(Collectors.toList()));
             engine.log().log(errMsg, c.source());
-            throw new NIllegalArgumentException(errMsg);
+            List<NTxItem> result = new ArrayList<>();
+            return result;
         }
 
         NTxNode[] body = Arrays.copyOf(d.body(), d.body().length);
