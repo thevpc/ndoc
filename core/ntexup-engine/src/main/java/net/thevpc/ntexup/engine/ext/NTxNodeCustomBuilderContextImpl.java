@@ -150,7 +150,6 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         requireNonCompiled();
         this.renderMainAction = e;
         if (renderMainAction != null) {
-            this.renderTextAction = null;
             this.renderConvertAction = null;
         }
         return this;
@@ -160,7 +159,6 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
     public RenderTextAction renderText() {
         this.renderTextAction = new MyRenderTextAction(this);
         this.renderConvertAction = null;
-        this.renderMainAction = null;
         return this.renderTextAction;
     }
 
@@ -282,10 +280,10 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         if (createdRenderer == null) {
             if (renderConvertAction != null) {
                 createdRenderer = new NTxNodeRendererAsConverter(this);
+            } else if(renderMainAction != null) {
+                createdRenderer = new NTxNodeRendererAsDefault(this);
             } else if (renderTextAction != null) {
                 createdRenderer = new NTxNodeRendererAsText(this);
-            } else {
-                createdRenderer = new NTxNodeRendererAsDefault(this);
             }
         }
         return createdRenderer;
