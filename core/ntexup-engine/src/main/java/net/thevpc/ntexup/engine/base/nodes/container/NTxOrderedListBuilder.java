@@ -4,18 +4,15 @@
  */
 package net.thevpc.ntexup.engine.base.nodes.container;
 
-import net.thevpc.ntexup.api.document.NTxDocumentFactory;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
-import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.nuts.elem.NElement;
+import net.thevpc.ntexup.engine.base.nodes.container.util.NTxListHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,24 +24,32 @@ public class NTxOrderedListBuilder implements NTxNodeBuilder {
     public void build(NTxNodeCustomBuilderContext builderContext) {
         builderContext.id(NTxNodeType.ORDERED_LIST)
                 .alias("ol")
-                .renderConvert(this::convert)
+                .selfBounds(this::selfBounds)
+                .renderComponent(this::renderMain)
                 ;
     }
 
-    private NTxNode convert(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext){
+    public NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
         ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxDocumentFactory f = ctx.documentFactory();
-        List<NTxNode> all = new ArrayList<>();
-        for (NTxNode child : p.children()) {
-            all.add(f.of(NTxNodeType.SPHERE).addStyleClasses("ol-bullet"));
-            all.add(child.addStyleClasses("ol-item"));
+        List<NTxListHelper.NodeWithIndent> all = NTxListHelper.build(p, true,ctx, builderContext);
+        NTxBounds2 expectedBounds = ctx.defaultSelfBounds(p);
+        for (NTxListHelper.NodeWithIndent a : all) {
+            expectedBounds.expand(a.rowBounds);
         }
-        return f.ofGrid().addChildren(all.toArray(new NTxNode[0]))
-                .setProperty(NTxPropName.COLUMNS, NElement.ofInt(2))
-                .setProperty(NTxPropName.ROWS, NElement.ofInt(2))
-                .setProperty(NTxPropName.COLUMNS_WEIGHT, NElement.ofDoubleArray(1, 20))
-                .setProperties(p.props().toArray(new NTxProp[0]))
-                ;
+        return expectedBounds;
+    }
+
+    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
+        ctx = ctx.withDefaultStyles(p, defaultStyles);
+        //NTxBounds2 expectedBounds = ctx.selfBounds(p);
+        List<NTxListHelper.NodeWithIndent> all = NTxListHelper.build(p,true, ctx, builderContext);
+        for (int i = 0; i < all.size(); i++) {
+            NTxListHelper.NodeWithIndent a = all.get(i);
+            NTxNodeRendererContext c = ctx.withBounds(a.bullet, a.bulletBounds);
+            c.render(a.bullet);
+            c = ctx.withBounds(a.child, a.childBounds);
+            c.render(a.child);
+        }
     }
 
 }
