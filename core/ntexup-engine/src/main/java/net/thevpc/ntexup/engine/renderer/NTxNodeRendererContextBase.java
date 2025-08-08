@@ -171,7 +171,7 @@ public abstract class NTxNodeRendererContextBase extends NTxNodeRendererContextB
 
     @Override
     public void render(NTxNode p, NTxNodeRendererContext ctx) {
-        NOptional<NTxNodeRenderer> renderer = manager().getRenderer(p.type());
+        NOptional<NTxNodeRenderer> renderer = engine().getRenderer(p.type());
         if (renderer.isPresent()) {
             renderer.get().render(p, ctx);
         } else {
@@ -182,11 +182,6 @@ public abstract class NTxNodeRendererContextBase extends NTxNodeRendererContextB
     @Override
     public List<NTxProp> computeProperties(NTxNode t) {
         return engine().computeProperties(t);
-    }
-
-    @Override
-    public NTxNodeRendererManager manager() {
-        return engine().renderManager();
     }
 
     @Override
