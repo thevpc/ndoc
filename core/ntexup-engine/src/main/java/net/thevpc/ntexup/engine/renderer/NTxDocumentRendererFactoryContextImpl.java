@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.engine.renderer;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.ntexup.api.renderer.NTxDocumentRendererFactoryContext;
 import net.thevpc.nuts.util.NStringUtils;
 
