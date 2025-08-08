@@ -8,7 +8,7 @@ import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProps;
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
 
