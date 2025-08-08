@@ -33,4 +33,5 @@ public interface NTxDocument {
     NTxDocument copy();
 
     List<NTxNode> pages();
+
 }
