@@ -130,4 +130,5 @@ public class DefaultNTxDocument implements NTxDocument, Cloneable {
     public List<NTxNode> pages() {
         return NTxUtilsPages.resolvePages(this);
     }
+
 }
