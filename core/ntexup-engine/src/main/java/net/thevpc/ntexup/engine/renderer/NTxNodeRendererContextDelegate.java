@@ -68,11 +68,6 @@ public class NTxNodeRendererContextDelegate extends NTxNodeRendererContextBaseBa
     }
 
     @Override
-    public NTxNodeRendererManager manager() {
-        return base.manager();
-    }
-
-    @Override
     public NTxNodeRendererContext withDefaultStyles(NTxNode node, NTxProperties defaultStyles) {
         return new NTxNodeRendererContextDelegate(node, base, bounds, defaultStyles == null ? this.defaultStyles : defaultStyles, dry, graphics);
     }
