@@ -51,6 +51,10 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         this.engine = engine;
     }
 
+    public NTxNodeBuilder builder() {
+        return builder;
+    }
+
     @Override
     public NTxNodeCustomBuilderContext sizeRequirements(SizeRequirementsAction e) {
         this.sizeRequirementsAction = e;
@@ -105,6 +109,18 @@ public class NTxNodeCustomBuilderContextImpl implements NTxNodeCustomBuilderCont
         return this;
     }
 
+    @Override
+    public String[] aliases() {
+        LinkedHashSet<String> s = new LinkedHashSet<>();
+        if (aliases != null) {
+            for (String a : aliases) {
+                if (!NBlankable.isBlank(a)) {
+                    s.add(a);
+                }
+            }
+        }
+        return s.toArray(new String[0]);
+    }
     @Override
     public String[] idAndAliases() {
         LinkedHashSet<String> s = new LinkedHashSet<>();
