@@ -14,7 +14,11 @@ public class NTxViewerProcessor {
         MainFrame mainFrame = new MainFrame();
         SwingUtilities.invokeLater(() -> {
             mainFrame.setVisible(true);
-            if (options.reopen) {
+            if (options.action==Action.DUMP) {
+
+            }else if (options.action==Action.DOC) {
+                options.paths.add(NPath.of("github://thevpc/ntexup-doc-slides/"));
+            }else if (options.reopen) {
                 NPath p = mainFrame.getService().getLatestProjectPath();
                 if (p != null) {
                     options.paths.add(p);
