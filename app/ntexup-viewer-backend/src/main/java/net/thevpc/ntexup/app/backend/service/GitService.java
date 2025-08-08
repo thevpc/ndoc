@@ -90,7 +90,7 @@ public class GitService {
     }
 
     public byte[] createPageImage(NTxNode page, int width, int height) throws IOException {
-        return engine.renderManager().renderImageBytes(
+        return engine.renderImageBytes(
                 page,
                 new NTxNodeRendererConfig((int) width, (int) height)
                         .withAnimate(false)
