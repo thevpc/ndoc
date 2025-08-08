@@ -1,43 +1,33 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxNodeRenderer;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.NTxNodeRendererManager;
-import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.UUID;
 
 public class PageView extends JComponent {
     public static Dimension REF_SIZE = new Dimension(1024, 768);
-    private NTxNode page0;
-    private NTxNode page;
+    private NTxCompiledPage page;
     private long pageStartTime;
-    private int index;
     private String uuid;
-    private NTxNodeRendererManager rendererManager;
     private NTxEngine engine;
-    private NTxDocument document;
+    private NTxCompiledDocument document;
 
     public PageView(
-            NTxDocument document,
-            NTxNode page, int index,
-            NTxEngine engine,
-            NTxNodeRendererManager rendererManager
+            NTxCompiledDocument document,
+            NTxCompiledPage page,
+            NTxEngine engine
     ) {
         this.document = document;
-        this.page0 = page;
-        this.index = index;
+        this.page = page;
         this.uuid = UUID.randomUUID().toString();
-        this.rendererManager = rendererManager;
         this.engine = engine;
 
     }
@@ -55,7 +45,7 @@ public class PageView extends JComponent {
     }
 
     public int index() {
-        return index;
+        return page.index();
     }
 
     void onHide() {
@@ -63,18 +53,12 @@ public class PageView extends JComponent {
     }
 
     synchronized void onShow() {
-        if (page == null) {
-            NChronometer c = NChronometer.startNow();
-            List<NTxNode> all = engine().compilePageNode(this.page0, document);
-            this.page = NOptional.ofSingleton(all).get();
-            c.stop();
-            engine.log().log(NMsg.ofC("page %s compiled in %s", (index + 1), c), NTxUtils.sourceOf(this.page0));
-        }
+        page.compiledPage();
         this.pageStartTime = System.currentTimeMillis();
     }
 
     public boolean isLoading() {
-        return page == null;
+        return !page.isCompiled() || !document.isCompiled();
     }
 
     @Override
@@ -94,8 +78,10 @@ public class PageView extends JComponent {
         NTxNodeRendererContext ctx = new ScreenNTxPartRendererContext(this,
                 engine.createGraphics(g2d)
                 , size, pageStartTime);
-        if (page != null) {
-            render(page, ctx);
+        if (page.isCompiled()) {
+            NTxNode p = page.compiledPage();
+            NTxNodeRenderer r = engine.getRenderer(p.type()).get();
+            r.render(p, ctx);
         }
         c.stop();
         //System.out.println("NChronometer::paintComponent "+c);
@@ -103,15 +89,14 @@ public class PageView extends JComponent {
 
 
     public void render(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxNodeRenderer r = rendererManager.getRenderer(p.type()).get();
-        r.render(p, ctx);
+
     }
 
-    public NTxNodeRendererManager rendererManager() {
-        return rendererManager;
+    public Object source() {
+        return page.source();
     }
 
-    public NTxNode getPage() {
+    public NTxCompiledPage page() {
         return page;
     }
 }
