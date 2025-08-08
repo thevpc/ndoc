@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.main.components;
 
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
-import net.thevpc.ntexup.engine.templates.NTxTemplateInfoImpl;
+import net.thevpc.ntexup.engine.impl.NTxTemplateInfoImpl;
 import net.thevpc.ntexup.main.NTxUIHelper;
 import net.thevpc.ntexup.main.NTxServiceHelper;
 
@@ -54,7 +54,7 @@ public class NewProjectPropsPanel extends JPanel {
             return new NTxTemplateInfoImpl(
                     ss,
                     ss, false, null, null,
-                    ss
+                    ss,new String[0]
             );
         }
         return (NTxTemplateInfo) s;
