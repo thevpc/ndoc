@@ -168,7 +168,7 @@ public class NTxGridRendererHelper {
             NTxNode cc = children.get(i);
             NTxNodeGridBagLayout.NTxNodeGridNode n = new NTxNodeGridBagLayout.NTxNodeGridNode(cc);
             n.index = i;
-            NTxSizeRequirements NTxSizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
+            NTxSizeRequirements NTxSizeRequirements = ctx.engine().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
             n.setMinimumSize(new NTxSizeD(NTxSizeRequirements.minX, NTxSizeRequirements.minY));
             n.setPreferredSize(new NTxSizeD(NTxSizeRequirements.preferredX,  NTxSizeRequirements.preferredY));
             int colSpan = ctx.getColSpan(cc);
@@ -240,7 +240,7 @@ public class NTxGridRendererHelper {
             if (e.rowspan > minRows) {
                 minRows = e.rowspan;
             }
-            e.sizeRequirements = ctx.manager().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
+            e.sizeRequirements = ctx.engine().getRenderer(cc.type()).get().sizeRequirements(cc, ctx);
             e.index = i;
             effPositions.add(e);
         }
@@ -302,7 +302,7 @@ public class NTxGridRendererHelper {
                 double jy = (wi.rowStart[ee.colRow.y] / 100) * childrenHeight + yOffset;
                 ee.bounds = new NTxBounds2(jx, jy, ww, hh);
                 NTxNodeRendererContext ctx2 = ctx.withBounds(ee.node, ee.bounds);
-                ee.sizeRequirements = ctx2.manager().getRenderer(ee.node.type()).get().sizeRequirements(ee.node, ctx2);
+                ee.sizeRequirements = ctx2.engine().getRenderer(ee.node.type()).get().sizeRequirements(ee.node, ctx2);
             }
         }
 
