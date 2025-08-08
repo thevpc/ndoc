@@ -24,14 +24,12 @@ public interface NTxNodeRendererContext {
     String CAPABILITY_ANIMATE = "animate";
 
     default NTxSizeRequirements sizeRequirementsOf(NTxNode p) {
-        return manager().getRenderer(p.type()).get().sizeRequirements(p, this);
+        return engine().getRenderer(p.type()).get().sizeRequirements(p, this);
     }
 
     NTxBounds2 selfBounds(NTxNode e);
 
     NTxBounds2 defaultSelfBounds(NTxNode e);
-
-    NTxNodeRendererManager manager();
 
     NTxLogger log();
 
