@@ -1,20 +1,18 @@
 package net.thevpc.ntexup.api.renderer;
 
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 
 public interface NTxDocumentRendererListener {
 
-    default void onChangedCompiledDocument(NTxDocument compiledDocument) {
+    default void onChangedCompiledDocument(NTxCompiledDocument compiledDocument) {
     }
 
-    default void onChangedRawDocument(NTxDocument rawDocument) {
+    default void onChangedPage(NTxCompiledPage page) {
     }
 
-    default void onChangedPage(NTxNode page) {
-    }
-
-    default void onSaveDocument(NTxDocument document, NTxDocumentStreamRendererConfig config) {
+    default void onSaveDocument(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
     }
 
     default void onCloseView() {
