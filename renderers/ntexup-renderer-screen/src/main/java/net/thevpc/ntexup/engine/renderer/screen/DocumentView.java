@@ -1,15 +1,14 @@
 package net.thevpc.ntexup.engine.renderer.screen;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.document.node.NTxItem;
-import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.source.NTxSourceMonitor;
-import net.thevpc.ntexup.engine.parser.resources.NTxSourceNew;
 import net.thevpc.ntexup.api.renderer.*;
 
 
+import net.thevpc.ntexup.engine.impl.NTxCompiledDocumentImpl;
 import net.thevpc.ntexup.engine.util.NTxUtilsImages;
 
 import javax.swing.*;
@@ -20,21 +19,18 @@ import java.util.Timer;
 
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NOptional;
 
 public class DocumentView {
 
-    NTxDocument document;
+    NTxCompiledDocument compiledDocument;
     private NTxDocumentRendererSupplier documentSupplier;
     NTxEngine engine;
-    private int currentPageIndex;
     private List<PageView> pageViews = new ArrayList<>();
     JFrame frame;
     DocumentViewContentPanel contentPane;
     PageView currentShowingPage;
     private Map<String, PageView> pagesMapById = new HashMap<>();
     private Map<Integer, PageView> pagesMapByIndex = new HashMap<>();
-    private NTxNodeRendererManager rendererManager;
     private Timer timer;
     private boolean inCheckResourcesChanged;
     private boolean inLoadDocument;
@@ -48,7 +44,6 @@ public class DocumentView {
         this.documentSupplier = documentSupplier;
         this.listener = listener;
         this.engine = engine;
-        this.rendererManager = engine.renderManager();
 
         frame = new JFrame();
         frame.setTitle("NTexup Viewer");
@@ -79,6 +74,10 @@ public class DocumentView {
         }, 3000, 1000);
     }
 
+    public NTxCompiledDocument compiledDocument() {
+        return compiledDocument;
+    }
+
     private void animate() {
         this.contentPane.invalidate();
         this.contentPane.repaint();
@@ -96,8 +95,8 @@ public class DocumentView {
             if (inLoadDocument) {
                 return;
             }
-            if (document != null) {
-                NTxSourceMonitor r = document.resources();
+            if (compiledDocument != null) {
+                NTxSourceMonitor r = compiledDocument.compiledDocument().resources();
                 if (r.changed()) {
                     reloadDocumentAsync();
                 }
@@ -114,10 +113,6 @@ public class DocumentView {
 
     public boolean isLoading() {
         return inLoadDocument;
-    }
-
-    public NTxNodeRendererManager rendererManager() {
-        return rendererManager;
     }
 
     public String getPageSourceName() {
@@ -145,13 +140,7 @@ public class DocumentView {
     }
 
     public Object getPageSource() {
-        NTxItem p = currentShowingPage == null ? null : currentShowingPage.getPage();
-        Object s = null;
-        while (p != null && s == null) {
-            s = p.source();
-            p = p.parent();
-        }
-        return s;
+        return currentShowingPage == null ? null : currentShowingPage.source();
     }
 
     public void prepareContentPane() {
@@ -238,43 +227,26 @@ public class DocumentView {
             this.currentShowingPage = null;
             this.currentThrowable = null;
             try {
-                NTxDocument rawDocument = documentSupplier.get(rendererContext);
-                NTxSource source = rawDocument.root().source();
+                this.compiledDocument=documentSupplier.get(rendererContext);
                 SwingUtilities.invokeLater(() -> {
-                    if (source == null) {
-                        frame.setTitle("New Document");
-                    } else {
-                        frame.setTitle(String.valueOf(source));
-                    }
+                    frame.setTitle(this.compiledDocument.title());
                 });
-                listener.onChangedRawDocument(rawDocument);
-                NTxDocument compiledDocument = engine.compileDocument(rawDocument.copy()).get();
-                listener.onChangedCompiledDocument(compiledDocument);
-                document = compiledDocument;
             } catch (Exception ex) {
                 engine.log().log(NMsg.ofC("compile document failed %s", ex));
                 this.currentThrowable = ex;
             }
-            if (document == null) {
-                document = engine.documentFactory().ofDocument(null);
+            if (compiledDocument == null) {
+                compiledDocument = new NTxCompiledDocumentImpl(engine.documentFactory().ofDocument(null),engine);
             }
-            document.resources().save();
-            List<NTxNode> pages = engine.tools().resolvePages(document);
+            listener.onChangedCompiledDocument(compiledDocument);
+
+            compiledDocument.compiledDocument().resources().save();
             pageViews.clear();
             contentPane.removeAll();
             pagesMapById.clear();
             pagesMapByIndex.clear();
-            for (int i = 0; i < pages.size(); i++) {
-                NTxNode page = pages.get(i);
-                pageViews.add(createPageView(page, i));
-            }
-            if (pageViews.isEmpty()) {
-                NTxNode node = engine.documentFactory().ofPage();
-                node.setSource(NOptional.of(document).then(NTxDocument::source).orElseGet(NTxSourceNew::new));
-                pageViews.add(createPageView(
-                        node,
-                        0
-                ));
+            for (int i = 0; i < compiledDocument.pages().size(); i++) {
+                pageViews.add(createPageView(compiledDocument.pages().get(i)));
             }
             for (PageView pageView : pageViews) {
                 contentPane.add(pageView.component(), pageView.id());
@@ -290,11 +262,11 @@ public class DocumentView {
                     if (oo != null) {
                         showPage(oo.index());
                     } else {
-                        showPage(0);
+                        showPage(1);
                     }
                 }
             } else {
-                showPage(0);
+                showPage(1);
             }
         } finally {
             this.inLoadDocument = false;
@@ -304,19 +276,18 @@ public class DocumentView {
     }
 
     void lastPage() {
-        showPage(getPagesCount() - 1);
+        showPage(getPagesCount());
     }
 
     void firstPage() {
-        showPage(0);
+        showPage(1);
     }
 
-    public PageView createPageView(NTxNode node, int index) {
+    public PageView createPageView(NTxCompiledPage node) {
         return new PageView(
-                document,
-                node, index,
-                engine(),
-                rendererManager()
+                compiledDocument,
+                node,
+                engine()
         );
     }
 
@@ -327,7 +298,7 @@ public class DocumentView {
             }
             this.currentShowingPage = pv;
             if (pv != null) {
-                listener.onChangedPage(pv.getPage());
+                listener.onChangedPage(pv.page());
                 pv.onShow();
                 SwingUtilities.invokeLater(() -> contentPane.doShow(pv.id()));
             } else {
@@ -342,17 +313,20 @@ public class DocumentView {
     }
 
     public void show() {
-        showPage(0);
+        showPage(1);
     }
 
     public void showPage(int index) {
         int count = getPagesCount();
-        if (index >= count) {
-            index = count - 1;
-        } else if (index < 0) {
-            index = 0;
+        if(count<=0){
+            return;
         }
-        PageView pageView = pageViews.get(index);
+        if (index > count) {
+            index = count;
+        } else if (index < 1) {
+            index = 1;
+        }
+        PageView pageView = pageViews.get(index-1);
         this.showPage(pageView);
     }
 
@@ -372,7 +346,7 @@ public class DocumentView {
     public void previousPage() {
         if (currentShowingPage != null) {
             int i = currentShowingPage.index();
-            if (i - 1 >= 0) {
+            if (i - 1 >= 1) {
                 showPage(i - 1);
             }
         }
