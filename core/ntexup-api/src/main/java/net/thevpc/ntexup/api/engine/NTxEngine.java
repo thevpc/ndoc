@@ -5,16 +5,17 @@
 package net.thevpc.ntexup.api.engine;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.NTxDocumentLoadingResult;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.document.style.NTxStyleAndMagnitude;
 import net.thevpc.ntexup.api.document.style.NTxStyleRule;
 import net.thevpc.ntexup.api.eval.NTxCompilePageContext;
 import net.thevpc.ntexup.api.eval.NTxVarProvider;
@@ -30,16 +31,29 @@ import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.io.NPath;
+import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
 /**
  * @author vpc
  */
 public interface NTxEngine {
+    String CURRENT_VERSION = "0.8.6.0";
     String FILE_EXT = "ntx";
     String FILE_DOT_EXT = ".ntx";
 
     NTxLogger log();
+
+    List<NTxImageTypeRendererFactory> imageTypeRendererFactories();
+
+    boolean importDefaultDependencies();
+    boolean importDependencies(String... deps);
+
+    <S> List<S> loadServices(Class<S> serviceClass);
+
+    void addNTxDependencyLoadedListener(NTxDependencyLoadedListener listener);
+    void dump();
+    void dump(Consumer<NMsg> out);
 
     NTxEngineTools tools();
 
@@ -81,6 +95,9 @@ public interface NTxEngine {
 
     NTxDocumentLoadingResult loadDocument(NPath of);
 
+    NTxCompiledDocument loadCompiledDocument(NPath of);
+    NTxCompiledDocument asCompiledDocument(NTxDocument of);
+
     NOptional<NTxItem> loadNode(NTxNode into, NPath of, NTxDocument document);
 
     NTxDocumentLoadingResult loadDocument(InputStream is);
@@ -92,7 +109,9 @@ public interface NTxEngine {
     NOptional<NTxProp> computeProperty(NTxNode node, String... propertyNames);
 
     List<NTxStyleRule> computeStyles(NTxNode node);
+
     List<NTxStyleRule> computeDeclaredStyles(NTxNode node);
+
     Set<String> computeDeclaredStylesClasses(NTxNode node);
 
     List<NTxProp> computeInheritedProperties(NTxNode node);
@@ -100,8 +119,6 @@ public interface NTxEngine {
     List<NTxProp> computeProperties(NTxNode node);
 
     <T> NOptional<T> computePropertyValue(NTxNode node, String... propertyNames);
-
-    NTxNodeRendererManager renderManager();
 
     NTxGraphics createGraphics(Graphics2D g2d);
 
@@ -120,4 +137,10 @@ public interface NTxEngine {
     NOptional<NTxTextRendererFlavor> textRendererFlavor(String id);
 
     List<NTxTextRendererFlavor> textRendererFlavors();
+
+    BufferedImage renderImage(NTxNode node, NTxNodeRendererConfig config);
+
+    byte[] renderImageBytes(NTxNode node, NTxNodeRendererConfig config);
+
+    NOptional<NTxNodeRenderer> getRenderer(String type);
 }
