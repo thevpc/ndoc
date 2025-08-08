@@ -62,6 +62,7 @@ public interface NTxNodeCustomBuilderContext {
 
     NTxNodeCustomBuilderContext addParamName(String points);
 
+    String[] aliases();
     String[] idAndAliases();
 
 
