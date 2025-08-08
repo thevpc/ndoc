@@ -1,8 +1,9 @@
 package net.thevpc.ntexup.api.renderer;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.document.node.NTxNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +15,14 @@ public abstract class NTxDocumentRendererBase implements NTxDocumentRenderer {
     private List<NTxDocumentRendererListener> eventListeners = new ArrayList<>();
     protected NTxDocumentRendererListener eventListenerDelegate = new NTxDocumentRendererListener() {
         @Override
-        public void onChangedCompiledDocument(NTxDocument compiledDocument) {
+        public void onChangedCompiledDocument(NTxCompiledDocument compiledDocument) {
             for (NTxDocumentRendererListener eventListener : eventListeners) {
                 eventListener.onChangedCompiledDocument(compiledDocument);
             }
         }
 
         @Override
-        public void onChangedRawDocument(NTxDocument rawDocument) {
-            for (NTxDocumentRendererListener eventListener : eventListeners) {
-                eventListener.onChangedRawDocument(rawDocument);
-            }
-        }
-
-        @Override
-        public void onChangedPage(NTxNode page) {
+        public void onChangedPage(NTxCompiledPage page) {
             for (NTxDocumentRendererListener eventListener : eventListeners) {
                 eventListener.onChangedPage(page);
             }
@@ -42,9 +36,9 @@ public abstract class NTxDocumentRendererBase implements NTxDocumentRenderer {
         }
 
         @Override
-        public void onSaveDocument(NTxDocument document , NTxDocumentStreamRendererConfig config) {
+        public void onSaveDocument(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
             for (NTxDocumentRendererListener eventListener : eventListeners) {
-                eventListener.onSaveDocument(document,config);
+                eventListener.onSaveDocument(document, config);
             }
         }
     };
@@ -63,11 +57,16 @@ public abstract class NTxDocumentRendererBase implements NTxDocumentRenderer {
 
     @Override
     public void renderPath(NPath path) {
-        renderSupplier(r -> engine.loadDocument(path).get());
+        renderSupplier(r -> engine.loadCompiledDocument(path));
     }
 
     @Override
     public void render(NTxDocument document) {
+        renderSupplier(e -> engine.asCompiledDocument(document));
+    }
+
+    @Override
+    public void render(NTxCompiledDocument document) {
         renderSupplier(e -> document);
     }
 
