@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.main;
 
-import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.renderer.NTxDocumentRendererListener;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
 
@@ -18,21 +18,14 @@ public class NTxDocumentRendererListenerList implements NTxDocumentRendererListe
     }
 
     @Override
-    public void onChangedCompiledDocument(NTxDocument compiledDocument) {
+    public void onChangedCompiledDocument(NTxCompiledDocument compiledDocument) {
         for (NTxDocumentRendererListener r : registeredHDocumentRendererListener) {
             r.onChangedCompiledDocument(compiledDocument);
         }
     }
 
     @Override
-    public void onChangedRawDocument(NTxDocument rawDocument) {
-        for (NTxDocumentRendererListener r : registeredHDocumentRendererListener) {
-            r.onChangedRawDocument(rawDocument);
-        }
-    }
-
-    @Override
-    public void onChangedPage(NTxNode page) {
+    public void onChangedPage(NTxCompiledPage page) {
         for (NTxDocumentRendererListener r : registeredHDocumentRendererListener) {
             r.onChangedPage(page);
         }
@@ -46,7 +39,7 @@ public class NTxDocumentRendererListenerList implements NTxDocumentRendererListe
     }
 
     @Override
-    public void onSaveDocument(NTxDocument document, NTxDocumentStreamRendererConfig config) {
+    public void onSaveDocument(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
         for (NTxDocumentRendererListener eventListener : registeredHDocumentRendererListener) {
             eventListener.onSaveDocument(document, config);
         }
