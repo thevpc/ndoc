@@ -13,7 +13,7 @@ import net.thevpc.ntexup.api.parser.NTxNodeParser;
 import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.engine.document.NTxItemBag;
 import net.thevpc.ntexup.api.util.NTxUtils;
-import net.thevpc.ntexup.engine.NTxEngineUtils;
+import net.thevpc.ntexup.engine.impl.NTxEngineUtils;
 import net.thevpc.ntexup.engine.log.SilentNTxLogger;
 import net.thevpc.ntexup.engine.parser.DefaultNTxNodeFactoryParseContext;
 import net.thevpc.ntexup.engine.parser.NTxDocumentLoadingResultImpl;
