@@ -1,5 +1,0 @@
-themeName=default // use default or ibtihel
-themeColorAccent=1 // use a number from 1 to 12
-themeShowPalette=true
-include("01-styles")
-include("02-pages")
