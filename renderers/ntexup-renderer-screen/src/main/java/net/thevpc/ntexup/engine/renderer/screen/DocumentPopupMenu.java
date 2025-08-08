@@ -27,15 +27,15 @@ public class DocumentPopupMenu {
             if (configDialog.isConfirmed()) {
                 NTxDocumentStreamRendererConfig config = configDialog.getConfig();
 
-                if (documentView.document != null && documentView.listener != null) {
-                    documentView.listener.onSaveDocument(documentView.document, config);
+                if (documentView.listener != null) {
+                    documentView.listener.onSaveDocument(documentView.compiledDocument(), config);
                 } else {
                     System.err.println("saveDocumentListener is null or document is null");
                 }
             }
         });
 
-        NTxSource source = documentView.document.root().source();
+        NTxSource source = documentView.compiledDocument().source();
         if (source != null) {
             NPath path = source.path().orNull();
             if (path != null) {
