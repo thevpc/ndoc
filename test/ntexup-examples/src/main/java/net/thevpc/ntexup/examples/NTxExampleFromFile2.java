@@ -6,7 +6,7 @@ package net.thevpc.ntexup.examples;
 
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.io.NPath;
 
