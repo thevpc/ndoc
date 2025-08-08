@@ -11,8 +11,6 @@ Download documentation here : [ntexup-doc.pdf](documentation/website/ntexup-doc.
 
 # ntexup – Declarative Document & Presentation Generator
 
-&#x20;&#x20;
-
 **ntexup** is an open-source, text-based document and presentation generator designed to make the creation of professional, math-heavy, and reusable teaching materials effortless.
 
 It is built on **Java**, **Nuts**, and **TSON**, combining the simplicity of Markdown with the power of LaTeX and the flexibility of template-driven document generation — all while being version-control friendly.
@@ -162,11 +160,38 @@ ntexup --open slides.ntx
 ```
 
 ## Where to start
-Run ntexup (located under app) and open the GITHUB_ROOT/documentation/ntexup-doc folder.
-This will render a presentation of the ntexup documentation, written in ntexup and displayed as slides.
+you can start with the existing documentation and play with it.
 
-You can play with files under ntexup-doc to understand how this tool works
+first install nuts package manager (if you didnt already)
 
+```bash
+curl -sL https://maven.thevpc.net/net/thevpc/nuts/nuts-app/0.8.6/nuts-app-0.8.6.jar -o nuts.jar && java -jar nuts.jar -Zy
+# make sure you restart your terminal for the nuts command to be loaded into your environment
+
+```
+
+then install ntexup
+
+```bash
+nuts -y install ntexup
+```
+
+now you can try if it is well working by showing documentation
+
+```bash
+nuts ntexup --show --documentation
+```
+
+now lets try to make some changes and check for the results
+
+```bash
+git clone ntexup-doc-slides
+cd ntexup-doc-slides
+# do your updates in this folder, it should be straightforward
+
+# finally render the folder
+nuts ntexup --view .
+```
 
 ---
 
@@ -176,11 +201,14 @@ You can play with files under ntexup-doc to understand how this tool works
 - **Source**: [https://github.com/thevpc/ntexup](https://github.com/thevpc/ntexup).
 - **Status**: Usable, actively used for teaching, still evolving.
 
+## Related Repositories
+
+- [ntexup-doc-slides](https://github.com/thevpc/ntexup-doc-slides):  
+  A comprehensive slide deck demonstrating all ntexup features, components, and layouts — a perfect reference and testbed for themes and templates.
+
+- [ntexup-templates](https://github.com/thevpc/ntexup-templates):  
+  A curated collection of reusable templates and themes to kickstart your ntexup presentations and documents.
 ---
-
-## **Roadmap**
-
-- TODO
 
 ---
 
