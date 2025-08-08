@@ -4,11 +4,11 @@
  */
 package net.thevpc.ntexup.api.renderer;
 
-import net.thevpc.ntexup.api.document.NTxDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
 
 /**
  * @author vpc
  */
 public interface NTxDocumentRendererSupplier {
-    NTxDocument get(NTxDocumentRendererContext renderer);
+    NTxCompiledDocument get(NTxDocumentRendererContext renderer);
 }
