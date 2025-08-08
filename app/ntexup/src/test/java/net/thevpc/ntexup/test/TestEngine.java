@@ -3,7 +3,7 @@ package net.thevpc.ntexup.test;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.NTxDocumentLoadingResult;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.nuts.Nuts;
 
 import java.io.ByteArrayInputStream;
