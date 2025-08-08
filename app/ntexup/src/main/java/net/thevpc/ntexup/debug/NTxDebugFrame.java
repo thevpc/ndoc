@@ -1,9 +1,9 @@
 package net.thevpc.ntexup.debug;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.log.NTxLogger;
-import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.engine.util.NTxUtilsImages;
 import net.thevpc.ntexup.api.renderer.NTxDocumentRendererListener;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
@@ -18,25 +18,20 @@ public class NTxDebugFrame extends JFrame {
     private Runnable onClose;
     NTxDocumentRendererListener hDocumentRendererListener = new NTxDocumentRendererListener() {
         @Override
-        public void onChangedCompiledDocument(NTxDocument compiledDocument) {
-            model().setCompiledDocument(compiledDocument);
+        public void onChangedCompiledDocument(NTxCompiledDocument compiledDocument) {
+            model().setCompiledDocument(compiledDocument.compiledDocument());
+            model().setRawDocument(compiledDocument.rawDocument());
             updateContent();
         }
 
         @Override
-        public void onChangedRawDocument(NTxDocument rawDocument) {
-            model().setRawDocument(rawDocument);
+        public void onChangedPage(NTxCompiledPage page) {
+            model().setCurrentPage(page.rawPage());
             updateContent();
         }
 
         @Override
-        public void onChangedPage(NTxNode page) {
-            model().setCurrentPage(page);
-            updateContent();
-        }
-
-        @Override
-        public void onSaveDocument(NTxDocument document, NTxDocumentStreamRendererConfig config) {
+        public void onSaveDocument(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
 
         }
 
