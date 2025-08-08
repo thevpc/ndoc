@@ -15,11 +15,13 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
+import java.util.ArrayList;
+
 class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
     private final NTxNodeCustomBuilderContextImpl ctx;
 
     public CustomNTxNodeParserFromBuilder(NTxNodeCustomBuilderContextImpl ctx) {
-        super(true, ctx.id, ctx.aliases);
+        super(true, ctx.id, ctx.aliases == null ? new String[0] : ctx.aliases);
         this.ctx = ctx;
     }
 
