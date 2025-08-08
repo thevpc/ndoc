@@ -9,7 +9,13 @@ public class NTxCmdLineParser {
         while (!cmdLine.isEmpty()) {
             cmdLine.matcher()
                     .with("--reopen").matchTrueFlag(a -> options.reopen = true)
+                    .with("--build-repo").matchEntry(a -> {
+                        options.action = Action.BUILD_REPO;
+                        options.buildRepoPath = NPath.of(a.stringValue());
+                    })
                     .with("--list-templates").matchFlag(a -> options.action = net.thevpc.ntexup.cmdline.Action.LIST_TEMPLATES)
+                    .with("--dump").matchFlag(a -> options.action = Action.DUMP)
+                    .with("--documentation").matchFlag(a -> options.action = Action.DOC)
                     .with("--open").matchEntry(a -> options.paths.add(NPath.of(a.stringValue())))
                     .with("--new").matchTrueFlag(a -> options.action = Action.NEW)
                     .with("--view").matchTrueFlag(a -> options.requireViewer())
