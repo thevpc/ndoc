@@ -1,14 +1,14 @@
 package net.thevpc.ntexup.main;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
 import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
 import net.thevpc.ntexup.config.NTxProject;
 import net.thevpc.ntexup.config.NTxViewerConfigManager;
 import net.thevpc.ntexup.config.UserConfig;
 import net.thevpc.ntexup.config.UserConfigManager;
 import net.thevpc.ntexup.debug.NTxDebugFrame;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.ntexup.main.components.NewProjectPanel;
 import net.thevpc.ntexup.api.renderer.NTxDocumentRendererListener;
 import net.thevpc.ntexup.api.renderer.NTxDocumentScreenRenderer;
@@ -51,12 +51,15 @@ public class NTxServiceHelper {
     public NTxServiceHelper(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.engine = new DefaultNTxEngine();
+        this.engine.importDefaultDependencies();
         this.debugFrame = new NTxDebugFrame(engine);
         this.engine.addLog(debugFrame.messages());
+        this.engine.dump();
+
         this.currListeners.add(new NTxDocumentRendererListener() {
 
             @Override
-            public void onSaveDocument(NTxDocument document, NTxDocumentStreamRendererConfig config) {
+            public void onSaveDocument(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
                 doSavePDf(document, config);
             }
 
@@ -202,7 +205,7 @@ public class NTxServiceHelper {
         System.exit(0);
     }
 
-    public void doSavePDf(NTxDocument document, NTxDocumentStreamRendererConfig config) {
+    public void doSavePDf(NTxCompiledDocument document, NTxDocumentStreamRendererConfig config) {
         JFileChooser f = new JFileChooser();
         f.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
