@@ -54,7 +54,7 @@ public class NTxListHelper {
                     , new NTxDouble2(bulletWidth, childHeight)
                     , new NTxDouble2(bulletWidth, childHeight)
             );
-            child.childSelfBounds = ctx.engine().renderManager().getRenderer(child.child.type()).get().selfBounds(child.child,
+            child.childSelfBounds = ctx.engine().getRenderer(child.child.type()).get().selfBounds(child.child,
                     ctx.withBounds(child.child, new NTxBounds2(0, 0, child.bulletSelfBounds.getMaxX(), childHeight))
 //                    , new NTxDouble2(child.bulletSelfBounds.getMaxX() + 10, childHeight)
 //                    , new NTxDouble2(childWidth, childHeight)
