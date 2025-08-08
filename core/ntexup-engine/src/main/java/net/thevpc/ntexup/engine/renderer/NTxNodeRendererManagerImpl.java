@@ -8,7 +8,7 @@ import net.thevpc.ntexup.api.renderer.NTxNodeRenderer;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererManager;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.ntexup.engine.ext.NTxNodeCustomBuilderContextImpl;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NOptional;
@@ -31,10 +31,10 @@ public class NTxNodeRendererManagerImpl implements NTxNodeRendererManager {
     public synchronized Map<String, NTxNodeRenderer> getRenderers() {
         if (renderers == null) {
             renderers = new HashMap<>();
-            for (NTxNodeRenderer renderer : ServiceLoader.load(NTxNodeRenderer.class)) {
+            for (NTxNodeRenderer renderer : engine.loadServices(NTxNodeRenderer.class)) {
                 registerRenderer(renderer);
             }
-            for (NTxNodeCustomBuilderContextImpl cb : ((DefaultNTxEngine) engine).customBuilderContexts()) {
+            for (NTxNodeCustomBuilderContextImpl cb : ((DefaultNTxEngine) engine).builderContexts()) {
                 NTxNodeRenderer renderer=cb.createRenderer();
                 registerRenderer(renderer);
             }
