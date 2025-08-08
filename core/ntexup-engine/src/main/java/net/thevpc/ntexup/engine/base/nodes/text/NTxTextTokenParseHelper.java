@@ -77,7 +77,9 @@ class NTxTextTokenParseHelper {
                     }
                 }
             }
-
+            if (parseContext.peek(2).equals("[[")) {
+                return readPlain(parseContext.read(2));
+            }
             switch (parseContext.peek()) {
                 case '*': {
                     if (parseContext.peek(3).equals("***")) {
