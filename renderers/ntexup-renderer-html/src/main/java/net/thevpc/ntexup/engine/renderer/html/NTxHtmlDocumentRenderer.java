@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
@@ -30,19 +32,22 @@ public class NTxHtmlDocumentRenderer extends NTxDocumentStreamRendererBase imple
         super(engine);
     }
 
-    protected void renderStream(NTxDocument document, OutputStream os) {
-        document = engine.compileDocument(document).get();
+    protected void renderStream(NTxCompiledDocument document, OutputStream os) {
         PrintStream out = new PrintStream(os);
         out.println("<html>");
         out.println("<body>");
-        renderNode(document.root(), out);
+        for (NTxCompiledPage page : document.pages()) {
+            out.println("<div class=\"page\">");
+            renderNode(page.compiledPage(), out);
+            out.println("</div>");
+        }
         out.println("</body>");
         out.println("</html>");
     }
 
     @Override
     public void renderSupplier(NTxDocumentRendererSupplier document) {
-        NTxDocument d = document.get(rendererContext);
+        NTxCompiledDocument d = document.get(rendererContext);
         Object o = output;
         if (o == null) {
             o = NPath.of("document.pdf");
