@@ -8,6 +8,7 @@ import java.util.List;
 public class Options {
     public List<NPath> paths = new ArrayList<>();
     public NPath toPdf;
+    public NPath buildRepoPath;
     public Action action = Action.OPEN;
     public boolean viewer;
     public boolean console;
