@@ -47,7 +47,7 @@ public abstract class NTxNodeRendererContextBaseBase implements NTxNodeRendererC
 
     @Override
     public NTxBounds2 selfBounds(NTxNode e) {
-        return engine().renderManager().getRenderer(e.type()).get().selfBounds(e, this);
+        return engine().getRenderer(e.type()).get().selfBounds(e, this);
     }
 
     @Override
