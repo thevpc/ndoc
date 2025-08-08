@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
@@ -47,25 +49,24 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
 
     @Override
     public void renderSupplier(NTxDocumentRendererSupplier documentSupplier) {
-        NTxDocument document = documentSupplier.get(rendererContext);
-        NTxDocument compiledDocument = engine.compileDocument(document.copy()).get();
+        NTxCompiledDocument document = documentSupplier.get(rendererContext);
         Object outputTarget = output;
         if (outputTarget == null) {
             outputTarget = NPath.of("document.pdf");
         }
         if (outputTarget instanceof NPath) {
             try (OutputStream os = ((NPath) outputTarget).getOutputStream()) {
-                renderStream(compiledDocument, os);
+                renderStream(document, os);
             } catch (IOException ex) {
                 throw new NIOException(ex);
             }
         } else if (outputTarget instanceof OutputStream) {
-            renderStream(compiledDocument, (OutputStream) outputTarget);
+            renderStream(document, (OutputStream) outputTarget);
         }
     }
 
 
-    public void renderStream(NTxDocument document, OutputStream stream) {
+    public void renderStream(NTxCompiledDocument document, OutputStream stream) {
         NTxDocumentStreamRendererConfig config = engine.tools().validateDocumentStreamRendererConfig(this.config);
         Document pdfDocument = new Document();
         try {
@@ -77,7 +78,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
             int imagesPerRow = config.getGridX();
             int imagesPerColumn = config.getGridY();
             int imagesPerPage = imagesPerRow * imagesPerColumn;
-            List<NTxNode> pages = document.pages();
+            List<NTxCompiledPage> pages = document.pages();
             int imageCount = 0;
             float margin = 10f;
             float marginLeft = config.getMarginLeft() >= 0 ? config.getMarginLeft() : 0;
@@ -104,7 +105,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
 
             PdfPTable table = null;
 
-            for (NTxNode page : pages) {
+            for (NTxCompiledPage page0 : pages) {
                 if (imageCount % imagesPerPage == 0) {
                     if (table != null) {
                         pdfDocument.add(table);
@@ -115,8 +116,8 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
                     table.setTotalWidth(usableWidth);
                     table.setLockedWidth(true);
                 }
-                Image img = Image.getInstance(engine.renderManager().renderImageBytes(
-                        page,
+                Image img = Image.getInstance(engine.renderImageBytes(
+                        page0.compiledPage(),
                         new NTxNodeRendererConfig((int) cellWidth, (int) cellHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
