@@ -7,7 +7,7 @@ import net.thevpc.ntexup.api.engine.NTxTemplateInfo;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRenderer;
 import net.thevpc.ntexup.api.renderer.NTxDocumentStreamRendererConfig;
 import net.thevpc.ntexup.config.UserConfigManager;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.io.NPath;
@@ -17,22 +17,34 @@ public class NTxTerminalProcessor {
 
     public void runTerminal(Options options) {
         NTxEngine engine = new DefaultNTxEngine();
+        engine.importDefaultDependencies();
         switch (options.action) {
             case NEW: {
                 break;
             }
-            case LIST_TEMPLATES:{
-                if(NSession.of().isPlainOut()){
+            case LIST_TEMPLATES: {
+                if (NSession.of().isPlainOut()) {
                     for (NTxTemplateInfo template : engine.getTemplates()) {
                         NOut.println(NMsg.ofC("%s (%s @ %s) %s",
                                 NMsg.ofStyledPath(template.url()),
                                 NMsg.ofStyledPrimary1(template.name()),
                                 NMsg.ofStyledPrimary2(template.repoName()),
-                                template.recommended()? NMsg.ofStyledError(" (*)"):""
+                                template.recommended() ? NMsg.ofStyledError(" (*)") : ""
                         ));
                     }
-                }else{
+                } else {
                     NOut.println(engine.getTemplates());
+                }
+                break;
+            }
+            case DUMP: {
+                engine.dump();
+                break;
+            }
+            case BUILD_REPO: {
+                RepoBuilderTool tool = new RepoBuilderTool(engine.log());
+                if (tool.buildRepository(options.buildRepoPath)) {
+                    engine.log().log(NMsg.ofC("repository built successfully at %s", options.buildRepoPath));
                 }
                 break;
             }
