@@ -16,7 +16,6 @@ import net.thevpc.ntexup.engine.renderer.elem3d.NTxLight3DImpl;
 import net.thevpc.ntexup.engine.renderer.elem2d.strokes.CompositeStroke;
 import net.thevpc.ntexup.engine.renderer.elem2d.strokes.StrokeFactory;
 import net.thevpc.ntexup.engine.renderer.elem3d.Element3DUIFactory;
-import net.thevpc.ntexup.api.renderer.NTxImageTypeRendererFactory;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxGraphicsImageDrawer;
@@ -41,7 +40,6 @@ import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.*;
-import java.util.List;
 
 public class NTxGraphicsImpl implements NTxGraphics {
 
@@ -53,7 +51,6 @@ public class NTxGraphicsImpl implements NTxGraphics {
     private NTxLight3DImpl light3D = new NTxLight3DImpl();
     private Element2DUIFactory element2DUIFactory = new Element2DUIFactory();
     private Element3DUIFactory element3DUIFactory = new Element3DUIFactory();
-    private List<NTxImageTypeRendererFactory> imageTypeRendererFactories = new ArrayList<>();
     private Map<Object, NTxGraphicsImageDrawer> imageCache = new HashMap<>();
 
     private NTxRenderState3D state = new NTxRenderState3D() {
@@ -71,16 +68,6 @@ public class NTxGraphicsImpl implements NTxGraphics {
     public NTxGraphicsImpl(Graphics2D g, NTxEngine engine) {
         this.g = g;
         this.engine = engine;
-        ServiceLoader<NTxImageTypeRendererFactory> sl = ServiceLoader.load(NTxImageTypeRendererFactory.class);
-        for (NTxImageTypeRendererFactory s : sl) {
-            imageTypeRendererFactories.add(s);
-        }
-    }
-
-    public NTxGraphicsImpl(Graphics2D g, NTxImageTypeRendererFactory[] factories, NTxEngine engine) {
-        this.g = g;
-        this.engine = engine;
-        this.imageTypeRendererFactories.addAll(Arrays.asList(factories));
     }
 
     @Override
@@ -90,10 +77,7 @@ public class NTxGraphicsImpl implements NTxGraphics {
 
     @Override
     public NTxGraphics copy() {
-        NTxGraphicsImpl hGraphics = new NTxGraphicsImpl((Graphics2D) g.create(),
-                imageTypeRendererFactories.toArray(new NTxImageTypeRendererFactory[0]),
-                engine
-        );
+        NTxGraphicsImpl hGraphics = new NTxGraphicsImpl((Graphics2D) g.create(),engine);
         hGraphics.transform3D = transform3D;
         hGraphics.light3D = light3D;
         hGraphics.projection3D = projection3D;
@@ -608,7 +592,7 @@ public class NTxGraphicsImpl implements NTxGraphics {
         NTxGraphicsImageDrawer o = imageCache.get(nPath);
         if (o == null) {
             NOptional<NTxGraphicsImageDrawer> tr = NCallableSupport.resolve(
-                            imageTypeRendererFactories.stream()
+                            engine.imageTypeRendererFactories().stream()
                                     .map(n -> n.resolveRenderer(nPath, options, NTxGraphicsImpl.this)),
                             () -> NMsg.ofC("support for image %s ", nPath))
                     .toOptional();
