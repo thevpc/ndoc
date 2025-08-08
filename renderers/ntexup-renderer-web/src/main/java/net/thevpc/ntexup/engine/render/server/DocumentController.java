@@ -3,7 +3,7 @@ package net.thevpc.ntexup.engine.render.server;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.engine.DefaultNTxEngine;
+import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
 import net.thevpc.nuts.io.NPath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class DocumentController {
             List<NTxNode> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
-                byte[] imageData = engine.renderManager().renderImageBytes(
+                byte[] imageData = engine.renderImageBytes(
                         pages.get(pageNumber),
                         new NTxNodeRendererConfig(sizeWidth, sizeHeight)
                                 .withAnimate(false)
