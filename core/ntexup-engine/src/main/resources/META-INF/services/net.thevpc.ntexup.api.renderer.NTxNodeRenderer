@@ -1,2 +1,4 @@
 net.thevpc.ntexup.engine.renderer.page.NTxPageRenderer
+net.thevpc.ntexup.engine.renderer.special.NTxImportRenderer
+
 
