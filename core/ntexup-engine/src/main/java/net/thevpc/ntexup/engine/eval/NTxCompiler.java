@@ -250,6 +250,8 @@ public class NTxCompiler {
                     return compileNodeTree_name(node, h.withParentOnly());
                 case NTxNodeType.CTRL_INCLUDE:
                     return compileNodeTree_include(node, h.withParentOnly());
+                case NTxNodeType.CTRL_IMPORT:
+                    return compileNodeTree_import(node, h.withParentOnly());
                 case NTxNodeType.CTRL_FOR:
                     return compileNodeTree_for(node, h.withParentOnly());
                 case NTxNodeType.CTRL_ASSIGN:
@@ -494,6 +496,20 @@ public class NTxCompiler {
                 }
             }
             return loaded;
+        }
+        throw new NIllegalArgumentException(NMsg.ofC("expected 'include' node, got %s", node.type()));
+    }
+    private List<NTxItem> compileNodeTree_import(NTxNode node, NodeHierarchy h) {
+        if (NTxNodeType.CTRL_IMPORT.equals(node.type())) {
+            CtrlNTxNodeImport c = (CtrlNTxNodeImport) node;
+            List<String> toImport = new ArrayList<>();
+            for (NElement callArg : c.getCallArgs()) {
+                NElement r = engine.evalExpression(NTxUtils.addCompilerDeclarationPath(callArg, NTxUtils.sourceOf(c)), c, varProvider);
+                String s = NTxValue.of(r).asString().orNull();
+                toImport.add(s);
+            }
+            engine.importDependencies(toImport.toArray(new String[0]));
+            return new  ArrayList<>();
         }
         throw new NIllegalArgumentException(NMsg.ofC("expected 'include' node, got %s", node.type()));
     }
