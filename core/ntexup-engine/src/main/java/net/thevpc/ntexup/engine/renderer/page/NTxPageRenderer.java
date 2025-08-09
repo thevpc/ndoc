@@ -8,6 +8,7 @@ import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
 
+import net.thevpc.ntexup.engine.util.NTxNodeRendererUtils;
 import net.thevpc.nuts.elem.NElement;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public class NTxPageRenderer extends NTxNodeRendererBase {
     public void renderMain(NTxNode p, NTxNodeRendererContext ctx) {
         NTxBounds2 b = ctx.selfBounds(p, null, null);
 
-         drawBackground(ctx.graphics(), ctx, b);
+         drawBackground(p,ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
 
         for (NTxNode child : p.children()) {
@@ -64,16 +65,22 @@ public class NTxPageRenderer extends NTxNodeRendererBase {
         g.setStroke(os);
     }
 
-    private void drawBackground(NTxGraphics g, NTxNodeRendererContext ctx, NTxBounds2 b) {
+    private void drawBackground(NTxNode p,NTxGraphics g, NTxNodeRendererContext rendererContext, NTxBounds2 b) {
+        NTxNodeRendererUtils.paintBackground(p, rendererContext, g, b);
 
-//        g2d.setBackground(Color.white);
-//        g2d.clearRect(0, 0, size.width, size.height);
-        int width = b.getWidth().intValue();
-        int height = b.getHeight().intValue();
-        Color startColor = Color.white;
-        Color endColor = new Color(0xa3a3a3);
-        GradientPaint gradient = new GradientPaint(0, 0, startColor, width, height, endColor);
-        g.setPaint(gradient);
-        g.fill(new Rectangle(0, 0, width, height));
+//        int width = b.getWidth().intValue();
+//        int height = b.getHeight().intValue();
+
+//        g.setBackground(Color.white);
+//        g.clearRect(0, 0, size.width, size.height);
+
+//        g.setColor(Color.white);
+//        g.fillRect(0, 0, width, height);
+
+//        Color startColor = Color.white;
+//        Color endColor = new Color(0xa3a3a3);
+//        GradientPaint gradient = new GradientPaint(0, 0, startColor, width, height, endColor);
+//        g.setPaint(gradient);
+//        g.fill(new Rectangle(0, 0, width, height));
     }
 }
