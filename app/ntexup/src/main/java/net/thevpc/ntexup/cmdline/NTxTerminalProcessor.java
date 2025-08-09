@@ -202,7 +202,7 @@ public class NTxTerminalProcessor {
                         engine.dump();
                         someDump = true;
                     }
-                    engine.importDefaultDependencies();
+//                    engine.importDefaultDependencies();
                     NTxCompiledDocument doc = engine.loadCompiledDocument(path);
                     NTxDocumentStreamRendererConfig renderConfig = new NTxDocumentStreamRendererConfig();
                     NTxDocumentStreamRenderer renderer = engine.newPdfRenderer().get();
