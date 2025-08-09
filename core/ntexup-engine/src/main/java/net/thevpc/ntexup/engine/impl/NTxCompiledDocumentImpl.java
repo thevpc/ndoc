@@ -79,7 +79,7 @@ public class NTxCompiledDocumentImpl implements NTxCompiledDocument {
         if (compiledPages == null) {
             List<NTxCompiledPage> compiledPages2 = new ArrayList<>();
             int index = 0;
-            for (NTxNode n : engine.tools().resolvePages(document)) {
+            for (NTxNode n : engine.tools().resolvePages(compiledDocument())) {
                 compiledPages2.add(new NTxCompiledPageImpl(n, this, ++index));
             }
             if(compiledPages2.isEmpty()){
