@@ -76,10 +76,16 @@ public class NTxNodeRendererManagerImpl implements NTxNodeRendererManager {
         Dimension dimension=new Dimension(sizeWidth, sizeHeight);
         Map<String, Object> capabilities=config.getCapabilities();
         BufferedImage newImage = new BufferedImage(sizeWidth, sizeHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = newImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        NTxGraphics hg = engine.createGraphics(g);
+        NTxGraphics hg = engine.createGraphics(g2d);
         NTxNodeRenderer renderer = getRenderer(node.type()).get();
         renderer.render(node, new NTxNodeRendererContextBase(engine, hg, dimension) {
             {
@@ -90,7 +96,7 @@ public class NTxNodeRendererManagerImpl implements NTxNodeRendererManager {
                 }
             }
         });
-        g.dispose();
+        g2d.dispose();
         return newImage;
     }
 
