@@ -2,7 +2,9 @@ package net.thevpc.ntexup;
 
 import net.thevpc.ntexup.cmdline.*;
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
+import net.thevpc.nuts.util.NOptional;
 
 /**
  * @author vpc
@@ -19,12 +21,25 @@ public class NTexupMain {
         NWorkspace.of().share();
         Options options = new Options();
         NCmdLine cmdLine = NApp.of().getCmdLine();
-        new NTxCmdLineParser().parse(options, cmdLine);
-        if (options.viewer) {
-            new NTxViewerProcessor().runViewer(options);
-        } else {
-            new NTxTerminalProcessor().runTerminal(options);
+        while (!cmdLine.isEmpty()) {
+            NArg p = cmdLine.peek().get();
+            if(p.isOption()){
+                if(NSession.of().configureFirst(cmdLine)){
+                    // okkay
+                }else if(p.key().equals("--view")){
+                    cmdLine.next();
+                    new NTxViewerProcessor().runViewer(cmdLine,options);
+                    return;
+                }else{
+                    new NTxTerminalProcessor().runTerminal(cmdLine, options);
+                    return;
+                }
+            }else{
+                new NTxTerminalProcessor().runTerminal(cmdLine, options);
+                return;
+            }
         }
+        new NTxTerminalProcessor().runTerminal(cmdLine, options);
     }
 
 
