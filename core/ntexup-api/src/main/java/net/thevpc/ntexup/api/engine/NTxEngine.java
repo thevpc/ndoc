@@ -47,12 +47,15 @@ public interface NTxEngine {
     List<NTxImageTypeRendererFactory> imageTypeRendererFactories();
 
     boolean importDefaultDependencies();
+
     boolean importDependencies(String... deps);
 
     <S> List<S> loadServices(Class<S> serviceClass);
 
     void addNTxDependencyLoadedListener(NTxDependencyLoadedListener listener);
+
     void dump();
+
     void dump(Consumer<NMsg> out);
 
     NTxEngineTools tools();
@@ -96,6 +99,7 @@ public interface NTxEngine {
     NTxDocumentLoadingResult loadDocument(NPath of);
 
     NTxCompiledDocument loadCompiledDocument(NPath of);
+
     NTxCompiledDocument asCompiledDocument(NTxDocument of);
 
     NOptional<NTxItem> loadNode(NTxNode into, NPath of, NTxDocument document);
