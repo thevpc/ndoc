@@ -103,6 +103,11 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
             float cellWidth = (usableWidth - totalMarginWidth) / imagesPerRow;
             float cellHeight = (usableHeight - totalMarginHeight) / imagesPerColumn;
 
+            int dpi = 200;
+            float pointsPerInch = 72f;
+            int pixelWidth = (int)(cellWidth * dpi / pointsPerInch);
+            int pixelHeight = (int)(cellHeight * dpi / pointsPerInch);
+
             PdfPTable table = null;
 
             for (NTxCompiledPage page0 : pages) {
@@ -118,7 +123,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
                 }
                 Image img = Image.getInstance(engine.renderImageBytes(
                         page0.compiledPage(),
-                        new NTxNodeRendererConfig((int) cellWidth, (int) cellHeight)
+                        new NTxNodeRendererConfig((int) pixelWidth, (int) pixelHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
                 ));
