@@ -179,7 +179,7 @@ nuts -y install ntexup
 now you can try if it is well working by showing documentation
 
 ```bash
-nuts ntexup --show --documentation
+nuts ntexup --view --documentation
 ```
 
 now lets try to make some changes and check for the results
