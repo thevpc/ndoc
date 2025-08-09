@@ -55,6 +55,7 @@ public class NTxNodeType {
     public static final String CTRL_FOR ="for";
     public static final String CTRL_DEFINE ="define";
     public static final String CTRL_INCLUDE ="include";
+    public static final String CTRL_IMPORT ="import";
     public static final String CTRL_NAME ="ctrlname";
 
     public static final String CTRL_IF = "if";
