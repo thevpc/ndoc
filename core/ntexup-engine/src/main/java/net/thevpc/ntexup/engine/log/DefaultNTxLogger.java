@@ -42,13 +42,13 @@ public class DefaultNTxLogger implements NTxLogger {
         if (source == null) {
             source = defaultSource;
         }
-        NOut.println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
+        NOut.resetLine().println(NMsg.ofC("[%s] [%s] [%s] %s", time, type,
                 source == null ? null : source.shortName(),
                 nmsg
         ));
         if (error != null) {
             for (String s : NStringUtils.stacktraceArray(error)) {
-                NOut.println(NMsg.ofC("\t%s", s));
+                NOut.resetLine().println(NMsg.ofC("\t%s", s));
             }
         }
     }
