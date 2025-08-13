@@ -1,10 +1,9 @@
 package net.thevpc.ntexup.engine.eval;
 
-import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.*;
-import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.util.NNumberUtils;
 
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class NTxEvalUtils {
         if (aa.isNumber() && bb.isNumber()) {
             Number na = aa.asNumberValue().get();
             Number nb = bb.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.substructNumbers(na, nb));
+            return NElement.ofNumber(NNumberUtils.substructNumbers(na, nb));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_MINUS, aa, bb));
     }
@@ -44,7 +43,7 @@ public class NTxEvalUtils {
         if (aa.isNumber() && bb.isNumber()) {
             Number na = aa.asNumberValue().get();
             Number nb = bb.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.reminderNumbers(na, nb));
+            return NElement.ofNumber(NNumberUtils.reminderNumbers(na, nb));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_REM, aa, bb));
     }
@@ -55,7 +54,7 @@ public class NTxEvalUtils {
         Number n2 = NTxValue.of(b1).asNumber().orNull();
         if (n1 != null && n2 != null) {
             try {
-                Number r = NReflectUtils.reminderNumbers(n1, n2);
+                Number r = NNumberUtils.reminderNumbers(n1, n2);
                 return NElement.ofNumber(r);
             } catch (Exception ex) {
                 //
@@ -68,7 +67,7 @@ public class NTxEvalUtils {
         NElement aa = simplify(a);
         if (aa.isNumber()) {
             Number na = aa.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.negateNumber(na));
+            return NElement.ofNumber(NNumberUtils.negateNumber(na));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_MINUS, aa));
     }
@@ -77,7 +76,7 @@ public class NTxEvalUtils {
         NElement aa = simplify(a);
         if (aa.isNumber()) {
             Number na = aa.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.invNumber(na, mc));
+            return NElement.ofNumber(NNumberUtils.invNumber(na, mc));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_DIV, aa));
     }
@@ -88,7 +87,7 @@ public class NTxEvalUtils {
         if (aa.isNumber() && bb.isNumber()) {
             Number na = aa.asNumberValue().get();
             Number nb = bb.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.addNumbers(na, nb));
+            return NElement.ofNumber(NNumberUtils.addNumbers(na, nb));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_PLUS, aa, bb));
     }
@@ -99,7 +98,7 @@ public class NTxEvalUtils {
         if (aa.isNumber() && bb.isNumber()) {
             Number na = aa.asNumberValue().get();
             Number nb = bb.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.divideNumbers(na, nb, mc));
+            return NElement.ofNumber(NNumberUtils.divideNumbers(na, nb, mc));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_DIV, aa, bb));
     }
@@ -110,20 +109,20 @@ public class NTxEvalUtils {
         if (aa.isNumber() && bb.isNumber()) {
             Number na = aa.asNumberValue().get();
             Number nb = bb.asNumberValue().get();
-            return NElement.ofNumber(NReflectUtils.multiplyNumbers(na, nb, mc));
+            return NElement.ofNumber(NNumberUtils.multiplyNumbers(na, nb, mc));
         }
         return NElement.ofUplet(NElement.ofOp(NElementType.OP_MUL, aa, bb));
     }
 
     public static int compareNumbers(Number a, Number b) {
-        return NReflectUtils.compareNumbers(a, b);
+        return NNumberUtils.compareNumbers(a, b);
     }
 
     public static Number reminderNumbers(Number a, Number b) {
-        return NReflectUtils.reminderNumbers(a, b);
+        return NNumberUtils.reminderNumbers(a, b);
     }
     public static Number addNumbers(Number a, Number b) {
-        return NReflectUtils.addNumbers(a, b);
+        return NNumberUtils.addNumbers(a, b);
     }
 
     public static NElement[] evalInterval(NElement f, NElement s) {
@@ -142,13 +141,13 @@ public class NTxEvalUtils {
                     Number i = fn;
                     while (NTxEvalUtils.compareNumbers(i, sn) <= 0) {
                         all.add(NElement.ofNumber(i));
-                        i = NReflectUtils.addNumbers(i, (byte) 1);
+                        i = NNumberUtils.addNumbers(i, (byte) 1);
                     }
                 } else if (u > 0) {
                     Number i = fn;
                     while (NTxEvalUtils.compareNumbers(i, sn) >= 0) {
                         all.add(NElement.ofNumber(i));
-                        i = NReflectUtils.addNumbers(i, (byte) -1);
+                        i = NNumberUtils.addNumbers(i, (byte) -1);
                     }
                 }
                 return all.toArray(new NElement[0]);
