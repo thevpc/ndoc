@@ -783,6 +783,37 @@ public class NTxValue {
         return NOptional.ofNamedEmpty("double from " + element);
     }
 
+    public NOptional<Double> asDoubleOrNumber() {
+        if (element instanceof Number) {
+            return NOptional.of(((Number) element).doubleValue());
+        }
+        if (element instanceof String) {
+            return NLiteral.of(element).asDouble();
+        }
+        if (element instanceof NElement) {
+            NElement te = (NElement) element;
+            if (te.type().isAnyNumber()) {
+                switch (te.type()) {
+                    case BYTE:
+                    case INT:
+                    case SHORT:
+                    case LONG:
+                    case FLOAT:
+                    case DOUBLE:
+                    case BIG_DECIMAL: {
+                        return NOptional.of(te.asDoubleValue().get());
+                    }
+                }
+                return NOptional.of(te.asDoubleValue().get());
+            } else if (te.type().isAnyString()) {
+                return NTxValue.of(te.asStringValue().get()).asDouble();
+            } else {
+                return NOptional.ofNamedEmpty("double from " + element);
+            }
+        }
+        return NOptional.ofNamedEmpty("double from " + element);
+    }
+
     public NOptional<Integer> asIntOrBoolean() {
         return asInt().orElseUse(() -> asBoolean().map(x -> x ? 1 : 0));
     }
@@ -884,6 +915,9 @@ public class NTxValue {
         if (element instanceof NElement) {
             NElement te = (NElement) element;
             if (te.isString()) {
+                return NOptional.of(te.asStringValue().get());
+            }
+            if (te.isName()) {
                 return NOptional.of(te.asStringValue().get());
             }
         }
