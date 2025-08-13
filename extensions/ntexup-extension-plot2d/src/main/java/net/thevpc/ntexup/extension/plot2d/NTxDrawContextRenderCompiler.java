@@ -11,7 +11,9 @@ import net.thevpc.ntexup.extension.plot2d.model.NTxDrawContext;
 import net.thevpc.ntexup.extension.plot2d.model.NTxFunctionPlotInfo;
 import net.thevpc.ntexup.extension.plot2d.model.NTxPlot2DData;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.util.NDoubleFunction;
+import net.thevpc.nuts.util.NMsg;
 
 import java.awt.*;
 import java.util.List;
@@ -30,7 +32,7 @@ class NTxDrawContextRenderCompiler {
         NTxDrawContext drawContext = new NTxDrawContext(bounds, xValues, minY, maxY, zoom, minMaxY);
         java.util.List<NTxFunctionPlotInfo> plotDefinitions = (List<NTxFunctionPlotInfo>) p.getUserObject("def").orNull();
 
-        int steps = (int) (bounds.getHeight() * 2);
+//        int steps = (int) (bounds.getHeight() * 2);
 
         for (NTxFunctionPlotInfo pld : plotDefinitions) {
             NTxPlot2DData pd = new NTxPlot2DData(pld);
@@ -40,6 +42,10 @@ class NTxDrawContextRenderCompiler {
             if (pld.color != null) {
                 NElement ev = renderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
                 pd.color = NTxValue.of(ev).asColor().orElse(pd.color);
+            }
+            if (pld.title != null) {
+                NElement ev = renderContext.engine().evalExpression(pld.title, p, renderContext.varProvider());
+                pd.title = NTxValue.of(ev).asString().orNull();
             }
             if (pld.stroke != null) {
                 NElement ev = renderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
@@ -55,13 +61,17 @@ class NTxDrawContextRenderCompiler {
                 case FUNCTION_X:{
                     NDoubleFunction ff = NTxPlotNExprEvaluator.compileFunctionX(pld, renderContext);
                     if (ff != null) {
+                        NChronometer c = NChronometer.startNow();
                         pd.prepareX(ff, xValues, minMaxY);
+                        c.stop();
+                        renderContext.engine().log().log(NMsg.ofC("FUNCTION_X : %s",c));
                         drawContext.allData.add(pd);
                     }
                     break;
                 }
             }
         }
+        drawContext.build();
         return drawContext;
     }
 }
