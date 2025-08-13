@@ -5,6 +5,7 @@ import net.thevpc.ntexup.api.util.NTxMinMax;
 import net.thevpc.nuts.util.NDoubleFunction;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class NTxPlot2DData {
     public double[] xx;
@@ -23,11 +24,13 @@ public class NTxPlot2DData {
         this.xx = xx;
         this.yy = new double[xx.length];
         for (int i = 0; i < xx.length; i++) {
-            yy[i] = f.apply(xx[i]);
+            double x = xx[i];
+            yy[i] = f.apply(x);
             if (Double.isFinite(yy[i])) {
                 minMaxY.registerValue(yy[i]);
             }
         }
+
     }
 
     public double[] animatedYY(NTxNodeRendererContext renderContext) {
