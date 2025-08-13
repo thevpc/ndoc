@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor {
     @Override
@@ -66,7 +65,7 @@ public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor
     }
 
 
-    public NTxTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx) {
+    public NTxTextRendererBuilder.ImagePainter createLatex(String tex, double fontSize, NTxTextOptions options, NTxNode node, NTxNodeRendererContext ctx) {
         TeXFormula formula;
         boolean error = false;
         try {
@@ -74,7 +73,7 @@ public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor
         } catch (Exception ex) {
             error = true;
             formula = new TeXFormula("?error?");
-            ctx.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(p));
+            ctx.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(node));
         }
         float size = (float) (fontSize / 2.0);
         TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
@@ -86,13 +85,13 @@ public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor
 //        }
         Color foregroundColor = null;
         if (options.foregroundColorIndex != null) {
-            foregroundColor = NTxColors.resolveDefaultColorByIndex(options.foregroundColorIndex, null);
+            foregroundColor = NTxColors.resolveDefaultColorByIndex(options.foregroundColorIndex, null, node, ctx);
         } else if (options.foregroundColor instanceof Color) {
             foregroundColor = (Color) options.foregroundColor;
         }
-        Color fg = NTxUtils.paintAsColor(NTxUtils.resolveForegroundColor(options));
+        Color fg = NTxUtils.paintAsColor(NTxUtils.resolveForegroundColor(options, node, ctx));
         if (fg == null) {
-            fg = NTxUtils.paintAsColor(ctx.getForegroundColor(p, true));
+            fg = NTxUtils.paintAsColor(ctx.getForegroundColor(node, true));
         }
         if (fg == null) {
             fg = Color.BLACK;
