@@ -30,6 +30,10 @@ public class NTxDrawContext {
     public boolean legend=true;
     public String xLabel;
     public String yLabel;
+    public NTxMinMax minMaxY;
+    public boolean zoomY;
+    public double userMinY;
+    public double userMaxY;
 
     public NTxDrawContext(NTxBounds2 bounds, double[] gridXvalues, double minY, double maxY, boolean zoomY, NTxMinMax minMaxY) {
         this.componentWidth = bounds.getWidth();
@@ -37,15 +41,23 @@ public class NTxDrawContext {
         this.componentMinX = bounds.getX();
         this.componentMinY = bounds.getY();
         this.gridXvalues = gridXvalues;
-
+        this.minMaxY=minMaxY;
+        this.zoomY=zoomY;
+        this.userMinY=minY;
+        this.userMaxY=maxY;
+    }
+    public void build(){
         double yWidth = 0;
+        double minY=userMinY;
+        double maxY=userMaxY;
         if (zoomY && Double.isFinite(minMaxY.getMax()) && Double.isFinite(minMaxY.getMin())) {
             yWidth = minMaxY.getMax() - minMaxY.getMin();
             minY = minMaxY.getMin() - yWidth * 0.1;
             maxY = minMaxY.getMax() + yWidth * 0.1;
         } else {
-            minY = -2.5;
-            maxY = +2.5;
+            if(maxY<=minY){
+                maxY=minY+10;
+            }
         }
         gridMinY = minY;
         gridMaxY = maxY;
