@@ -12,7 +12,6 @@ import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.ntexup.api.renderer.NTxNodeRendererManager;
 import net.thevpc.ntexup.engine.renderer.text.NTxHighlighterMapper;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NText;
