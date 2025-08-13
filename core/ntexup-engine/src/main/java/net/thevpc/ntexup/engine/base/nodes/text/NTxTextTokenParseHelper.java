@@ -91,11 +91,14 @@ class NTxTextTokenParseHelper {
                     }
                 }
                 case '#': {
-                    for (int i = 10; i >= 1; i--) {
+                    for (int i = 10; i >= 2; i--) {
                         String r = NStringUtils.repeat('#', i);
                         if (parseContext.peek(i).equals(r)) {
                             return readColor(i);
                         }
+                    }
+                    if(parseContext.peek(1).equals("#")){
+                        return readPlain(parseContext.read(1));
                     }
                     break;
                 }
@@ -150,7 +153,7 @@ class NTxTextTokenParseHelper {
         return readBounded(bounds, new String[]{bounds + "#"}, tt -> {
             NTxTextOptions o = tt.options();
             if (o.foregroundColorIndex == null) {
-                o.foregroundColorIndex = col;
+                o.foregroundColorIndex = col-1;
             }
         });
     }
