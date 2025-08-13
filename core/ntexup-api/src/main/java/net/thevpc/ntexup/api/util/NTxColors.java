@@ -1,5 +1,10 @@
 package net.thevpc.ntexup.api.util;
 
+import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.eval.NTxValue;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.nuts.elem.NElement;
+
 import java.awt.*;
 
 public class NTxColors {
@@ -18,15 +23,31 @@ public class NTxColors {
             new Color(0x6495ED)
     };
 
-    public static Color resolveDefaultColorByIndex(int index,Color[] colors) {
+    public static Color resolveDefaultColorByIndex(int index, Color[] colors, NTxNode node, NTxNodeRendererContext ctx) {
         if (colors == null || colors.length == 0) {
-            colors = NTxColors.DEFAULT_CODE_PALETTE;
+            NElement v = ctx.engine().resolveVarValue("documentColors", node, ctx.varProvider());
+            if(v!=null && v.isArray()){
+                colors=NTxValue.of(v).asColorArray().orNull();
+            }
+            if(colors==null || colors.length == 0){
+                colors = NTxColors.DEFAULT_CODE_PALETTE;
+            }
         }
-        if (index < 0) {
+        //index is one indexed!
+        if(colors==null || colors.length==0){
+            return null;
+        }
+        if(index==0 || index==1){
+            return colors[0];
+        }else if(index>0){
+            int i = (index-1) % colors.length;
+            return colors[i];
+        }else {
+            // index<0
             index=-index;
+            int i = index % colors.length;
+            return colors[colors.length-1-i];
         }
-        int i = index % colors.length;
-        return colors[i];
     }
 
     public static float[] hsb(Color c) {
