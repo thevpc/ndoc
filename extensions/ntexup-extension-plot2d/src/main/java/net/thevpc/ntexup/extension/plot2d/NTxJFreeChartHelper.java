@@ -3,15 +3,15 @@ package net.thevpc.ntexup.extension.plot2d;
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.extension.plot2d.jfc.GradientXYAreaRenderer;
+import net.thevpc.ntexup.extension.plot2d.jfc.GradientXYLineAndShapeRenderer;
 import net.thevpc.ntexup.extension.plot2d.model.NTxDrawContext;
 import net.thevpc.ntexup.extension.plot2d.model.NTxPlot2DData;
 import net.thevpc.ntexup.extension.plot2d.model.NTxPlotType;
 import net.thevpc.nuts.util.NStringUtils;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.DrawingSupplier;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.*;
 import org.jfree.data.xy.XYSeries;
@@ -59,7 +59,10 @@ public class NTxJFreeChartHelper {
                 }
                 dataset2.addSeries(series);
                 plot.setDataset(i, dataset2);
-                plot.setRenderer(i, new XYLineAndShapeRenderer(true, pd.lineShapes));
+                XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(true, pd.lineShapes);
+                //XYLineAndShapeRenderer renderer = new GradientXYLineAndShapeRenderer(pd, dataset, drawContext);
+
+                plot.setRenderer(i, renderer);
             }else if(pd.pld.plotType== NTxPlotType.BAR){
                 XYSeriesCollection dataset2 = new XYSeriesCollection();
                 XYSeries series = new XYSeries(NStringUtils.firstNonBlank(pd.title, "Bar " + (i+1)));
@@ -79,7 +82,9 @@ public class NTxJFreeChartHelper {
                 }
                 dataset2.addSeries(series);
                 plot.setDataset(i, dataset2);
-                plot.setRenderer(i, new XYAreaRenderer());
+                //XYAreaRenderer renderer = new GradientXYAreaRenderer(drawContext.gridMinY,drawContext.gridMaxY);
+                XYAreaRenderer renderer = new XYAreaRenderer();
+                plot.setRenderer(i, renderer);
             }
 
             plot.getRenderer().setSeriesPaint(i, supplier.getNextPaint());
@@ -105,4 +110,5 @@ public class NTxJFreeChartHelper {
 
         chart.draw(renderContext.graphics().graphics2D(), new Rectangle2D.Double(bounds.getX(),bounds.getY(),bounds.getWidth(),bounds.getHeight()));
     }
+
 }
