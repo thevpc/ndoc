@@ -16,21 +16,6 @@ import java.util.*;
 import java.util.List;
 
 public class NTxHighlighterMapper {
-    private static Color[] DEFAULT_CODE_PALETTE = new Color[]{
-            new Color(0x26355D),
-            new Color(0xAF47D2),
-            new Color(0xDE3163),
-            new Color(0x2ECC71),
-            new Color(0xFF8F00),
-            new Color(0xFF7F50),
-            new Color(0xFFBF00),
-            new Color(0xFFDB00),
-            new Color(0x9FE2BF),
-            new Color(0x40E0D0),
-            new Color(0xCCCCFF),
-            new Color(0x6495ED)
-    };
-
     public static void highlightNutsText(String lang, String rawText, NText parsedText, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder result) {
         Map<String, NTxTextPartStyle> cache = new HashMap<>();
         result.setLang(lang);
@@ -50,7 +35,7 @@ public class NTxHighlighterMapper {
         result.computeBound(ctx);
     }
 
-    private static void applyOptions(NTxTextOptions to, NTextStyle nTextStyle, NTxNode p, NTxNodeRendererContext ctx, Map<String, NTxTextPartStyle> cache) {
+    private static void applyOptions(NTxTextOptions to, NTextStyle nTextStyle, NTxNode node, NTxNodeRendererContext ctx, Map<String, NTxTextPartStyle> cache) {
         switch (nTextStyle.getType()) {
             case BOLD: {
                 to.setBold(true);
@@ -78,11 +63,11 @@ public class NTxHighlighterMapper {
                 break;
             }
             case FORE_COLOR: {
-                to.foregroundColor = getCodeColorPalette(nTextStyle.getVariant());
+                to.foregroundColor = NTxColors.resolveDefaultColorByIndex(nTextStyle.getVariant(),null,node,ctx);
                 break;
             }
             case BACK_COLOR: {
-                to.backgroundColor = getCodeColorPalette(nTextStyle.getVariant());
+                to.backgroundColor = NTxColors.resolveDefaultColorByIndex(nTextStyle.getVariant(),null,node,ctx);
                 break;
             }
             case PLAIN: {
@@ -117,7 +102,7 @@ public class NTxHighlighterMapper {
             case VAR:
             case VERSION:
             case WARN: {
-                NTxTextPartStyle ss = resolveCodeStyle(nTextStyle, p, ctx, cache);
+                NTxTextPartStyle ss = resolveCodeStyle(nTextStyle, node, ctx, cache);
                 if (ss.foreground != null) {
                     to.foregroundColor = ss.foreground;
                 }
@@ -206,7 +191,7 @@ public class NTxHighlighterMapper {
         {
             NTxValue e = NTxValue.of(ctx.computePropertyValue(node, prefix + "color").orNull());
             Color[] colors = e.asColorArrayOrColor().orNull();
-            ss.foreground = NTxColors.resolveDefaultColorByIndex(nTextStyle.getVariant(), colors);
+            ss.foreground = NTxColors.resolveDefaultColorByIndex(nTextStyle.getVariant(), colors,node, ctx);
         }
         {
             NTxValue e = NTxValue.of(ctx.computePropertyValue(node, prefix + "background").orNull());
@@ -273,12 +258,6 @@ public class NTxHighlighterMapper {
             return objects;
         }
         return new ArrayList<>();
-    }
-
-
-    private static Color getCodeColorPalette(int i) {
-        i = i % DEFAULT_CODE_PALETTE.length;
-        return DEFAULT_CODE_PALETTE[i];
     }
 
 }
