@@ -1,5 +1,7 @@
 package net.thevpc.ntexup.engine.render.server;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
@@ -41,9 +43,9 @@ public class DocumentController {
             int sizeWidth = 1200;
             int sizeHeight = 1000;
             NTxEngine e = new DefaultNTxEngine();
-            NTxDocument doc = e.loadDocument(file).get();
+            NTxCompiledDocument doc = e.loadCompiledDocument(file);
 
-            List<NTxNode> pages = doc.pages();
+            List<NTxCompiledPage> pages = doc.pages();
 
             if (pageNumber >= 0 && pageNumber < pages.size()) {
                 byte[] imageData = engine.renderImageBytes(
