@@ -1,13 +1,8 @@
 package net.thevpc.ntexup.extension.plot2d;
 
-import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NTxEngine;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.eval.NTxValue;
-import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.extension.plot2d.model.NTxFunctionPlotInfo;
-import net.thevpc.ntexup.extension.plot2d.model.NTxGlobalPlotData;
 import net.thevpc.ntexup.extension.plot2d.model.NTxPlotSource;
 import net.thevpc.ntexup.extension.plot2d.model.NTxPlotType;
 import net.thevpc.nuts.elem.*;
@@ -15,32 +10,31 @@ import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NStringUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NTxFunctionPlotInfoLoader {
 
-//    public NTxGlobalPlotData loadGlobalPlotData(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext buildContext) {
+//    public NTxGlobalPlotData loadGlobalPlotData(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeBuilderContext buildContext) {
 //        NTxGlobalPlotData d = new NTxGlobalPlotData();
-//        NTxEngine engine = renderContext.engine();
+//        NTxEngine engine = rendererContext.engine();
 //        class A {
 //            Double asDouble(String name, Double d) {
-//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofDouble(d)), p, renderContext.varProvider())).asDouble().orElse(d);
+//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofDouble(d)), p, rendererContext.varProvider())).asDouble().orElse(d);
 //            }
 //
 //            Boolean asBoolean(String name, Boolean d) {
-//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofBoolean(d)), p, renderContext.varProvider())).asBoolean().orElse(d);
+//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NElement.ofBoolean(d)), p, rendererContext.varProvider())).asBoolean().orElse(d);
 //            }
 //
 //            Color asColor(String name, Color d) {
-//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, renderContext.varProvider())).asColor().orElse(d);
+//                return NTxValue.of(engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, rendererContext.varProvider())).asColor().orElse(d);
 //            }
 //
 //            Stroke asStroke(String name, Stroke d) {
-//                NElement ev = engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, renderContext.varProvider());
+//                NElement ev = engine.evalExpression(p.getPropertyValue(name).orElse(NTxUtils.toElement(d)), p, rendererContext.varProvider());
 //                if (ev != null && !ev.isNull()) {
-//                    Stroke stroke = renderContext.graphics().createStroke(ev);
+//                    Stroke stroke = rendererContext.graphics().createStroke(ev);
 //                    if (stroke != null) {
 //                        return stroke;
 //                    }
@@ -64,7 +58,7 @@ public class NTxFunctionPlotInfoLoader {
 //        return d;
 //    }
 
-    public java.util.List<NTxFunctionPlotInfo> loadBody(NElement element, NTxNodeCustomBuilderContext buildContext) {
+    public java.util.List<NTxFunctionPlotInfo> loadBody(NElement element, NTxNodeBuilderContext buildContext) {
         NListContainerElement nListContainerElement = element.asListContainer().orNull();
         java.util.List<NTxFunctionPlotInfo> all = new ArrayList<>();
         if (nListContainerElement != null && !nListContainerElement.isAnyUplet()) {
@@ -92,7 +86,7 @@ public class NTxFunctionPlotInfoLoader {
         return all;
     }
 
-    private NTxFunctionPlotInfo load(NObjectElement child, NTxNodeCustomBuilderContext buildContext) {
+    private NTxFunctionPlotInfo load(NObjectElement child, NTxNodeBuilderContext buildContext) {
         NTxFunctionPlotInfo i = new NTxFunctionPlotInfo();
         switch (NNameFormat.VAR_NAME.format(NStringUtils.firstNonNull(child.name().orNull(),"").trim())) {
             case "curve": {
