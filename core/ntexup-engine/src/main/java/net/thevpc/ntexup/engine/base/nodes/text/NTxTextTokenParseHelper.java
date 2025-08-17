@@ -1,6 +1,6 @@
 package net.thevpc.ntexup.engine.base.nodes.text;
 
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.nuts.reserved.util.NReservedSimpleCharQueue;
@@ -11,19 +11,19 @@ import java.util.function.Consumer;
 
 class NTxTextTokenParseHelper {
     private List<NTxTextRendererFlavor> flavors;
-    private NTxNodeCustomBuilderContext builderContext;
+    private NTxNodeBuilderContext builderContext;
     private NTxTextRendererFlavorParseContext parseContext;
     private Set<String> parsePrefixes;
     private int parsePrefixesMaxLength;
 
-    public NTxTextTokenParseHelper(NTxNodeRendererContext rendererContext, NReservedSimpleCharQueue cq, NTxNodeCustomBuilderContext builderContext) {
+    public NTxTextTokenParseHelper(NTxNodeRendererContext rendererContext, NReservedSimpleCharQueue cq, NTxNodeBuilderContext builderContext) {
         this.flavors = rendererContext.engine().textRendererFlavors();
         this.builderContext = builderContext;
         this.parseContext = new MyNTxTextRendererFlavorParseContext(rendererContext, cq);
         init();
     }
 
-    public NTxTextTokenParseHelper(NTxTextRendererFlavorParseContext parseContext, NTxNodeCustomBuilderContext builderContext) {
+    public NTxTextTokenParseHelper(NTxTextRendererFlavorParseContext parseContext, NTxNodeBuilderContext builderContext) {
         this.flavors = parseContext.rendererContext().engine().textRendererFlavors();
         this.builderContext = builderContext;
         this.parseContext = parseContext;
