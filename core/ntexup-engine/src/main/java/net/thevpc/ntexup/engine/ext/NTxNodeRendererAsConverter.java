@@ -5,17 +5,17 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
 class NTxNodeRendererAsConverter extends ConvertedNTxNodeRenderer {
-    private final NTxNodeCustomBuilderContextImpl ctx;
+    private final NTxNodeBuilderContextImpl ctx;
 
-    public NTxNodeRendererAsConverter(NTxNodeCustomBuilderContextImpl ctx) {
+    public NTxNodeRendererAsConverter(NTxNodeBuilderContextImpl ctx) {
         super(ctx.id());
         this.ctx = ctx;
     }
 
     @Override
-    public NTxNode convert(NTxNode p, NTxNodeRendererContext ctx) {
+    public NTxNode convert(NTxNode p, NTxNodeRendererContext rendererContext) {
         if (this.ctx.renderConvertAction != null) {
-            return this.ctx.renderConvertAction.convert(p, ctx, this.ctx);
+            return this.ctx.renderConvertAction.convert(p, rendererContext, this.ctx);
         }
         return p;
     }
