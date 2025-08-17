@@ -10,10 +10,10 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.NTxSizeRequirements;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
@@ -39,12 +39,12 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.EQUATION)
                 .alias("equation")
-                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .renderComponent(this::renderMain)
+                .parseParam().matchesNamedPair(NTxPropName.VALUE,NTxPropName.FILE).then()
+                .parseParam().matchesAnyNonPair().storeFirstMissingName(NTxPropName.VALUE).then()
+                .renderComponent((rendererContext, builderContext1) -> renderMain(rendererContext, builderContext1))
                 .renderText()
                 .buildText(this::buildText)
                 .parseTokens(this::parseTokens)
@@ -55,9 +55,9 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
     }
 
 
-    public NTxSizeRequirements sizeRequirements(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
-        NTxBounds2 s = rendererContext.selfBounds(p);
-        NTxBounds2 bb = rendererContext.getBounds();
+    public NTxSizeRequirements sizeRequirements(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxBounds2 s = rendererContext.selfBounds();
+        NTxBounds2 bb = rendererContext.parentBounds();
         return new NTxSizeRequirements(
                 s.getWidth(),
                 Math.max(bb.getWidth(), s.getWidth()),
@@ -68,48 +68,50 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
         );
     }
 
-    public NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        String message = NTxValue.ofProp(p, NTxPropName.VALUE).asStringOrName().orNull();
+    public NTxBounds2 selfBounds(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        String message = NTxValue.ofProp(node, NTxPropName.VALUE).asStringOrName().orNull();
         if (message == null) {
             message = "";
         }
-        NTxGraphics g = ctx.graphics();
+        NTxGraphics g = rendererContext.graphics();
         String tex = NStringUtils.trim(message);
         if (tex.isEmpty()) {
-            return new NTxBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), 0.0, 0.0);
+            return new NTxBounds2(rendererContext.parentBounds().getX(), rendererContext.parentBounds().getY(), 0.0, 0.0);
         } else {
             TeXFormula formula;
             try {
                 formula = new TeXFormula(tex);
             } catch (Exception ex) {
                 formula = new TeXFormula("?error?");
-                ctx.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(p));
+                rendererContext.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(node));
             }
-            float size = (float) (ctx.getFontSize(p) * 1.0);
+            float size = (float) NTxValueByName.getFontSize(node, rendererContext);
             TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
 
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
-            return new NTxBounds2(ctx.getBounds().getX(), ctx.getBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
+            return new NTxBounds2(rendererContext.parentBounds().getX(), rendererContext.parentBounds().getY(), icon.getIconWidth(), icon.getIconHeight());
         }
     }
 
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
-        NElement vElemExpr = p.getPropertyValue(NTxPropName.VALUE).orNull();
-        NElement vElemValue = renderContext.engine().evalExpression(vElemExpr, p, renderContext.varProvider());
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        NElement vElemExpr = node.getPropertyValue(NTxPropName.VALUE).orNull();
+        NElement vElemValue = rendererContext.engine().evalExpression(vElemExpr, node, rendererContext.varProvider());
         String text = NTxValue.of(vElemValue).asStringOrName().orElse("");
 
-        NTxGraphics g = renderContext.graphics();
+        NTxGraphics g = rendererContext.graphics();
 
 
-        String tex = NStringUtils.trim(renderContext.engine().tools().trimBloc(text));
+        String tex = NStringUtils.trim(rendererContext.engine().tools().trimBloc(text));
         if (tex.isEmpty()) {
-            NTxBounds2 selfBounds = renderContext.selfBounds(p);
+            NTxBounds2 selfBounds = rendererContext.selfBounds();
             double x = selfBounds.getX();
             double y = selfBounds.getY();
-            if (!renderContext.isDry()) {
-                if (renderContext.applyBackgroundColor(p)) {
+            if (!rendererContext.isDry()) {
+                if (rendererContext.applyBackgroundColor(node)) {
                     g.fillRect((int) x, (int) y, NTxUtils.intOf(selfBounds.getWidth()), NTxUtils.intOf(selfBounds.getHeight()));
                 }
             }
@@ -121,12 +123,12 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
             } catch (Exception ex) {
                 error = true;
                 formula = new TeXFormula("?error?");
-                builderContext.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(p));
+                builderContext.engine().log().log(NMsg.ofC("error evaluating latex formula %s : %s", tex, ex), NTxUtils.sourceOf(node));
             }
 
             NTxTextOptions oo=new NTxTextOptions();
-            oo.defaultFont=NTxValueByName.getFontInfo(p, renderContext);
-            oo.sr=renderContext.sizeRef();
+            oo.defaultFont=NTxValueByName.getFontInfo(node, rendererContext);
+            oo.sr=rendererContext.sizeRef();
             Font font = oo.resolveFont(g);
 
 
@@ -135,29 +137,29 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
             // insert a border
             icon.setInsets(new Insets(0, 0, 0, 0));
 
-            NTxBounds2 selfBounds = renderContext.selfBounds((NTxNode) p
+            NTxBounds2 selfBounds = rendererContext.selfBounds((NTxNode) node
                     , new NTxDouble2(icon.getIconWidth(), icon.getIconHeight())
                     , null
             );
             double x = selfBounds.getX();
             double y = selfBounds.getY();
 
-            if (!renderContext.isDry()) {
-                renderContext.paintBackground(p, selfBounds);
+            if (!rendererContext.isDry()) {
+                rendererContext.paintBackground(node, selfBounds);
                 if (error) {
                     g.setColor(Color.RED);
                     g.fillRect(selfBounds);
                 }
-                Paint fg = renderContext.getForegroundColor(p, true);
-                icon.setForeground(renderContext.colorFromPaint(fg).orElse(Color.BLACK));
+                Paint fg = rendererContext.getForegroundColor(node, true);
+                icon.setForeground(rendererContext.colorFromPaint(fg).orElse(Color.BLACK));
                 icon.paintIcon(null, g.graphics2D(), (int) x, (int) y /*- icon.getIconHeight()*/);
 
-                renderContext.paintBorderLine(p, selfBounds);
+                rendererContext.paintBorderLine(node, selfBounds);
             }
         }
     }
 
-    private void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext renderContext, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext) {
+    private void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext rendererContext, NTxTextRendererBuilder builder, NTxNodeBuilderContext buildContext) {
         if (!text.isEmpty()) {
             NTxRichTextToken r = new NTxRichTextToken(
                     NTxRichTextTokenType.IMAGE_PAINTER,
@@ -165,21 +167,21 @@ public class NTxEquationBuilder implements NTxNodeBuilder {
             );
             options=options.copy();
             if(options.defaultFont==null){
-                options.defaultFont=NTxValueByName.getFontInfo(p, renderContext);
+                options.defaultFont=NTxValueByName.getFontInfo(p, rendererContext);
             }
             if(options.sr==null){
-                options.sr=renderContext.sizeRef();
+                options.sr=rendererContext.sizeRef();
             }
-            Font font = options.resolveFont(renderContext.graphics());
-            r.imagePainter = this.createLatex(text, font.getSize(), options, p, renderContext);
+            Font font = options.resolveFont(rendererContext.graphics());
+            r.imagePainter = this.createLatex(text, font.getSize(), options, p, rendererContext);
             NTxDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
         }
     }
 
-    private List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext renderContext, NTxNodeCustomBuilderContext buildContext) {
-        return renderContext.parseDefault(buildContext.idAndAliases(), new String[]{
+    private List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext rendererContext, NTxNodeBuilderContext buildContext) {
+        return rendererContext.parseDefault(buildContext.idAndAliases(), new String[]{
                 "\\(", "\\)"
         }, s -> {
             NExtendedLatexMathBuilder sb = new NExtendedLatexMathBuilder();
