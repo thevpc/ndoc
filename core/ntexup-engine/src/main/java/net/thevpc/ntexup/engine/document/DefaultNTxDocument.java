@@ -39,7 +39,7 @@ public class DefaultNTxDocument implements NTxDocument, Cloneable {
     }
 
     @Override
-    public NTxSourceMonitor resources() {
+    public NTxSourceMonitor sourceMonitor() {
         return resources;
     }
 
