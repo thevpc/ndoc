@@ -1,9 +1,9 @@
 package net.thevpc.ntexup.api.extension;
 
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 
 public interface NTxNodeBuilder {
 
-    void build(NTxNodeCustomBuilderContext builderContext);
+    void build(NTxNodeBuilderContext builderContext);
 
 }
