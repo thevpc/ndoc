@@ -23,22 +23,11 @@ public class NTxValueByName {
     }
 
     protected static boolean isPreserveShapeRatio(NTxNode t, NTxNodeRendererContext ctx) {
-        Boolean b = NTxValue.of(ctx.computePropertyValue(t, NTxPropName.PRESERVE_ASPECT_RATIO).orNull()).asBoolean().orElse(false);
-        return b == null ? false : b;
+        return getNodeCommonCache(t, ctx).preserveRatio;
     }
 
-    private static NTxDouble2 getSize(NTxNode t, NTxDouble2 minSize, NTxNodeRendererContext ctx, NTxSizeRef hSizeRef) {
-        if(hSizeRef==null) {
-            hSizeRef = ctx.sizeRef();
-        }
-        NTxElemNumber2 double2OrHAlign = NTxValueByType.getNNumberElement2Or1OrHAlign(t, ctx, NTxPropName.SIZE).orElse(
-                new NTxElemNumber2((NNumberElement) NElement.ofDouble(100.0), (NNumberElement) NElement.ofDouble(100.0))
-        );
-
-        NTxDouble2 size = new NTxDouble2(
-                hSizeRef.x(double2OrHAlign.getX()).get(),
-                hSizeRef.y(double2OrHAlign.getY()).get()
-        );
+    private static NTxDouble2 getSize(NTxNode t, NTxDouble2 minSize, NTxNodeRendererContext ctx) {
+        NTxDouble2 size = getNodeCommonCache(t, ctx).componentSize;
 
         boolean shapeRatio = isPreserveShapeRatio(t, ctx);
         //ratio depends on the smallest
@@ -67,9 +56,7 @@ public class NTxValueByName {
     }
 
     public static NTxDouble2 getOrigin(NTxNode t, NTxNodeRendererContext ctx, NTxDouble2 a) {
-        NTxElemNumber2 double2OrHAlign = NTxValueByType.getNNumberElement2Or1OrHAlign(t, ctx, NTxPropName.ORIGIN)
-                .orElseUse(() -> NTxValueByType.getNNumberElement2Or1OrHAlign(t, ctx, NTxPropName.AT))
-                .orElse(new NTxElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
+        NTxElemNumber2 double2OrHAlign = getNodeCommonCache(t, ctx).origin;
         NTxSizeRef sr = new NTxSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new NTxDouble2(
                 sr.x(double2OrHAlign.getX()).get(),
@@ -77,10 +64,12 @@ public class NTxValueByName {
         );
     }
 
+    public static NTxRotation getRotation(NTxNode node, NTxNodeRendererContext ctx) {
+        return NTxValueByType.getRotation(node, ctx, NTxPropName.ROTATE).orNull();
+    }
+
     public static NTxDouble2 getPosition(NTxNode t, NTxNodeRendererContext ctx, NTxDouble2 a) {
-        NTxElemNumber2 double2OrHAlign = NTxValueByType.getNNumberElement2Or1OrHAlign(t, ctx, NTxPropName.POSITION)
-                .orElseUse(() -> NTxValueByType.getNNumberElement2Or1OrHAlign(t, ctx, NTxPropName.AT))
-                .orElse(new NTxElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
+        NTxElemNumber2 double2OrHAlign = getNodeCommonCache(t, ctx).position;
         NTxSizeRef sr = new NTxSizeRef(a.getX(), a.getY(), ctx.getGlobalBounds().getWidth(), ctx.getGlobalBounds().getHeight());
         return new NTxDouble2(
                 sr.x(double2OrHAlign.getX()).get(),
@@ -89,139 +78,300 @@ public class NTxValueByName {
     }
 
     public static NElement getStroke(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getElement(t, ctx, NTxPropName.STROKE).orNull();
+        return getNodeCommonCache(t, ctx).stroke;
     }
 
     public static NTxBounds2 selfBounds(NTxNode t, NTxDouble2 selfSize, NTxDouble2 minSize, NTxNodeRendererContext ctx) {
-        NTxBounds2 parentBounds = ctx.getBounds();
-        double pw = parentBounds.getWidth();
-        double ph = parentBounds.getHeight();
-        NTxPadding padding = NTxValueByType.getPadding(t, ctx, NTxPropName.MARGIN).orElse(NTxPadding.of(0))
-                .mul(pw / 100, ph / 100);
-        NTxSizeRef hSizeRef = new NTxSizeRef(
-                Math.max(pw - padding.getLeft() - padding.getRight(), 0),
-                Math.max(ph - padding.getTop() - padding.getBottom(), 0),
-                ctx.getGlobalBounds().getWidth(),
-                ctx.getGlobalBounds().getHeight()
-        );
+//        NTxBounds2 parentBounds = ctx.parentBounds();
+        NTxSizeRef parentWithMarginRef = getNodeCommonCache(t, ctx).parentWithMarginRef;
+        NTxBounds2 parentBoundsWithMargin = getNodeCommonCache(t, ctx).parentBoundsWithMargin;
+
         if (selfSize == null) {
-            selfSize = getSize(t, minSize, ctx, hSizeRef);
+            selfSize = getSize(t, minSize, ctx);
         }
 
-        NTxDouble2 pos = getPosition(t, ctx, new NTxDouble2(hSizeRef.getParentWidth(), hSizeRef.getParentHeight()));
+        NTxDouble2 pos = getPosition(t, ctx, new NTxDouble2(parentWithMarginRef.getParentWidth(), parentWithMarginRef.getParentHeight()));
 
         NTxDouble2 origin = getOrigin(t, ctx, selfSize);
 
-        double x = pos.getX() - origin.getX() + parentBounds.getX();
-        double y = pos.getY() - origin.getY() + parentBounds.getY();
+        double x = pos.getX() - origin.getX() + parentBoundsWithMargin.getX();
+        double y = pos.getY() - origin.getY() + parentBoundsWithMargin.getY();
 
 
         return new NTxBounds2(
-                x + padding.getLeft(),
-                y + padding.getTop(),
+                x,
+                y,
                 selfSize.getX(),
                 selfSize.getY()
         );
     }
 
-    public static boolean isVisible(NTxNode t, NTxNodeRendererContext ctx) {
-        NOptional<Boolean> b = NTxValueByType.getBoolean(t, ctx, NTxPropName.HIDE);
-        if (b.isPresent()) {
-            return !b.get();
-        }
-        b = NTxValueByType.getBoolean(t, ctx, "show");
-        if (b.isPresent()) {
-            return !b.get();
-        }
-        b = NTxValueByType.getBoolean(t, ctx, "visible");
-        if (b.isPresent()) {
-            return b.get();
-        }
-        return true;
+    public static boolean isVisible(NTxNode node, NTxNodeRendererContext ctx) {
+        return (boolean) node.getAndSetRenderCache("visible", false,
+                () -> {
+                    NOptional<Boolean> b = NTxValueByType.getBoolean(node, ctx, NTxPropName.HIDE);
+                    if (b.isPresent()) {
+                        return !b.get();
+                    } else {
+                        b = NTxValueByType.getBoolean(node, ctx, "show");
+                        if (b.isPresent()) {
+                            return !b.get();
+                        } else {
+                            b = NTxValueByType.getBoolean(node, ctx, "visible");
+                            if (b.isPresent()) {
+                                return b.get();
+                            } else {
+                                return true;
+                            }
+                        }
+                    }
+                }
+        ).get();
     }
 
     public static double getFontSize(NTxNode t, NTxNodeRendererContext ctx) {
-        NElement e = NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull();
-        if(e!=null){
-            NElement nElement = ctx.engine().evalExpression(e, t, ctx.varProvider());
-            if(nElement!=null){
-                e=nElement;
-            }
-        }
-        NTxSizeRef sr = ctx.sizeRef();
-        NOptional<Double> srpx = sr.x(e);
-        NOptional<Double> srpy = sr.y(e);
-        return Math.min(srpx.orElse(16.0), srpy.orElse(16.0));
+        NTxValueCommonCache c = getNodeCommonCache(t, ctx);
+        return Math.min(c.fontXSize, c.fontYSize);
     }
 
     public static String getFontFamily(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getStringOrName(t, ctx, NTxPropName.FONT_FAMILY).orElse("Serif");
+        return getNodeCommonCache(t, ctx).fontFamily;
     }
 
     public static boolean isFontUnderlined(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_UNDERLINED, "underlined").orElse(false);
+        return getNodeCommonCache(t, ctx).fontUnderline;
     }
 
     public static boolean isFontStrike(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_STRIKE, "strike").orElse(false);
+        return getNodeCommonCache(t, ctx).fontStrike;
     }
 
     public static boolean isFontBold(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_BOLD, "bold").orElse(false);
+        return getNodeCommonCache(t, ctx).fontBold;
     }
 
     public static boolean isFontItalic(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_ITALIC, "italic").orElse(false);
+        return getNodeCommonCache(t, ctx).fontItalic;
     }
 
-    public static Font getFont(NTxNode t, NTxNodeRendererContext ctx) {
-        NElement e = NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull();
+    public static NTxValueCommonCache getNodeCommonNoCache(NTxNode node, NTxNodeRendererContext ctx) {
+        NTxValueCommonCache renderInfo = new NTxValueCommonCache();
+        NElement e = NTxValueByType.getElement(node, ctx, NTxPropName.FONT_SIZE).orNull();
         NTxSizeRef sr = ctx.sizeRef();
         NOptional<Double> srpx = sr.x(e);
         NOptional<Double> srpy = sr.y(e);
-        boolean fontItalic = isFontItalic(t, ctx);
-        boolean fontBold = isFontBold(t, ctx);
-        String fontFamily = getFontFamily(t, ctx);
-
-        return NTxFontBySizeResolver.INSTANCE.getFont(fontFamily, Font.PLAIN | (fontItalic ? Font.ITALIC : 0) | (fontBold ? Font.BOLD : 0),
+        renderInfo.fontSize = NTxSize.ofElement(NTxValueByType.getElement(node, ctx, NTxPropName.FONT_SIZE).orNull());
+        renderInfo.fontXSize = srpx.orElse(16.0);
+        renderInfo.fontYSize = srpy.orElse(16.0);
+        renderInfo.fontItalic = NTxValueByType.getBoolean(node, ctx, NTxPropName.FONT_ITALIC, "italic").orElse(false);
+        renderInfo.fontStrike = NTxValueByType.getBoolean(node, ctx, NTxPropName.FONT_STRIKE, "strike").orElse(false);
+        renderInfo.fontUnderline = NTxValueByType.getBoolean(node, ctx, NTxPropName.FONT_UNDERLINED, "underlined").orElse(false);
+        renderInfo.fontBold = NTxValueByType.getBoolean(node, ctx, NTxPropName.FONT_BOLD, "bold").orElse(false);
+        renderInfo.fontFamily = NTxValueByType.getStringOrName(node, ctx, NTxPropName.FONT_FAMILY).orElse("Serif");
+        renderInfo.font = NTxFontBySizeResolver.INSTANCE.getFont(renderInfo.fontFamily, Font.PLAIN | (renderInfo.fontItalic ? Font.ITALIC : 0) | (renderInfo.fontBold ? Font.BOLD : 0),
                 srpx.orElse(16.0),
                 srpy.orElse(16.0),
                 ctx.graphics()
         );
-    }
-    public static NtxFontInfo getFontInfo(NTxNode t, NTxNodeRendererContext ctx) {
+
+
+        renderInfo.stroke = NTxValueByType.getElement(node, ctx, NTxPropName.STROKE).orNull();
+        renderInfo.preserveRatio = NTxValue.of(ctx.computePropertyValue(node, NTxPropName.PRESERVE_ASPECT_RATIO).orNull()).asBoolean().orElse(false);
+
         NtxFontInfo f = new NtxFontInfo();
-        f.size = NTxSize.ofElement(NTxValueByType.getElement(t, ctx, NTxPropName.FONT_SIZE).orNull());
-        f.italic = NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_ITALIC).orNull();
-        f.bold = NTxValueByType.getBoolean(t, ctx, NTxPropName.FONT_BOLD).orNull();
-        f.family = NTxValueByType.getStringOrName(t, ctx, NTxPropName.FONT_FAMILY).orNull();
-        return f;
+        f.size = renderInfo.fontSize;
+        f.italic = renderInfo.fontItalic;
+        f.bold = renderInfo.fontBold;
+        f.family = renderInfo.fontFamily;
+        renderInfo.fontInfo = f;
+
+        renderInfo.foregroundColor = NTxValueByType.getPaint(node, ctx, NTxPropName.FOREGROUND_COLOR, "foreground", "color", "fg").orElse(null);
+        renderInfo.backgroundColor = NTxValueByType.getPaint(node, ctx, NTxPropName.BACKGROUND_COLOR, "background", "bg").orNull();
+        renderInfo.fillBackground = NTxValueByType.getBoolean(node, ctx, NTxPropName.FILL_BACKGROUND, "fill").orElse(false);
+        renderInfo.debugLevel = NTxValueByType.getIntOrBoolean(node, ctx, NTxPropName.DEBUG).orElse(0);
+        renderInfo.debugColor = (Color) NTxValueByType.getPaint(node, ctx, NTxPropName.DEBUG_COLOR).orElse(Color.GRAY);
+
+        {
+
+            NElement marginElement = ctx.computePropertyValue(node, NTxPropName.MARGIN).orNull();
+
+            NOptional<NElement[]> d = NTxValue.of(marginElement).asElementArray();
+            double left = 0;
+            double top = 0;
+            double right = 0;
+            double bottom = 0;
+            if (d.isPresent()) {
+                NElement[] dd = d.get();
+                switch (dd.length) {
+                    case 0: {
+                        break;
+                    }
+                    case 1: {
+                        double dv = sr.x(dd[0]).orElse(0.0);
+                        left = dv;
+                        top = dv;
+                        right = dv;
+                        bottom = dv;
+                        break;
+                    }
+                    case 2: {
+                        double dv1 = sr.x(dd[0]).orElse(0.0);
+                        double dv2 = sr.y(dd[1]).orElse(0.0);
+                        left = dv1;
+                        top = dv2;
+                        right = dv1;
+                        bottom = dv2;
+                        break;
+                    }
+                    case 3: {
+                        double dv1 = sr.x(dd[0]).orElse(0.0);
+                        double dv2 = sr.y(dd[1]).orElse(0.0);
+                        double dv3 = sr.x(dd[2]).orElse(0.0);
+                        left = dv1;
+                        top = dv2;
+                        right = dv3;
+                        bottom = dv2;
+                        break;
+                    }
+                    case 4: {
+                        left = sr.x(dd[0]).orElse(0.0);
+                        top = sr.y(dd[1]).orElse(0.0);
+                        right = sr.x(dd[2]).orElse(0.0);
+                        bottom = sr.y(dd[3]).orElse(0.0);
+                        break;
+                    }
+                }
+            } else {
+                double dv = sr.x(marginElement).orElse(0.0);
+                left = dv;
+                top = dv;
+                right = dv;
+                bottom = dv;
+            }
+            renderInfo.margin = new NTxMargin(left, top, right, bottom);
+            NTxBounds2 parentBounds = ctx.parentBounds();
+            double pw = parentBounds.getWidth();
+            double ph = parentBounds.getHeight();
+            renderInfo.parentWithMarginRef = new NTxSizeRef(
+                    Math.max(pw - renderInfo.margin.getLeft() - renderInfo.margin.getRight(), 0),
+                    Math.max(ph - renderInfo.margin.getTop() - renderInfo.margin.getBottom(), 0),
+                    ctx.getGlobalBounds().getWidth(),
+                    ctx.getGlobalBounds().getHeight()
+            );
+            renderInfo.parentBoundsWithMargin = new NTxBounds2(
+                    parentBounds.getX() + renderInfo.margin.getLeft(),
+                    parentBounds.getY() + renderInfo.margin.getTop(),
+                    Math.max(pw - renderInfo.margin.getLeft() - renderInfo.margin.getRight(), 0),
+                    Math.max(ph - renderInfo.margin.getTop() - renderInfo.margin.getBottom(), 0)
+            );
+            renderInfo.origin = NTxValueByType.getNNumberElement2Or1OrHAlign(node, ctx, NTxPropName.ORIGIN)
+                    .orElseUse(() -> NTxValueByType.getNNumberElement2Or1OrHAlign(node, ctx, NTxPropName.AT))
+                    .orElse(new NTxElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
+            renderInfo.position = NTxValueByType.getNNumberElement2Or1OrHAlign(node, ctx, NTxPropName.POSITION)
+                    .orElseUse(() -> NTxValueByType.getNNumberElement2Or1OrHAlign(node, ctx, NTxPropName.AT))
+                    .orElse(new NTxElemNumber2(NElement.ofDouble(0), NElement.ofDouble(0)));
+
+            {
+                NTxElemNumber2 double2OrHAlign = NTxValueByType.getNNumberElement2Or1OrHAlign(node, ctx, NTxPropName.SIZE).orElse(
+                        new NTxElemNumber2((NNumberElement) NElement.ofDouble(100.0), (NNumberElement) NElement.ofDouble(100.0))
+                );
+
+                renderInfo.componentSize = new NTxDouble2(
+                        renderInfo.parentWithMarginRef.x(double2OrHAlign.getX()).get(),
+                        renderInfo.parentWithMarginRef.y(double2OrHAlign.getY()).get()
+                );
+            }
+        }
+        renderInfo.drawContour = NTxValueByType.getBoolean(node, ctx, NTxPropName.DRAW_CONTOUR, "contour").orElse(false);
+
+
+        return renderInfo;
+    }
+
+    public static NTxValueCommonCache getNodeCommonCache(NTxNode node, NTxNodeRendererContext ctx) {
+        return node.getAndSetRenderCache(NTxValueCommonCache.class, false,
+                () -> getNodeCommonNoCache(node, ctx)
+        ).get();
+    }
+
+    public static Font getFont(NTxNode node, NTxNodeRendererContext ctx) {
+        return getNodeCommonCache(node, ctx).font;
+    }
+
+    public static NtxFontInfo getFontInfo(NTxNode t, NTxNodeRendererContext ctx) {
+        return getNodeCommonCache(t, ctx).fontInfo;
     }
 
     public static NTxDouble2 getRoundCornerArcs(NTxNode t, NTxNodeRendererContext ctx) {
         return NTxValue.of(ctx.computePropertyValue(t, NTxPropName.ROUND_CORNER).orNull()).asDouble2OrDouble().orNull();
     }
 
-    public static int getColSpan(NTxNode t, NTxNodeRendererContext ctx) {
-        Integer i = NTxValueByType.getInt(t, ctx, NTxPropName.COLSPAN).orElse(1);
-        if (i == null) {
-            return 1;
-        }
-        if (i <= 0) {
-            return 1;
-        }
-        return i;
+    public static int getColSpan(NTxNode node, NTxNodeRendererContext ctx) {
+        return (int) node.getAndSetRenderCache("colspan", false,
+                () -> {
+                    {
+                        Integer i = NTxValueByType.getInt(node, ctx, NTxPropName.COLSPAN).orElse(1);
+                        if (i == null) {
+                            return 1;
+                        } else if (i <= 0) {
+                            return 1;
+                        } else {
+                            return i;
+                        }
+                    }
+                }
+        ).get();
     }
 
-    public static int getRowSpan(NTxNode t, NTxNodeRendererContext ctx) {
-        Integer i = NTxValueByType.getInt(t, ctx, NTxPropName.ROWSPAN).orElse(1);
-        if (i == null) {
-            return 1;
-        }
-        if (i <= 0) {
-            return 1;
-        }
-        return i;
+    public static int getRowSpan(NTxNode node, NTxNodeRendererContext ctx) {
+        return (int) node.getAndSetRenderCache("rowspan", false,
+                () -> {
+                    {
+                        Integer i = NTxValueByType.getInt(node, ctx, NTxPropName.ROWSPAN).orElse(1);
+                        if (i == null) {
+                            return 1;
+                        } else if (i <= 0) {
+                            return 1;
+                        } else {
+                            return i;
+                        }
+                    }
+                }
+        ).get();
+    }
+
+    public static double getColWeight(NTxNode node, NTxNodeRendererContext ctx) {
+        return (double) node.getAndSetRenderCache(NTxPropName.COLWEIGHT, false,
+                () -> {
+                    {
+                        Double i = NTxValueByType.getDouble(node, ctx, NTxPropName.COLWEIGHT).orElse(0.0);
+                        if (i == null || Double.isNaN(i) || Double.isInfinite(i)) {
+                            return 0.0;
+                        } else if (i <= 0) {
+                            return 0.0;
+                        } else {
+                            return i;
+                        }
+                    }
+                }
+        ).get();
+    }
+
+    public static double getRowWeight(NTxNode node, NTxNodeRendererContext ctx) {
+        return (double) node.getAndSetRenderCache(NTxPropName.ROWWEIGHT, false,
+                () -> {
+                    {
+                        Double i = NTxValueByType.getDouble(node, ctx, NTxPropName.ROWWEIGHT).orElse(0.0);
+                        if (i == null || Double.isNaN(i) || Double.isInfinite(i)) {
+                            return 0.0;
+                        } else if (i <= 0) {
+                            return 0.0;
+                        } else {
+                            return i;
+                        }
+                    }
+                }
+        ).get();
     }
 
     public static Boolean get3D(NTxNode t, NTxNodeRendererContext ctx) {
@@ -299,29 +449,23 @@ public class NTxValueByName {
     }
 
     public static Paint getForegroundColor(NTxNode t, NTxNodeRendererContext ctx, boolean force) {
-        if (ctx.isDry()) {
-            return null;
+        Paint c = getNodeCommonCache(t, ctx).foregroundColor;
+        if (force && c == null) {
+            return Color.BLACK;
         }
-        return NTxValueByType.getPaint(t, ctx, NTxPropName.FOREGROUND_COLOR, "foreground", "color", "fg").orElse(force ? Color.BLACK : null);
+        return c;
     }
 
-    public static Paint resolveGridColor(NTxNode t, NTxNodeRendererContext ctx) {
-        if (ctx.isDry()) {
-            return null;
-        }
-        return NTxValueByType.getPaint(t, ctx, NTxPropName.GRID_COLOR).orElse(Color.BLACK);
+    public static Paint resolveGridColor(NTxNode node, NTxNodeRendererContext ctx) {
+        return NTxValueByType.getPaint(node, ctx, NTxPropName.GRID_COLOR).orElse(Color.BLACK);
     }
 
-    public static Paint resolveBackgroundColor(NTxNode t, NTxNodeRendererContext ctx) {
-        if (ctx.isDry()) {
-            return null;
-        }
-        Paint color = NTxValueByType.getPaint(t, ctx, NTxPropName.BACKGROUND_COLOR, "background", "bg").orNull();
-        return color;
+    public static Paint resolveBackgroundColor(NTxNode node, NTxNodeRendererContext ctx) {
+        return getNodeCommonCache(node, ctx).backgroundColor;
     }
 
     public static boolean isDrawContour(NTxNode node, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(node, ctx, NTxPropName.DRAW_CONTOUR, "contour").orElse(false);
+        return getNodeCommonCache(node, ctx).drawContour;
     }
 
     public static boolean requireDrawGrid(NTxNode t, NTxNodeRendererContext ctx) {
@@ -329,7 +473,7 @@ public class NTxValueByName {
     }
 
     public static boolean requireFillBackground(NTxNode t, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getBoolean(t, ctx, NTxPropName.FILL_BACKGROUND, "fill").orElse(false);
+        return getNodeCommonCache(t, ctx).fillBackground;
     }
 
     public static int getColumns(NTxNode node, NTxNodeRendererContext ctx) {
@@ -344,18 +488,18 @@ public class NTxValueByName {
         return /*true || */getDebugLevel(p, ctx) > 0;
     }
 
-    public static int getDebugLevel(NTxNode p, NTxNodeRendererContext ctx) {
-        return NTxValueByType.getIntOrBoolean(p, ctx, NTxPropName.DEBUG).orElse(0);
+    public static int getDebugLevel(NTxNode node, NTxNodeRendererContext ctx) {
+        return getNodeCommonCache(node, ctx).debugLevel;
     }
 
-    public static Color getDebugColor(NTxNode t, NTxNodeRendererContext ctx) {
-        return (Color) NTxValueByType.getPaint(t, ctx, NTxPropName.DEBUG_COLOR).orElse(Color.GRAY);
+    public static Color getDebugColor(NTxNode node, NTxNodeRendererContext ctx) {
+        return getNodeCommonCache(node, ctx).debugColor;
     }
 
     public static NOptional<NTxPoint2D> getStyleAsShadowDistance(Object sv, NTxNodeRendererContext ctx) {
         NTxValue o = NTxValue.of(sv);
-        double ww = ctx.getBounds().getWidth();
-        double hh = ctx.getBounds().getHeight();
+        double ww = ctx.parentBounds().getWidth();
+        double hh = ctx.parentBounds().getHeight();
         if (o.isNumber()) {
             NOptional<Number> n = o.asNumber();
             if (n.isPresent()) {
@@ -365,7 +509,7 @@ public class NTxValueByName {
                 ));
             }
         } else {
-            NOptional<NTxPoint2D> n = o.asHPoint2D();
+            NOptional<NTxPoint2D> n = o.asPoint2D();
             if (n.isPresent()) {
                 return NOptional.of(new NTxPoint2D(
                         n.get().getX() / 100.0 * ww,
