@@ -7,10 +7,10 @@ import net.thevpc.ntexup.api.renderer.text.*;
 import java.util.*;
 
 class CustomNTxTextRendererFlavorFromBuilder implements NTxTextRendererFlavor {
-    private final NTxNodeCustomBuilderContextImpl ctx;
+    private final NTxNodeBuilderContextImpl ctx;
     private final List<String> parsePrefixes;
 
-    public CustomNTxTextRendererFlavorFromBuilder(NTxNodeCustomBuilderContextImpl ctx) {
+    public CustomNTxTextRendererFlavorFromBuilder(NTxNodeBuilderContextImpl ctx) {
         this.ctx = ctx;
         LinkedHashSet<String> a = new LinkedHashSet<>();
         for (String s : ctx.idAndAliases()) {
