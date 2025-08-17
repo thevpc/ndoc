@@ -14,8 +14,8 @@ import java.util.Arrays;
 public final class NTxPolygonHelper {
 
 
-    public static void renderPointsCount(int count, NTxNode p, NTxNodeRendererContext ctx, NTxProperties defaultStyles) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
+    public static void renderPointsCount(int count, NTxNodeRendererContext ctx, NTxProperties defaultStyles) {
+        ctx = ctx.withDefaultStyles(defaultStyles);
         NTxPoint2D[] points = null;
         if (count < 3) {
             count = 3;
@@ -32,14 +32,15 @@ public final class NTxPolygonHelper {
                     , y0 + h0 * Math.sin(angle)
             );
         }
-        renderPoints(p, points, ctx);
+        renderPoints(points, ctx);
     }
-    public static void renderPoints(NTxNode node, NTxPoint2D[] points, NTxNodeRendererContext ctx) {
-        NTxBounds2 b = ctx.selfBounds(node);
-        NTxGraphics g = ctx.graphics();
-        if (!ctx.isDry()) {
-            Paint bc = ctx.resolveBackgroundColor(node);
-            Paint fc = ctx.getForegroundColor(node, bc == null);
+    public static void renderPoints(NTxPoint2D[] points, NTxNodeRendererContext rendererContext) {
+        NTxBounds2 b = rendererContext.selfBounds();
+        NTxGraphics g = rendererContext.graphics();
+        NTxNode node = rendererContext.node();
+        if (!rendererContext.isDry()) {
+            Paint bc = rendererContext.resolveBackgroundColor(node);
+            Paint fc = rendererContext.getForegroundColor(node, bc == null);
             NTxPoint2D[] points2 = Arrays.stream(points)
                     .map(p -> new NTxPoint2D(
                             p.x / 100 * b.getWidth() + b.getMinX(),
@@ -49,12 +50,11 @@ public final class NTxPolygonHelper {
             g.draw2D(NTxElement2DFactory.polygon(points2)
                     .setFill(bc != null)
                     .setContour(fc != null)
-                    .setLineStroke(ctx.resolveStroke(node))
+                    .setLineStroke(rendererContext.resolveStroke(node))
                     .setBackgroundPaint(bc)
                     .setLinePaint(fc));
-            ctx.paintBorderLine(node, b);
         }
-        ctx.paintDebugBox(node, b);
+        rendererContext.drawContour();
     }
 
 }
