@@ -4,9 +4,7 @@ import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.parser.NTxNodeParser;
 import net.thevpc.ntexup.api.renderer.NTxNodeRenderer;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererFlavor;
-import net.thevpc.ntexup.api.util.NTxUtils;
-import net.thevpc.ntexup.engine.ext.NTxNodeCustomBuilderContextImpl;
-import net.thevpc.nuts.NOut;
+import net.thevpc.ntexup.engine.ext.NTxNodeBuilderContextImpl;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 
@@ -14,7 +12,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class NTxNodeBuilderList extends NtxServiceListImpl2<NTxNodeBuilder> {
-    private List<NTxNodeCustomBuilderContextImpl> customBuilderContexts = new ArrayList<>();
+    private List<NTxNodeBuilderContextImpl> customBuilderContexts = new ArrayList<>();
 
     public NTxNodeBuilderList(DefaultNTxEngine engine) {
         super("node builder", NTxNodeBuilder.class, engine);
@@ -29,7 +27,7 @@ public class NTxNodeBuilderList extends NtxServiceListImpl2<NTxNodeBuilder> {
     public void dump(Consumer<NMsg> out) {
         super.dump(out);
         out.accept(NMsg.ofC("%s services : %s", NMsg.ofStyledPrimary1("builderContexts"), customBuilderContexts.size()));
-        for (NTxNodeCustomBuilderContextImpl e : customBuilderContexts) {
+        for (NTxNodeBuilderContextImpl e : customBuilderContexts) {
             Set<String> a = new LinkedHashSet<>(Arrays.asList(e.aliases()));
             if (a.isEmpty()) {
                 out.accept(NMsg.ofC("\t [BASE] %s : %s", NMsg.ofStyledPrimary1(e.id()), e.builder().getClass()));
@@ -41,7 +39,7 @@ public class NTxNodeBuilderList extends NtxServiceListImpl2<NTxNodeBuilder> {
 
     @Override
     protected void onAfterNewService(NTxNodeBuilder h, boolean custom) {
-        NTxNodeCustomBuilderContextImpl b = new NTxNodeCustomBuilderContextImpl(h, engine);
+        NTxNodeBuilderContextImpl b = new NTxNodeBuilderContextImpl(h, engine);
         h.build(b);
         b.compile();
         String id = b.id();
@@ -75,7 +73,7 @@ public class NTxNodeBuilderList extends NtxServiceListImpl2<NTxNodeBuilder> {
         }
     }
 
-    public List<NTxNodeCustomBuilderContextImpl> builderContexts() {
+    public List<NTxNodeBuilderContextImpl> builderContexts() {
         return customBuilderContexts;
     }
 }
