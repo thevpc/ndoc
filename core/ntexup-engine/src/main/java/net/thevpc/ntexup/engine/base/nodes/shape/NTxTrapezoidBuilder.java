@@ -1,25 +1,24 @@
 package net.thevpc.ntexup.engine.base.nodes.shape;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
-import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
 public class NTxTrapezoidBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.TRAPEZOID)
-                .renderComponent(this::renderMain)
+                .renderComponent((rendererContext, builderContext1) -> renderMain(rendererContext, builderContext1))
         ;
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
-        rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
         double x1 = 20;
         double x2 = 20;
         NTxPoint2D[] points = new NTxPoint2D[]{
@@ -28,6 +27,6 @@ public class NTxTrapezoidBuilder implements NTxNodeBuilder {
                 new NTxPoint2D(100 - x2, 0),
                 new NTxPoint2D(x1, 0),
         };
-        NTxPolygonHelper.renderPoints(p, points, rendererContext);
+        NTxPolygonHelper.renderPoints(points, rendererContext);
     }
 }
