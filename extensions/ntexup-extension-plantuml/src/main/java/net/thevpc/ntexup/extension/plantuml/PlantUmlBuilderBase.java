@@ -5,7 +5,7 @@ import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.source.NTxSource;
@@ -43,26 +43,26 @@ public abstract class PlantUmlBuilderBase implements NTxNodeBuilder {
     }
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(id)
                 .alias(aliases)
-                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
-                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .renderComponent(this::renderMain)
+                .parseParam().matchesNamedPair(NTxPropName.VALUE,NTxPropName.FILE).then()
+                .parseParam().matchesAnyNonPair().storeFirstMissingName(NTxPropName.VALUE).then()
+                .renderComponent((ctx, builderContext1) -> renderMain(ctx, builderContext1))
         ;
     }
 
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        String txt = NTxValue.of(p.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orNull();
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        String txt = NTxValue.of(node.getPropertyValue(NTxPropName.VALUE).orNull()).asStringOrName().orNull();
         if (NBlankable.isBlank(txt)) {
             return;
         }
         String mode = NTxUtils.uid(this.mode);
-        NTxGraphics g = ctx.graphics();
-        NTxBounds2 b = ctx.selfBounds(p);
+        NTxGraphics g = rendererContext.graphics();
+        NTxBounds2 b = rendererContext.selfBounds();
         double x = b.getX();
         double y = b.getY();
         BufferedImage image = null;
@@ -113,29 +113,29 @@ public abstract class PlantUmlBuilderBase implements NTxNodeBuilder {
                 reader.outputImage(bos);
                 image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
             } catch (Exception ex) {
-                NTxSource src = NTxUtils.sourceOf(p);
-                ctx.log().log(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src);
+                NTxSource src = NTxUtils.sourceOf(node);
+                rendererContext.log().log(NMsg.ofC("Unable to evaluate UML : %s", ex).asSevere(), src);
             }
         }
         if (image != null) {
 
-            if (!ctx.isDry()) {
-                if (ctx.applyBackgroundColor(p)) {
+            if (!rendererContext.isDry()) {
+                if (rendererContext.applyBackgroundColor(node)) {
                     g.fillRect((int) x, (int) y, NTxUtils.intOf(b.getWidth()), NTxUtils.intOf(b.getHeight()));
                 }
 
-                ctx.applyForeground(p, false);
+                rendererContext.applyForeground(node, false);
                 if (image != null) {
                     // would resize?
                     int w = NTxUtils.intOf(b.getWidth());
                     int h = NTxUtils.intOf(b.getHeight());
                     if (w > 0 && h > 0) {
-                        BufferedImage resized = ctx.engine().tools().resizeBufferedImage(image, w, h);
+                        BufferedImage resized = rendererContext.engine().tools().resizeBufferedImage(image, w, h);
                         g.drawImage(resized, (int) x, (int) y, null);
                     }
                 }
             }
-            ctx.paintDebugBox(p, b);
+            rendererContext.drawContour();
         }
     }
 
