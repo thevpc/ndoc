@@ -5,9 +5,9 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -18,25 +18,26 @@ public class NTxArcBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.ARC)
-                .parseParam().named(NTxPropName.FROM, NTxPropName.TO).then()
-                .renderComponent(this::renderMain);
+                .parseParam().matchesNamedPair(NTxPropName.FROM, NTxPropName.TO).then()
+                .renderComponent((ctx, builderContext1) -> renderMain(ctx, builderContext1));
     }
 
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = ctx.selfBounds(p, null, null);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 b = rendererContext.selfBounds(node, null, null);
         double x = b.getX();
         double y = b.getY();
-        double startAngle = NTxValueByType.getDouble(p,ctx, NTxPropName.FROM).orElse(0.0);
-        double endAngle = NTxValueByType.getDouble(p,ctx, NTxPropName.TO).orElse(0.0);
-        NTxGraphics g = ctx.graphics();
-        if (!ctx.isDry()) {
-            ctx.applyForeground(p , true);
+        double startAngle = NTxValueByType.getDouble(node,rendererContext, NTxPropName.FROM).orElse(0.0);
+        double endAngle = NTxValueByType.getDouble(node,rendererContext, NTxPropName.TO).orElse(0.0);
+        NTxGraphics g = rendererContext.graphics();
+        if (!rendererContext.isDry()) {
+            rendererContext.applyForeground(node , true);
             Stroke oldStroke=g.getStroke();
-            Stroke stroke= ctx.resolveStroke(p);
+            Stroke stroke= rendererContext.resolveStroke(node);
             if(stroke!=null){
                 g.setStroke(stroke);
             }
@@ -46,7 +47,7 @@ public class NTxArcBuilder implements NTxNodeBuilder {
             );
             g.setStroke(oldStroke);
         }
-        ctx.paintDebugBox(p, b);
+        rendererContext.drawContour();
     }
 
 //    public void renderMain(NTxNode p, NTxNodeRendererContext ctx) {
