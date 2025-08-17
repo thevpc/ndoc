@@ -5,8 +5,8 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -16,7 +16,7 @@ public class NTxEllipsoidBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.ELLIPSOID)
                 .renderComponent(this::renderMain)
@@ -24,24 +24,25 @@ public class NTxEllipsoidBuilder implements NTxNodeBuilder {
         defaultStyles.set(NTxPropName.PRESERVE_ASPECT_RATIO, NElement.ofTrue());
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = ctx.selfBounds(p, null, null);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 b = rendererContext.selfBounds(node, null, null);
         double x = b.getX();
         double y = b.getY();
-        NTxGraphics g = ctx.graphics();
+        NTxGraphics g = rendererContext.graphics();
         boolean someBG = false;
-        if (!ctx.isDry()) {
-            if (someBG = ctx.applyBackgroundColor((NTxNode) p)) {
+        if (!rendererContext.isDry()) {
+            if (someBG = rendererContext.applyBackgroundColor((NTxNode) node)) {
                 g.fillSphere((int) x, (int) y, NTxUtils.intOf(b.getWidth()), NTxUtils.intOf(b.getHeight()), 45, 50f);
             }
-            if (ctx.applyForeground(p, !someBG)) {
-                ctx.withStroke(p,()->{
+            if (rendererContext.applyForeground(node, !someBG)) {
+                rendererContext.withStroke(node,()->{
                     g.drawOval((int) x, (int) y, NTxUtils.intOf(b.getWidth()), NTxUtils.intOf(b.getHeight()));
                 });
             }
         }
-        ctx.paintDebugBox(p, b, false);
+        rendererContext.drawContour();
     }
 
 }
