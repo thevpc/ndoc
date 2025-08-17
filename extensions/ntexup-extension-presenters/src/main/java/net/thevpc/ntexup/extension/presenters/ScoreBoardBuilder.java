@@ -1,8 +1,8 @@
 package net.thevpc.ntexup.extension.presenters;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
@@ -16,25 +16,24 @@ import java.awt.*;
 public class ScoreBoardBuilder implements NTxNodeBuilder {
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id("scoreboard")
-                .renderComponent(this::renderMain)
+                .renderComponent((ctx, builderContext1) -> renderMain(ctx, builderContext1))
         ;
     }
 
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        NTxBounds2 b = ctx.selfBounds(p, null, null);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        NTxBounds2 b = rendererContext.selfBounds(node, null, null);
 
-        Paint color = ctx.getForegroundColor(p, true);
+        Paint color = rendererContext.getForegroundColor(node, true);
 
-        NTxGraphics g = ctx.graphics();
-        if (!ctx.isDry()) {
+        NTxGraphics g = rendererContext.graphics();
+        if (!rendererContext.isDry()) {
             g.setPaint(color);
-
-
-            ctx.paintDebugBox(p , b);
         }
+        rendererContext.drawContour();
     }
 
 }
