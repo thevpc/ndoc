@@ -26,9 +26,9 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
     }
 
     @Override
-    public NTxSizeRequirements sizeRequirements(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxBounds2 s = selfBounds(p, ctx);
-        NTxBounds2 bb = ctx.getBounds();
+    public NTxSizeRequirements sizeRequirements(NTxNodeRendererContext ctx) {
+        NTxBounds2 s = ctx.selfBounds();
+        NTxBounds2 bb = ctx.parentBounds();
         return new NTxSizeRequirements(
                 s.getWidth(),
                 Math.max(bb.getWidth(), s.getWidth()),
@@ -43,38 +43,60 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
         return ctx.selfBounds(p, null, null);
     }
 
-    public NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext ctx) {
-        return defaultSelfBounds(p, ctx);
+    public NTxBounds2 selfBounds(NTxNodeRendererContext ctx) {
+        return defaultSelfBounds(ctx);
     }
 
-    public NTxBounds2 defaultSelfBounds(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxTextRendererBuilder helper = createRichTextHelper(p, ctx);
-        NTxBounds2 bounds2 = helper.computeBound(ctx);
-        return NTxValueByName.selfBounds(p, new NTxDouble2(bounds2.getWidth(), bounds2.getHeight()), null, ctx);
+    public NTxBounds2 defaultSelfBounds(NTxNodeRendererContext ctx) {
+        Cache0 renderInfo = renderInfo0(ctx);
+        return NTxValueByName.selfBounds(ctx.node(), new NTxDouble2(renderInfo.computedBound.getWidth(), renderInfo.computedBound.getHeight()), null, ctx);
     }
 
-    protected abstract NTxTextRendererBuilder createRichTextHelper(NTxNode p, NTxNodeRendererContext ctx);
+    protected abstract NTxTextRendererBuilder createRichTextHelper(NTxNodeRendererContext ctx);
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
+    static class Cache0 {
+        NTxTextRendererBuilder helper;
+        NTxBounds2 computedBound;
+    }
+    static class Cache {
+        NTxBounds2 bgBounds0;
+        NTxBounds2 bgBounds;
+        NTxBounds2 selfBounds;
+    }
+    private Cache0 renderInfo0(NTxNodeRendererContext ctx){
+        return ctx.node().getAndSetRenderCache(Cache0.class,ctx.isSomeChange(),()->{
+            Cache0 ri = new Cache0();
+            ri.helper = createRichTextHelper(ctx);
+            ri.computedBound=ri.helper.computeBound(ctx);
+            return ri;
+        }).get();
+    }
+    private Cache renderInfo(NTxNode p, NTxNodeRendererContext ctx,NTxBounds2 selfBounds0){
+        return p.getAndSetRenderCache(Cache.class,ctx.isSomeChange(),()->{
+            Cache ri = new Cache();
+            ri.bgBounds0 = bgBounds(p, ctx);
+            ri.bgBounds = ri.bgBounds0;
+            ri.selfBounds = selfBounds0;
+            ri.bgBounds = ri.bgBounds.expand(ri.selfBounds);
+            return ri;
+        }).get();
+    }
+
+    public void renderMain(NTxNodeRendererContext ctx) {
+        ctx = ctx.withDefaultStyles(defaultStyles);
+        NTxNode node = ctx.node();
         NTxGraphics g = ctx.graphics();
-        NTxNodeRendererUtils.applyFont(p, g, ctx);
-
-
-        NTxTextRendererBuilder helper = createRichTextHelper(p, ctx);
-
-        NTxBounds2 bgBounds0 = bgBounds(p, ctx);
-        NTxBounds2 bgBounds = bgBounds0;
-        NTxBounds2 selfBounds = selfBounds(p, ctx);
-        bgBounds = bgBounds.expand(selfBounds);
+        NTxNodeRendererUtils.applyFont(node, g, ctx);
 
         NTxNodeRendererContext finalCtx = ctx;
-        if (NTxValueByName.getDebugLevel(p, ctx) >= 10) {
+        Cache0 renderInfo0 = renderInfo0(ctx);
+        Cache renderInfo = renderInfo(node,ctx,ctx.selfBounds());
+        if (NTxValueByName.getDebugLevel(node, ctx) >= 10) {
             g.debugString(
                     "Plain:\n"
-                            + "expected=" + bgBounds0 + "\n"
-                            + "fullSize=" + selfBounds + "\n"
-                            + "newExpectedBounds=" + bgBounds + "\n"
+                            + "expected=" + renderInfo.bgBounds0 + "\n"
+                            + "fullSize=" + renderInfo.selfBounds + "\n"
+                            + "newExpectedBounds=" + renderInfo.bgBounds + "\n"
                             + "curr: "
                             + Arrays.asList(
                                     NTxPropName.SIZE,
@@ -82,7 +104,7 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
                                     NTxPropName.POSITION
                             )
                             .stream().map(x
-                                    -> p.getProperty(x).orNull()
+                                    -> node.getProperty(x).orNull()
                             ).filter(x -> x != null).collect(Collectors.toList())
                             + "\n"
                             + "eff: "
@@ -93,11 +115,11 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
                             )
                             .stream().map(x
                                             -> {
-                                        NElement n = finalCtx.computePropertyValue(p, x).orNull();
+                                        NElement n = finalCtx.computePropertyValue(node, x).orNull();
                                         if (n == null) {
                                             return n;
                                         }
-                                        return new NTxProp(x, n, p);
+                                        return new NTxProp(x, n, node);
                                     }
                             ).filter(x -> x != null).collect(Collectors.toList())
                             + "\n",
@@ -105,8 +127,7 @@ public abstract class NTxTextBaseRenderer extends NTxNodeRendererBase {
             );
         }
 
-        helper.computeBound(ctx);
-        helper.render(p, ctx, bgBounds, selfBounds);
-        NTxNodeRendererUtils.paintDebugBox(p, ctx, g, selfBounds);
+        renderInfo0.helper.render(node, ctx, renderInfo.bgBounds, renderInfo.selfBounds);
+        NTxNodeRendererUtils.drawDebugBox(node, ctx, g, renderInfo.selfBounds);
     }
 }
