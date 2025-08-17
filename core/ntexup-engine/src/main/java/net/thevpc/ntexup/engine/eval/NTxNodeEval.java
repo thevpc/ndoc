@@ -282,6 +282,13 @@ public class NTxNodeEval implements NTxObjectEvalContext {
                     }
                     break;
                 }
+                case PARAMETRIZED_OBJECT:
+                case OBJECT:
+                case NAMED_OBJECT:
+                {
+                    // this is a complex object
+                    break;
+                }
                 default: {
                     NElementTypeGroup nElementTypeGroup = ee.type().typeGroup();
                     if (nElementTypeGroup == NElementTypeGroup.NUMBER || nElementTypeGroup == NElementTypeGroup.NULL || nElementTypeGroup == NElementTypeGroup.STRING || nElementTypeGroup == NElementTypeGroup.BOOLEAN || nElementTypeGroup == NElementTypeGroup.CUSTOM) {
