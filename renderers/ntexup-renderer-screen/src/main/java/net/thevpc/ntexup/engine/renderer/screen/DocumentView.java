@@ -96,7 +96,7 @@ public class DocumentView {
                 return;
             }
             if (compiledDocument != null) {
-                NTxSourceMonitor r = compiledDocument.compiledDocument().resources();
+                NTxSourceMonitor r = compiledDocument.compiledDocument().sourceMonitor();
                 if (r.changed()) {
                     reloadDocumentAsync();
                 }
@@ -240,7 +240,7 @@ public class DocumentView {
             }
             listener.onChangedCompiledDocument(compiledDocument);
 
-            compiledDocument.compiledDocument().resources().save();
+            compiledDocument.compiledDocument().sourceMonitor().save();
             pageViews.clear();
             contentPane.removeAll();
             pagesMapById.clear();
