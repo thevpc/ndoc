@@ -60,7 +60,10 @@ public class NTxUtils {
         if (o.isPresent()) {
             return element;
         }
-        return element.builder().addAnnotation(COMPILER_DECLARATION_PATH, NElement.ofString(path)).build();
+        if(element.isString()) {
+            return element.builder().addAnnotation(COMPILER_DECLARATION_PATH, NElement.ofString(path)).build();
+        }
+        return element;
     }
 
     public static List<NTxNode> nodePath(NTxNode node) {
