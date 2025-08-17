@@ -19,14 +19,15 @@ public class NTxPageRenderer extends NTxNodeRendererBase {
     }
 
     @Override
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxBounds2 b = ctx.selfBounds(p, null, null);
+    public void renderMain(NTxNodeRendererContext ctx) {
+        NTxBounds2 b = ctx.selfBounds(ctx.node(), null, null);
 
-         drawBackground(p,ctx.graphics(), ctx, b);
+        drawBackground(ctx.node(), ctx.graphics(), ctx, b);
 //        drawGrid(ctx.graphics(), b);
 
-        for (NTxNode child : p.children()) {
-            ctx.render(child, ctx);
+        for (NTxNode child : ctx.node().children()) {
+            ctx.withChild(child, b)
+                    .render();
         }
         //perhaps add page sum ??
     }
@@ -65,7 +66,7 @@ public class NTxPageRenderer extends NTxNodeRendererBase {
         g.setStroke(os);
     }
 
-    private void drawBackground(NTxNode p,NTxGraphics g, NTxNodeRendererContext rendererContext, NTxBounds2 b) {
+    private void drawBackground(NTxNode p, NTxGraphics g, NTxNodeRendererContext rendererContext, NTxBounds2 b) {
         NTxNodeRendererUtils.paintBackground(p, rendererContext, g, b);
 
 //        int width = b.getWidth().intValue();
