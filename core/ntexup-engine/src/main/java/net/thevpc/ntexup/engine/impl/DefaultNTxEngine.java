@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
+import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.*;
 import net.thevpc.ntexup.api.document.style.DefaultNTxNodeSelector;
 import net.thevpc.ntexup.api.document.style.NTxProp;
@@ -33,10 +34,10 @@ import net.thevpc.ntexup.api.eval.NTxVar;
 import net.thevpc.ntexup.api.parser.*;
 import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.ntexup.api.util.NTxUtils;
-import net.thevpc.ntexup.engine.renderer.NTxNodeRendererContextBase;
+import net.thevpc.ntexup.engine.renderer.DefaultNTxNodeRendererContext;
 import net.thevpc.ntexup.engine.util.NTxElementUtils;
 import net.thevpc.ntexup.engine.document.DefaultNTxNode;
-import net.thevpc.ntexup.engine.ext.NTxNodeCustomBuilderContextImpl;
+import net.thevpc.ntexup.engine.ext.NTxNodeBuilderContextImpl;
 import net.thevpc.ntexup.engine.log.NTxMessageList;
 import net.thevpc.ntexup.engine.log.SilentNTxLogger;
 import net.thevpc.ntexup.engine.parser.*;
@@ -64,7 +65,7 @@ public class DefaultNTxEngine implements NTxEngine {
 
     NTxNodeParserList nodeTypeFactories;
     private NTxEngineTools tools;
-    //    private List<NTxNodeCustomBuilderContextImpl> customBuilderContexts;
+    //    private List<NTxNodeBuilderContextImpl> customBuilderContexts;
     private NTxDocumentFactory factory;
     private NTxPropCalculator propCalculator = new NTxPropCalculator();
     private NTxFunctionList functions;
@@ -297,7 +298,7 @@ public class DefaultNTxEngine implements NTxEngine {
         return new ArrayList<>(nodeTypeFactories0().values());
     }
 
-    public List<NTxNodeCustomBuilderContextImpl> builderContexts() {
+    public List<NTxNodeBuilderContextImpl> builderContexts() {
         return builderContexts.builderContexts();
     }
 
@@ -428,7 +429,7 @@ public class DefaultNTxEngine implements NTxEngine {
 
                 } else if (path.isDirectory()) {
                     NTxDocument document = documentFactory().ofDocument(source);
-                    document.resources().add(path.resolve(NTxEngineUtils.NTEXUP_EXT_STAR));
+                    document.sourceMonitor().add(path.resolve(NTxEngineUtils.NTEXUP_EXT_STAR));
                     List<NPath> all = path.stream().filter(x -> x.isRegularFile() && NTxEngineUtils.isNTexupFile(x)).toList();
                     if (all.isEmpty()) {
                         log().log(
@@ -571,7 +572,7 @@ public class DefaultNTxEngine implements NTxEngine {
             return NOptional.ofNamedEmpty("document");
         }
         NTxDocument docd = documentFactory().ofDocument(source);
-        docd.resources().add(source);
+        docd.sourceMonitor().add(source);
         docd.root().setSource(source);
         NTxNodeFactoryParseContext newContext = new DefaultNTxNodeFactoryParseContext(
                 docd,
@@ -592,7 +593,7 @@ public class DefaultNTxEngine implements NTxEngine {
 
     private NOptional<NTxItem> loadNode0(NTxNode into, NPath path, NTxDocument document) {
         NTxSource source = NTxSourceFactory.of(path);
-        document.resources().add(source);
+        document.sourceMonitor().add(source);
         NOptional<NElement> u = new NTxDocStreamParser(this).parsePath(path, source);
         if (!u.isPresent()) {
             return NOptional.ofEmpty(u.getMessage());
@@ -776,6 +777,9 @@ public class DefaultNTxEngine implements NTxEngine {
 
     @Override
     public NElement evalExpression(NElement expression, NTxNode node, NTxVarProvider varProvider) {
+        if (expression == null) {
+            return null;
+        }
         String baseSrc = NTxUtils.findCompilerDeclarationPath(expression).orNull();
         NTxNodeEval ne = new NTxNodeEval(this, varProvider);
         NElement u = ne.eval(NTxElementUtils.toElement(expression), node);
@@ -827,7 +831,8 @@ public class DefaultNTxEngine implements NTxEngine {
 
 
     @Override
-    public BufferedImage renderImage(NTxNode node, NTxNodeRendererConfig config) {
+    public BufferedImage renderImage(NTxCompiledPage page, NTxNodeRendererConfig config) {
+        NTxNode node = page.compiledPage();
         int sizeWidth = config.getWidth();
         int sizeHeight = config.getHeight();
         Dimension dimension = new Dimension(sizeWidth, sizeHeight);
@@ -845,22 +850,18 @@ public class DefaultNTxEngine implements NTxEngine {
 
         NTxGraphics hg = this.createGraphics(g);
         NTxNodeRenderer renderer = getRenderer(node.type()).get();
-        renderer.render(node, new NTxNodeRendererContextBase(this, hg, dimension) {
-            {
-                if (capabilities != null) {
-                    for (Map.Entry<String, Object> cc : capabilities.entrySet()) {
-                        setCapability(cc.getKey(), cc.getValue());
-                    }
-                }
-            }
-        });
+        DefaultNTxNodeRendererContext context = new DefaultNTxNodeRendererContext(node, this, hg, null,
+                new NTxBounds2(0, 0, dimension.getWidth(), dimension.getHeight()),
+                new NTxBounds2(0, 0, dimension.getWidth(), dimension.getHeight()),
+                page, true, System.currentTimeMillis(), capabilities, null, null, null, false);
+        renderer.render(context);
         g.dispose();
         return newImage;
     }
 
     @Override
-    public byte[] renderImageBytes(NTxNode node, NTxNodeRendererConfig config) {
-        BufferedImage newImage = renderImage(node, config);
+    public byte[] renderImageBytes(NTxCompiledPage page, NTxNodeRendererConfig config) {
+        BufferedImage newImage = renderImage(page, config);
         String imageTypeOk = "png";
         if (config.getCapabilities() != null) {
             Object imageType = config.getCapabilities().get("imageType");
