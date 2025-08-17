@@ -5,7 +5,7 @@
 package net.thevpc.ntexup.engine.base.nodes.text;
 
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
@@ -22,18 +22,16 @@ import java.util.*;
 public class NTxTextBuilder implements NTxNodeBuilder {
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.TEXT)
                 .parseAny(x -> true)
-                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
-                .parseDefaultParams()
-                .parseParam().matchesAnyNonPair().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesNamedPair(NTxPropName.VALUE,NTxPropName.FILE).then()
+                .parseParam().matchesAnyNonPair().storeFirstMissingName(NTxPropName.VALUE).then()
                 .renderText().buildText(this::buildText).parseTokens(this::parseTokens)
         ;
     }
 
-    public void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext builderContext) {
+    public void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder, NTxNodeBuilderContext builderContext) {
         NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, new NReservedSimpleCharQueue(ctx.engine().tools().trimBloc(text).toCharArray()), builderContext);
         List<NTxTextToken> all = aa.parse();
         for (NTxTextToken a : all) {
@@ -57,7 +55,7 @@ public class NTxTextBuilder implements NTxNodeBuilder {
         }
     }
 
-    public List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext ctx, NTxNodeCustomBuilderContext builderContext) {
+    public List<NTxTextToken> parseTokens(NTxTextRendererFlavorParseContext ctx, NTxNodeBuilderContext builderContext) {
         NTxTextTokenParseHelper aa = new NTxTextTokenParseHelper(ctx, builderContext);
         return aa.parse();
     }
