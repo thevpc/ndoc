@@ -254,6 +254,6 @@ public class NTxTextRendererBuilderImpl implements NTxTextRendererBuilder {
                 }
             }
         }
-        NTxNodeRendererUtils.paintBorderLine(p, rendererContext, g, selfBounds);
+        rendererContext.drawContour();
     }
 }
