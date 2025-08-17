@@ -1,0 +1,17 @@
+page{
+    grid(2,2){
+        styles:{
+            "*":{
+                font-size:10%P
+            }
+        }
+        ul{
+            text("Hello
+            ####World####",
+                at:top-left,componentName:"t")
+//            ¶ Bye ####World####
+            rectangle(background:red)
+            rectangle(background:blue)
+        }
+    }
+}
