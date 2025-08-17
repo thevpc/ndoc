@@ -1,0 +1,13 @@
+page{
+    grid(2,2){
+        styles:{
+            "*":{
+                font-size:10%P
+            }
+        }
+        ul{
+            ¶ Hello ####World####
+            ¶ Bye ####World####
+        }
+    }
+}
