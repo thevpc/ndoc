@@ -1,8 +1,11 @@
 package net.thevpc.ntexup.app.backend.controller;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.NTxDocument;
 import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
 import net.thevpc.ntexup.app.backend.service.GitService;
 import net.thevpc.ntexup.engine.impl.DefaultNTxEngine;
 import net.thevpc.nuts.io.NPath;
@@ -116,13 +119,16 @@ public class RepositoryController {
                     .normalize();
 
             NTxEngine e = new DefaultNTxEngine();
-            NTxDocument doc = e.loadDocument(file).get();
-            List<NTxNode> pages = doc.pages();
+            NTxCompiledDocument doc = e.loadCompiledDocument(file);
+            List<NTxCompiledPage> pages = doc.pages();
             if (pageNumber >= 0 && pageNumber < pages.size()) {
-                GitService gitService = new GitService(engine);
                 int sizeWidth = 1200;
                 int sizeHeight = 1000;
-                byte[] imageData = gitService.createPageImage(pages.get(pageNumber), sizeWidth, sizeHeight);
+                byte[] imageData = engine.renderImageBytes(
+                        pages.get(pageNumber),
+                        new NTxNodeRendererConfig(sizeWidth, sizeHeight)
+                                .withAnimate(false)
+                );
                 return ResponseEntity
                         .ok()
                         .contentType(MediaType.IMAGE_PNG)
