@@ -19,16 +19,16 @@ import java.awt.*;
 import java.util.List;
 
 class NTxDrawContextRenderCompiler {
-    public static NTxDrawContext compile(NTxNode p, NTxNodeRendererContext renderContext){
-        double[] xValues = NTxValue.of(renderContext.engine().evalExpression(p.getPropertyValue("x").orElse(NElement.ofDoubleArray(NTxNumberUtils.dsteps(100,-100,1))), p, renderContext.varProvider())).asDoubleArray().orElse(NTxNumberUtils.dsteps(100,-100,1));
+    public static NTxDrawContext compile(NTxNode p, NTxNodeRendererContext rendererContext){
+        double[] xValues = NTxValue.of(rendererContext.engine().evalExpression(p.getPropertyValue("x").orElse(NElement.ofDoubleArray(NTxNumberUtils.dsteps(100,-100,1))), p, rendererContext.varProvider())).asDoubleArray().orElse(NTxNumberUtils.dsteps(100,-100,1));
         double minY = -100;
         double maxY = 100;
         boolean zoom = true;
         NTxMinMax minMaxY = new NTxMinMax();
 
-        Paint color = renderContext.getForegroundColor(p, true);
+        Paint color = rendererContext.getForegroundColor(p, true);
 
-        NTxBounds2 bounds = renderContext.getBounds();
+        NTxBounds2 bounds = rendererContext.parentBounds();
         NTxDrawContext drawContext = new NTxDrawContext(bounds, xValues, minY, maxY, zoom, minMaxY);
         java.util.List<NTxFunctionPlotInfo> plotDefinitions = (List<NTxFunctionPlotInfo>) p.getUserObject("def").orNull();
 
@@ -40,17 +40,17 @@ class NTxDrawContextRenderCompiler {
                 pd.color = (Color) color;
             }
             if (pld.color != null) {
-                NElement ev = renderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
+                NElement ev = rendererContext.engine().evalExpression(pld.color, p, rendererContext.varProvider());
                 pd.color = NTxValue.of(ev).asColor().orElse(pd.color);
             }
             if (pld.title != null) {
-                NElement ev = renderContext.engine().evalExpression(pld.title, p, renderContext.varProvider());
+                NElement ev = rendererContext.engine().evalExpression(pld.title, p, rendererContext.varProvider());
                 pd.title = NTxValue.of(ev).asString().orNull();
             }
             if (pld.stroke != null) {
-                NElement ev = renderContext.engine().evalExpression(pld.color, p, renderContext.varProvider());
+                NElement ev = rendererContext.engine().evalExpression(pld.color, p, rendererContext.varProvider());
                 if (ev != null && !ev.isNull()) {
-                    Stroke stroke = renderContext.graphics().createStroke(ev);
+                    Stroke stroke = rendererContext.graphics().createStroke(ev);
                     if (stroke != null) {
                         pd.stroke = stroke;
                     }
@@ -59,12 +59,12 @@ class NTxDrawContextRenderCompiler {
 
             switch (pd.pld.source){
                 case FUNCTION_X:{
-                    NDoubleFunction ff = NTxPlotNExprEvaluator.compileFunctionX(pld, renderContext);
+                    NDoubleFunction ff = NTxPlotNExprEvaluator.compileFunctionX(pld, rendererContext);
                     if (ff != null) {
                         NChronometer c = NChronometer.startNow();
                         pd.prepareX(ff, xValues, minMaxY);
                         c.stop();
-                        renderContext.engine().log().log(NMsg.ofC("FUNCTION_X : %s",c));
+                        rendererContext.engine().log().log(NMsg.ofC("FUNCTION_X : %s",c));
                         drawContext.allData.add(pd);
                     }
                     break;
