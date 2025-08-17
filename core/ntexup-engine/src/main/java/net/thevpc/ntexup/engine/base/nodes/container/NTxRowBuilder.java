@@ -10,8 +10,8 @@ import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.engine.base.nodes.container.util.NTxGridRendererHelper;
 import net.thevpc.nuts.elem.NElement;
@@ -23,9 +23,9 @@ public class NTxRowBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.ROW)
-                .parseParam().named(NTxPropName.COLUMNS).then()
+                .parseParam().matchesNamedPair(NTxPropName.COLUMNS).then()
                 .parseParam((info, buildContext) -> {
                     NElement p = info.peek();
                     if(p.isInt()) {
@@ -42,21 +42,22 @@ public class NTxRowBuilder implements NTxNodeBuilder {
     }
 
 
-    public NTxBounds2 selfBounds(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 expectedBounds = ctx.defaultSelfBounds(p);
-//        HGraphics g = ctx.graphics();
+    public NTxBounds2 selfBounds(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 expectedBounds = rendererContext.defaultSelfBounds();
+//        HGraphics g = rendererContext.graphics();
 //        g.setColor(Color.RED);
 //        g.drawRect(expectedBounds);
-        NTxGridRendererHelper h = new NTxGridRendererHelper(p.children());
-        return h.computeBound(p, ctx, expectedBounds);
+        NTxGridRendererHelper h = new NTxGridRendererHelper(node.children());
+        return h.computeBound(node, rendererContext, expectedBounds);
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 expectedBounds = ctx.selfBounds(p);
-        NTxGridRendererHelper h = new NTxGridRendererHelper(p.children());
-        h.render(p, ctx, expectedBounds);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 expectedBounds = rendererContext.selfBounds();
+        NTxGridRendererHelper h = new NTxGridRendererHelper(rendererContext.node().children());
+        h.render(rendererContext, expectedBounds);
     }
 
 
