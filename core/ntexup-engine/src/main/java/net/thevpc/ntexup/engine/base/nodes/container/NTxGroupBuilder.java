@@ -8,9 +8,8 @@ import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
 import java.util.List;
@@ -23,29 +22,27 @@ public class NTxGroupBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.GROUP)
-                .renderComponent(this::renderMain)
+                .renderComponent(this::render)
         ;
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 selfBounds = ctx.selfBounds(p);
-        NTxGraphics g = ctx.graphics();
-        NTxNodeRendererContext ctx2 = ctx.withBounds(p, selfBounds);
-        if (!ctx2.isDry()) {
-            ctx2.paintBackground(p, selfBounds);
+    public void render(NTxNodeRendererContext ctx, NTxNodeBuilderContext builderContext) {
+        NTxNode node = ctx.node();
+        ctx = ctx.withDefaultStyles(defaultStyles);
+        NTxBounds2 selfBounds = ctx.selfBounds();
+        if (!ctx.isDry()) {
+            ctx.paintBackground(node, selfBounds);
         }
         NTxNodeRendererContext finalCtx = ctx;
-        List<NTxNode> texts = p.children()
-                .stream().filter(x -> finalCtx.isVisible(x)).collect(Collectors.toList());
+        List<NTxNode> texts = node.children()
+                .stream().filter(x -> finalCtx.withChild(x,finalCtx.parentBounds()).isVisible(x)).collect(Collectors.toList());
         for (NTxNode text : texts) {
-            ctx2.render(text);
+            NTxNodeRendererContext ctx3 = ctx.withChild(text,selfBounds);
+            ctx3.render();
         }
-        if (!ctx2.isDry()) {
-            ctx2.paintBorderLine(p, selfBounds);
-        }
+        ctx.drawContour();
     }
 
 }
