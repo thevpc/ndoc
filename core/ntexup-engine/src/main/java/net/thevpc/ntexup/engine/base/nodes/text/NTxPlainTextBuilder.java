@@ -5,7 +5,7 @@
 package net.thevpc.ntexup.engine.base.nodes.text;
 
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
@@ -24,17 +24,15 @@ import net.thevpc.nuts.util.NStringUtils;
 public class NTxPlainTextBuilder implements NTxNodeBuilder {
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.PLAIN)
-                .parseParam().named(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
-                .parseParam().named(NTxPropName.FILE).store(NTxPropName.VALUE).resolvedAsTrimmedPathTextContent().then()
-                .parseDefaultParams()
-                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).resolvedAsTrimmedBloc().then()
+                .parseParam().matchesNamedPair(NTxPropName.VALUE,NTxPropName.FILE).then()
+                .parseParam().matchesAnyNonPair().storeFirstMissingName(NTxPropName.VALUE).then()
                 .renderText().buildText(this::renderTextBuildText)
         ;
     }
 
-    private void renderTextBuildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext renderContext, NTxTextRendererBuilder builder, NTxNodeCustomBuilderContext buildContext) {
+    private void renderTextBuildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext rendererContext, NTxTextRendererBuilder builder, NTxNodeBuilderContext buildContext) {
 //        Paint fg = rendererContext.getForegroundColor(p,true);
         NElement d = p.getPropertyValue(NTxPropName.VALUE).orElse(NElement.ofString(""));
 
@@ -43,7 +41,7 @@ public class NTxPlainTextBuilder implements NTxNodeBuilder {
         for (int i = 0; i < allLines.length; i++) {
             allLines[i] = allLines[i].trim();
             NTxRichTextToken c = new NTxRichTextToken(NTxRichTextTokenType.PLAIN, allLines[i]);
-            NTxGraphics g = renderContext.graphics();
+            NTxGraphics g = rendererContext.graphics();
             g.setFont(c.textOptions.baseFont);
             c.bounds = g.getStringBounds(c.text);
             builder.nextLine().addToken(c);
