@@ -142,9 +142,9 @@ public interface NTxEngine {
 
     List<NTxTextRendererFlavor> textRendererFlavors();
 
-    BufferedImage renderImage(NTxNode node, NTxNodeRendererConfig config);
+    BufferedImage renderImage(NTxCompiledPage page, NTxNodeRendererConfig config);
 
-    byte[] renderImageBytes(NTxNode node, NTxNodeRendererConfig config);
+    byte[] renderImageBytes(NTxCompiledPage page, NTxNodeRendererConfig config);
 
     NOptional<NTxNodeRenderer> getRenderer(String type);
 }
