@@ -13,6 +13,7 @@ import net.thevpc.nuts.util.NOptional;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public interface NTxNode extends NTxItem {
     String uuid();
@@ -160,6 +161,7 @@ public interface NTxNode extends NTxItem {
     NTxNode copy();
 
     String getName();
+    String getComponentName();
 
     NTxNode setRules(NTxStyleRule[] rules);
 
@@ -189,11 +191,24 @@ public interface NTxNode extends NTxItem {
 
     List<NTxNode> hierarchy();
 
-    NTxNode setTemplateDefinition(NTxNodeDef n) ;
+    NTxNode setTemplateDefinition(NTxNodeDef n);
 
-    NTxNodeDef templateDefinition() ;
+    NTxNodeDef templateDefinition();
 
     NTxNode setUserObject(String name, Object value);
 
-    NOptional<Object> getUserObject(String property) ;
+    NOptional<Object> getUserObject(String property);
+
+    <T> NOptional<T> getAndSetUserObject(String property, boolean force, Supplier<T> defaultValue);
+
+    <T> NOptional<T> getAndSetUserObject(Class<T> property, boolean force, Supplier<T> defaultValue);
+
+    NTxNode setRenderCache(String name, Object value);
+
+    NOptional<Object> getRenderCache(String property);
+
+    <T> NOptional<T> getAndSetRenderCache(String property, boolean force, Supplier<T> defaultValue);
+
+    <T> NOptional<T> getAndSetRenderCache(Class<T> property, boolean force, Supplier<T> defaultValue);
+    void invalidateRenderCache();
 }
