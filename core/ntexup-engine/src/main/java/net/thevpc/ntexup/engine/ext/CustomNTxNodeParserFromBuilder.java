@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.engine.ext;
 
 import net.thevpc.ntexup.api.document.node.NTxItem;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.parser.*;
 import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.engine.parser.NTxArgumentReaderImpl;
 import net.thevpc.ntexup.engine.parser.NTxNodeParserBase;
 import net.thevpc.ntexup.api.document.node.NTxNode;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.engine.util.ToElementHelper;
 import net.thevpc.ntexup.engine.parser.NTxParseHelper;
 import net.thevpc.nuts.NCallableSupport;
@@ -15,12 +15,10 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
-import java.util.ArrayList;
-
 class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
-    private final NTxNodeCustomBuilderContextImpl ctx;
+    private final NTxNodeBuilderContextImpl ctx;
 
-    public CustomNTxNodeParserFromBuilder(NTxNodeCustomBuilderContextImpl ctx) {
+    public CustomNTxNodeParserFromBuilder(NTxNodeBuilderContextImpl ctx) {
         super(true, ctx.id, ctx.aliases == null ? new String[0] : ctx.aliases);
         this.ctx = ctx;
     }
@@ -33,7 +31,7 @@ class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
                 return u;
             }
         }
-        if (ctx.knownArgNames != null) {
+        if (ctx.knownArgNames != null && !ctx.knownArgNames.isEmpty()) {
             return ToElementHelper.of(
                             item,
                             engine()
@@ -76,17 +74,17 @@ class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
                     }
             );
         }
-        NTxNodeCustomBuilderContext.NTxItemSpecialParser pp = ctx.extraElementSupport;
+        NTxNodeBuilderContext.NTxItemSpecialParser pp = ctx.extraElementSupport;
         if (pp == null && ctx.extraElementSupportByPredicate != null) {
             if (ctx.extraElementSupportByPredicate.test(e)) {
-                pp = new NTxNodeCustomBuilderContext.NTxItemSpecialParser() {
+                pp = new NTxNodeBuilderContext.NTxItemSpecialParser() {
                     @Override
                     public NCallableSupport<NTxItem> parseElement(String id, NElement element, NTxNodeFactoryParseContext context) {
                         NTxNode p = context.documentFactory().of(resolveEffectiveId(id));
                         String compilerDeclarationPath = NTxUtils.getCompilerDeclarationPath(element);
                         NTxSource source = context.source();
                         if (compilerDeclarationPath != null) {
-                            NTxSource s = context.document().resources().find(compilerDeclarationPath).orNull();
+                            NTxSource s = context.document().sourceMonitor().find(compilerDeclarationPath).orNull();
                             if (s != null) {
                                 source = s;
                             }
@@ -124,7 +122,7 @@ class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
     @Override
     protected boolean processArgument(NTxArgumentReader info) {
         if (ctx.processSingleArgumentList != null) {
-            for (NTxNodeCustomBuilderContext.ProcessParamAction a : ctx.processSingleArgumentList) {
+            for (NTxNodeBuilderContext.ProcessParamAction a : ctx.processSingleArgumentList) {
                 if (a.processParam(info, ctx)) {
                     return true;
                 }
@@ -141,7 +139,7 @@ class CustomNTxNodeParserFromBuilder extends NTxNodeParserBase {
     public void onFinishParsingItem(NTxAllArgumentReader info) {
         super.onFinishParsingItem(info);
         if (ctx.afterProcessAllArgumentsList != null) {
-            for (NTxNodeCustomBuilderContext.ProcessNodeAction a : ctx.afterProcessAllArgumentsList) {
+            for (NTxNodeBuilderContext.ProcessNodeAction a : ctx.afterProcessAllArgumentsList) {
                 a.processNode(info, ctx);
             }
         }
