@@ -15,27 +15,26 @@ import net.thevpc.ntexup.extension.plot2d.util.NTxArrayUtils;
 import java.awt.*;
 
 public class NTxDeprecatedDrawHelper {
-    public static void drawCurves(NTxNode p,NTxNodeRendererContext renderContext, NTxDrawContext drawContext) {
-        NTxBounds2 selfBounds = renderContext.selfBounds(p, null, null);
-        NTxGraphics g = renderContext.graphics();
-        drawAxises(drawContext, g, p, renderContext);
+    public static void drawCurves(NTxNode p,NTxNodeRendererContext rendererContext, NTxDrawContext drawContext) {
+        NTxBounds2 selfBounds = rendererContext.selfBounds(p, null, null);
+        NTxGraphics g = rendererContext.graphics();
+        drawAxises(drawContext, g, p, rendererContext);
         for (NTxPlot2DData pd : drawContext.allData) {
-            drawFunction(pd, drawContext, g, p, renderContext);
+            drawFunction(pd, drawContext, g, p, rendererContext);
         }
-        renderContext.paintDebugBox(p, selfBounds);
-        renderContext.paintBorderLine(p, selfBounds);
+        rendererContext.drawContour();
     }
 
 
-    private static  void drawFunction(NTxPlot2DData pd, NTxDrawContext drawContext, NTxGraphics g, NTxNode p, NTxNodeRendererContext renderContext) {
+    private static  void drawFunction(NTxPlot2DData pd, NTxDrawContext drawContext, NTxGraphics g, NTxNode p, NTxNodeRendererContext rendererContext) {
         //draw function
         Stroke ostroke = g.getStroke();
         g.setColor(pd.color);
         g.setStroke(pd.stroke);
         double[] xx = pd.xx;
         double[] yy = pd.yy;
-        boolean animate = renderContext.isAnimate();
-        long pageStartTime = renderContext.getPageStartTime();
+        boolean animate = rendererContext.isAnimate();
+        long pageStartTime = rendererContext.pageStartTime();
         long now = System.currentTimeMillis();
         long max=500;
         double td = 1;
@@ -69,7 +68,7 @@ public class NTxDeprecatedDrawHelper {
         g.setStroke(ostroke);
     }
 
-    private static void drawAxises(NTxDrawContext drawContext, NTxGraphics g, NTxNode p, NTxNodeRendererContext renderContext) {
+    private static void drawAxises(NTxDrawContext drawContext, NTxGraphics g, NTxNode p, NTxNodeRendererContext rendererContext) {
         Stroke mainStroke = new BasicStroke(1.0f);
         Stroke stepStroke = new BasicStroke(1.0f, // Line width of 2 pixels
                 BasicStroke.CAP_BUTT, // No added decoration at line ends
