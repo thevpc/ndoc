@@ -18,6 +18,7 @@ public class NTxStyleParser {
 
     //    static Map<String, HStyleValueParser> allStyleParsers = new HashMap<>();
     static Set<String> COMMON_STYLE_PROPS = new HashSet<>();
+    static Set<String> COMMON_FLAG_STYLE_PROPS = new HashSet<>();
 
     static {
         COMMON_STYLE_PROPS.addAll(Arrays.asList(NTxPropName.STROKE,
@@ -30,6 +31,8 @@ public class NTxStyleParser {
                 NTxPropName.ROWS,
                 NTxPropName.COLSPAN,
                 NTxPropName.ROWSPAN,
+                NTxPropName.COLWEIGHT,
+                NTxPropName.ROWWEIGHT,
                 NTxPropName.GRID_COLOR,
 //                HPropName.LINE_COLOR,
                 NTxPropName.ROTATE,
@@ -55,7 +58,24 @@ public class NTxStyleParser {
                 NTxPropName.THEED,
                 NTxPropName.DRAW_CONTOUR,
                 NTxPropName.CLASS,
-                NTxPropName.AT
+                NTxPropName.AT,
+                NTxPropName.COMPONENT_NAME
+        ));
+
+        COMMON_FLAG_STYLE_PROPS.addAll(Arrays.asList(
+                NTxPropName.SHADOW,
+                NTxPropName.DEBUG,
+                NTxPropName.RAISED,
+                NTxPropName.FONT_BOLD,
+                NTxPropName.FONT_ITALIC,
+                NTxPropName.FONT_UNDERLINED,
+                NTxPropName.FONT_STRIKE,
+                NTxPropName.FILL_BACKGROUND,
+                NTxPropName.HIDE,
+                NTxPropName.DRAW_GRID,
+                NTxPropName.PRESERVE_ASPECT_RATIO,
+                NTxPropName.THEED,
+                NTxPropName.DRAW_CONTOUR
         ));
 
         for (NTextStyleType z : NTextStyleType.values()) {
@@ -77,6 +97,14 @@ public class NTxStyleParser {
                         "foreground",
                         "bg",
                         "fg",
+                        "show",
+                        "visible",
+                        "fill",
+                        "contour"
+                )
+        );
+        COMMON_FLAG_STYLE_PROPS.addAll(
+                Arrays.asList(
                         "show",
                         "visible",
                         "fill",
