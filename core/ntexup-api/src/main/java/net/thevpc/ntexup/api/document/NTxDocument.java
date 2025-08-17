@@ -10,7 +10,7 @@ import net.thevpc.nuts.util.NOptional;
 
 public interface NTxDocument {
     NTxSource source();
-    NTxSourceMonitor resources();
+    NTxSourceMonitor sourceMonitor();
 
     NTxDocument add(NTxNode part);
 
