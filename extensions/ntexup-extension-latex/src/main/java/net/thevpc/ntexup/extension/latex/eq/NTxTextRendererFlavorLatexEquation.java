@@ -2,6 +2,7 @@ package net.thevpc.ntexup.extension.latex.eq;
 
 import net.thevpc.ntexup.api.document.elem2d.NTxDouble2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.renderer.*;
 import net.thevpc.ntexup.api.renderer.text.*;
 import net.thevpc.ntexup.api.util.NTxColors;
@@ -24,14 +25,14 @@ public class NTxTextRendererFlavorLatexEquation implements NTxTextRendererFlavor
 
 
     @Override
-    public void buildText(String text, NTxTextOptions options, NTxNode p, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder) {
+    public void buildText(String text, NTxTextOptions options, NTxNode node, NTxNodeRendererContext ctx, NTxTextRendererBuilder builder) {
         if (!text.isEmpty()) {
             NTxRichTextToken r = new NTxRichTextToken(
                     NTxRichTextTokenType.IMAGE_PAINTER,
                     text.toString()
             );
-            double fontSize = ctx.getFontSize(p);
-            r.imagePainter = this.createLatex(text, fontSize, options, p, ctx);
+            double fontSize = NTxValueByName.getFontSize(node, ctx);
+            r.imagePainter = this.createLatex(text, fontSize, options, node, ctx);
             NTxDouble2 size = r.imagePainter.size();
             r.bounds = new Rectangle2D.Double(0, 0, size.getX(), size.getX());
             builder.currRow().addToken(r);
