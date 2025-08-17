@@ -75,7 +75,7 @@ public class NTxValueByType {
         return NTxValue.of(ctx.computePropertyValue(t, s).orNull()).asDoubleArray();
     }
 
-    public static NOptional<NTxPadding> getPadding(NTxNode t, NTxNodeRendererContext ctx, String s) {
+    public static NOptional<NTxMargin> getMargin(NTxNode t, NTxNodeRendererContext ctx, String s) {
         return NTxValue.of(ctx.computePropertyValue(t, s).orNull()).asPadding();
     }
 
