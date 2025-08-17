@@ -9,7 +9,7 @@ import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -27,42 +27,43 @@ public class NTxCylinderBuilder implements NTxNodeBuilder {
     //private static final Color DEFAULT_TOP_COLOR = new Color(0xD1D8C5);
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.CYLINDER)
-                .parseParam().named(NTxPropName.ELLIPSE_H, NTxPropName.TOP_COLOR, NTxPropName.SEGMENT_COUNT).end()
+                .parseParam().matchesNamedPair(NTxPropName.ELLIPSE_H, NTxPropName.TOP_COLOR, NTxPropName.SEGMENT_COUNT).end()
                 .renderComponent(this::render);
     }
 
 
 
 
-    public void render(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
-        renderContext = renderContext.withDefaultStyles(p, defaultStyles);
-        NOptional<NTxShadow> shadowOptional = renderContext.readStyleAsShadow(p, NTxPropName.SHADOW);
+    public void render(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node=rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NOptional<NTxShadow> shadowOptional = rendererContext.readStyleAsShadow(node, NTxPropName.SHADOW);
 
 
-        NTxBounds2 b = renderContext.selfBounds(p, null, null);
+        NTxBounds2 b = rendererContext.selfBounds(node, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
         double height = b.getHeight();
 
-        double arcStroke = NTxValue.of(p.getPropertyValue(NTxPropName.STROKE)).asDouble().orElse(5.0);
-        double ellipse_height = NTxValue.of(p.getPropertyValue(NTxPropName.ELLIPSE_H)).asDouble().orElse(50.0);
+        double arcStroke = NTxValue.of(node.getPropertyValue(NTxPropName.STROKE)).asDouble().orElse(5.0);
+        double ellipse_height = NTxValue.of(node.getPropertyValue(NTxPropName.ELLIPSE_H)).asDouble().orElse(50.0);
         ellipse_height = ellipse_height / 100 * height;
         double arcY = y + height - ellipse_height / 2;
 
 
-        Color sideColor = NTxValue.of(p.getPropertyValue(NTxPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
-        Color topColor = NTxValue.of(p.getPropertyValue(NTxPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
+        Color sideColor = NTxValue.of(node.getPropertyValue(NTxPropName.BACKGROUND_COLOR)).asColor().orElse(DEFAULT_SIDE_COLOR);
+        Color topColor = NTxValue.of(node.getPropertyValue(NTxPropName.TOP_COLOR)).asColor().orElse(sideColor.brighter());
 
-        int segmentCount = NTxValue.of(p.getPropertyValue(NTxPropName.SEGMENT_COUNT)).asInt().orElse(0);
+        int segmentCount = NTxValue.of(node.getPropertyValue(NTxPropName.SEGMENT_COUNT)).asInt().orElse(0);
 
         boolean someBG = false;
-        NTxGraphics g = renderContext.graphics();
+        NTxGraphics g = rendererContext.graphics();
 
-        if (!renderContext.isDry()) {
+        if (!rendererContext.isDry()) {
             if (shadowOptional.isPresent()) {
                 NTxShadow shadow = shadowOptional.get();
                 NTxPoint2D translation = shadow.getTranslation();
@@ -91,9 +92,9 @@ public class NTxCylinderBuilder implements NTxNodeBuilder {
 
             }
             double finalEllipse_height = ellipse_height;
-            if (someBG = renderContext.applyBackgroundColor(p)) {
+            if (someBG = rendererContext.applyBackgroundColor(node)) {
 
-                renderContext.withStroke(p, () -> {
+                rendererContext.withStroke(node, () -> {
                     g.setColor(sideColor);
                     g.fillRect(x, y + finalEllipse_height / 2, width, height - finalEllipse_height);
                     g.fillOval((int) x, (int) arcY - finalEllipse_height / 2, NTxUtils.intOf(width), NTxUtils.intOf(finalEllipse_height));
@@ -129,8 +130,8 @@ public class NTxCylinderBuilder implements NTxNodeBuilder {
             }
 
 
-            if (renderContext.applyForeground(p, !someBG)) {
-                renderContext.withStroke(p, () -> {
+            if (rendererContext.applyForeground(node, !someBG)) {
+                rendererContext.withStroke(node, () -> {
                     g.drawOval((int) x, (int) y, NTxUtils.doubleOf(width), NTxUtils.intOf(finalEllipse_height));
 
                     g.drawLine((int) x, (int) (y + finalEllipse_height / 2), (int) x, (int) (arcY));
@@ -145,7 +146,6 @@ public class NTxCylinderBuilder implements NTxNodeBuilder {
                     }
                 });
             }
-            renderContext.paintDebugBox(p, b);
         }
     }
 }
