@@ -34,7 +34,7 @@ public class NTxUtilsPoints {
     public boolean addPoint(NTxNode line, NTxPoint2D point) {
         if (point != null) {
             NTxValue o = NTxValue.of(line.getPropertyValue(NTxPropName.POINTS).orNull());
-            NOptional<NTxPoint2D[]> hPoint2DArray = o.asHPoint2DArray();
+            NOptional<NTxPoint2D[]> hPoint2DArray = o.asPoint2DArray();
             java.util.List<NTxPoint2D> v = new ArrayList<>();
             if (hPoint2DArray.isPresent()) {
                 v.addAll(Arrays.asList(hPoint2DArray.get()));
@@ -50,7 +50,7 @@ public class NTxUtilsPoints {
     public boolean addPoint(NTxNode line, NTxPoint3D point) {
         if (point != null) {
             NTxValue o = NTxValue.of(line.getPropertyValue(NTxPropName.POINTS).orNull());
-            NOptional<NTxPoint3D[]> hPoint2DArray = o.asHPoint3DArray();
+            NOptional<NTxPoint3D[]> hPoint2DArray = o.asPoint3DArray();
             List<NTxPoint3D> v = new ArrayList<>();
             if (hPoint2DArray.isPresent()) {
                 v.addAll(Arrays.asList(hPoint2DArray.get()));
