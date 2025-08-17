@@ -14,6 +14,7 @@ import net.thevpc.nuts.util.*;
 
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class DefaultNTxNode implements NTxNode {
@@ -24,6 +25,7 @@ public class DefaultNTxNode implements NTxNode {
     private NTxProperties properties;
     private Map<String, NElement> vars = new LinkedHashMap<>();
     private Map<String, Object> userObjects;
+    private Map<String, Object> renderCache;
     private List<NTxNode> children = new ArrayList<>();
     private List<NTxStyleRule> styleRules = new ArrayList<>();
     private List<NTxNodeDef> definitions = new ArrayList<>();
@@ -201,6 +203,28 @@ public class DefaultNTxNode implements NTxNode {
             }
         }
         return NOptional.ofNamedEmpty(property);
+    }
+
+    @Override
+    public <T> NOptional<T> getAndSetUserObject(String property, boolean force,Supplier<T> defaultValue) {
+        if(!force){
+            NOptional<T> ol = (NOptional) this.getUserObject(property);
+            if(ol.isPresent()){
+               return ol;
+            }
+        }
+        T nv = defaultValue.get();
+        if(nv==null){
+            setUserObject(property,null);
+        }else{
+            setUserObject(property,nv);
+        }
+        return NOptional.ofNamed(nv,property);
+    }
+
+    @Override
+    public <T> NOptional<T> getAndSetUserObject(Class<T> property, boolean force,Supplier<T> defaultValue) {
+        return getAndSetUserObject(property.getName(), force, defaultValue);
     }
 
     public NOptional<NTxProp> getProperty(String... propertyNames) {
@@ -800,11 +824,15 @@ public class DefaultNTxNode implements NTxNode {
         if (NTxNodeType.CTRL_ASSIGN.equals(type())) {
             return NElement.ofPair("$" + getName(), getPropertyValue(NTxPropName.VALUE).orNull());
         }
+        String componentName=getPropertyValue(NTxPropName.VALUE).flatMap(x->x.asStringValue()).orNull();
         String[] styleClasses = getStyleClasses();
         if (!styleRules.isEmpty() || !children.isEmpty()) {
             NObjectElementBuilder o = NElement.ofObjectBuilder(nodeType);
             if (styleClasses.length > 0) {
                 o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
+            }
+            if(!NBlankable.isBlank(componentName)){
+                o.add(NElement.ofPair("componentName", NElement.ofString(componentName)));
             }
             if (source != null) {
                 o.add(NElement.ofPair("source", NElement.ofString(source.shortName())));
@@ -835,6 +863,9 @@ public class DefaultNTxNode implements NTxNode {
             if (styleClasses.length > 0) {
                 o.addAnnotation(null, Arrays.stream(styleClasses).map(x -> NElement.ofString(x)).toArray(NElement[]::new));
             }
+            if(!NBlankable.isBlank(componentName)){
+                o.add(NElement.ofPair("componentName", NElement.ofString(componentName)));
+            }
             if (source != null) {
                 o.add(NElement.ofPair("source", NElement.ofString(String.valueOf(source))));
             }
@@ -860,6 +891,15 @@ public class DefaultNTxNode implements NTxNode {
     @Override
     public String getName() {
         String n = NTxValue.of(getPropertyValue(NTxPropName.NAME).orNull()).asStringOrName().orNull();
+        if (n != null) {
+            return n;
+        }
+        return null;
+    }
+
+    @Override
+    public String getComponentName() {
+        String n = NTxValue.of(getPropertyValue(NTxPropName.COMPONENT_NAME).orNull()).asStringOrName().orNull();
         if (n != null) {
             return n;
         }
@@ -927,4 +967,65 @@ public class DefaultNTxNode implements NTxNode {
     public NTxNodeDef templateDefinition() {
         return templateDefinition;
     }
+
+    // -------------------------------------------
+
+
+    @Override
+    public NTxNode setRenderCache(String name, Object value) {
+        if (value == null) {
+            if(renderCache!=null) {
+                renderCache.remove(name);
+            }
+        } else {
+            if(renderCache==null) {
+                renderCache=new HashMap<>();
+            }
+            renderCache.put(name, value);
+        }
+        return this;
+    }
+
+    @Override
+    public NOptional<Object> getRenderCache(String property) {
+        if(renderCache!=null) {
+            Object u = renderCache.get(property);
+            if(u!=null) {
+                return NOptional.of(u);
+            }
+        }
+        return NOptional.ofNamedEmpty(property);
+    }
+
+    @Override
+    public <T> NOptional<T> getAndSetRenderCache(String property, boolean force,Supplier<T> defaultValue) {
+        if(!force){
+            NOptional<T> ol = (NOptional) this.getRenderCache(property);
+            if(ol.isPresent()){
+                return ol;
+            }
+        }
+        T nv = defaultValue.get();
+        if(nv==null){
+            setRenderCache(property,null);
+        }else{
+            setRenderCache(property,nv);
+        }
+        return NOptional.ofNamed(nv,property);
+    }
+
+    @Override
+    public <T> NOptional<T> getAndSetRenderCache(Class<T> property, boolean force,Supplier<T> defaultValue) {
+        return getAndSetRenderCache(property.getName(), force, defaultValue);
+    }
+
+    public void invalidateRenderCache(){
+        renderCache=null;
+        if(children!=null){
+            for (NTxNode child : children) {
+                child.invalidateRenderCache();
+            }
+        }
+    }
+
 }
