@@ -8,10 +8,10 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
@@ -21,25 +21,26 @@ public class NTxCubicCurveBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.CUBIC_CURVE)
-                .parseParam().named(NTxPropName.FROM, NTxPropName.TO, NTxPropName.START_ARROW, NTxPropName.END_ARROW, NTxPropName.CTRL1, NTxPropName.CTRL2).then()
-                .renderComponent(this::renderMain)
+                .parseParam().matchesNamedPair(NTxPropName.FROM, NTxPropName.TO, NTxPropName.START_ARROW, NTxPropName.END_ARROW, NTxPropName.CTRL1, NTxPropName.CTRL2).then()
+                .renderComponent((rendererContext, builderContext1) -> renderMain(rendererContext, builderContext1))
         ;
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
-        rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = rendererContext.selfBounds(p);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode p = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 b = rendererContext.selfBounds();
         NTxPoint2D translation = new NTxPoint2D(b.getX(), b.getY());
-        NTxPoint2D from = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.FROM).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D from = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.FROM).asPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
-        NTxPoint2D to = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.TO).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D to = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.TO).asPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
-        NTxPoint2D ctrl1 = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.CTRL1).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D ctrl1 = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.CTRL1).asPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
-        NTxPoint2D ctrl2 = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.CTRL2).asHPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
+        NTxPoint2D ctrl2 = NTxPoint.ofParent(NTxValue.ofProp(p, NTxPropName.CTRL2).asPoint2D().get()).valueHPoint2D(b, rendererContext.getGlobalBounds())
                 .plus(translation);
         NTxGraphics g = rendererContext.graphics();
         if (!rendererContext.isDry()) {
@@ -56,7 +57,7 @@ public class NTxCubicCurveBuilder implements NTxNodeBuilder {
         double maxX = Math.max(from.getX(), to.getX());
         double maxY = Math.max(from.getY(), to.getY());
         NTxBounds2 b2 = new NTxBounds2(minx, miny, maxX, maxY);
-        rendererContext.paintDebugBox(p, b2);
+        rendererContext.drawContour();
     }
 
 }
