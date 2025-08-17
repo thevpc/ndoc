@@ -1,5 +1,6 @@
 package net.thevpc.ntexup.app.backend.service;
 
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererConfig;
@@ -89,7 +90,7 @@ public class GitService {
         return new String(Files.readAllBytes(file.toPath()));
     }
 
-    public byte[] createPageImage(NTxNode page, int width, int height) throws IOException {
+    public byte[] createPageImage(NTxCompiledPage page, int width, int height) {
         return engine.renderImageBytes(
                 page,
                 new NTxNodeRendererConfig((int) width, (int) height)
