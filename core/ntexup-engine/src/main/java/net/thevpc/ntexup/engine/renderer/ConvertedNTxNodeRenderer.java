@@ -10,15 +10,17 @@ public abstract class ConvertedNTxNodeRenderer extends NTxNodeRendererBase {
     }
 
     @Override
-    public NTxSizeRequirements sizeRequirements(NTxNode p, NTxNodeRendererContext ctx) {
-        NTxNode c = convert(p, ctx).setParent(p);
-        return ctx.sizeRequirementsOf(c);
+    public NTxSizeRequirements sizeRequirements(NTxNodeRendererContext rendererContext) {
+        NTxNode node = rendererContext.node();
+        NTxNode c = convert(node, rendererContext).setParent(node);
+        return rendererContext.sizeRequirementsOf(c);
     }
 
-    public abstract NTxNode convert(NTxNode p, NTxNodeRendererContext ctx);
+    public abstract NTxNode convert(NTxNode p, NTxNodeRendererContext rendererContext);
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx) {
-        ctx.render(convert(p, ctx).setParent(p));
+    public void renderMain(NTxNodeRendererContext ctx) {
+        NTxNode p2 = convert(ctx.node(), ctx).setParent(ctx.node());
+        ctx.withNode(p2).render();
     }
 
 }
