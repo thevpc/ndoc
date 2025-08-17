@@ -2,27 +2,25 @@ page{
     grid(2,2){
         styles:{
             "*":{
-                font-size:10%P
+                font-size:6%P
             }
         }
-
-        ol{
+        ul{
             ¶ Hello ####World####
             "
                 Hello
                 ###World###
             "
             ul{
-                ¶ Hello ####World####
-                ol{
-                    ¶ one
-                }
                 ¶ Bye ####World####
-                ol{
-                    ¶ one
-                }
+                "
+                    Bye
+                    ##Bad##
+                    ###World###
+                "
+                ¶ Bye ####World####
             }
-            ¶ Bye ####World####
+            ¶ Morning ####World####
         }
     }
 }
