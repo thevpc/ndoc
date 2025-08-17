@@ -7,13 +7,15 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.DefaultNTxStyleRule;
 import net.thevpc.ntexup.api.document.style.NTxProp;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
+import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +24,7 @@ public class NTxListHelper {
         return new NumberingStrategy();
     }
 
-    public static List<NodeWithIndent> build(NTxNode p, boolean ordered, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext buildContext) {
+    public static List<NodeWithIndent> build(NTxNode p, boolean ordered, NTxNodeRendererContext ctx, NTxNodeBuilderContext buildContext) {
         List<NodeWithIndent> all = new ArrayList<>();
         List<NTxNode> children = p.children();
         NTxDocumentFactory f = ctx.documentFactory();
@@ -42,36 +44,46 @@ public class NTxListHelper {
         }
         NTxSizeRef nTxSizeRef = ctx.sizeRef();
         double childHeight = nTxSizeRef.getParentHeight() / (all.isEmpty() ? 1 : all.size());
-        NTxBounds2 bounds = ctx.getBounds();
-        double lastY = bounds.getY();
+//        NTxBounds2 bounds = ctx.getParentBounds();
+//        double lastY = bounds.getY();
         double indentFactor = Math.min(nTxSizeRef.getParentWidth() / 10, childHeight);
         double bulletWidthFactor = ordered ? 0.3 : 0.1;
+        int childrenCount = all.size();
+        NTxBounds2 sb = ctx.defaultSelfBounds();
+        double h = sb.getHeight() / childrenCount;
+        double y0 = sb.getY();
         for (NodeWithIndent child : all) {
             double indentWidth = indentFactor * child.indent;
             double bulletWidth = (nTxSizeRef.getParentWidth() - indentWidth) * bulletWidthFactor;
-            double childWidth = nTxSizeRef.getParentWidth() - indentWidth - bulletWidth;
-            child.bulletSelfBounds = ctx.selfBounds(child.bullet
-                    , new NTxDouble2(bulletWidth, childHeight)
-                    , new NTxDouble2(bulletWidth, childHeight)
-            );
-            child.childSelfBounds = ctx.engine().getRenderer(child.child.type()).get().selfBounds(child.child,
-                    ctx.withBounds(child.child, new NTxBounds2(0, 0, child.bulletSelfBounds.getMaxX(), childHeight))
-//                    , new NTxDouble2(child.bulletSelfBounds.getMaxX() + 10, childHeight)
-//                    , new NTxDouble2(childWidth, childHeight)
-            );
-            child.height = Math.max(Math.max(child.childSelfBounds.getHeight(), childHeight), child.bulletSelfBounds.getHeight());
-            lastY += child.height;
+            child.bulletSelfBounds = ctx.withChild(child.bullet, new NTxBounds2(sb.getX() + indentWidth, y0, bulletWidth + childHeight, h)).selfBounds();
+            child.childSelfBounds = ctx.withChild(child.child, new NTxBounds2(sb.getX() + indentWidth + bulletWidth + childHeight, y0,
+                    sb.getMaxX() - (sb.getX() + bulletWidth + childHeight)
+                    , h)).selfBounds();
+            if ("t".equals(child.child.getComponentName())) {
+                System.out.println(child.child.getComponentName() + ": " + child.childSelfBounds);
+            }
+//            ctx.engine().getRenderer(child.child.type()).get().render(
+//                    ctx.withNode(child.child).withParentBounds()
+//            );
+
+//            child.childSelfBounds = ctx.engine().getRenderer(child.child.type()).get().selfBounds(
+//                    ctx.withParentBounds(new NTxBounds2(0, 0, child.bulletSelfBounds.getMaxX(), childHeight))
+////                    , new NTxDouble2(child.bulletSelfBounds.getMaxX() + 10, childHeight)
+////                    , new NTxDouble2(childWidth, childHeight)
+//            );
+            child.height = Math.max(Math.max(Math.max(child.childSelfBounds.getMaxY() - y0, 0), childHeight), child.bulletSelfBounds.getHeight());
+            y0 += child.height;
         }
-        lastY = bounds.getY();
+        y0 = sb.getY();
         for (NodeWithIndent child : all) {
             double indentWidth = indentFactor * child.indent;
             double bulletWidth = (nTxSizeRef.getParentWidth() - indentWidth) * bulletWidthFactor;
             double childWidth = nTxSizeRef.getParentWidth() - indentWidth - bulletWidth;
 
-            child.bulletBounds = new NTxBounds2(bounds.getX() + indentWidth, lastY, bulletWidth, childHeight);
-            child.childBounds = new NTxBounds2(child.bulletBounds.getMaxX(), lastY, childWidth, child.height);
+            child.bulletBounds = new NTxBounds2(sb.getX() + indentWidth, y0, bulletWidth, childHeight);
+            child.childBounds = new NTxBounds2(child.bulletBounds.getMaxX(), y0, childWidth, child.height);
             child.rowBounds = child.bulletBounds.expand(child.childBounds);
-            lastY += child.height;
+            y0 += child.height;
         }
         return all;
     }
@@ -111,50 +123,40 @@ public class NTxListHelper {
                 NodeWithIndent g = new NodeWithIndent();
                 Set<String> allClasses = ctx.engine().computeDeclaredStylesClasses(p);
                 String specialStyle = null;
-                if (ordered) {
-                    if (allClasses.contains("ol-bullet-" + (indent + 1))) {
-                        specialStyle = "ol-bullet-" + (indent + 1);
-                    } else {
-                        if (!allClasses.contains("ol-bullet")) {
-                            // add default style!
-                            NTxNode r = NTxUtils.findRootNode(p.parent());
-                            r.addRule(DefaultNTxStyleRule.ofClass(r, r.source(), "ol-bullet"
-                                            , NTxProp.of("origin", NElement.ofString("center"))
-                                            , NTxProp.of("position", NElement.ofDoubleArray(50, 50))
-                                            , NTxProp.of("size", NElement.ofDouble(8, "%P"))
-                                    )
-                            );
+                String clsPrefix = ordered ? "ol" : "ul";
+                if (allClasses.contains(clsPrefix + "-bullet-" + (indent + 1))) {
+                    specialStyle = clsPrefix + "-bullet-" + (indent + 1);
+                } else {
+                    if (!allClasses.contains(clsPrefix + "-bullet")) {
+                        NTxNode r = NTxUtils.findRootNode(p.parent());
+                        List<NTxProp> styles = new ArrayList<>();
+                        styles.addAll(
+                                Arrays.asList(
+                                        NTxProp.of("origin", NElement.ofString("center"))
+                                        , NTxProp.of("position", NElement.ofDoubleArray(50, 50))
+//                                        , NTxProp.of("margin", NElement.ofDoubleArray(10))
+                                        )
+                        );
+                        if(ordered) {
+                            styles.add(NTxProp.of("size", NElement.ofDouble(5, "%P")));
+                        }else{
+                            styles.add(NTxProp.of("size", NElement.ofDouble(2.5, "%P")));
+                            styles.add(NTxProp.of("background", NElement.ofString("blue")));
                         }
-                        specialStyle = "ol-bullet";
+                        r.addRule(DefaultNTxStyleRule.ofClass(r, r.source(), clsPrefix + "-bullet", styles.toArray(new NTxProp[0])));
                     }
-
+                    specialStyle = clsPrefix + "-bullet";
+                }
+                if (ordered) {
                     g.bullet = f.ofText(ns.eval(parentString, index, true, indent))
                             .addStyleClasses(specialStyle)
                             .setSource(p.source());
                 } else {
-                    if (allClasses.contains("ul-bullet-" + (indent + 1))) {
-                        specialStyle = "ul-bullet-" + (indent + 1);
-                    } else {
-                        if (!allClasses.contains("ul-bullet")) {
-                            // add default style!
-                            NTxNode r = NTxUtils.findRootNode(p.parent());
-                            r.addRule(DefaultNTxStyleRule.ofClass(r, r.source(), "ul-bullet"
-                                            , NTxProp.of("background", NElement.ofString("blue"))
-                                            , NTxProp.of("origin", NElement.ofString("center"))
-                                            , NTxProp.of("position", NElement.ofDoubleArray(50, 50))
-                                            , NTxProp.of("size", NElement.ofDouble(8, "%P"))
-                                    )
-                            );
-                        }
-                        specialStyle = "ul-bullet";
-                    }
-
                     g.bullet = f.ofSphere()
                             .addStyleClasses(specialStyle)
                             .setSource(p.source());
                 }
                 g.bullet.setParent(p.parent());
-                String clsPrefix = ordered ? "ol" : "ul";
                 if (allClasses.contains(clsPrefix + "-item-" + (indent + 1))) {
                     specialStyle = clsPrefix + "-item-" + (indent + 1);
                 } else {
@@ -164,7 +166,8 @@ public class NTxListHelper {
                         r.addRule(DefaultNTxStyleRule.ofClass(r, r.source(), clsPrefix + "-bullet"
                                         , NTxProp.of("origin", NElement.ofString("left"))
                                         , NTxProp.of("position", NElement.ofString("left"))
-                                        , NTxProp.of("size", NElement.ofDouble(8, "%P"))
+                                        , NTxProp.of("size", NElement.ofDouble(3, "%P"))
+                                        , NTxProp.of("margin", NElement.ofDoubleArray(0,0,0,0))
                                 )
                         );
                     }
