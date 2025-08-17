@@ -43,6 +43,14 @@ public class NTxParserUtils {
         return false;
     }
 
+    public static boolean isCommonStyleFlagProperty(String s) {
+        if (NBlankable.isBlank(s)) {
+            return false;
+        }
+        s = NTxUtils.uid(s);
+        return NTxStyleParser.COMMON_FLAG_STYLE_PROPS.contains(s);
+    }
+
     public static boolean isCommonStyleProperty(String s) {
         if (NBlankable.isBlank(s)) {
             return false;
