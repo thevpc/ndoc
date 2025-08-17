@@ -1,7 +1,7 @@
 package net.thevpc.ntexup.extension.plot2d;
 
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
@@ -18,10 +18,10 @@ import java.util.List;
 public class NTxPlot2DBuilder implements NTxNodeBuilder {
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.PLOT2D)
                 .parseParam()
-                .named(
+                .matchesNamedPair(
                         "x",
                         "majorGridSpacing",
                         "showMajorGrid",
@@ -38,15 +38,16 @@ public class NTxPlot2DBuilder implements NTxNodeBuilder {
         ;
     }
 
-    public void processChildren(NTxAllArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+    public void processChildren(NTxAllArgumentReader info, NTxNodeBuilderContext buildContext) {
         List<NTxFunctionPlotInfo> all = new NTxFunctionPlotInfoLoader().loadBody(info.element(), buildContext);
         info.node().setUserObject("def", all);
     }
 
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
-        NTxDrawContext drawContext = NTxDrawContextRenderCompiler.compile(p, renderContext);
-        NTxJFreeChartHelper.drawCurves(p, renderContext, drawContext);
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node=rendererContext.node();
+        NTxDrawContext drawContext = NTxDrawContextRenderCompiler.compile(node, rendererContext);
+        NTxJFreeChartHelper.drawCurves(node, rendererContext, drawContext);
     }
 
 }
