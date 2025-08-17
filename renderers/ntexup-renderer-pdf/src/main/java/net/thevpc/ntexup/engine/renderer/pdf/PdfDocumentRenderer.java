@@ -122,7 +122,7 @@ public class PdfDocumentRenderer extends NTxDocumentStreamRendererBase implement
                     table.setLockedWidth(true);
                 }
                 Image img = Image.getInstance(engine.renderImageBytes(
-                        page0.compiledPage(),
+                        page0,
                         new NTxNodeRendererConfig((int) pixelWidth, (int) pixelHeight)
                                 .withAnimate(false)
                                 .withPrint(true)
