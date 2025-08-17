@@ -2,6 +2,8 @@ package net.thevpc.ntexup.api.renderer;
 
 import net.thevpc.ntexup.api.document.NTxDocumentFactory;
 import net.thevpc.ntexup.api.document.elem2d.*;
+import net.thevpc.ntexup.api.engine.NTxCompiledDocument;
+import net.thevpc.ntexup.api.engine.NTxCompiledPage;
 import net.thevpc.ntexup.api.engine.NTxEngine;
 import net.thevpc.ntexup.api.eval.NTxVarProvider;
 import net.thevpc.ntexup.api.log.NTxLogger;
@@ -10,6 +12,7 @@ import net.thevpc.ntexup.api.document.style.*;
 
 import net.thevpc.ntexup.api.document.NTxSizeRequirements;
 import net.thevpc.ntexup.api.renderer.text.NTxTextRendererBuilder;
+import net.thevpc.ntexup.api.source.NTxSourceMonitor;
 import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NText;
@@ -24,12 +27,16 @@ public interface NTxNodeRendererContext {
     String CAPABILITY_ANIMATE = "animate";
 
     default NTxSizeRequirements sizeRequirementsOf(NTxNode p) {
-        return engine().getRenderer(p.type()).get().sizeRequirements(p, this);
+        return engine().getRenderer(p.type()).get().sizeRequirements(this);
     }
 
-    NTxBounds2 selfBounds(NTxNode e);
+    NTxNode node();
 
-    NTxBounds2 defaultSelfBounds(NTxNode e);
+    boolean isSomeChange();
+
+    NTxBounds2 selfBounds();
+
+    NTxBounds2 defaultSelfBounds();
 
     NTxLogger log();
 
@@ -37,7 +44,7 @@ public interface NTxNodeRendererContext {
 
     NTxVarProvider varProvider();
 
-    long getPageStartTime();
+    long pageStartTime();
 
     ImageObserver imageObserver();
 
@@ -47,12 +54,9 @@ public interface NTxNodeRendererContext {
 
     NTxGraphics graphics();
 
-    NTxBounds2 getBounds();
+    NTxBounds2 parentBounds();
 
-
-    void render(NTxNode p);
-
-    void render(NTxNode p, NTxNodeRendererContext ctx);
+    void render();
 
     NTxEngine engine();
 
@@ -64,9 +68,15 @@ public interface NTxNodeRendererContext {
 
     List<NTxProp> computeProperties(NTxNode t);
 
-    NTxNodeRendererContext withDefaultStyles(NTxNode node, NTxProperties defaultStyles);
+    NTxNodeRendererContext withChild(NTxNode node, NTxBounds2 parentBounds);
 
-    NTxNodeRendererContext withBounds(NTxNode t, NTxBounds2 bounds2);
+    NTxNodeRendererContext withChild(NTxNode node);
+
+    NTxNodeRendererContext withNode(NTxNode node);
+
+    NTxNodeRendererContext withDefaultStyles(NTxProperties defaultStyles);
+
+    NTxNodeRendererContext withParentBounds(NTxBounds2 bounds2);
 
     NTxNodeRendererContext withGraphics(NTxGraphics graphics);
 
@@ -168,13 +178,17 @@ public interface NTxNodeRendererContext {
 
     boolean applyGridColor(NTxNode t, boolean force);
 
-    void paintDebugBox(NTxNode t, NTxBounds2 a, boolean force);
-
-    void paintDebugBox(NTxNode t, NTxBounds2 a);
-
     NOptional<Color> colorFromPaint(Paint p);
 
     void paintBorderLine(NTxNode t, NTxBounds2 a);
 
     void paintBackground(NTxNode t, NTxBounds2 a);
+
+    NTxCompiledPage compiledPage();
+
+    NTxCompiledDocument compiledDocument();
+
+    NTxSourceMonitor sourceMonitor();
+
+    void drawContour();
 }
