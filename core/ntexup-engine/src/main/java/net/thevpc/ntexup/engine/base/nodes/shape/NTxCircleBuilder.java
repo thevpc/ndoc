@@ -4,8 +4,8 @@ import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -14,36 +14,37 @@ public class NTxCircleBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.CIRCLE)
-                .renderComponent(this::renderMain)
+                .renderComponent((ctx, builderContext1) -> renderMain(ctx, builderContext1))
                 ;
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        ctx = ctx.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = ctx.selfBounds(p, null, null);
+    public void renderMain(NTxNodeRendererContext nodeRendererContext, NTxNodeBuilderContext builderContext) {
+        nodeRendererContext = nodeRendererContext.withDefaultStyles(defaultStyles);
+        NTxNode node = nodeRendererContext.node();
+        NTxBounds2 b = nodeRendererContext.selfBounds(node, null, null);
         double x = b.getX();
         double y = b.getY();
-        NTxGraphics g = ctx.graphics();
+        NTxGraphics g = nodeRendererContext.graphics();
         boolean someBG = false;
-        if (!ctx.isDry()) {
+        if (!nodeRendererContext.isDry()) {
             int ww = NTxUtils.intOf(b.getWidth());
             int hh = NTxUtils.intOf(b.getHeight());
             ww=Math.min(ww,hh);
             hh=ww;
-            if (someBG = ctx.applyBackgroundColor(p)) {
+            if (someBG = nodeRendererContext.applyBackgroundColor(node)) {
                 g.fillOval((int) x, (int) y, ww, hh);
             }
-            if (ctx.applyForeground(p, !someBG)) {
+            if (nodeRendererContext.applyForeground(node, !someBG)) {
                 int finalWw = ww;
                 int finalHh = hh;
-                ctx.withStroke(p,()->{
+                nodeRendererContext.withStroke(node,()->{
                     g.drawOval((int) x, (int) y, finalWw, finalHh);
                 });
             }
         }
-        ctx.paintDebugBox(p, b);
+        nodeRendererContext.drawContour();
     }
 }
