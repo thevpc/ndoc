@@ -11,15 +11,14 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValueByName;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.source.NTxSource;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.ntexup.api.renderer.text.NTxTextOptions;
-import net.thevpc.ntexup.api.util.NTxSizeRef;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.api.util.NtxFontInfo;
 import net.thevpc.nuts.elem.NElement;
@@ -36,37 +35,49 @@ public class NTxImageBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.IMAGE)
-                .parseParam().named(NTxPropName.TRANSPARENT_COLOR).then()
-                .parseParam().named(NTxPropName.VALUE, NTxPropName.FILE, "content", "src").store(NTxPropName.VALUE).then()
-                .parseParam().matchesStringOrName().store(NTxPropName.VALUE).ignoreDuplicates(true).then()
-                .renderComponent(this::renderMain)
+                .parseParam().matchesNamedPair(NTxPropName.TRANSPARENT_COLOR).then()
+                .parseParam().matchesNamedPair(NTxPropName.VALUE, NTxPropName.FILE, "content", "src").storeName(NTxPropName.VALUE).then()
+                .parseParam().matchesStringOrName().storeName(NTxPropName.VALUE).ignoreDuplicates(true).then()
+                .renderComponent((rendererContext, builderContext1) -> renderMain(rendererContext, builderContext1))
         ;
     }
-
-    public void renderMain(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext builderContext) {
-        rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = rendererContext.selfBounds(p);
+    static class Cache {
+        NPath img=null;
+        NTxImageOptions options;
+    }
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 b = rendererContext.selfBounds();
         int w = NTxUtils.intOf(b.getWidth());
         int h = NTxUtils.intOf(b.getHeight());
         if (w <= 0 || h <= 0) {
             return;
         }
 
-        Color transparentColor = NTxValueByType.getColor(p, rendererContext, NTxPropName.TRANSPARENT_COLOR).orNull();
-        NTxImageOptions options = new NTxImageOptions();
-        options.setTransparentColor(transparentColor);
-        options.setDisableAnimation(!rendererContext.isAnimate());
         NTxNodeRendererContext finalCtx = rendererContext;
-        options.setAsyncLoad(() -> finalCtx.repaint());
-        options.setImageObserver(rendererContext.imageObserver());
-        options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
+        Cache cache = node.getAndSetRenderCache(Cache.class,rendererContext.isSomeChange(),()->{
+            Cache cc=new Cache();
+            Color transparentColor = NTxValueByType.getColor(node, finalCtx, NTxPropName.TRANSPARENT_COLOR).orNull();
+            cc.options = new NTxImageOptions();
+            cc.options.setTransparentColor(transparentColor);
+            cc.options.setDisableAnimation(!finalCtx.isAnimate());
+            cc.options.setAsyncLoad(() -> finalCtx.repaint());
+            cc.options.setImageObserver(finalCtx.imageObserver());
+            cc.options.setSize(new Dimension(b.getWidth().intValue(), b.getHeight().intValue()));
+            NElement eimg = node.getPropertyValue(NTxPropName.VALUE).orNull();
+            if(eimg!=null){
+                NElement eimg2 = finalCtx.engine().evalExpression(eimg, node, finalCtx.varProvider());
+                cc.img = finalCtx.engine().resolvePath(eimg2, node);
+                cc.img = resolveImagePath(cc.img);
+            }
+            return cc;
+        }).get();
 
-        NElement eimg = p.getPropertyValue(NTxPropName.VALUE).orNull();
-        NElement eimg2 = rendererContext.engine().evalExpression(eimg, p, rendererContext.varProvider());
-        NPath img = rendererContext.engine().resolvePath(eimg2, p);
+
 
         NTxGraphics g = rendererContext.graphics();
 
@@ -74,39 +85,35 @@ public class NTxImageBuilder implements NTxNodeBuilder {
         double y = b.getY();
 
         if (!rendererContext.isDry()) {
-            if (rendererContext.applyBackgroundColor(p)) {
+            if (rendererContext.applyBackgroundColor(node)) {
                 g.fillRect((int) x, (int) y, NTxUtils.intOf(b.getWidth()), NTxUtils.intOf(b.getHeight()));
             }
 
-            rendererContext.applyForeground(p, false);
-            if (img instanceof NPath) {
-                NPath imgPath = (NPath) img;
-                NPath vp = resolveImagePath(imgPath);
-                if (vp != null) {
-                    try {
-                        g.drawImage(vp, x, y, options);
-                    } catch (Exception ex) {
-                        NTxSource src = NTxUtils.sourceOf(p);
-                        rendererContext.log().log(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
-                                src == null ? null : src.shortName(),
-                                vp, ex).asSevere(), src);
-
-                    }
-                } else {
-                    int descent = g.getFontMetrics().getAscent();
-                    NTxTextOptions nTxTextOptions = new NTxTextOptions();
-                    NtxFontInfo fontInfo = NTxValueByName.getFontInfo(p, rendererContext);
-                    nTxTextOptions.defaultFont=fontInfo;
-                    nTxTextOptions.sr=rendererContext.sizeRef();
-                    g.drawString("Image not found "+imgPath, x, y+descent, nTxTextOptions.setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(NTxSize.ofPx(8.0f)));
-                    NTxSource src = NTxUtils.sourceOf(p);
-                    rendererContext.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
+            rendererContext.applyForeground(node, false);
+            if (cache.img instanceof NPath) {
+                try {
+                    g.drawImage(cache.img, x, y, cache.options);
+                } catch (Exception ex) {
+                    NTxSource src = NTxUtils.sourceOf(node);
+                    rendererContext.log().log(NMsg.ofC("[%s] [ERROR] error loading image : %s (%s)",
                             src == null ? null : src.shortName(),
-                            eimg).asSevere(), src);
+                            cache.img, ex).asSevere(), src);
+
                 }
+            }else{
+                int descent = g.getFontMetrics().getAscent();
+                NTxTextOptions nTxTextOptions = new NTxTextOptions();
+                NtxFontInfo fontInfo = NTxValueByName.getFontInfo(node, rendererContext);
+                nTxTextOptions.defaultFont=fontInfo;
+                nTxTextOptions.sr=rendererContext.sizeRef();
+                g.drawString("Image not found "+cache.img, x, y+descent, nTxTextOptions.setForegroundColor(Color.YELLOW).setBackgroundColor(Color.RED).setFontSize(NTxSize.ofPx(8.0f)));
+                NTxSource src = NTxUtils.sourceOf(node);
+                rendererContext.log().log(NMsg.ofC("[%s] [ERROR] image not found : %s",
+                        src == null ? null : src.shortName(),
+                        cache.img).asSevere(), src);
             }
         }
-        rendererContext.paintDebugBox(p, b);
+        rendererContext.drawContour();
     }
 
     private NPath resolveImagePath(NPath p) {
