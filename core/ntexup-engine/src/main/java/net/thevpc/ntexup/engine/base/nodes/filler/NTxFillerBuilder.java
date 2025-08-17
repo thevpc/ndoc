@@ -7,9 +7,8 @@ package net.thevpc.ntexup.engine.base.nodes.filler;
 import net.thevpc.ntexup.api.document.elem2d.NTxBounds2;
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
-import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
 /**
@@ -18,24 +17,23 @@ import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 public class NTxFillerBuilder implements NTxNodeBuilder {
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.FILLER)
-                .renderComponent(this::renderMain);
+                .renderComponent((ctx, builderContext1) -> renderMain(ctx, builderContext1));
     }
 
-    public void renderMain(NTxNode p, NTxNodeRendererContext ctx, NTxNodeCustomBuilderContext builderContext) {
-        NTxGraphics g = ctx.graphics();
-        NTxBounds2 bounds = ctx.getBounds();
+    public void renderMain(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        NTxNode node = rendererContext.node();
+        NTxBounds2 bounds = rendererContext.parentBounds();
         NTxBounds2 b = new NTxBounds2(
                 bounds.getMinX(),
                 bounds.getMinY(),
                 bounds.getWidth(),
                 bounds.getHeight());
-        if (!ctx.isDry()) {
-            ctx.paintBackground(p, bounds);
-            ctx.paintBorderLine(p, b);
+        if (!rendererContext.isDry()) {
+            rendererContext.paintBackground(node, bounds);
         }
-        ctx.paintDebugBox(p, b);
+        rendererContext.drawContour();
     }
 
 }
