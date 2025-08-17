@@ -5,7 +5,6 @@ import net.thevpc.ntexup.api.util.NTxMinMax;
 import net.thevpc.nuts.util.NDoubleFunction;
 
 import java.awt.*;
-import java.util.Arrays;
 
 public class NTxPlot2DData {
     public double[] xx;
@@ -33,11 +32,11 @@ public class NTxPlot2DData {
 
     }
 
-    public double[] animatedYY(NTxNodeRendererContext renderContext) {
+    public double[] animatedYY(NTxNodeRendererContext rendererContext) {
         double[] xx = this.xx;
         double[] yy = this.yy;
-        boolean animate = renderContext.isAnimate();
-        long pageStartTime = renderContext.getPageStartTime();
+        boolean animate = rendererContext.isAnimate();
+        long pageStartTime = rendererContext.pageStartTime();
         long now = System.currentTimeMillis();
         long max=500;
         double td = 1;
