@@ -27,10 +27,13 @@ public class NTxPropName {
     public static final String DRAW_GRID="draw-grid";
     public static final String FILL_BACKGROUND="fill-background";
     public static final String DRAW_CONTOUR="draw-contour";
+    public static final String COMPONENT_NAME="component-name";
     public static final String PRESERVE_ASPECT_RATIO ="preserve-aspect-ratio";
     public static final String ROUND_CORNER="round-corner";
     public static final String COLSPAN="colspan";
     public static final String ROWSPAN="rowspan";
+    public static final String COLWEIGHT="colweight";
+    public static final String ROWWEIGHT="rowweight";
     public static final String THEED="threed";
     public static final String RAISED="raised";
     public static final String COLUMNS="columns";
