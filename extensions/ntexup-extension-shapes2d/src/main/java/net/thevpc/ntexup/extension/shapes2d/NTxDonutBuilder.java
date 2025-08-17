@@ -5,9 +5,9 @@ import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 
@@ -25,29 +25,30 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
     NTxProperties defaultStyles = new NTxProperties();
 
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext
                 .id(NTxNodeType.DONUT)
-                .parseParam().named(NTxPropName.INNER_RADIUS, NTxPropName.START_ANGLE, NTxPropName.EXTENT_ANGLE, NTxPropName.DASH).then()
-                .parseParam().named(NTxPropName.SLICE_COUNT).then()
-                .parseParam().named(NTxPropName.SLICES).then()
-                .parseParam().named(NTxPropName.COLORS).then()
+                .parseParam().matchesNamedPair(NTxPropName.INNER_RADIUS, NTxPropName.START_ANGLE, NTxPropName.EXTENT_ANGLE, NTxPropName.DASH).then()
+                .parseParam().matchesNamedPair(NTxPropName.SLICE_COUNT).then()
+                .parseParam().matchesNamedPair(NTxPropName.SLICES).then()
+                .parseParam().matchesNamedPair(NTxPropName.COLORS).then()
                 .renderComponent(this::render)
                 ;
     }
 
 
-    private void render(NTxNode p, NTxNodeRendererContext renderContext, NTxNodeCustomBuilderContext builderContext) {
-        renderDonutOrPie(p, renderContext, builderContext, defaultStyles, true);
+    private void render(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext builderContext) {
+        renderDonutOrPie(rendererContext, builderContext, defaultStyles, true);
     }
 
-    public static void renderDonutOrPie(NTxNode p, NTxNodeRendererContext renderContext,
-                                        NTxNodeCustomBuilderContext builderContext, NTxProperties defaultStyles,
+    public static void renderDonutOrPie(NTxNodeRendererContext rendererContext,
+                                        NTxNodeBuilderContext builderContext, NTxProperties defaultStyles,
                                         boolean isDonut
                                   ) {
-        renderContext = renderContext.withDefaultStyles(p, defaultStyles);
+        NTxNode node=rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
 
-        NTxBounds2 b = renderContext.selfBounds(p, null, null);
+        NTxBounds2 b = rendererContext.selfBounds(node, null, null);
         double x = b.getX();
         double y = b.getY();
         double width = b.getWidth();
@@ -56,7 +57,7 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
         double outerRadius = Math.min(width, height) / 2;
         double innerRadius=0;
         if(isDonut) {
-            innerRadius = NTxValue.of(p.getPropertyValue(NTxPropName.INNER_RADIUS)).asDouble().orElse(0.0);
+            innerRadius = NTxValue.of(node.getPropertyValue(NTxPropName.INNER_RADIUS)).asDouble().orElse(0.0);
             if (innerRadius <= 0) {
                 innerRadius = 50;
             } else if (innerRadius >= 100) {
@@ -65,17 +66,17 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
             innerRadius = innerRadius / 100 * outerRadius;
         }
 
-        double startAngle = NTxValue.of(p.getPropertyValue(NTxPropName.START_ANGLE)).asDouble().orElse(0.0);
-        double extentAngle = NTxValue.of(p.getPropertyValue(NTxPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
-        double dash = NTxValue.of(p.getPropertyValue(NTxPropName.DASH)).asDouble().orElse(0.0);
-        NTxGraphics g = renderContext.graphics();
+        double startAngle = NTxValue.of(node.getPropertyValue(NTxPropName.START_ANGLE)).asDouble().orElse(0.0);
+        double extentAngle = NTxValue.of(node.getPropertyValue(NTxPropName.EXTENT_ANGLE)).asDouble().orElse(360.0);
+        double dash = NTxValue.of(node.getPropertyValue(NTxPropName.DASH)).asDouble().orElse(0.0);
+        NTxGraphics g = rendererContext.graphics();
 
-        String[] colors = NTxValue.of(p.getPropertyValue(NTxPropName.COLORS)).asStringArray().orElse(null);
+        String[] colors = NTxValue.of(node.getPropertyValue(NTxPropName.COLORS)).asStringArray().orElse(null);
         g.setColor(Color.black);
-        if (!renderContext.isDry()) {
+        if (!rendererContext.isDry()) {
             double finalInnerRadius = innerRadius;
-            renderContext.withStroke(p, () -> {
-                int sliceCount = NTxValue.of(p.getPropertyValue(NTxPropName.SLICE_COUNT)).asInt().orElse(-1);
+            rendererContext.withStroke(node, () -> {
+                int sliceCount = NTxValue.of(node.getPropertyValue(NTxPropName.SLICE_COUNT)).asInt().orElse(-1);
                 //equal slices
                 if (sliceCount > 0) {
                     double sliceAngle = (extentAngle - sliceCount * dash) / sliceCount;
@@ -99,7 +100,7 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
                 //diff sizes
                 else {
 
-                    double[] slicePercentage = NTxValue.of(p.getPropertyValue(NTxPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(p));
+                    double[] slicePercentage = NTxValue.of(node.getPropertyValue(NTxPropName.SLICES)).asDoubleArray().orElse(getSlicePercentage(node));
                     slicePercentage = Arrays.stream(slicePercentage).filter(xx -> xx <= 0 || Double.isInfinite(xx) || Double.isNaN(xx)).toArray();
                     if (slicePercentage.length == 0) {
                         slicePercentage = new double[]{1, 1, 1};
@@ -135,8 +136,8 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
             });
 
 
-//            if (renderContext.applyForeground(p, !someBG)) {
-//                renderContext.applyStroke(p);
+//            if (rendererContext.applyForeground(p, !someBG)) {
+//                rendererContext.applyStroke(p);
 //
 //                double centerX = x + width / 2;
 //                double centerY = y + height / 2;
@@ -145,7 +146,7 @@ public class NTxDonutBuilder implements NTxNodeBuilder {
 //                g.drawOval((int) (centerX - innerRadius), (int) (centerY - innerRadius), (int) (innerRadius * 2), (int) (innerRadius * 2));
 //            }
 
-            renderContext.paintDebugBox(p, b);
+            rendererContext.drawContour();
         }
     }
 
