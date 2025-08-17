@@ -1,13 +1,13 @@
 package net.thevpc.ntexup.engine.base.nodes.shape;
 
+import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.engine.NTxEngineTools;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.parser.NTxArgumentReader;
 import net.thevpc.ntexup.api.document.elem2d.NTxPoint2D;
 import net.thevpc.ntexup.api.document.elem3d.NTxPoint3D;
-import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
@@ -21,12 +21,12 @@ import java.util.Arrays;
 public class NTxPolygonBuilder implements NTxNodeBuilder {
     private NTxProperties defaultStyles = new NTxProperties();
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.POLYGON)
-                .parseParam().named(NTxPropName.COUNT).then()
-                .parseParam(new NTxNodeCustomBuilderContext.ProcessParamAction() {
+                .parseParam().matchesNamedPair(NTxPropName.COUNT).then()
+                .parseParam(new NTxNodeBuilderContext.ProcessParamAction() {
                     @Override
-                    public boolean processParam(NTxArgumentReader info, NTxNodeCustomBuilderContext buildContext) {
+                    public boolean processParam(NTxArgumentReader info, NTxNodeBuilderContext buildContext) {
                         NElement k = info.peek();
                         NTxEngineTools tools = buildContext.engine().tools();
                         if (k != null) {
@@ -49,7 +49,7 @@ public class NTxPolygonBuilder implements NTxNodeBuilder {
                                             return false;
                                         }
                                     } else {
-                                        NOptional<NTxPoint2D> p2d = NTxValue.of(kk.value()).asHPoint2D();
+                                        NOptional<NTxPoint2D> p2d = NTxValue.of(kk.value()).asPoint2D();
                                         if (p2d.isPresent()) {
                                             tools.addPoint(info.node(), p2d.get());
                                             info.read();
@@ -61,7 +61,7 @@ public class NTxPolygonBuilder implements NTxNodeBuilder {
                                 } else if (NTxPropName.POINTS.equals(ks)) {
                                     buildContext.addParamName(NTxPropName.POINTS);
                                     if (buildContext.isAncestorScene3D(info.node())) {
-                                        NOptional<NTxPoint3D[]> p2d = NTxValue.of(kk.value()).asHPoint3DArray();
+                                        NOptional<NTxPoint3D[]> p2d = NTxValue.of(kk.value()).asPoint3DArray();
                                         if (p2d.isPresent()) {
                                             tools.addPoints(info.node(), p2d.get());
                                             info.read();
@@ -70,7 +70,7 @@ public class NTxPolygonBuilder implements NTxNodeBuilder {
                                             return false;
                                         }
                                     } else {
-                                        NOptional<NTxPoint2D[]> p2d = NTxValue.of(kk.value()).asHPoint2DArray();
+                                        NOptional<NTxPoint2D[]> p2d = NTxValue.of(kk.value()).asPoint2DArray();
                                         if (p2d.isPresent()) {
                                             info.read();
                                             tools.addPoints(info.node(), p2d.get());
@@ -92,7 +92,7 @@ public class NTxPolygonBuilder implements NTxNodeBuilder {
                                         return false;
                                     }
                                 } else {
-                                    NOptional<NTxPoint2D> p2d = NTxValue.of(k).asHPoint2D();
+                                    NOptional<NTxPoint2D> p2d = NTxValue.of(k).asPoint2D();
                                     if (p2d.isPresent()) {
                                         buildContext.addParamName(NTxPropName.POINTS);
                                         tools.addPoint(info.node(), p2d.get());
@@ -107,31 +107,32 @@ public class NTxPolygonBuilder implements NTxNodeBuilder {
                         return false;
                     }
                 })
-                .renderComponent(this::render);
+                .renderComponent((rendererContext, buildContext) -> render(rendererContext, buildContext));
     }
 
-    private void render(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext buildContext) {
-        Integer count = NTxValue.ofProp(p, NTxPropName.COUNT).asInt().orNull();
-        if (buildContext.isAncestorScene3D(p)) {
+    private void render(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext buildContext) {
+        NTxNode node = rendererContext.node();
+        Integer count = NTxValue.ofProp(node, NTxPropName.COUNT).asInt().orNull();
+        if (buildContext.isAncestorScene3D(node)) {
             //really, where is 3D!!
-            NTxPoint2D[] points = NTxValue.ofProp(p, NTxPropName.POINTS).asHPoint2DArray().orNull();
+            NTxPoint2D[] points = NTxValue.ofProp(node, NTxPropName.POINTS).asPoint2DArray().orNull();
             if(points!=null && points.length>=3) {
                 if (count != null && count >= 3 && count > points.length) {
                     points = Arrays.copyOf(points, count);
                 }
-                NTxPolygonHelper.renderPoints(p, points, rendererContext);
+                NTxPolygonHelper.renderPoints(points, rendererContext);
             }else{
-                NTxPolygonHelper.renderPointsCount(count==null?3:count.intValue(),p, rendererContext, defaultStyles);
+                NTxPolygonHelper.renderPointsCount(count==null?3:count.intValue(), rendererContext, defaultStyles);
             }
         }else{
-            NTxPoint2D[] points = NTxValue.ofProp(p, NTxPropName.POINTS).asHPoint2DArray().orNull();
+            NTxPoint2D[] points = NTxValue.ofProp(node, NTxPropName.POINTS).asPoint2DArray().orNull();
             if(points!=null && points.length>=3) {
                 if (count != null && count >= 3 && count > points.length) {
                     points = Arrays.copyOf(points, count);
                 }
-                NTxPolygonHelper.renderPoints(p, points, rendererContext);
+                NTxPolygonHelper.renderPoints(points, rendererContext);
             }else{
-                NTxPolygonHelper.renderPointsCount(count==null?3:count.intValue(),p, rendererContext, defaultStyles);
+                NTxPolygonHelper.renderPointsCount(count==null?3:count.intValue(), rendererContext, defaultStyles);
             }
         }
     }
