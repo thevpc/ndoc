@@ -472,7 +472,7 @@ public class NTxCompiler {
                 if (path.isDirectory()) {
                     path = path.resolve(NTxEngineUtils.NTEXUP_EXT_STAR_STAR);
                 }
-                h.document().resources().add(path);
+                h.document().sourceMonitor().add(path);
                 List<NPath> list = path.walkGlob().toList();
                 list.sort(NTxEngineUtils::comparePaths);
                 if (!list.isEmpty()) {
