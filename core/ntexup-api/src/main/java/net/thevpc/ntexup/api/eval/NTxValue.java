@@ -1293,25 +1293,25 @@ public class NTxValue {
     }
 
 
-    public NOptional<NTxPadding> asPadding() {
-        if (element instanceof NTxPadding) {
-            return NOptional.of((NTxPadding) element);
+    public NOptional<NTxMargin> asPadding() {
+        if (element instanceof NTxMargin) {
+            return NOptional.of((NTxMargin) element);
         }
         NOptional<double[]> d = asDoubleArrayOrDouble();
         if (d.isPresent()) {
             double[] dd = d.get();
             switch (dd.length) {
                 case 1: {
-                    return NOptional.of(NTxPadding.of(dd[0]));
+                    return NOptional.of(NTxMargin.of(dd[0]));
                 }
                 case 2: {
-                    return NOptional.of(NTxPadding.of(dd[0], dd[1]));
+                    return NOptional.of(NTxMargin.of(dd[0], dd[1]));
                 }
                 case 3: {
-                    return NOptional.of(NTxPadding.of(dd[0], dd[1], dd[2]));
+                    return NOptional.of(NTxMargin.of(dd[0], dd[1], dd[2]));
                 }
                 case 4: {
-                    return NOptional.of(NTxPadding.of(dd[0], dd[1], dd[2], dd[3]));
+                    return NOptional.of(NTxMargin.of(dd[0], dd[1], dd[2], dd[3]));
                 }
             }
         }
@@ -1424,25 +1424,21 @@ public class NTxValue {
         return NOptional.ofNamedEmpty("Double3 from " + element);
     }
 
-    public NOptional<NTxPoint2D> asHPoint2DOrDouble() {
+    public NOptional<NTxPoint2D> asPoint2DOrDouble() {
         if (element instanceof NTxPoint2D) {
             return NOptional.of((NTxPoint2D) element);
         }
-        NOptional<double[]> d = asDoubleArray();
+        NOptional<double[]> d = asDoubleArrayOrDouble();
         if (d.isPresent()) {
             double[] dd = d.get();
             if (dd.length == 2) {
                 return NOptional.of(new NTxPoint2D(dd[0], dd[1]));
             }
         }
-        NOptional<Double> dd = asDouble();
-        if (dd.isPresent()) {
-            return NOptional.of(new NTxPoint2D(dd.get(), dd.get()));
-        }
-        return NOptional.ofNamedEmpty("HPoint2D from " + element);
+        return NOptional.ofNamedEmpty("Point2D from " + element);
     }
 
-    public NOptional<NTxPoint2D> asHPoint2D() {
+    public NOptional<NTxPoint2D> asPoint2D() {
         if (element instanceof NTxPoint2D) {
             return NOptional.of((NTxPoint2D) element);
         }
@@ -1453,7 +1449,7 @@ public class NTxValue {
                 return NOptional.of(new NTxPoint2D(dd[0], dd[1]));
             }
         }
-        return NOptional.ofNamedEmpty("HPoint2D from " + element);
+        return NOptional.ofNamedEmpty("Point2D from " + element);
     }
 
     public NOptional<NTxArrowType> asArrowType() {
@@ -1562,7 +1558,7 @@ public class NTxValue {
         }
     }
 
-    public NOptional<NTxPoint2D[]> asHPoint2DArray() {
+    public NOptional<NTxPoint2D[]> asPoint2DArray() {
         NOptional<NTxDouble2[]> u = asDouble2Array();
         if (u.isPresent()) {
             return NOptional.of(
@@ -1573,7 +1569,7 @@ public class NTxValue {
         }
     }
 
-    public NOptional<NTxPoint3D[]> asHPoint3DArray() {
+    public NOptional<NTxPoint3D[]> asPoint3DArray() {
         NOptional<NTxDouble3[]> u = asDouble3Array();
         if (u.isPresent()) {
             return NOptional.of(
