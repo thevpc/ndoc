@@ -9,9 +9,9 @@ import net.thevpc.ntexup.api.document.node.NTxNodeType;
 import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.document.style.NTxProperties;
 import net.thevpc.ntexup.api.engine.NTxEngineTools;
+import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
-import net.thevpc.ntexup.api.engine.NTxNodeCustomBuilderContext;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
 import net.thevpc.nuts.elem.NElement;
@@ -23,7 +23,7 @@ import java.awt.*;
 public class NTxPolylineBuilder implements NTxNodeBuilder {
     private NTxProperties defaultStyles = new NTxProperties();
     @Override
-    public void build(NTxNodeCustomBuilderContext builderContext) {
+    public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id(NTxNodeType.POLYLINE)
                 .parseParam((info, buildContext) -> {
                     NElement k = info.peek();
@@ -44,7 +44,7 @@ public class NTxPolylineBuilder implements NTxNodeBuilder {
                                         return false;
                                     }
                                 } else {
-                                    NOptional<NTxPoint2D> p2d = NTxValue.of(kk.value()).asHPoint2D();
+                                    NOptional<NTxPoint2D> p2d = NTxValue.of(kk.value()).asPoint2D();
                                     if (p2d.isPresent()) {
                                         tools.addPoint(info.node(), p2d.get());
                                         info.read();
@@ -56,7 +56,7 @@ public class NTxPolylineBuilder implements NTxNodeBuilder {
                             } else if (NTxPropName.POINTS.equals(ks)) {
                                 buildContext.addParamName(NTxPropName.POINTS);
                                 if (buildContext.isAncestorScene3D(info.node())) {
-                                    NOptional<NTxPoint3D[]> p2d = NTxValue.of(kk.value()).asHPoint3DArray();
+                                    NOptional<NTxPoint3D[]> p2d = NTxValue.of(kk.value()).asPoint3DArray();
                                     if (p2d.isPresent()) {
                                         tools.addPoints(info.node(), p2d.get());
                                         info.read();
@@ -65,7 +65,7 @@ public class NTxPolylineBuilder implements NTxNodeBuilder {
                                         return false;
                                     }
                                 } else {
-                                    NOptional<NTxPoint2D[]> p2d = NTxValue.of(kk.value()).asHPoint2DArray();
+                                    NOptional<NTxPoint2D[]> p2d = NTxValue.of(kk.value()).asPoint2DArray();
                                     if (p2d.isPresent()) {
                                         info.read();
                                         tools.addPoints(info.node(), p2d.get());
@@ -87,7 +87,7 @@ public class NTxPolylineBuilder implements NTxNodeBuilder {
                                     return false;
                                 }
                             } else {
-                                NOptional<NTxPoint2D> p2d = NTxValue.of(k).asHPoint2D();
+                                NOptional<NTxPoint2D> p2d = NTxValue.of(k).asPoint2D();
                                 if (p2d.isPresent()) {
                                     buildContext.addParamName(NTxPropName.POINTS);
                                     tools.addPoint(info.node(), p2d.get());
@@ -101,22 +101,23 @@ public class NTxPolylineBuilder implements NTxNodeBuilder {
                     }
                     return false;
                 })
-                .renderComponent(this::render);
+                .renderComponent((rendererContext, buildContext1) -> render(rendererContext, buildContext1));
     }
 
-    private void render(NTxNode p, NTxNodeRendererContext rendererContext, NTxNodeCustomBuilderContext buildContext) {
+    private void render(NTxNodeRendererContext rendererContext, NTxNodeBuilderContext buildContext) {
 
-        rendererContext = rendererContext.withDefaultStyles(p, defaultStyles);
-        NTxBounds2 b = rendererContext.selfBounds(p);
+        NTxNode node = rendererContext.node();
+        rendererContext = rendererContext.withDefaultStyles(defaultStyles);
+        NTxBounds2 b = rendererContext.selfBounds();
         NTxGraphics g = rendererContext.graphics();
-        NTxPoint2D[] points = NTxValue.ofProp(p, NTxPropName.POINTS).asHPoint2DArray().get();
+        NTxPoint2D[] points = NTxValue.ofProp(node, NTxPropName.POINTS).asPoint2DArray().get();
         if (!rendererContext.isDry()) {
-            Paint fc = rendererContext.getForegroundColor(p, true);
+            Paint fc = rendererContext.getForegroundColor(node, true);
             g.draw2D(NTxElement2DFactory.polyline(points)
-                    .setLineStroke(rendererContext.resolveStroke(p))
+                    .setLineStroke(rendererContext.resolveStroke(node))
                     .setLinePaint(fc));
         }
-        rendererContext.paintDebugBox(p, b);
+        rendererContext.drawContour();
     }
 
 }
