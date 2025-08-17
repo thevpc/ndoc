@@ -60,8 +60,8 @@ public class NTxNodeRendererUtils {
     }
 
     public static NTxSizeD mapDim(double w, double h, NTxNodeRendererContext ctx) {
-        NTxBounds2 size = ctx.getBounds();
-        return new NTxSizeD(w / 100 * size.getWidth(), w / 100 * size.getHeight());
+        NTxBounds2 size = ctx.parentBounds();
+        return new NTxSizeD(w / 100 * size.getWidth(), h / 100 * size.getHeight());
     }
 
     public static NTxBounds2 bounds(NTxNode t, NTxNodeRendererContext ctx) {
@@ -88,11 +88,11 @@ public class NTxNodeRendererUtils {
             }
         }
         if (size == null) {
-            size = new NTxDouble2(ctx.getBounds().getWidth(), ctx.getBounds().getHeight());
+            size = new NTxDouble2(ctx.parentBounds().getWidth(), ctx.parentBounds().getHeight());
         }
         return new NTxBounds2(
-                ctx.getBounds().getX(),
-                ctx.getBounds().getY(),
+                ctx.parentBounds().getX(),
+                ctx.parentBounds().getY(),
                 size.getX(),
                 size.getY()
         );
@@ -138,37 +138,19 @@ public class NTxNodeRendererUtils {
         return false;
     }
 
-//    public static boolean applyLineColor(NTxNode t, HGraphics g, NTxNodeRendererContext ctx, boolean force) {
-//        if (ctx.isDry()) {
-//            return false;
-//        }
-//        Paint color = NTxPropValueByNameParser.resolveForegroundColor(t, ctx);
-//        if (color != null) {
-//            g.setPaint(color);
-//            return true;
-//        }
-//        if (force) {
-//            //would resolve default color instead ?
-//            g.setPaint(Color.BLACK);
-//            return true;
-//        }
-//        return false;
-//    }
-
-    public static void paintDebugBox(NTxNode t, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a, boolean force) {
+    public static void drawDebugBox(NTxNode node, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a, boolean force) {
         if (ctx.isDry()) {
             return;
         }
-        if (force || NTxValueByName.isDebug(t, ctx)) {
-            g.setColor(NTxValueByName.getDebugColor(t, ctx));
-            g.drawRect(
-                    NTxUtils.doubleOf(a.getMinX()), NTxUtils.doubleOf(a.getMinY()),
-                    NTxUtils.doubleOf(a.getWidth()), NTxUtils.doubleOf(a.getHeight())
-            );
-            NTxDouble2 origin = NTxValueByName.getOrigin(t, ctx,new NTxDouble2(a.getWidth(),a.getHeight()));
+        if (force || NTxValueByName.isDebug(node, ctx)) {
+            g.setColor(NTxValueByName.getDebugColor(node, ctx));
+            g.drawRect(a);
+            NTxBounds2 b = NTxValueByName.getNodeCommonNoCache(node, ctx).parentBoundsWithMargin;
+            g.drawRect(b);
+            NTxDouble2 origin = NTxValueByName.getOrigin(node, ctx,new NTxDouble2(a.getWidth(),a.getHeight()));
             double x = origin.getX() + a.getX();
             double y = origin.getY() + a.getY();
-            g.setColor(NTxValueByName.getDebugColor(t, ctx));
+            g.setColor(NTxValueByName.getDebugColor(node, ctx));
             int originSize = 6;
             g.fillOval(
                     x - originSize / 2, y - originSize / 2,
@@ -177,8 +159,8 @@ public class NTxNodeRendererUtils {
         }
     }
 
-    public static void paintDebugBox(NTxNode t, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a) {
-        paintDebugBox(t, ctx, g, a, false);
+    public static void drawDebugBox(NTxNode t, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a) {
+        drawDebugBox(t, ctx, g, a, false);
     }
 
     public static NOptional<Color> colorFromPaint(Paint p) {
@@ -188,11 +170,11 @@ public class NTxNodeRendererUtils {
         return NOptional.ofNamedEmpty("color");
     }
 
-    public static void paintBorderLine(NTxNode t, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a) {
+    public static void drawBorderLine(NTxNode t, NTxNodeRendererContext ctx, NTxGraphics g, NTxBounds2 a) {
         if (ctx.isDry()) {
             return;
         }
-        paintDebugBox(t, ctx, g, a);
+        drawDebugBox(t, ctx, g, a);
         if (NTxValueByName.isDrawContour(t, ctx)) {
             if (applyForeground(t, g, ctx, true)) {
                 Stroke s = g.getStroke();
